@@ -35,12 +35,12 @@ validFLFleet <- function(object) {
     return('iter must be 1 or N across all slots and levels')
 
   # effshares must add up to one
-  effshs <- lapply(object@metiers, effshare)
-  if(length(effshs) > 1)
-    for(i in 2:length(effshs))
-      effshs[[1]] <- effshs[[1]] + effshs[[i]]
-  if(!isTRUE(all.equal(as.vector(effshs[[1]]), rep(1,prod(dim(effshs[[1]]))))))
-    return('sum of effshare must add up to 1')
+  #effshs <- lapply(object@metiers, effshare)
+  #if(length(effshs) > 1)
+  #  for(i in 2:length(effshs))
+  #    effshs[[1]] <- effshs[[1]] + effshs[[i]]
+  #if(!isTRUE(all.equal(as.vector(effshs[[1]]), rep(1,prod(dim(effshs[[1]]))))))
+  #  return('sum of effshare must add up to 1')
 
 	return(TRUE)
 }
