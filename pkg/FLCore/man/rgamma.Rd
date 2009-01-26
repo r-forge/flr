@@ -1,7 +1,6 @@
 \name{rgamma}
 \docType{methods}
-\alias{rgamma,ANY,ANY,ANY,ANY-method}
- \alias{rgamma,numeric,FLQuantPoint,missing,missing-method}
+\alias{rgamma,numeric,FLQuantPoint,missing,missing-method}
 \title{Method rgamma}
 \description{
 Random generation for the Gamma distribution with parameters 'shape' and 'scale'.  'shape' can be an FLQuantPoint in which case 'shape' and 'scale' are set as the mean(shape)^2 / var(shape).
