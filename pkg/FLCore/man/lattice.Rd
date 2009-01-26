@@ -1,22 +1,18 @@
 \name{lattice}
 \docType{methods}
-\alias{barchart,ANY,ANY-method}
 \alias{barchart,formula,FLQuant-method}
 \alias{barchart,formula,FLComp-method}
-\alias{bwplot,ANY,ANY-method}
 \alias{bwplot,formula,FLQuant-method}
 \alias{bwplot,formula,FLComp-method}
-\alias{densityplot,ANY,ANY-method}
 \alias{densityplot,formula,FLPar-method}
-\alias{dotplot,ANY,ANY-method}
 \alias{dotplot,formula,FLQuant-method}
 \alias{dotplot,formula,FLComp-method}
-\alias{histogram,ANY,ANY-method}
 \alias{histogram,formula,FLQuant-method}
 \alias{histogram,formula,FLQuants-method}
 \alias{histogram,formula,FLComp-method}
 \alias{histogram,formula,FLPar-method}
-\alias{xyplot,ANY,ANY-method}
+\alias{stripplot,formula,FLQuant-method}
+\alias{stripplot,formula,FLComp-method}
 \alias{xyplot,formula,FLQuant-method}
 \alias{xyplot,formula,FLQuants-method}
 \alias{xyplot,formula,FLCohort-method}
@@ -24,7 +20,10 @@
 \title{Method barchart}
 \description{
  Implementation of Trellis graphics in FLR. Plot methods in the lattice package are 
- available for object of class \code{FLQuant} or  \code{FLQuants}.
+ available for object of class \code{FLQuant}, \code{FLQuants} or \code{FLComp}.
+
+ See the help page in \code{lattice} for a full description of each plot and all
+ possible arguments.
 }
 \section{Generic function}{
  barchart(x,data) 
@@ -37,6 +36,8 @@
 
  histogram(x,data) 
 
+ stripplot(x,data) 
+
  xyplot(x,data) 
 }
 \section{Methods}{\describe{
@@ -45,6 +46,6 @@
 \item{ signature(x=formula,data=FLPar) :}{Use the lattice functionality for objects of class FLPar}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{\link{xyplot}, \link{barchart}, \link{bwplot}, \link{densityplot}, \link{dotplot}, \link{histogram}, \link{stripplot}}
 \examples{}
 \keyword{methods}
