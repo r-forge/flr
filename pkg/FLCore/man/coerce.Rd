@@ -22,6 +22,7 @@
 \alias{coerce,FLCatch,FLMetier-method}
 \alias{coerce,FLCatch,FLMetiers-method}
 \alias{coerce,FLCatch,FLStock-method}
+\alias{coerce,FLCatch,FLIndex-method}
 \alias{coerce,data.frame,FLComp-method}
 \alias{coerce,data.frame,FLQuant-method}
 \alias{coerce,data.frame,FLStock-method}
