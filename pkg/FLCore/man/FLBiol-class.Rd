@@ -12,7 +12,7 @@
 
  The non-accessor methods for this class calculate mature stock biomass/numbers of
  eggs/etc. and many life-history methods are available that calculate natural mortality 
- (given certain information), the intrinsic rate of increase \emp{r} (using various
+ (given certain information), the intrinsic rate of increase \emph{r} (using various
  methods), or to apply a Leslie-transition matrix model for estimating the population 
  dynamics.
 }
