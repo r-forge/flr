@@ -4,7 +4,7 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 09 Jan 2009 16:18
-# $Id: FLComp.R,v 1.1 2009/01/09 15:23:14 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

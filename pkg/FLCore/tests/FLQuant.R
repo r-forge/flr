@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLQuant.R,v 1.20 2009/01/22 09:34:47 imosqueira Exp $
+# $Id$
 
 library(FLCore)
 

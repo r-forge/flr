@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 30 Dec 2008 11:04
-# $Id: FLPar.R,v 1.3 2008/12/30 10:05:53 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:
