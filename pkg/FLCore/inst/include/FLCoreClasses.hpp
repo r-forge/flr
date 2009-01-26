@@ -1,4 +1,4 @@
-/** $Id: FLCoreClasses.hpp,v 1.17 2008/09/29 14:05:58 fas00 Exp $ **/
+/** $Id$ **/
 #ifndef _INC_FLCoreClasses
 #define _INC_FLCoreClasses
 
