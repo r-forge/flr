@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 26 Jan 2009 15:56
-# $Id: $
+# $Id$
 
 library(FLCore)
 
