@@ -2,7 +2,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLArray.R,v 1.16 2009/01/22 10:22:36 imosqueira Exp $
+# $Id$
 
 ## Class {{{
 validFLArray  <-  function(object){

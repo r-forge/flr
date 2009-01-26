@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Dorleta García, AZTI
-# $Id: FLSR.R,v 1.122 2009/01/09 15:11:48 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

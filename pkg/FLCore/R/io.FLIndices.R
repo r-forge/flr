@@ -2,7 +2,7 @@
 
 # Author: FLR Team
 # Last Change: 12 Sep 2008 11:43
-# $Id: io.FLIndices.R,v 1.30 2008/09/22 13:38:11 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

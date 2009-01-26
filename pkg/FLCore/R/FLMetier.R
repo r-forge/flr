@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer:
-# $Id: FLMetier.R,v 1.34 2009/01/06 14:58:41 imosqueira Exp $
+# $Id$
 
 
 ## FLMetier		{{{

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLAccesors.R,v 1.14 2008/06/16 14:44:51 imosqueira Exp $
+# $Id$
 
 ## createFLAccesors		{{{
 createFLAccesors <- function(class, exclude=character(1), include=missing) {

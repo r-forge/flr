@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurie Kell, CEFAS
-# $Id: FLBiol.R,v 1.63 2009/01/26 12:49:52 imosqueira Exp $
+# $Id$
 
 ## class::FLBiol {{{
 validFLBiol <- function(object){

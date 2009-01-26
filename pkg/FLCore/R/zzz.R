@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: zzz.R,v 1.50 2009/01/12 10:01:07 imosqueira Exp $
+# $Id$
 
 .onLoad <- function(lib,pkg) {
 	require(methods)

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLQuantPoint.R,v 1.15 2008/04/25 13:35:23 imosqueira Exp $
+# $Id$
 
 ## Class    {{{
 validFLQuantPoint <- function(object) {

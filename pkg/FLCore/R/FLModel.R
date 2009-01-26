@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLModel.R,v 1.111 2009/01/23 10:01:33 imosqueira Exp $
+# $Id$
 
 # FLModel  {{{
 validFLModel <- function(object)

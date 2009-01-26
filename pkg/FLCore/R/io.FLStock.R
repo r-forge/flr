@@ -3,7 +3,7 @@
 # Author: FLR Team
 # Additions:
 # Last Change: 12 Sep 2008 12:41
-# $Id: io.FLStock.R,v 1.34 2008/09/26 14:27:08 m_payne Exp $
+# $Id$
 # Reference:
 # Notes:
 

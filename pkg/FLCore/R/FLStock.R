@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Rob Scott, CEFAS
-# $Id: FLStock.R,v 1.133 2009/01/12 10:01:06 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

@@ -2,7 +2,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Author: Ernesto Jardim, IPIMAR
-# $Id: FLtest.R,v 1.10 2008/05/21 17:48:57 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

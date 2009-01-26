@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLQuants-methods.R,v 1.22 2008/11/17 10:23:37 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

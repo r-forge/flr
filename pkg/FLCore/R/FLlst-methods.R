@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Ernesto Jardim, IPIMAR
-# $Id: FLlst-methods.R,v 1.39 2009/01/22 10:55:29 imosqueira Exp $
+# $Id$
 
 # coerce NULL {{{
 setAs("NULL", "FLStock", function(from) FLStock())

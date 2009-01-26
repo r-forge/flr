@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer:
-# $Id: FLFleet.R,v 1.105 2009/01/06 14:58:41 imosqueira Exp $
+# $Id$
 
 ## FLFleet		{{{
 validFLFleet <- function(object) {

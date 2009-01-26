@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurie Kell, Cefas
-# $Id: SRmodels.R,v 1.30 2008/12/17 16:19:25 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

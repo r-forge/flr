@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Ernesto Jardim, IPIMAR 
-# $Id: FLCohort.R,v 1.30 2009/01/22 10:55:29 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

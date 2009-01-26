@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: coerce.R,v 1.21 2009/01/09 22:35:44 ltkell Exp $
+# $Id$
 
 # FLBiol	{{{
 setAs('FLBiol', 'FLStock',

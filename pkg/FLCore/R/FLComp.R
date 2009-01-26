@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLComp.R,v 1.56 2009/01/22 09:34:47 imosqueira Exp $
+# $Id$
 
 # FLComp   {{{
 validFLComp <- function(object)
