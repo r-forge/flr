@@ -1,4 +1,4 @@
-%$Id: FLtest.Rd,v 1.5 2008/06/13 16:42:59 imosqueira Exp $
+%$Id$
 \name{FLtest}
 \alias{FLtest}
 \alias{startTest}

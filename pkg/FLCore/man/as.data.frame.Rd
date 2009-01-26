@@ -1,4 +1,4 @@
-%$Id: as.data.frame.Rd,v 1.11 2009/01/22 11:20:13 imosqueira Exp $
+%$Id$
 \name{as.data.frame}
 \docType{methods}
 \alias{as.data.frame,ANY,ANY,ANY-method}

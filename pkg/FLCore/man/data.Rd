@@ -1,4 +1,4 @@
-% $Id: data.Rd,v 1.21 2008/04/25 13:35:23 imosqueira Exp $
+% $Id$
 \name{data}
 \alias{ple4}
 \alias{ple4sex}

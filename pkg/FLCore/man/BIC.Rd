@@ -1,4 +1,4 @@
-% $Id: BIC.Rd,v 1.5 2009/01/26 11:43:04 imosqueira Exp $
+% $Id$
 \name{BIC}
 \docType{methods}
 \alias{BIC,FLModel-method}

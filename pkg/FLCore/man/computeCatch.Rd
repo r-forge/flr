@@ -1,4 +1,4 @@
-% $Id: computeCatch.Rd,v 1.5 2008/12/08 10:40:29 fas00 Exp $
+% $Id$
 \name{computeCatch}
 \docType{methods}
 % catch

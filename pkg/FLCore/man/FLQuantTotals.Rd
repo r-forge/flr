@@ -1,4 +1,4 @@
-%$Id: FLQuantTotals.Rd,v 1.2 2007/09/07 16:06:12 imosqueira Exp $
+%$Id$
 \name{FLQuantTotals}
 % quant
 \docType{methods}

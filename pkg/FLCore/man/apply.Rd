@@ -1,4 +1,4 @@
-%$Id: apply.Rd,v 1.4 2009/01/22 15:42:09 imosqueira Exp $
+%$Id$
 \name{apply}
 \docType{methods}
 \alias{apply,ANY,missing,missing-method}

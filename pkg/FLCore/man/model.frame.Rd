@@ -1,4 +1,4 @@
-%$Id: model.frame.Rd,v 1.3 2008/04/25 13:35:24 imosqueira Exp $
+%$Id$
 \name{model.frame}
 \docType{methods}
 \alias{model.frame,ANY-method}

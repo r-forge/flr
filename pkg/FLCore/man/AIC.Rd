@@ -1,4 +1,4 @@
-% $Id: AIC.Rd,v 1.6 2009/01/26 11:43:04 imosqueira Exp $
+% $Id$
 \name{AIC}
 \docType{methods}
 \alias{AIC,FLModel,numeric-method}

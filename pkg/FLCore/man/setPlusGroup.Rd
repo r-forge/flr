@@ -1,4 +1,4 @@
-%$Id: setPlusGroup.Rd,v 1.11 2008/02/13 15:34:58 imosqueira Exp $
+%$Id$
 \name{setPlusGroup}
 \docType{methods}
 \alias{setPlusGroup}
