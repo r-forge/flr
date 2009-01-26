@@ -1,0 +1,45 @@
+\name{FLlst}
+\docType{class}
+\alias{FLlst}
+\alias{FLlst-class}
+\title{Class FLlst}
+\description{
+\code{FLlst} is a class that extends \code{list} but implements a set of features that give a little bit more structure to list objects. First the elements of \code{FLlst} must all be of the same class. Second it implements a lock mechanism that, when turned on, does not allow the user to increase or decrease the object length. Both features are needed to propoerly implement \code{FLFleet} class. 
+}
+\section{Slots}{\describe{
+\item{.Data (\code{list}):}{The data.}
+\item{names (\code{character}):}{Names of the list elements.}
+\item{desc (\code{character}):}{Description of the object.}
+\item{lock (\code{logical}):}{Lock mechanism, if turned on the length of the list can not be modified by adding or removing elements.}
+}}
+\section{Extends}{\describe{
+list, vector
+}}
+\section{Methods}{\describe{
+\item{\link{[}(base) :}{Select method.}
+\item{}{\code{ signature(x=FLlst,i=ANY,j=missing,drop=missing) }}
+\item{\link{[<-}(base) :}{Replacement method for elements.}
+\item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
+\item{\link{[[<-}(base) :}{Replacement method within elements.}
+\item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
+\item{\link[$<-]{\$<-}(base) :}{Replacement method for elements.}
+\item{}{\code{ signature(x=FLlst,name=character,value=missing) }}
+\item{\link{coerce}(methods) :}{Coerce method.}
+\item{}{\code{ signature(from=FLlst,to=list,strict=missing) }}
+\item{\link{lapply}(base) :}{\code{lapply} implemented for \code{FLlst} objects.}
+\item{}{\code{ signature(X=missing,FUN=missing) }}
+\item{\link{window}(stats) :}{Selects a set of years from all elements at once.}
+\item{}{\code{ signature(x=missing) }}
+}}
+\author{The FLR Team}
+\seealso{ \link{[}, \link{[<-}, \link{[[<-}, \link[$<-]{\$<-}, \link{coerce}, \link{lapply}, \link{window}, \link{list}, \link{vector} }
+\examples{
+fll01 <- new("FLlst", list(a=1:10, b=10:20))
+fll02 <- new("FLlst", list(1:10, 10:20), names=c("a","b"))
+fll03 <- FLlst(a=1:10, b=10:20)
+fll04 <- FLlst(list(a=1:10, b=10:20))
+fll05 <- FLlst(c(1:10), c(10:20))
+names(fll05) <- names(fll01)
+names(fll01)
+}
+\keyword{classes}

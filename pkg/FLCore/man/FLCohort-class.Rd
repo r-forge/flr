@@ -1,0 +1,57 @@
+\name{FLCohort}
+\docType{class}
+\alias{FLCohort}
+\alias{FLCohort-class}
+\title{Class FLCohort}
+\description{
+This class represents cohorts in columns. It simply shifts the typical matrix representation where cohorts are found on the diagonals, into a matrix where cohorts are found in columns. It is very usefull for all analysis that want to make use of cohorts instead of years.
+}
+\section{Slots}{\describe{
+\item{.Data (\code{array}):}{Internal S4 data representation.}
+\item{units (\code{character}):}{The data units in some understandable metric.}
+}}
+\section{Extends}{\describe{
+FLArray
+array
+structure
+matrix
+vector
+vector
+vector
+}}
+\section{Methods}{\describe{
+\item{\link{[}(base) :}{Subset method}
+\item{}{\code{ signature(x=FLCohort,i=ANY,j=ANY,drop=missing) }}
+\item{\link{as.data.frame}(base) :}{Coerce to data.frame.}
+\item{}{\code{ signature(x=FLCohort,row.names=ANY,optional=ANY) }}
+\item{\link{bubbles}(FLCore) :}{Bubbles plot.}
+\item{}{\code{ signature(x=formula,data=FLCohort) }}
+\item{\link{ccplot}(FLCore) :}{Catch curves plot.}
+\item{}{\code{ signature(x=formula,data=FLCohort) }}
+\item{\link{flc2flq}(FLCore) :}{Coerce to FLQuant (deprecated).}
+\item{}{\code{ signature(object=missing) }}
+\item{\link{FLCohort}(FLCore) :}{Creator method based on FLQuant objects.}
+\item{}{\code{ signature(object=FLQuant) }}
+\item{\link{plot}(graphics) :}{Simple plot}
+\item{}{\code{ signature(x=FLCohort,y=ANY) }}
+\item{\link{quant}(FLCore) :}{Extract the quant dimension definition.}
+\item{}{\code{ signature(object=missing) }}
+\item{\link{trim}(FLCore) :}{Subset based on limiting dimnames.}
+\item{}{\code{ signature(object=missing) }}
+\item{\link{units}(base) :}{Extract the information about data units.}
+\item{}{\code{ signature(x=missing) }}
+\item{\link{units<-}(base) :}{Replace data units information.}
+\item{}{\code{ signature(x=FLCohort,value=character) }}
+\item{\link{xyplot}(lattice) :}{Lattice's xyplot method.}
+\item{}{\code{ signature(x=formula,data=FLCohort) }}
+}}
+\author{The FLR Team}
+\seealso{ \link{[}, \link{as.data.frame}, \link{bubbles}, \link{ccplot}, \link{FLCohort,FLQuant-method}, \link{flc2flq}, \link{plot}, \link{quant}, \link{trim}, \link{units}, \link{units<-}, \link{xyplot}, \link{array}, \link{structure}, \link{matrix}, \link{vector}, \link{vector}, \link{vector} }
+\examples{
+data(ple4)
+flq <- catch.n(ple4)
+flc <- FLCohort(flq)
+plot(trim(flc, cohort=1960:2000))
+}
+\keyword{classes}
+
