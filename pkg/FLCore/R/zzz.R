@@ -7,10 +7,8 @@
 
 .onLoad <- function(lib,pkg) {
 	require(methods)
-	cat("FLCore 2.0-beta 20090109 \"Bronzy Barnacle\"\n")
+	cat("FLCore 2.0 \"Swordfish Polka\"\n")
   cat("------------------------------------\n")
-  cat("PLEASE NOTE: This is a beta version, please\n")
-  cat("report any bugs to <flr-team@flr-project.org>.\n")
 }
 
 ## convert6d  {{{
