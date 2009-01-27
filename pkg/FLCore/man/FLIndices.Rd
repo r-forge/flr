@@ -6,17 +6,20 @@
  \alias{FLIndices,list-method}
 \title{Method FLIndices}
 \description{
- My method is better then yours !
+ Method for creating an object of class \code{FLIndices}.
 }
 \section{Generic function}{
  FLIndices(object) 
 }
 \section{Methods}{\describe{
-\item{ signature(object=ANY) :}{Describe method}
-\item{ signature(object=missing) :}{Describe method}
-\item{ signature(object=list) :}{Describe method}
+\item{ signature(object=ANY) :}{Returns an FLIndices object}
+\item{ signature(object=missing) :}{Returns an empty FLIndices object}
+\item{ signature(object=list) :}{Returns an FLIndices object}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
-\examples{}
+\seealso{\link{FLIndices-class},  \link{FLlst-class}, \link{FLIndex-class},}
+\examples{
+ind <- FLIndex(index=FLQuant(1:10))
+inx <- FLIndices(first=ind, second=ind)
+}
 \keyword{methods}

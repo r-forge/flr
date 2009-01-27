@@ -17,7 +17,7 @@
 \item{ signature(object=list) :}{Returns an FLBiols object}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp}, \link{FLlst-class} }
+\seealso{\link{FLBiols-class},  \link{FLlst-class}, \link{FLBiol-class},}
 \examples{
 bio <- FLBiol(n=FLQuant(1:10))
 FLBiols(north=bio, south=bio)

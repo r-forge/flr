@@ -4,16 +4,18 @@
  \alias{splom,FLPar,missing-method}
 \title{Method splom}
 \description{
- My method is better then yours !
+  Draws a conditional scatter plot matrix.
+
+ See the help page in \code{lattice} for a full description of each plot and all
+ possible arguments.
 }
 \section{Generic function}{
  splom(x,data) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY,data=ANY) :}{Describe method}
 \item{ signature(x=FLPar,data=missing) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{splom} }
 \examples{}
 \keyword{methods}

@@ -8,13 +8,14 @@
   models can use to implement classes that allow those models to be tested, fitted
   and presented.
 
-  Slots in this class attempt to map all the necessary inputs and outputs for a modelling
-  exercise, except for the various inputs. These must be defined in the individual classes
-  that extend FLModel for individual applications. See, for example
+  Slots in this class attempt to map all the usual outputs for a modelling
+  exercise, together with the standard inputs. Input data is stored in slots
+  created by each of those classes based on FLModel.See, for example
   \code{\link{FLSR-class}} for a class used for stock-recruitment models.
 
-  Various fitting algorithms present in the basic R packages are currently available
-  for FLModel, including \code{\link{fmle}}, \code{\link{nls}} and \code{\link{glm}}.
+  Various fitting algorithms, similar to those present in the basic R packages are 
+  currently available for FLModel, including \code{\link{fmle}}, \code{\link{nls}} and 
+  \code{\link{glm}}.
 }
 \section{Slots}{\describe{
 \item{model (\code{formula}):}{Describe slot}
