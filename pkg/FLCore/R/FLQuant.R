@@ -916,10 +916,11 @@ if (!isGeneric("quantile"))
 	setGeneric("quantile", useAsDefault=quantile)
 
 setMethod("quantile", signature(x="FLQuant"),
-	function(x, probs=seq(0,1,0.25), na.rm=FALSE, dim=1:5, ...) {
-		for(i in seq(1,length(probs)))
-			x[,,,,,i] <- apply(x, dim, quantile, probs[i], na.rm=na.rm, ...)
-		return(x[,,,,,seq(1, length(probs))])
+	function(x, probs=seq(0, 1, 0.25), na.rm=FALSE, dim=1:5, ...) {
+    res <- FLQuant(NA, dimnames=c(dimnames(x)[-6], list(iter=ac(probs))), units=units(x))
+		for(i in probs)
+			res[,,,,,ac(i)] <- apply(x, dim, quantile, i, na.rm=na.rm, ...)
+		return(res)
 	}
 )   # }}}
 
