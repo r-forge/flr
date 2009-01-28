@@ -281,11 +281,16 @@ setMethod('plot', signature(x='FLStocks', y='missing'),
         yield=computeLandings(object), harvest=fbar(object))))
         
     if (ylim=="") {
-      t.  <-unlist(lapply(x, function(x) {t.<-foo(x); apply(tapply(t.[,"data"],t.[,c("year","qname")],quantile, max(prob), na.rm=na.rm),2,max,na.rm=T)}))
-      ylim<-list(c(0,max(t.[names(t.)=="harvest"],na.rm=T)),
-                 c(0,max(t.[names(t.)=="rec"]    ,na.rm=T)),
-                 c(0,max(t.[names(t.)=="ssb"]    ,na.rm=T)),
-                 c(0,max(t.[names(t.)=="yield"]  ,na.rm=T)))}
+#      t.  <-unlist(lapply(x, function(y) {t.<-foo(y); apply(tapply(t.[,"data"],t.[,c("year","qname")],quantile, max(prob), na.rm=na.rm),2,max,na.rm=T)}))
+#      ylim<-list(c(0,ylim["harvest"],na.rm=T)),
+#                 c(0,max(t.[names(t.)=="rec"]    ,na.rm=T)),
+#                 c(0,max(t.[names(t.)=="ssb"]    ,na.rm=T)),
+#                 c(0,max(t.[names(t.)=="yield"]  ,na.rm=T)))}
+      t.  <- lapply(x, function(y) {t.<-foo(y); apply(tapply(t.[,"data"],t.[,c("year","qname")],quantile, max(prob), na.rm=na.rm),2,max,na.rm=T)})
+	t. <- do.call("rbind", t.)
+	ylim <- apply(t.,2,max)
+	ylim <- list(c(0,ylim["harvest"]), c(0,ylim["rec"]), c(0,ylim["ssb"]), c(0,ylim["yield"]))
+	}
                  
     lst <- lapply(x, foo)
 
