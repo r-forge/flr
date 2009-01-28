@@ -15,7 +15,7 @@
   inside the \code{initial} slot. This slot contains a function to be used to provide 
   initial values to any of the fitting method (e.g. \code{\link{fmle}}).
 
-  The values in \code{lower} and \{upper} are only used if the method selected for
+  The values in \code{lower} and \code{upper} are only used if the method selected for
   \code{\link{optim}} is able to make use of them, like for example "L-BFGS-B", which is 
   the default for \code{\link{fmle}}.
 

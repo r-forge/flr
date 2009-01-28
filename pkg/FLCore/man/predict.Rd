@@ -1,7 +1,6 @@
 \name{predict}
 \docType{methods}
-\alias{predict,ANY-method}
- \alias{predict,FLModel-method}
+\alias{predict,FLModel-method}
 \title{Method predict}
 \description{
  \code{predict} is a generic function for predictions from the results of various model fitting functions.
@@ -11,7 +10,6 @@
  predict(object, ...)
 }
 \section{Methods}{\describe{
-\item{ signature(object=ANY) :}{Describe method}
 \item{ signature(object=FLModel) :}{Describe method}
 }}
 \author{The FLR Team}

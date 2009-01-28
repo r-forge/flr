@@ -20,59 +20,61 @@ LazyData: \tab Yes\cr
 Built: \tab R 2.8.1; i686-pc-linux-gnu; 2009-01-22 12:08:46; unix\cr
 }
 
-Index:
+Classes:
 \preformatted{
-AIC,ANY,ANY-method      Akaike information criterion (AIC) method
-Arith,FLArray,FLArray-method
-                        Arithmetic methods for FLQuant objects
-BIC,logLik-method       Bayesian information criterion (BIC) method
-E                       Method E
 FLArray                 Class FLArray
 FLBiol                  Class FLBiol
 FLBiols                 Class FLBiols
-FLBiols-methods         Method FLBiols
 FLCatch                 Class FLCatch
+FLCatches               Class FLCatches
+FLCohort                Class FLCohort
+FLCohorts               Class FLCohorts
+FLComp                  Class FLComp
+FLFleet                 Class FLFleet
+FLFleets                Class FLFleets
+FLIndex-class           Class FLIndex
+FLIndices               Class FLIndices
+FLMetier-class          Class FLMetier
+FLMetiers               Class FLMetiers
+FLModel                 Class FLModel for statistical models
+FLPar                   Class FLPar
+FLQuant                 FLQuant class for numerical data
+FLQuantPoint            Class FLQuantPoint
+FLQuants                Class FLQuants
+FLSR                    Class FLSR
+FLStock-class           Class FLStock
+FLStocks                Class FLStocks
+FLlst                   Class FLlst
+}
+Methods:
+\preformatted{
+AIC                     Akaike information criterion (AIC) method
+Arith                   Arithmetic methods for FLQuant objects
+BIC                     Bayesian information criterion (BIC) method
+E                       Method E
+FLBiols-methods         Method FLBiols
 FLCatch-accesors        Accesor and replacement methods for the FLCatch
                         class
 FLCatch-methods         Method FLCatch
-FLCatches               Class FLCatches
 FLCatches-methods       Method FLCatches
-FLCohort                Class FLCohort
 FLCohort-methods        Method FLCohort
-FLCohorts               Class FLCohorts
 FLCohorts-methods       Method FLCohorts
-FLComp                  Class FLComp
-FLCore                  FLCore package of the FLR system
-FLFleet                 Class FLFleet
+FLCore-package          FLCore package of the FLR system
 FLFleet-methods         Method FLFleet
-FLFleets                Class FLFleets
 FLFleets-methods        Method FLFleets
 FLIndex                 Create FLIndex objects
-FLIndex-class           Class FLIndex
-FLIndices               Class FLIndices
 FLIndices-methods       Method FLIndices
-FLMetier-class          Class FLMetier
 FLMetier-methods        Method FLMetier
-FLMetiers               Class FLMetiers
 FLMetiers-methods       Method FLMetiers
-FLModel                 Class FLModel for statistical models
 FLModel-methods         Method FLModel
-FLPar                   Class FLPar
 FLPar-methods           Method FLPar
-FLQuant                 FLQuant class for numerical data
 FLQuant-methods         Create FLQuant objects
-FLQuantPoint            Class FLQuantPoint
 FLQuantPoint-accesors   Method lowq
 FLQuantPoint-methods    Method FLQuantPoint
-FLQuants                Class FLQuants
 FLQuants-methods        Method FLQuants
-FLSR                    Class FLSR
 FLSR-methods            Method FLSR
 FLStock                 Create FLStock objects
-FLStock-class           Class FLStock
-FLStocks                Class FLStocks
 FLStocks-methods        Method FLStocks
-FLlst                   Class FLlst
 FLlst-methods           Method FLlst
 FLtest                  FLtest functions for running simple units tests
 SRModelName             Convenience function to identify an SR model by
@@ -185,8 +187,6 @@ var,ANY,missing,missing,missing-method
                         Variance of an FLPar
 window,ANY-method       Extract time (year) windows of an FLR object
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
 }
 \author{
 FLR Team and various contributors. Initial design by Laurence T. Kell & Philippe Grosjean.
@@ -194,7 +194,7 @@ FLR Team and various contributors. Initial design by Laurence T. Kell & Philippe
 Maintainer: FLR Team <flr-team@flr-project.org>
 }
 \references{
-Website at \url{http://flr-project.org}
+Website at \url{http://flr-project.org/}
 
 Kell L.T., Mosqueira I., Grosjean P., Fromentin J-M., Garcia D.,
 		Hillary R., Jardim E., Pastoors M., Poos J.J., Scott F. & Scott R.D. 2007.

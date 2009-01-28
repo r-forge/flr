@@ -1,6 +1,5 @@
 \name{mean}
 \docType{methods}
-\alias{mean,ANY-method}
 \alias{mean,FLPar-method}
 \alias{mean,FLQuant-method}
 \title{Method mean}
@@ -11,7 +10,6 @@ Calculates the mean.  Can be used directly on an object or with apply etc.
  mean(x) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY) :}{Returns the mean of x}
 \item{ signature(x=FLPar) :}{Returns the mean of x}
 \item{ signature(x=FLQuant) :}{Returns the mean of x}
 \item{ signature(x=FLQuantPoint) :}{Returns the mean of x}

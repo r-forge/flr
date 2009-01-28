@@ -1,7 +1,6 @@
 %$Id$
 \name{as.data.frame}
 \docType{methods}
-\alias{as.data.frame,ANY,ANY,ANY-method}
 \alias{as.data.frame,FLArray,missing,missing-method}
 \alias{as.data.frame,FLQuant,missing,missing-method}
 \alias{as.data.frame,FLCohort,missing,missing-method}
@@ -42,8 +41,6 @@
  as.data.frame(x, row.names, optional) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY,row.names=ANY,optional=ANY) :}{Generic method based on
-	base::as.data.frame}
 \item{ signature(x=FLQuant,row.names=ANY,optional=ANY) :}{Converts an FLQuant into a
 	data.frame}
 \item{ signature(x=FLComp,row.names=missing,optional=missing) :}{Converts objects of 

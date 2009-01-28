@@ -1,6 +1,5 @@
 \name{rnorm}
 \docType{methods}
-\alias{rnorm,ANY,ANY,ANY-method}
 \alias{rnorm,numeric,FLQuant,FLQuant-method}
 \alias{rnorm,numeric,FLQuant,numeric-method}
 \alias{rnorm,numeric,numeric,FLQuant-method}
@@ -15,7 +14,6 @@
  rnorm(n, mean, sd) 
 }
 \section{Methods}{\describe{
-\item{ signature(n=ANY,mean=ANY,sd=ANY) :}{Generic method}
 \item{ signature(n=numeric,mean=FLQuant,sd=FLQuant) :}{\code{n} is the number of iterations of the return object. \code{mean} and \code{sd} are FLQuant objects and must be of equal size.  When both \code{sd} and \code{mean} are specified the returned object is an FLQuant object with \code{n} iterations, filled with randomly generated numbers.  When only 1 of \code{mean} or \code{sd} is supplied the return object is a vector of length \code{n}.}
 \item{ signature(n=numeric,mean=numeric,sd=FLQuant) :}{same as above, but dimensions will
   be given by sd, and mean will be reused accordingly.}

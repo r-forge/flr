@@ -1,6 +1,5 @@
 \name{transform}
 \docType{methods}
-\alias{transform,ANY-method}
 \alias{transform,FLComp-method}
 \title{Transform elements of a complex FLR object}
 \description{

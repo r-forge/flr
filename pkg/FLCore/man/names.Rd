@@ -1,11 +1,10 @@
 \name{names}
 \docType{methods}
-\alias{names,ANY-method}
 \alias{names,FLArray-method}
 \alias{names,FLlst-method}
 \title{Method names}
 \description{
- the \code{names} returns the names of the dimnames of an object
+ The \code{names} method returns the names of the dimnames of an object
 }
 \section{Generic function}{
  names(x) 
@@ -15,5 +14,8 @@
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+data(ple4)
+names(catch.n(ple4))
+}
 \keyword{methods}

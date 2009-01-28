@@ -1,6 +1,5 @@
 \name{summary}
 \docType{methods}
-\alias{summary,ANY-method}
 \alias{summary,FLQuant-method}
 \alias{summary,FLQuantPoint-method}
 \alias{summary,FLComp-method}

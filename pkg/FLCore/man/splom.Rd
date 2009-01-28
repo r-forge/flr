@@ -1,7 +1,6 @@
 \name{splom}
 \docType{methods}
-\alias{splom,ANY,ANY-method}
- \alias{splom,FLPar,missing-method}
+\alias{splom,FLPar,missing-method}
 \title{Method splom}
 \description{
   Draws a conditional scatter plot matrix.

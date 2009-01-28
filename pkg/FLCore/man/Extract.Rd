@@ -1,5 +1,6 @@
 \name{Extract}
 \docType{methods}
+\alias{Extract-FLCore}
 % [
 \alias{[,FLArray,ANY,ANY-method}
 \alias{[,FLArray,array,ANY-method}

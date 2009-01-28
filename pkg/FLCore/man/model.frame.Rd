@@ -1,7 +1,6 @@
 %$Id$
 \name{model.frame}
 \docType{methods}
-\alias{model.frame,ANY-method}
 \alias{model.frame,FLlst-method}
 \alias{model.frame,FLComp-method}
 \title{Method model.frame}
@@ -13,7 +12,6 @@
  model.frame(formula) 
 }
 \section{Methods}{\describe{
-\item{ signature(formula=ANY) :}{S4 generic based on stats::model.frame}
 \item{ signature(formula=FLlst) :}{Returns a wide data.frame}
 \item{ signature(formula=FLComp) :}{Returns a wide data.frame}
 }}
