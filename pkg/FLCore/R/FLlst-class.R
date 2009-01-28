@@ -154,7 +154,6 @@ setGeneric("FLStocks", function(object, ...){
 )
 
 setMethod("FLStocks", signature(object="ANY"), function(object, ...){
-browser()
 	lst1 <- list(...)
 	nlst <- length(lst1)
 	lst <- list()
