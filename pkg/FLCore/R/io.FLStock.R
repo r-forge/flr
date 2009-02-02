@@ -2,7 +2,7 @@
 
 # Author: FLR Team
 # Additions:
-# Last Change: 12 Sep 2008 12:41
+# Last Change: 02 Feb 2009 17:08
 # $Id$
 # Reference:
 # Notes:
@@ -47,8 +47,6 @@ readFLStock <- function (file, type = "VPA", name, desc = paste("Imported from a
         res@stock.wt    <- Mat
     if (is.null(res@mat)         || !all(dim(res@mat)         == Dim)) 
         res@mat         <- Mat
-    if (is.null(res@catch.wt)    || !all(dim(res@catch.wt)    == Dim)) 
-        res@catch.wt    <- Mat
     if (is.null(res@stock.n)     || !all(dim(res@stock.n)     == Dim)) 
         res@stock.n     <- Mat
     if (is.null(res@harvest)           || !all(dim(res@harvest)     == Dim)) 
@@ -84,8 +82,8 @@ readFLStock <- function (file, type = "VPA", name, desc = paste("Imported from a
       discards(res) <- 0
       discards.n(res) <- 0
       discards.wt(res) <- 0
+      catch(res) <- computeCatch(res, 'all')
     }
-    
     return(res)
 }	# }}}
 

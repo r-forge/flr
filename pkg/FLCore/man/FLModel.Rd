@@ -7,7 +7,7 @@
 \alias{FLModel,function-method}
 \title{Method FLModel}
 \description{
-  Constructor method for objects of class \code{\link{FModel-class}}. This method is to
+  Constructor method for objects of class \code{\link{FLModel-class}}. This method is to
   be called by the constructor methods of classes extending \code{FLModel}.
 
   An argument \code{class} instructs the constructor about the exact class of the 
