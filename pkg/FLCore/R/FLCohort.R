@@ -136,7 +136,7 @@ setMethod("flc2flq", signature("FLCohort"), function(object, ...){
 })  # }}}
 
 # plot  {{{
-setMethod("plot", signature(x="FLCohort"),
+setMethod("plot", signature(x="FLCohort", y="missing"),
 	function(x, y="missing", ...){
 		dots <- list(...)
 		condnames <- names(dimnames(x)[c(3:5)][dim(x)[c(3:5)]!=1])

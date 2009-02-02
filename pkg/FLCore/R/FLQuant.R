@@ -717,7 +717,6 @@ setMethod("window", signature="FLQuant",
 
 		if(!extend && (start < min | end > max))
 			stop("FLQuant to be extended but extend=FALSE")
-
 		# construct new FLQuant
 		years <- seq(start, end, by=frequency)
 		dim <- dim(x)

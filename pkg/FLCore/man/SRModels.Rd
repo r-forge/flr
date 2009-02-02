@@ -35,13 +35,27 @@
   provided in FLCore.}
 
 \usage{
+  Each method is defined as a function returning a list with one or more elements as
+  follows:
+  \item{model}{Formula for the model, using the slot names (\code{rec} and \code{ssb}) to 
+  refer to the usual inputs.}
+  \item{logl}{Function to calculate the loglikelihood of the given model when estimated
+    through MLE (See \code{\link{fmle}}).}
+  \item{initial}{Function to provide initial values for all parameters to be minimization
+    algorithms called by \code{fmle} or \code{nls}. If required, this function also have 
+    two attributes, \code{lower} and \code{upper}, that give lower and upper limits for 
+    the parameter values, respectively. This is used by some of the methods defined in
+    \code{\link{optim}}, like \code{"L-BFGS-B"}.}
+  The \code{model<-} method for \code{\link{FLModel-class}} can then be called with 
+  \code{value} being a list thus desbribed, the name of the function returning such a 
+  list, or the function itself. See the examples below.
 }
 \details{          
     
-    Several functios to fit commonly used SR models are available. They all use
-    maximum likelihood to estimate the parameters and except the autoregressive models, all
-    use a normal log distribution for the residuals. Apart from the model equation parameters the variance
-    of the log-residuals is also estimated.     
+    Several functions to fit commonly used SR models are available. They all use
+    maximum likelihood to estimate the parameters and except the autoregressive models, 
+    all use a normal log distribution for the residuals. Apart from the model equation 
+    parameters the variance of the log-residuals is also estimated.     
    
      \item{bevholt:}{Beverton \& Holt stock-recruitment model fit:
             \deqn{R = \frac{a S}{b + S}}{R = alpha*S / (beta + S)}
@@ -155,6 +169,24 @@
     \link{FLSR-class}, \link{FLModel-class}
 }
 \examples{
+# inspect the output of one of the model functions
+bevholt()
+names(bevholt())
+bevholt()$logl
+
+# once an FLSR model is in the workspace ...
+data(nsher)
+
+# the three model-definition slots can be modified
+# at once by calling 'model<-' with
+# (1) a list
+model(nsher) <- bevholt()
+
+# (2) a function returning such a list
+model(nsher) <- bevholt
+
+# or (3) the name of such a function
+model(nsher) <- 'bevholt'
 }
 \references{
     Beverton, R.J.H. and Holt, S.J. (1957) On the dynamics of exploited

@@ -18,17 +18,20 @@
   \code{\link{glm}}.
 }
 \section{Slots}{\describe{
-\item{model (\code{formula}):}{Describe slot}
-\item{logl (\code{function}):}{Describe slot}
-\item{grad (\code{function}):}{Describe slot}
-\item{initial (\code{function}):}{Describe slot}
-\item{params (\code{FLPar}):}{Describe slot}
-\item{logLik (\code{logLik}):}{Describe slot}
-\item{vcov (\code{array}):}{Describe slot}
-\item{details (\code{list}):}{Describe slot}
-\item{name (\code{character}):}{Describe slot}
-\item{desc (\code{character}):}{Describe slot}
-\item{range (\code{numeric}):}{Describe slot}
+\item{name (\code{character}):}{Name of the object}
+\item{desc (\code{character}):}{Description of the object}
+\item{range (\code{numeric}):}{Range}
+\item{fitted (\code{FLQuant}):}{Estimated values for rec}
+\item{residuals (\code{FLQuant}):}{Residuals obtained from the model fit}
+\item{covar (\code{FLQuants}):}{Covariates for SR model}
+\item{model (\code{formula}):}{Model formula}
+\item{grad (\code{function}):}{Function returning the gradient of the model}
+\item{lkhd (\code{function}):}{Likelihood function}
+\item{initial (\code{function}):}{Function returning initial parameter values for the optimizer}
+\item{params (\code{FLPar}):}{Estimated parameter values}
+\item{logLik (\code{logLik}):}{Value of the log-likelihood}
+\item{vcov (\code{array}):}{Variance-covariance matrix}
+\item{details (\code{list}):}{extra information on the model fit procedure}
 }}
 \section{Extends}{\describe{
 FLComp

@@ -1,5 +1,6 @@
 \name{lattice}
 \docType{methods}
+\alias{lattice-FLCore}
 \alias{barchart,formula,FLQuant-method}
 \alias{barchart,formula,FLComp-method}
 \alias{bwplot,formula,FLQuant-method}
@@ -17,35 +18,48 @@
 \alias{xyplot,formula,FLQuants-method}
 \alias{xyplot,formula,FLCohort-method}
 \alias{xyplot,formula,FLComp-method}
-\title{Method barchart}
+\title{Lattice plots}
 \description{
- Implementation of Trellis graphics in FLR. Plot methods in the lattice package are 
- available for object of class \code{FLQuant}, \code{FLQuants} or \code{FLComp}.
+ Implementation of Trellis graphics in FLR. Plot methods in the \code{\link{lattice}}
+ package are  available for object of class \code{FLQuant}, \code{FLQuants} or 
+ \code{FLComp}.
 
- See the help page in \code{lattice} for a full description of each plot and all
- possible arguments.
+ See the help page in \code{\link{lattice}} for a full description of each plot method
+ and of all possible arguments.
 }
 \section{Generic function}{
- barchart(x,data) 
+ barchart(x, data, ...) 
 
- bwplot(x,data) 
+ bwplot(x, data, ...) 
 
- densityplot(x,data) 
+ densityplot(x, data, ...) 
 
- dotplot(x,data) 
+ dotplot(x, data, ...) 
 
- histogram(x,data) 
+ histogram(x, data, ...) 
 
- stripplot(x,data) 
+ stripplot(x, data, ...) 
 
- xyplot(x,data) 
+ xyplot(x, data, ...) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY, data=ANY) :}{Describe method}
 \item{ signature(x=formula, data=FLQuant) :}{Use the lattice functionality for objects of class FLQuant}
 \item{ signature(x=formula,data=FLPar) :}{Use the lattice functionality for objects of class FLPar}
 }}
 \author{The FLR Team}
 \seealso{\link{xyplot}, \link{barchart}, \link{bwplot}, \link{densityplot}, \link{dotplot}, \link{histogram}, \link{stripplot}}
-\examples{}
+\examples{
+# xyplot on FLQuant
+xyplot(data~year|age, catch.n(ple4)[, 1:20])
+xyplot(data~year|as.factor(age), catch.n(ple4)[, 1:20], type='b', pch=19, cex=0.5)
+
+# bwplot on FLQuant with iter
+flq <- rnorm(100, catch.n(ple4)[, 1:20], catch.n(ple4)[,1:20])
+bwplot(data~year|as.factor(age), flq)
+# now with same style modifications
+bwplot(data~year|as.factor(age), flq, scales=list(relation='free',
+  x=list(at=seq(1, 20, by=5), labels=dimnames(catch.n(ple4)[,1:20])$year[seq(1, 20,
+  by=5)])), cex=0.5, strip = strip.custom(strip.names = TRUE, strip.levels = TRUE,
+  var.name='age'))
+}
 \keyword{methods}

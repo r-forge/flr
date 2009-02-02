@@ -1,15 +1,13 @@
 \name{units}
 \docType{methods}
-\alias{units,ANY-method}
- \alias{units,FLArray-method}
- \alias{units,FLComp-method}
- \alias{units,FLPar-method}
- \alias{units,FLCohort-method}
-\alias{units<-,ANY,ANY-method}
- \alias{units<-,FLArray,character-method}
- \alias{units<-,FLComp,list-method}
- \alias{units<-,FLPar,character-method}
- \alias{units<-,FLCohort,character-method}
+\alias{units,FLArray-method}
+\alias{units,FLComp-method}
+\alias{units,FLPar-method}
+\alias{units,FLCohort-method}
+\alias{units<-,FLArray,character-method}
+\alias{units<-,FLComp,list-method}
+\alias{units<-,FLPar,character-method}
+\alias{units<-,FLCohort,character-method}
 \title{units attribute for FLQuant objects}
 \description{
   Object of class \code{\link{FLQuant}} contain an \code{units} attribute of class 
@@ -28,7 +26,6 @@
  units<-(x,value) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY) :}{Describe method}
 \item{ signature(x=FLQuant) :}{Describe method}
 \item{ signature(x=FLComp) :}{Describe method}
 \item{ signature(x=FLPar) :}{Describe method}

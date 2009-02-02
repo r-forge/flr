@@ -1,7 +1,6 @@
 \name{print}
 \docType{methods}
-\alias{print,ANY-method}
- \alias{print,FLQuant-method}
+\alias{print,FLQuant-method}
 \title{Method print}
 \description{
     \code{print} prints its argument and returns it invisibly (via \link{invisible}(x)).
@@ -10,7 +9,6 @@
  print(x) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=ANY) :}{Describe method}
 \item{ signature(x=FLQuant) :}{Describe method}
 }}
 \author{The FLR Team}

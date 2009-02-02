@@ -13,7 +13,12 @@
 \alias{plot,FLSR,missing-method}
 \title{Method plot}
 \description{
- My method is better then yours !
+  Standard plot methods for every FLR class. FLR plot methods are based on
+  \code{\link{lattice}}, and attempt to show a general view of the object contents.
+
+  Users are encouraged to write their own plotting code make use of the overloaded
+  \code{\link{lattice}} methods, for example \code{\link{xyplot}} or
+  \code{\link{bwplot}}. See also \code{\link{lattice-FLCore}}
 }
 \section{Generic function}{
  plot(x,y) 
@@ -31,5 +36,10 @@
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+plot(catch.n(ple4)[, 1:20])
+plot(catch.n(ple4)[, 1:20], type='b', pch=19, cex=0.5)
+
+plot(ple4)
+}
 \keyword{methods}
