@@ -2,11 +2,8 @@
 
 # Author: FLR Team
 # Additions:
-# Last Change: 02 Feb 2009 17:08
+# Last Change: 02 Feb 2009 22:50
 # $Id$
-# Reference:
-# Notes:
-
 
 ## readFLStock		{{{
 
