@@ -678,7 +678,7 @@ if (!isGeneric("lm"))
   setGeneric("lm", function(formula, data, subset, weights, na.action, method = "qr",
     model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE,
     contrasts = NULL, offset, ...)
-      standardGeneric("lm"))
+    useAsDefault = coef)
 
 setMethod('lm', signature(formula='FLModel', data = "missing", subset = "missing",
   weights = "missing", na.action = "missing", method = "missing", model = "missing",
