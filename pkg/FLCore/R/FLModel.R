@@ -675,11 +675,7 @@ setMethod('update', signature(object='FLModel'),
 
 # lm  {{{
 if (!isGeneric("lm"))
-  setGeneric("lm", function(formula, data, subset, weights, na.action, method = "qr",
-    model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE,
-    contrasts = NULL, offset, ...)
-    useAsDefault = coef)
-
+  setGeneric('lm', useAsDefault = lm)
 setMethod('lm', signature(formula='FLModel', data = "missing", subset = "missing",
   weights = "missing", na.action = "missing", method = "missing", model = "missing",
   x = "missing", y = "missing", qr = "missing", singular.ok = "missing",

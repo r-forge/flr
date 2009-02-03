@@ -227,19 +227,50 @@ setMethod("computeStock", signature(object="FLStock"),
 ## plot  {{{
 setMethod("plot", signature(x="FLStock", y="missing"),
 	function(x, auto.key=TRUE, ...){
-		dots <- list(...)
-		obj <- FLQuants(list(catch=catch(x), landings=landings(x), discards=discards(x)))
-		condnames <- names(dimnames(x@catch)[c(3:5)][dim(x@catch)[c(3:5)]!=1])
-		cond <- paste(condnames, collapse="+")
-		if(cond != "") cond <- paste("|", cond)
-		formula <- formula(paste("data~year", cond))
-		dots$x <- formula
-		dots$data <- as.data.frame(obj)
-		dots$ylab <- units(x@catch)
-		dots$auto.key <- auto.key
-		dots$type <- c("l")	
-		dots$groups <- expression(qname)
-		do.call("xyplot", dots)
+    # create data.frame with catch/landings+discards/discards
+    obj <- as.data.frame(FLQuants(catch=catch(x), discards=discards(x),
+      landings=landings(x)+discards(x)))
+    obj$panel <- 'catch'
+    # ssb
+    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(ssb=ssb(x))), panel='ssb'))
+    # harvest
+    if(units(harvest(x)) == "f")
+      obj <- rbind(obj, data.frame(as.data.frame(FLQuants(harvest=fbar(x))),
+        panel='harvest'))
+    else if(units(harvest(x)) == "harvest")
+      obj <- rbind(obj, data.frame(as.data.frame(FLQuants(harvest=quantSums(harvest(x)))),
+        panel='harvest'))
+    # and rec
+    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(rec=rec(x))), panel='rec'))
+	
+
+    ## pfun
+    pfun <- function(x, y, groups, subscripts, ...)
+    {
+      # catch/landings/discards
+      if(panel.number() == 1)
+      {
+        idx <- groups == 'catch'
+        panel.xyplot(x[idx], y[idx], type='l', lwd=2, col='black', ...)
+        panel.xyplot(x[idx][x==max(x)], y[idx][x==max(x)], type='p', cex=0.6,
+          col='black', ...)
+        idx <- groups == 'landings'
+        panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
+          box.ratio=3, lwd=0,  ...)
+        idx <- groups == 'discards'
+        panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
+          box.ratio=3, lwd=0,  ...)
+       }
+       else
+       {
+        panel.xyplot(x, y, type='l', lwd=2, col='black', ...)
+        panel.xyplot(x[x==max(x)], y[x==max(x)], type='p', cex=0.6,
+          col='black', ...)
+       }
+    }
+
+  xyplot(data ~ year|panel, data=obj, panel=pfun, groups=qname,
+    ylab="", xlab="", scale=list(relation='free'), main=name(x))
 	}
 )	# }}}
 
