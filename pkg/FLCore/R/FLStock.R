@@ -226,13 +226,16 @@ setMethod("computeStock", signature(object="FLStock"),
 
 ## plot  {{{
 setMethod("plot", signature(x="FLStock", y="missing"),
-	function(x, auto.key=TRUE, ...){
+	function(x, auto.key=TRUE, ...)
+  {
     # create data.frame with catch/landings+discards/discards
     obj <- as.data.frame(FLQuants(catch=catch(x), discards=discards(x),
       landings=landings(x)+discards(x)))
     obj$panel <- 'catch'
+
     # ssb
     obj <- rbind(obj, data.frame(as.data.frame(FLQuants(ssb=ssb(x))), panel='ssb'))
+
     # harvest
     if(units(harvest(x)) == "f")
       obj <- rbind(obj, data.frame(as.data.frame(FLQuants(harvest=fbar(x))),
@@ -240,37 +243,78 @@ setMethod("plot", signature(x="FLStock", y="missing"),
     else if(units(harvest(x)) == "harvest")
       obj <- rbind(obj, data.frame(as.data.frame(FLQuants(harvest=quantSums(harvest(x)))),
         panel='harvest'))
+
     # and rec
     obj <- rbind(obj, data.frame(as.data.frame(FLQuants(rec=rec(x))), panel='rec'))
-	
+
+    # default options
+    options <- list(scales=list(relation='free'), ylab="", xlab="", main=name(x),
+      col='black', lwd=2, cex=0.6, box.ratio=3)
+    args <- list(...)
+    options[names(args)] <- args
 
     ## pfun
-    pfun <- function(x, y, groups, subscripts, ...)
+    pfun <- function(x, y, groups, subscripts, iter=obj$iter, ...)
     {
       # catch/landings/discards
       if(panel.number() == 1)
       {
         idx <- groups == 'catch'
-        panel.xyplot(x[idx], y[idx], type='l', lwd=2, col='black', ...)
-        panel.xyplot(x[idx][x==max(x)], y[idx][x==max(x)], type='p', cex=0.6,
-          col='black', ...)
-        idx <- groups == 'landings'
-        panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
-          box.ratio=3, lwd=0,  ...)
-        idx <- groups == 'discards'
-        panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
-          box.ratio=3, lwd=0,  ...)
-       }
-       else
-       {
-        panel.xyplot(x, y, type='l', lwd=2, col='black', ...)
-        panel.xyplot(x[x==max(x)], y[x==max(x)], type='p', cex=0.6,
-          col='black', ...)
-       }
+        if(length(levels(iter)) > 1)
+        {
+          # median
+          panel.xyplot(x[idx][iter[idx] == levels(iter[idx])[1]],
+            tapply(y[idx], x[idx], median), type= 'l', ...)
+          # 95% quantile
+          panel.xyplot(x[idx][iter[idx] == levels(iter[idx])[1]],
+            tapply(y[idx], x[idx], quantile, 0.95), type= 'l', lwd=1, lty=2, col='grey50')
+          # 5% quantile
+          panel.xyplot(x[idx][iter[idx] == levels(iter[idx])[1]],
+            tapply(y[idx], x[idx], quantile, 0.05), type= 'l', lwd=1, lty=2, col='grey50')
+          # landings & discards bars
+          idx <- groups == 'landings'
+          panel.barchart(x[idx][iter[idx] == levels(iter[idx])[1]],
+            tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
+            box.ratio=options$box.ratio, lwd=0, origin=0)
+          idx <- groups == 'discards'
+          panel.barchart(x[idx][iter[idx] == levels(iter[idx])[1]],
+            tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
+            box.ratio=options$box.ratio, lwd=0, origin=0)
+        }
+        else
+        {
+          panel.xyplot(x[idx], y[idx], type= 'l', ...)
+          panel.xyplot(x[idx][x==max(x)], y[idx][x==max(x)], type='p', ...)
+          idx <- groups == 'landings'
+          panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
+            box.ratio=options$box.ratio, lwd=0)
+          idx <- groups == 'discards'
+          panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
+            box.ratio=options$box.ratio, lwd=0)
+        }
+      }
+      else
+      {
+        if(length(levels(iter)) > 1)
+        {
+          # median
+          panel.xyplot(unique(x), tapply(y, x, median), type= 'l', ...)
+          # 95% quantile
+          panel.xyplot(unique(x), tapply(y, x, quantile, 0.95), type= 'l',
+            lwd=1, lty=2, col='grey50')
+          # 5% quantile
+          panel.xyplot(unique(x), tapply(y, x, quantile, 0.05), type= 'l',
+            lwd=1, lty=2, col='grey50')
+        }
+        else
+        {
+          panel.xyplot(x, y, type='l', ...)
+          panel.xyplot(x[x==max(x)], y[x==max(x)], type='p', ...)
+        }
+      }
     }
-
-  xyplot(data ~ year|panel, data=obj, panel=pfun, groups=qname,
-    ylab="", xlab="", scale=list(relation='free'), main=name(x))
+    do.call(xyplot, c(list(x=data ~ year|panel, data=obj, panel=pfun,
+      groups=expression(qname)), options))
 	}
 )	# }}}
 
