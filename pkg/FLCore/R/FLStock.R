@@ -233,7 +233,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
     obj$panel <- 'catch'
 
     # ssb
-    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(ssb=ssb(x))), panel='ssb'))
+    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(ssb=ssb(x))), panel='SSB'))
 
     # harvest
     if(units(harvest(x)) == "f")
@@ -244,7 +244,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
         panel='harvest'))
 
     # and rec
-    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(rec=rec(x))), panel='rec'))
+    obj <- rbind(obj, data.frame(as.data.frame(FLQuants(rec=rec(x))), panel='recruits'))
 
     # default options
     options <- list(scales=list(relation='free'), ylab="", xlab="", main=name(x),
@@ -275,8 +275,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
           panel.barchart(x[idx][iter[idx] == levels(iter[idx])[1]],
             tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
             box.width=options$box.width, lwd=0, origin=0)
-
-                }
+        }
         else
         {
           panel.xyplot(x[idx], y[idx], type= 'l', ...)
@@ -287,12 +286,11 @@ setMethod("plot", signature(x="FLStock", y="missing"),
             box.width=options$box.width, lwd=0, origin=0)
         }
         # key
-        #draw.key(list(text=list(lab='catch'),
-        #  lines=list(lwd=c(2)),
-        #  text=list(lab='landings'),
-        #  rectangles=list(col=rgb(0.1, 0.1, 0, 0.1)),
-        # x=0, y=1, corner=c(0,0)), draw=TRUE)
-
+        draw.key(list(text=list(lab='catch'),
+          lines=list(lwd=c(2)),
+          text=list(lab='landings'),
+          rectangles=list(col=rgb(0.1, 0.1, 0, 0.1))),
+          vp = viewport(x = unit(0.5, "npc"), y = unit(0.95, "npc")), draw=TRUE)
       }
       else
       {
