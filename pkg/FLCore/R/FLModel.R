@@ -162,8 +162,10 @@ setMethod('fmle',
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
     upper=rep(Inf, dim(params(object))[2]), ...)
   {
-    start <- as.list(as.data.frame(start))
-    fmle(object, start, method, fixed, control, lower, upper, ...)
+    values <- as.list(iter(start,1))
+    names(values) <- dimnames(start)$params
+
+    fmle(object, values, method, fixed, control, lower, upper, ...)
   }
 )
 setMethod('fmle',

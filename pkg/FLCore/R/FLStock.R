@@ -276,13 +276,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
             tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
             box.width=options$box.width, lwd=0, origin=0)
 
-          # key
-          draw.key(list(text=list(lab='catch'),
-            lines=list(lwd=c(2)),
-            text=list(lab='landings'),
-            rectangles=list(col=rgb(0.1, 0.1, 0, 0.1), lwd=0),
-            x=0, y=1, corner=c(0,0)), draw=TRUE)
-        }
+                }
         else
         {
           panel.xyplot(x[idx], y[idx], type= 'l', ...)
@@ -292,6 +286,13 @@ setMethod("plot", signature(x="FLStock", y="missing"),
           panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
             box.width=options$box.width, lwd=0, origin=0)
         }
+        # key
+        #draw.key(list(text=list(lab='catch'),
+        #  lines=list(lwd=c(2)),
+        #  text=list(lab='landings'),
+        #  rectangles=list(col=rgb(0.1, 0.1, 0, 0.1)),
+        # x=0, y=1, corner=c(0,0)), draw=TRUE)
+
       }
       else
       {

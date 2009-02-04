@@ -21,5 +21,16 @@
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+# An example FLSR (FLModel) object
+data(nsher)
+
+#set bevholt model
+model(nsher) <- bevholt
+
+# fit through nls
+nsher <- nls(nsher)
+
+summary(nsher)
+}
 \keyword{methods}

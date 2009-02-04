@@ -58,11 +58,13 @@ nsher_fixed_a <- fmle(nsher, fixed=list(a=125))
 AIC(nsher)
 AIC(nsher_fixed_a)
 
+\dontrun{
 # an initial run with one optimization method, e.g. 'SANN'
 nsher_one <- fmle(nsher, method='SANN')
 
 # can then be used as starting value for other runs
-nsher_two <- fmle(nsher, start=params(nsher_one))
-
+# This might fail if
+nsher_two <- fmle(nsher_one, start=params(nsher_one), method='L-BFGS-B')
+}
 }
 \keyword{methods}

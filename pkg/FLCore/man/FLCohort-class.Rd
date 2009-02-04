@@ -16,8 +16,6 @@ array
 structure
 matrix
 vector
-vector
-vector
 }}
 \section{Methods}{\describe{
 \item{\link{[}(base) :}{Subset method}

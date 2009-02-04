@@ -29,9 +29,7 @@ to get the yearly survival rate.
 \value{
 	An object of class \code{\link{FLQuant-class}} whose first and second dimension is of length one.
 }
-\references{}
 \author{FLR Team}
-\note{}
 \seealso{\code{\link{FLBiol-class}}}
 \examples{\dontrun{
 data(ple4biol)

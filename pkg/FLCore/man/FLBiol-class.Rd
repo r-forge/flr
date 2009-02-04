@@ -69,5 +69,10 @@ FLComp
 }}
 \author{The FLR Team}
 \seealso{ \link{as.FLBiol}, \link{as.FLSR}, \link[methods]{coerce}, \link{fec}, \link{fec<-}, \link{m}, \link{m<-}, \link{n}, \link{n<-}, \link{plot}, \link{spwn}, \link{spwn<-}, \link{ssb}, \link{wt}, \link{wt<-}, \link{FLComp} }
-\examples{}
+\examples{
+# An FLBiol example dataser
+data(ple4.biol)
+
+summary(ple4.biol)
+}
 \keyword{classes}

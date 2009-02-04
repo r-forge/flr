@@ -22,5 +22,4 @@ All methods are inherited.
 }}
 \author{The FLR Team}
 \seealso{ \link{FLlst}, \link{list}, \link{vector} }
-\examples{}
 \keyword{classes}

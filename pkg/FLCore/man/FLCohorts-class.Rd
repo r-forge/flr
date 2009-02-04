@@ -41,5 +41,4 @@ vector
 }}
 \author{The FLR Team}
 \seealso{ \link{*}, \link{Arith}, \link{as.data.frame}, \link{bubbles}, \link{catch<-}, \link{iter}, \link{model.frame}, \link{show}, \link{summary}, \link{xyplot}, \link{FLlst}, \link{list}, \link{vector} }
-\examples{}
 \keyword{classes}
