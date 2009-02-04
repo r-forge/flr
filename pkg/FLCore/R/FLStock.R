@@ -285,12 +285,13 @@ setMethod("plot", signature(x="FLStock", y="missing"),
         {
           panel.xyplot(x[idx], y[idx], type= 'l', ...)
           panel.xyplot(x[idx][x==max(x)], y[idx][x==max(x)], type='p', ...)
+          # landings & discards bars
           idx <- groups == 'landings'
           panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
-            box.ratio=options$box.ratio, lwd=0)
+            box.ratio=options$box.ratio, lwd=0, origin=0)
           idx <- groups == 'discards'
           panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
-            box.ratio=options$box.ratio, lwd=0)
+            box.ratio=options$box.ratio, lwd=0, origin=0)
         }
       }
       else
