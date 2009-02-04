@@ -229,8 +229,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
 	function(x, auto.key=TRUE, ...)
   {
     # create data.frame with catch/landings+discards/discards
-    obj <- as.data.frame(FLQuants(catch=catch(x), discards=discards(x),
-      landings=landings(x)+discards(x)))
+    obj <- as.data.frame(FLQuants(catch=catch(x), landings=landings(x)))
     obj$panel <- 'catch'
 
     # ssb
@@ -249,7 +248,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
 
     # default options
     options <- list(scales=list(relation='free'), ylab="", xlab="", main=name(x),
-      col='black', lwd=2, cex=0.6, box.ratio=3)
+      col='black', lwd=2, cex=0.6, box.width=1)
     args <- list(...)
     options[names(args)] <- args
 
@@ -271,15 +270,18 @@ setMethod("plot", signature(x="FLStock", y="missing"),
           # 5% quantile
           panel.xyplot(x[idx][iter[idx] == levels(iter[idx])[1]],
             tapply(y[idx], x[idx], quantile, 0.05), type= 'l', lwd=1, lty=2, col='grey50')
-          # landings & discards bars
+          # landings bars
           idx <- groups == 'landings'
           panel.barchart(x[idx][iter[idx] == levels(iter[idx])[1]],
             tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
-            box.ratio=options$box.ratio, lwd=0, origin=0)
-          idx <- groups == 'discards'
-          panel.barchart(x[idx][iter[idx] == levels(iter[idx])[1]],
-            tapply(y[idx], x[idx], median), horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
-            box.ratio=options$box.ratio, lwd=0, origin=0)
+            box.width=options$box.width, lwd=0, origin=0)
+
+          # key
+          draw.key(list(text=list(lab='catch'),
+            lines=list(lwd=c(2)),
+            text=list(lab='landings'),
+            rectangles=list(col=rgb(0.1, 0.1, 0, 0.1), lwd=0),
+            x=0, y=1, corner=c(0,0)), draw=TRUE)
         }
         else
         {
@@ -288,10 +290,7 @@ setMethod("plot", signature(x="FLStock", y="missing"),
           # landings & discards bars
           idx <- groups == 'landings'
           panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.1, 0.1, 0, 0.1),
-            box.ratio=options$box.ratio, lwd=0, origin=0)
-          idx <- groups == 'discards'
-          panel.barchart(x[idx], y[idx], horizontal=FALSE, col=rgb(0.3, 0.3, 0.2, 0.1),
-            box.ratio=options$box.ratio, lwd=0, origin=0)
+            box.width=options$box.width, lwd=0, origin=0)
         }
       }
       else
