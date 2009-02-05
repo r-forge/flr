@@ -121,12 +121,6 @@ setMethod("window", "FLlst", function(x,...){
 	do.call("lapply", args)
 })  # }}}
 
-# trim
-
-# plot 
-
-# length<-
-
 # lock/unlock {{{
 setGeneric("lock", function(object, ...){
 	standardGeneric("lock")
@@ -172,10 +166,10 @@ setMethod("dims", signature(obj="FLFleets"),
       max=max(unlist(lapply(obj, function(obj) as.numeric(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) dimnames(x@landings.n)[[1]][dim(x@landings.n)[1]]))))))),
       minyear=min(unlist(lapply(obj, function(obj) as.numeric(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) dimnames(x@landings.n)[[2]][1]))))))),
       maxyear=max(unlist(lapply(obj, function(obj) as.numeric(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) dimnames(x@landings.n)[[2]][dim(x@landings.n)[2]]))))))),
-      units=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[3]]))))))),
-      seasons=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[4]]))))))),
-      areas=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[5]]))))))),
-      iters=unlist(lapply(obj, function(x) max(unlist(lapply(x@metiers, function(x) lapply(x@catches, function(x) qapply(x, function(x) length(dimnames(x)[[6]]))))))))
+      unit=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[3]]))))))),
+      season=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[4]]))))))),
+      area=unlist(lapply(obj, function(obj) unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches, function(x) length(dimnames(x@landings.n)[[5]]))))))),
+      iter=unlist(lapply(obj, function(x) max(unlist(lapply(x@metiers, function(x) lapply(x@catches, function(x) qapply(x, function(x) length(dimnames(x)[[6]]))))))))
     ))
     }
 )    # }}}
@@ -274,48 +268,52 @@ setMethod('summary', signature(object='FLlst'),
 
 # plot(FLStocks)  {{{
 setMethod('plot', signature(x='FLStocks', y='missing'),
-  function(x, ylab="", xlab="", ylim="", na.rm=T, prob=c(0.05,0.5,0.95),...)
-    {
-    foo <- function(object)
-      return(as.data.frame(FLQuants(rec=stock.n(object)[1,], ssb=ssb(object),
-        yield=computeLandings(object), harvest=fbar(object))))
-        
-    if (ylim=="") {
-#      t.  <-unlist(lapply(x, function(y) {t.<-foo(y); apply(tapply(t.[,"data"],t.[,c("year","qname")],quantile, max(prob), na.rm=na.rm),2,max,na.rm=T)}))
-#      ylim<-list(c(0,ylim["harvest"],na.rm=T)),
-#                 c(0,max(t.[names(t.)=="rec"]    ,na.rm=T)),
-#                 c(0,max(t.[names(t.)=="ssb"]    ,na.rm=T)),
-#                 c(0,max(t.[names(t.)=="yield"]  ,na.rm=T)))}
-      t.  <- lapply(x, function(y) {t.<-foo(y); apply(tapply(t.[,"data"],t.[,c("year","qname")],quantile, max(prob), na.rm=na.rm),2,max,na.rm=T)})
-	t. <- do.call("rbind", t.)
-	ylim <- apply(t.,2,max)
-	ylim <- list(c(0,ylim["harvest"]), c(0,ylim["rec"]), c(0,ylim["ssb"]), c(0,ylim["yield"]))
-	}
-                 
-    lst <- lapply(x, foo)
+  function(x, ...)
+  {
+  # data.frame with selected slots per stock
+  dfs <- lapply(x, function(y) data.frame(as.data.frame(FLQuants(catch=catch(y),
+    ssb=ssb(y), rec=rec(y), harvest=if(units(harvest(y)) == 'f'){fbar(y)} else {
+    quantSums(harvest(y))})), stock=name(y)))
 
-    df <- cbind(stock=1, lst[[1]])
+  # rbind if more than one stock
+  if(length(dfs) > 1)
+    for(i in seq(2, length(dfs)))
+      dfs[[1]] <- rbind(dfs[[1]], dfs[[i]])
+  dfs <- dfs[[1]]
 
-    if(length(lst) > 1)
-      for (i in 2:length(lst))
-        df <- rbind(df, cbind(stock=i, lst[[i]]))
+  # default options
+  options <- list(scales=list(relation='free'), ylab="", xlab="", main=paste(names(x),
+    collapse=" - "), col=rainbow(length(x)), lwd=2, cex=0.6)
+  args <- list(...)
+  options[names(args)] <- args
 
-    pfun <- function(x, y, groups, subscripts, ...)
+  if(length(levels(dfs$iter)) == 1)
+    do.call(xyplot, c(options, list(x=data~year|qname, data=dfs, groups=expression(stock),
+      panel=function(x, y, groups, subscripts, ...)
       {
-      len  <- length(unique(x))
-      leng <- length(unique(groups))
-      # median
-      for (i in prob)
-         {
-         panel.xyplot(rep(unique(x), length(unique(groups))), by(y, list(x,
-           groups[subscripts]), quantile, i, na.rm=TRUE), groups=rep(unique(groups), each=len),
-           subscripts=1:(len*leng), type='l', ...)
-           }
-      }
+        panel.xyplot(x, y, type='l', groups=groups, subscripts=subscripts, ...)
+        idx <- x==max(x)
+        panel.xyplot(x[idx], y[idx], type='p', groups=groups,
+          subscripts=subscripts[idx], ...)
+      })))
+  else
+  {
+  do.call(xyplot, c(options, list(x=data~year|qname, data=dfs, groups=expression(stock),
+      panel=panel.superpose, panel.groups=function(x, y, group.number, ...)
+      {
+        # median
+        do.call(panel.xyplot, c(list(unique(x), tapply(y, list(x), median, na.rm=TRUE),
+          col=options$col[group.number]), type='l', lwd=2))
+        # lowq
+        do.call(panel.xyplot, c(list(unique(x), tapply(y, list(x), quantile, 0.05,
+          na.rm=TRUE), col=options$col[group.number]), type='l', lty=2, lwd=1, alpha=0.5))
+        # uppq
+        do.call(panel.xyplot, c(list(unique(x), tapply(y, list(x), quantile, 0.95,
+          na.rm=TRUE), col=options$col[group.number]), type='l', lty=2, lwd=1, alpha=0.5))
+      })))
 
-   xyplot(data~year|qname, groups=stock, df, scales=list(relation='free'), panel=pfun,
-      xlab=xlab, ylab=ylab, ylim=ylim,...)
   }
+     }
 ) # }}}
 
 # range {{{
