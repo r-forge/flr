@@ -247,8 +247,9 @@ setMethod("plot", signature(x="FLStock", y="missing"),
     obj <- rbind(obj, data.frame(as.data.frame(FLQuants(rec=rec(x))), panel='recruits'))
 
     # default options
-    options <- list(scales=list(relation='free'), ylab="", xlab="", main=name(x),
-      col='black', lwd=2, cex=0.6, box.width=1)
+    options <- list(scales=list(relation='free'), ylab="", xlab="",
+      main=ifelse(length(name(x)) > 0, name(x), ""), col='black', lwd=2, cex=0.6,
+      box.width=1)
     args <- list(...)
     options[names(args)] <- args
 
