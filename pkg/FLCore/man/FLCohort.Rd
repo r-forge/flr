@@ -1,5 +1,6 @@
 \name{FLCohort}
 \docType{methods}
+\alias{FLCohort}
 \alias{FLCohort-methods}
 \alias{FLCohort,FLQuant-method}
 \title{Method FLCohort}

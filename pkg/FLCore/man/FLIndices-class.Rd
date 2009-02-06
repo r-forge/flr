@@ -21,6 +21,6 @@ vector
 All methods are inherited.
 }}
 \author{The FLR Team}
-\seealso{ \link{FLlst}, \link{list}, \link{vector} }
+\seealso{ \link{FLlst-class}, \link[base]{list}}
 \examples{}
 \keyword{classes}

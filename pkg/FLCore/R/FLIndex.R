@@ -331,8 +331,6 @@ setMethod("dims", signature(obj="FLIndex"),
     # Returns a list with different parameters
     function(obj, ...)
 	{
-		qnames <- names(getSlots(class(obj))[getSlots(class(obj))=="FLQuant"])
-
     res <- callNextMethod()
     res[['startf']] <- obj@range[["startf"]]
     res[['endf']] <- obj@range[["endf"]]

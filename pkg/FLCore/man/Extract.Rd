@@ -103,7 +103,7 @@
 \item{ signature(x=FLlst,name=character,value=missing) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{[} }
+\seealso{ \link[base]{Extract} }
 \examples{
 flq <- FLQuant(rnorm(50), dimnames=list(age=1:5, year=1990:2000, season=1:4))
 flq[1,]

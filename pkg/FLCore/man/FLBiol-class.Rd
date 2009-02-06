@@ -1,12 +1,11 @@
 \name{FLBiol}
 \docType{class}
-\alias{FLBiol}
 \alias{FLBiol-class}
 \title{Class FLBiol}
 \description{
  This is a class for the modelling of age/length or biomass structured populations.
- It is  in its structure a subset of the \code{FLStock} class, but lacks the harvesting 
- information of that class. The slots are for mortality (natural or otherwise),
+ It is  in its structure a subset of the \code{FLStock-class} class, but lacks the 
+ harvesting information of that class. The slots are for mortality (natural or otherwise),
  fecundity/maturity/per capita birth rates, numbers, weight and mortality components 
  before spawning/birthing period. 
 
@@ -54,7 +53,7 @@ FLComp
 \item{}{\code{ signature(object=missing) }}
 \item{\link{n<-}(FLCore) :}{replacement method for this slot.}
 \item{}{\code{ signature(object=FLBiol,value=FLQuant) }}
-\item{\link{plot}(graphics) :}{default plot method for \code{FLBiol}.}
+\item{\link[graphics]{plot}(graphics) :}{default plot method for \code{FLBiol}.}
 \item{}{\code{ signature(x=FLBiol,y=missing) }}
 \item{\link{spwn}(FLCore) :}{accesses the \code{spwn} slot.}
 \item{}{\code{ signature(object=missing) }}
@@ -68,7 +67,7 @@ FLComp
 \item{}{\code{ signature(object=FLBiol,value=FLQuant) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{as.FLBiol}, \link{as.FLSR}, \link[methods]{coerce}, \link{fec}, \link{fec<-}, \link{m}, \link{m<-}, \link{n}, \link{n<-}, \link{plot}, \link{spwn}, \link{spwn<-}, \link{ssb}, \link{wt}, \link{wt<-}, \link{FLComp} }
+\seealso{ \link{as.FLBiol}, \link{as.FLSR}, \link[methods]{coerce}, \link{fec}, \link{fec<-}, \link{m}, \link{m<-}, \link{n}, \link{n<-}, \link[graphics]{plot}, \link{spwn}, \link{spwn<-}, \link{ssb}, \link{wt}, \link{wt<-}, \link{FLComp} }
 \examples{
 # An FLBiol example dataser
 data(ple4.biol)

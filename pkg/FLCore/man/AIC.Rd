@@ -22,7 +22,7 @@
 	"penalty".}
 }}
 \author{The FLR Team}
-\seealso{\link{AIC}, \link{logLik}, \link{FLModel}}
+\seealso{\link[stats]{AIC}, \link[stats]{logLik}, \link{FLModel}}
 \examples{
 data(ple4.sr)
 AIC(ple4.sr)

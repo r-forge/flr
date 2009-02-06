@@ -10,8 +10,9 @@
 }
 \section{Arguments}{
   \describe{
-  \item{object}{An initisal FLQuant used for sizing.}
-  \item{plusgroup}{The age/length to be considred as plusgroup.}
+  \item{object}{An initial FLQuant only used for sizing.}
+  \item{plusgroup}{The age/length to be considered as plusgroup.}
+  \item{...}{Extra objects to be allocated to given slots.}
   }
 }
 \section{Generic function}{

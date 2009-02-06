@@ -491,13 +491,13 @@ setMethod("dims", signature(obj="FLFleet"),
         function(x) dimnames(x@landings.n)[[2]][1]))))),
       maxyear=max(as.numeric(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
         function(x) dimnames(x@landings.n)[[2]][dim(x@landings.n)[2]]))))),
-      units=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
+      unit=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
         function(x) length(dimnames(x@landings.n)[[3]]))))),
-      seasons=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
+      season=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
         function(x) length(dimnames(x@landings.n)[[4]]))))),
-      areas=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
+      area=unique(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
         function(x) length(dimnames(x@landings.n)[[5]]))))),
-      iters=max(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
+      iter=max(unlist(lapply(obj@metiers, function(x) lapply(x@catches,
         function(x) qapply(x, function(x) length(dimnames(x)[[6]]))))))
     ))
     }

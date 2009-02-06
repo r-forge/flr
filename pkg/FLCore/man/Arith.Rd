@@ -20,7 +20,7 @@
 \item{ signature(e1=FLQuant,e2=FLQuant) :}{Operations between two FLQuant objects}
 }}
 \author{The FLR Team}
-\seealso{\code{\link{Arithmetic}}, \code{\link{Arith}}}
+\seealso{\code{\link[base]{Arithmetic}}, \code{\link[methods]{Arith}}}
 \examples{
 flq <- FLQuant(rnorm(10), dim=c(2,5))
 fl2 <- FLQuant(2, dim=c(2,5))

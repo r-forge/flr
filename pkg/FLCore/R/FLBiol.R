@@ -77,49 +77,47 @@ setValidity("FLBiol", validFLBiol)
 remove(validFLBiol)	# We do not need this function any more
 invisible(createFLAccesors("FLBiol", exclude=c('name', 'desc', 'range'))) # }}}
 
-## FLBiol   {{{
-FLBiol <- function(name=character(0), desc=character(0), plusgroup=NA, quant='quant', ...){
-
-	args <- list(...)
-
-	if(length(args)==0)
-		args <- list(n=FLQuant())
-
-  if(is(name, 'FLQuant'))
+# FLBiol()   {{{
+setGeneric('FLBiol', function(object, ...)
+		standardGeneric('FLBiol'))
+setMethod('FLBiol', signature(object='FLQuant'),
+  function(object, plusgroup=dims(object)$max, ...)
   {
-    args$n <- name
-    name <- character(0)
-  }
+    args <- list(...)
 
-	# Set FLQuant dimensions
-	dimnames <- dimnames(args[[names(lapply(args, is.FLQuant)==TRUE)[1]]])
+    # empty object
+    object[] <- NA
 
-	# template FLQuants
-	if (missing(quant))
-		quant <- names(dimnames)[1]
-	iniFLQ <- FLQuant(dimnames=dimnames, quant=quant)
-	agrFLQ <- FLQuant(dimnames=c(quant='all', dimnames(iniFLQ)[-1]), quant=quant)
+    dims <- dims(object)
 
-	dims <- dims(iniFLQ)
-
-	res <- new("FLBiol",
-		name		= name,
-		desc		= desc,
-    n       = iniFLQ,
-		m	      = iniFLQ,
-		wt	    = iniFLQ,
-		fec		  = iniFLQ,
-		spwn	  = iniFLQ,
-		range   = unlist(list(min=dims$min, max=dims$max, plusgroup=plusgroup,
+    res <- new("FLBiol", 
+    n=object, m=object, wt=object, fec=object, spwn=object,
+    range = unlist(list(min=dims$min, max=dims$max, plusgroup=plusgroup,
 			minyear=dims$minyear, maxyear=dims$maxyear)))
-	
-	# Load given slots
-	for(i in names(args))
-		if (i != 'iniFLQuant')
+
+    # Load given slots
+  	for(i in names(args))
 			slot(res, i) <- args[[i]]
 
-	return(res)
-}	# }}}
+    return(res)
+  }
+)
+
+setMethod('FLBiol', signature(object='missing'),
+  function(...)
+  {
+    args <- list(...)
+
+    # if no FLQuant argument given, then use empty FLQuant
+    slots <- lapply(args, class)
+    slots <- names(slots)[slots == 'FLQuant']
+    if(length(slots) == 0)
+      object <- FLQuant()
+    else
+      object <- args[[slots[1]]]
+    return(FLBiol(object, ...))
+  }
+) # }}}
 
 ## is.FLBiol {{{
 # Test if an object is of FLBiol class

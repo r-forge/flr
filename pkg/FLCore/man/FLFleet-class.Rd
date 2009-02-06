@@ -98,23 +98,23 @@ and FLCatches objects}
 \item{\link{price}(FLCore) :}{Accessor method for the price slot across FLMetiers
 and FLCatches objects}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{coerce}(methods) :}{coerces a FLStock object into a FLFleet object. This method 
+\item{\link[methods]{coerce}(methods) :}{coerces a FLStock object into a FLFleet object. This method 
   is called by typing as(x,"FLFleet"). This will first coerce the FLStock object into a
   FLCatch object, with catch.q equal to 1, and then create a FLFleet object with an effort 
   slot equal to max(harvest(x)) so that back calculation of harvest as the product of  
   effort, catchability and selectivity is consistent with harvest(x).    }
 \item{}{\code{ signature(from=NULL,to=FLFleet,strict=missing) }}
-\item{\link{iter}(methods) :}{return the ith iteration of a FLFleet object. The value is of class FLFleet also. }
+\item{\link{iter}(FLCore) :}{return the ith iteration of a FLFleet object. The value is of class FLFleet also. }
 \item{}{\code{ signature(object="FLFleet") }}
-\item{\link{revenue}(methods) :}{describe...}
+\item{\link{revenue}(FLCore) :}{describe...}
 \item{}{\code{ signature(fill...) }}
 \item{}{\code{ signature(fill...) }}
-\item{\link{summary}(methods) :}{returns the summary of the FLFleet object}
+\item{\link[methods]{summary}(methods) :}{returns the summary of the FLFleet object}
 \item{}{\code{ signature(fill...) }}
 }}
 \author{The FLR Team}
 \seealso{ \link{catch}, \link{catch.n}, \link{catch.wt}, \link{catch.sel},\link{catch.q},
-\link{coerce}, \link{discards}, \link{discards.n}, \link{discards.sel}, \link{discards.wt},
+\link[base]{coerce}, \link{discards}, \link{discards.n}, \link{discards.sel}, \link{discards.wt},
 \link{landings}, \link{landings.n}, \link{landings.sel}, \link{landings.wt}, \link{price}, \link{FLComp} }
 \examples{
 data(bt4)

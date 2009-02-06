@@ -18,9 +18,9 @@ matrix
 vector
 }}
 \section{Methods}{\describe{
-\item{\link{[}(base) :}{Subset method}
+\item{\link[base]{[}(base) :}{Subset method}
 \item{}{\code{ signature(x=FLCohort,i=ANY,j=ANY,drop=missing) }}
-\item{\link{as.data.frame}(base) :}{Coerce to data.frame.}
+\item{\link[base]{as.data.frame}(base) :}{Coerce to data.frame.}
 \item{}{\code{ signature(x=FLCohort,row.names=ANY,optional=ANY) }}
 \item{\link{bubbles}(FLCore) :}{Bubbles plot.}
 \item{}{\code{ signature(x=formula,data=FLCohort) }}
@@ -30,21 +30,21 @@ vector
 \item{}{\code{ signature(object=missing) }}
 \item{\link{FLCohort}(FLCore) :}{Creator method based on FLQuant objects.}
 \item{}{\code{ signature(object=FLQuant) }}
-\item{\link{plot}(graphics) :}{Simple plot}
+\item{\link[graphics]{plot}(graphics) :}{Simple plot}
 \item{}{\code{ signature(x=FLCohort,y=ANY) }}
 \item{\link{quant}(FLCore) :}{Extract the quant dimension definition.}
 \item{}{\code{ signature(object=missing) }}
 \item{\link{trim}(FLCore) :}{Subset based on limiting dimnames.}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{units}(base) :}{Extract the information about data units.}
+\item{\link[base]{units}(base) :}{Extract the information about data units.}
 \item{}{\code{ signature(x=missing) }}
-\item{\link{units<-}(base) :}{Replace data units information.}
+\item{\link[base]{units<-}(base) :}{Replace data units information.}
 \item{}{\code{ signature(x=FLCohort,value=character) }}
-\item{\link{xyplot}(lattice) :}{Lattice's xyplot method.}
+\item{\link[lattice]{xyplot}(lattice) :}{Lattice's xyplot method.}
 \item{}{\code{ signature(x=formula,data=FLCohort) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{[}, \link{as.data.frame}, \link{bubbles}, \link{ccplot}, \link{FLCohort,FLQuant-method}, \link{flc2flq}, \link{plot}, \link{quant}, \link{trim}, \link{units}, \link{units<-}, \link{xyplot}, \link{array}, \link{structure}, \link{matrix}, \link{vector}, \link{vector}, \link{vector} }
+\seealso{ \link{[}, \link{as.data.frame}, \link{bubbles}, \link{ccplot}, \link{FLCohort,FLQuant-method}, \link{flc2flq}, \link[graphics]{plot}, \link{quant}, \link{trim}, \link{units}, \link{units<-,FLCohort,character-method}, \link[lattice]{xyplot}, \link[base]{array}}
 \examples{
 data(ple4)
 flq <- catch.n(ple4)

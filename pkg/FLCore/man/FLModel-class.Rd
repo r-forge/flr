@@ -14,8 +14,8 @@
   \code{\link{FLSR-class}} for a class used for stock-recruitment models.
 
   Various fitting algorithms, similar to those present in the basic R packages are 
-  currently available for FLModel, including \code{\link{fmle}}, \code{\link{nls}} and 
-  \code{\link{glm}}.
+  currently available for FLModel, including \code{\link{fmle}}, \code{\link{nls-FLCore}} 
+  and \code{\link[stats]{glm}}.
 }
 \section{Slots}{\describe{
 \item{name (\code{character}):}{Name of the object}
@@ -37,18 +37,18 @@
 FLComp
 }}
 \section{Methods}{\describe{
-\item{\link{AIC}(stats) :}{Describe method}
+\item{\link[stats]{AIC}(stats) :}{Describe method}
 \item{}{\code{ signature(object=FLModel,k=numeric) }}
-\item{\link{AIC}(stats) :}{Describe method}
+\item{\link[stats]{AIC}(stats) :}{Describe method}
 \item{}{\code{ signature(object=FLModel,k=missing) }}
-\item{\link{BIC}(stats4) :}{Describe method}
+\item{\link[stats4]{BIC}(stats4) :}{Describe method}
 \item{}{\code{ signature(object=missing) }}
 \item{\link{fmle}(FLCore) :}{Describe method}
 \item{}{\code{ signature(object=missing,start=missing) }}
-\item{\link{nls}(stats) :}{Describe method}
+\item{\link[stats]{nls}(stats) :}{Describe method}
 \item{}{\code{ signature(formula=FLModel,data=missing,start=missing,control=missing,algorithm=missing,trace=missing,subset=missing,weights=missing,na.action=missing,model=missing,lower=missing,upper=missing) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{AIC}, \link{BIC}, \link{fmle}, \link{nls}, \link{FLComp} }
+\seealso{ \link[stats]{AIC}, \link[stats4]{BIC}, \link{fmle}, \link[stats]{nls}, \link{FLComp} }
 \examples{}
 \keyword{classes}

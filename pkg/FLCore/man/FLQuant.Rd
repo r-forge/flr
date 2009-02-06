@@ -1,5 +1,6 @@
 \name{FLQuant}
 \docType{methods}
+\alias{FLQuant}
 \alias{FLQuant-methods}
 \alias{FLQuant,missing-method}
  \alias{FLQuant,vector-method}

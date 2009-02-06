@@ -3,6 +3,7 @@
 \alias{nls,ANY,ANY,missing,missing,missing,missing,missing,missing,missing,missing,missing,missing-method}
 \alias{nls,FLModel,missing,missing,missing,missing,missing,missing,missing,missing,missing,missing,missing-method}
 \alias{nls,FLModel,missing-method}
+\alias{nls-FLCore}
 \title{Method nls}
 \description{
  For a given forumla (describing a model) and data this method applies the simple non-linear 

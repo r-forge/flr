@@ -1,5 +1,6 @@
 \name{FLCore-package}
 \alias{FLCore-package}
+\alias{FLCore}
 \docType{package}
 \title{
 Core package of FLR, fisheries modelling in R.

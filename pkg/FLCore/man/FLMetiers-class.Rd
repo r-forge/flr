@@ -42,7 +42,7 @@ vector
 \item{}{\code{ signature(object=missing) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{catch}, \link{catch.n}, \link{catch.wt}, \link{discards}, \link{discards.n}, \link{discards.wt}, \link{FLFleet}, \link{landings}, \link{landings.n}, \link{landings.wt}, \link{price}, \link{FLlst}, \link{list}, \link{vector} }
+\seealso{ \link{catch}, \link{catch.n}, \link{catch.wt}, \link{discards}, \link{discards.n}, \link{discards.wt}, \link{FLFleet}, \link{landings}, \link{landings.n}, \link{landings.wt}, \link{price}, \link{FLlst-class}, \link[base]{list}}
 \examples{
 
 # creation

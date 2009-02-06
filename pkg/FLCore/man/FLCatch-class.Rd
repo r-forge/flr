@@ -38,7 +38,7 @@ with age (or other quant)-aggregated total estimate and three intented to deal w
 FLComp
 }}
 \section{Methods}{\describe{
-\item{\link{as.data.frame}(base) :}{coerces the FLCatch object to a data.frame. Slot 
+\item{\link[graphics]{as.data.frame}(base) :}{coerces the FLCatch object to a data.frame. Slot 
   names are passed in the slot column. The name, desc and range slots is passed as an
   attribute of the data.frame}
 \item{}{\code{ signature(x=FLCatch,row.names=missing,optional=missing) }}
@@ -104,7 +104,7 @@ All other FLFleet and FLMetier slots are set to NA.  }
 \item{\link{FLMetier}(FLCore) :}{creates a FLMetier object from a FLCatch object. Effshare and
 vcost slots are set to NA.}
 \item{}{\code{ signature(catches=missing) }}
-\item{\link{coerce}(methods) :}{coerces a FLStock object into a FLCatch object. This method is called
+\item{\link[methods]{coerce}(methods) :}{coerces a FLStock object into a FLCatch object. This method is called
 by typing as(x,"FLCatch"). In that case, catch.sel is calculated as harvest(x)/max(harvest(x)),
 catch.q is set to 1 and landings.sel and discards.sel are calculated proportionally to numbers}
 \item{}{\code{ signature(from=NULL,to=FLCatch,strict=missing) }}
@@ -121,9 +121,9 @@ catch.q is set to 1 and landings.sel and discards.sel are calculated proportiona
 }}
 
 \author{The FLR Team}
-\seealso{ \link{as.data.frame}, \link{catch}, \link{catch<-}, \link{catch.q}, \link{catch.q<-},
+\seealso{ \link[base]{as.data.frame}, \link{catch}, \link{catch<-}, \link{catch.q}, \link{catch.q<-},
 \link{catch.n}, \link{catch.n<-}, \link{catch.sel}, \link{catch.sel<-}, \link{catch.wt},
-\link{catch.wt<-}, \link{coerce}, \link{computeCatch}, \link{computeDiscards},
+\link{catch.wt<-}, \link[methods]{coerce}, \link{computeCatch}, \link{computeDiscards},
 \link{computeLandings}, \link{discards}, \link{discards<-}, \link{discards.n}, \link{discards.n<-},
 \link{discards.sel}, \link{discards.sel<-}, \link{discards.wt}, \link{discards.wt<-},
 \link{FLFleet}, \link{FLMetier}, \link{landings}, \link{landings<-}, \link{landings.n},

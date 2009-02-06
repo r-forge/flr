@@ -31,7 +31,7 @@ FLComp
 \item{}{\code{ signature(object=missing) }}
 \item{\link{catch.wt<-}(FLCore) :}{replacement function for the catch.wt slot in the object}
 \item{}{\code{ signature(object=FLIndex,value=FLQuant) }}
-\item{\link{coerce}(methods) :}{Describe method}
+\item{\link[base]{coerce}(methods) :}{Describe method}
 \item{}{\code{ signature(from=NULL,to=FLIndex,strict=missing) }}
 \item{\link{computeCatch}(FLCore) :}{Compute the catch in the FLIndex method, as catch.n and catch.wt}
 \item{}{\code{ signature(object=missing) }}
@@ -40,23 +40,23 @@ FLComp
 \item{\link{iter}(FLCore) :}{To extract or modify a subset of the iterations contained in the FLIndex object, the 
   \code{iter} and \code{iter<-} methods can be used}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{plot}(graphics) :}{Plot the FLIndex-class, takes an additional argument type, which defines the type of plot}
+\item{\link[graphics]{plot}(graphics) :}{Plot the FLIndex-class, takes an additional argument type, which defines the type of plot}
 \item{}{\code{ signature(x=FLIndex,y=missing) }}
 \item{\link{propagate}(FLCore) :}{\code{FLIndex} objects with a single iteration (length of 1 in the sixth dimension) can be extended using the \code{propagate} method. The \code{type} argument
   selects whether the new iterations are filled with the content of the first iteration (\code{type='all'}) or left empty (\code{type='first'}) }
 \item{}{\code{ signature(object=missing) }}
 \item{\link{summary}(base) :}{summary is a generic function used to produce result summaries of the \code{FLIndex}}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{transform}(base) :}{Transform allows to change a number of slots of class FLQuant to be changed at once}
+\item{\link[base]{transform}(base) :}{Transform allows to change a number of slots of class FLQuant to be changed at once}
 \item{}{\code{ signature(_data=missing) }}
 \item{\link{trim}(FLCore) :}{Subsetting of FLIdex object can be carried out using the dimension names by using 
   \code{trim}. A number of dimension names and selected dimensions are passed to the method and those are used to subset the input object.}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{window}(stats) :}{This method extracts a section of or extends the FLInedex object along the \code{year} dimension. If a frequency is specified, the new object contains data at
+\item{\link[stats]{window}(stats) :}{This method extracts a section of or extends the FLInedex object along the \code{year} dimension. If a frequency is specified, the new object contains data at
   only those year steps.}
 \item{}{\code{ signature(x=missing) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{catch.n}, \link{catch.n<-}, \link{catch.wt}, \link{catch.wt<-}, \link{coerce}, \link{computeCatch}, \link{dims}, \link{iter}, \link{plot}, \link{propagate}, \link{summary}, \link{transform}, \link{trim}, \link{window}, \link{FLComp} }
+\seealso{ \link{catch.n}, \link{catch.n<-}, \link{catch.wt}, \link{catch.wt<-}, \link{coerce}, \link{computeCatch}, \link{dims}, \link{iter}, \link[graphics]{plot}, \link{propagate}, \link[base]{summary}, \link[base]{transform}, \link{trim}, \link[stats]{window}, \link{FLComp} }
 \examples{}
 \keyword{classes}

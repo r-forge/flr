@@ -22,7 +22,7 @@
 \item{ signature(object=FLQuant) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLIndex} }
+\seealso{ \link{FLIndex-class} }
 \examples{
 }
 \keyword{methods}
