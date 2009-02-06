@@ -16,23 +16,23 @@
 list, vector
 }}
 \section{Methods}{\describe{
-\item{\link{[}(base) :}{Select method.}
+\item{\link[base]{[}(base) :}{Select method.}
 \item{}{\code{ signature(x=FLlst,i=ANY,j=missing,drop=missing) }}
-\item{\link{[<-}(base) :}{Replacement method for elements.}
+\item{\link[base]{[<-}(base) :}{Replacement method for elements.}
 \item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
-\item{\link{[[<-}(base) :}{Replacement method within elements.}
+\item{\link[base]{[[<-}(base) :}{Replacement method within elements.}
 \item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
-\item{\link[$<-]{\$<-}(base) :}{Replacement method for elements.}
+\item{\link[base][$<-]{\$<-}(base) :}{Replacement method for elements.}
 \item{}{\code{ signature(x=FLlst,name=character,value=missing) }}
-\item{\link{coerce}(methods) :}{Coerce method.}
+\item{\link[methods]{coerce}(methods) :}{Coerce method.}
 \item{}{\code{ signature(from=FLlst,to=list,strict=missing) }}
-\item{\link{lapply}(base) :}{\code{lapply} implemented for \code{FLlst} objects.}
+\item{\link[base]{lapply}(base) :}{\code{lapply} implemented for \code{FLlst} objects.}
 \item{}{\code{ signature(X=missing,FUN=missing) }}
-\item{\link{window}(stats) :}{Selects a set of years from all elements at once.}
+\item{\link[stats]{window}(stats) :}{Selects a set of years from all elements at once.}
 \item{}{\code{ signature(x=missing) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{[}, \link{[<-}, \link{[[<-}, \link[$<-]{\$<-}, \link{coerce}, \link{lapply}, \link{window}, \link{list}, \link{vector} }
+\seealso{ \link[base]{[}, \link[base]{[<-}, \link[base]{[[<-}, \link[base][$<-]{\$<-}, \link[methods]{coerce}, \link[base]{lapply}, \link[stats]{window}, \link[base]{list}}
 \examples{
 fll01 <- new("FLlst", list(a=1:10, b=10:20))
 fll02 <- new("FLlst", list(1:10, 10:20), names=c("a","b"))

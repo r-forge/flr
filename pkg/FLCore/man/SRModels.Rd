@@ -42,7 +42,7 @@
     algorithms called by \code{fmle} or \code{nls}. If required, this function also have 
     two attributes, \code{lower} and \code{upper}, that give lower and upper limits for 
     the parameter values, respectively. This is used by some of the methods defined in
-    \code{\link{optim}}, like \code{"L-BFGS-B"}.}
+    \code[stats]{\link{optim}}, like \code{"L-BFGS-B"}.}
   The \code{model<-} method for \code{\link{FLModel-class}} can then be called with 
   \code{value} being a list thus desbribed, the name of the function returning such a 
   list, or the function itself. See the examples below.

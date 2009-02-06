@@ -7,7 +7,7 @@
 \alias{lowq<-}
 \alias{lowq<--methods}
 \alias{lowq<-,FLQuantPoint-method}
- \alias{mean,FLQuantPoint-method}
+\alias{mean,FLQuantPoint-method}
 \alias{mean<-}
 \alias{mean<--methods}
 \alias{mean<-,FLQuantPoint-method}

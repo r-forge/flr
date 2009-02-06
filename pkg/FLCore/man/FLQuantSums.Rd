@@ -78,8 +78,8 @@
 	by default over the second to fifth dimensions (\code{unit}, \code{season} and 
 	\code{area}).
 
-	These methods simply encapsulate a call to \code{\link{apply}} with the corresponding
-	dimension and function.
+	These methods simply encapsulate a call to \code{\link[base]{apply}} with the 
+  corresponding dimension and function.
 
 	Sums are not calculated for the \code{iter} dimension, as it is used to store multiple 
 	replicates of a given array of values.
@@ -116,7 +116,7 @@
 	of an FLQuant.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLQuant}, \link{sum}, \link{mean}, \link{var}}
+\seealso{ \link{FLQuant}, \link[base]{sum}, \link[base]{mean}, \link[stats]{var}}
 \examples{
  flq <- FLQuant(rnorm(4000), dim=c(5,10,2,2,2,10), quant='age')
  quantSums(flq)

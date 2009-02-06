@@ -19,11 +19,13 @@
  FLStock(object, ...)
 }
 \section{Methods}{\describe{
-\item{ signature(object=missing) :}{Describe method}
-\item{ signature(object=FLQuant) :}{Describe method}
+\item{ signature(object=missing) :}{Returns an \code{FLStock} using the first provided 
+  argument of class \code{FLQuant} for object sizing, or \code{FLQuant()} if none given.}
+\item{ signature(object=FLQuant) :}{Returns and \code{FLStock} that uses \emph{object} only for sizing.}
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
 \examples{
+fls <- FLStock(name='MAC', catch=FLQuant(c(200,300,400), dimnames=list(year=1999:2001)))
 }
 \keyword{methods}

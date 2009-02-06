@@ -14,24 +14,26 @@
 \title{Method as.data.frame}
 \description{
 	This method converts an FLQuant or any other FLR object composed of FLQuants into
-	a \code{\link{data.frame}}.
+	a \code{\link[base]{data.frame}}.
 
 	For a single \link{FLQuant}, the \code{data.frame} returned has 7 columns:  \code{quant},
 	\code{year}, \code{unit}, \code{season}, \code{area}, \code{iter} and \code{data}.
 	The last column contains the actual values stored in the original object, while the
 	first six contain the corresponding dimensions. The \code{year} and \code{data} columns
-	are of class \link{numeric}, while the other five are of class \link{factor}.
+	are of class \link[base]{numeric}, while the other five are of class \link[base]{factor}.
 
-	When converting an \code{\link{FLCohort}} object, the \code{year} column is substituted
-	by \code{cohort}.
+	When converting an \code{\link{FLCohort-class}} object, the \code{year} column is 
+  substituted by \code{cohort}.
 
 	The \code{data.frame} returned for complex objects, i.e. those the inherit from class
 	\code{\link{FLComp}}, has an extra column, \code{slot}, that holds the name of the
 	slot in the original object.
 
-	The data.frame obtained from an \code{\link{FLQuants}} object also has an extra column,
-	named \code{qname}, that refers to the name of each \code{FLQuant} object in the list.
-  This column is named \code{cname} when an \code{\link{FLCohorts}} object is converted.
+	The data.frame obtained from an \code{\link{FLQuants-class}} object also has an extra 
+  column, named \code{qname}, that refers to the name of each \code{FLQuant} object in 
+  the list.
+  This column is named \code{cname} when an \code{\link{FLCohorts-class}} object is
+  converted.
 
 	Objects of class \link{FLQuants} can also be converted into a wide-format table, where
 	data from the list elements are placed in separate colums, using
@@ -57,7 +59,7 @@
 	class FLCohort into a data.frame}
 }}
 \author{The FLR Team}
-\seealso{ \link{as.data.frame}, \link{model.frame}, \link{model.frame,FLlst-method}}
+\seealso{ \link[base]{as.data.frame}, \link[stats]{model.frame}, \link{model.frame,FLlst-method}}
 \examples{
 data(ple4)
 fdf <- as.data.frame(catch.n(ple4))

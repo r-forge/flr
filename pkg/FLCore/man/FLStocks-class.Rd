@@ -22,6 +22,6 @@ vector
 \item{}{\code{signature(x=FLStocks,y=missing)}}
 }}
 \author{The FLR Team}
-\seealso{\link[graphics]{plot}, \link{FLlst}, \link{list}, \link{vector} }
+\seealso{\link[graphics]{plot}, \link{FLlst}, \link[base]{list}}
 \examples{}
 \keyword{classes}

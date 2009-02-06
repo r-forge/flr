@@ -11,7 +11,7 @@
 	\code{FUN} in the case of an \code{FLQuant} must collapse at least one dimension when
 	applied over an array.
 
- 	For further details see \link{apply}.
+ 	For further details see \link[base]{apply}.
 }
 \section{Generic function}{
  apply(X,MARGIN,FUN) 
@@ -26,10 +26,10 @@
 \section{Methods}{\describe{
 \item{ signature(X=ANY,MARGIN=missing,FUN=missing) :}{New S4 generic based on base::apply}
 \item{ signature(X=FLQuant,MARGIN=numeric,FUN=function) :}{apply a given function over the
-	selected dimensions of an \link{FLQuant}. returns an object of class \link{FLQuant}.}
+	selected dimensions of an \link{FLQuant-class}. Returns an object of class \link{FLQuant-class}.}
 }}
 \author{The FLR Team}
-\seealso{ \link{apply} }
+\seealso{ \link[base]{apply} }
 \examples{
 flq <- FLQuant(rlnorm(100), dim=c(10,20,1,1,1,5))
 apply(flq, 1, sum)

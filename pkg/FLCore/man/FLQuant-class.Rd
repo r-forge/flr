@@ -182,5 +182,19 @@ array
 }}
 \author{The FLR Team}
 \seealso{ \link[base]{[}, \link[base]{[<-}, \link[base]{apply}, \link[base]{Arith}, \link[base]{as.data.frame}, \link{as.FLQuant}, \link[lattice]{barchart}, \link{bubbles}, \link[lattice]{bwplot}, \link{catch<-}, \link{catch.n<-}, \link{catch.wt<-}, \link[methods]{coerce}, \link{cv}, \link{dimnames<-}, \link{dims}, \link{discards<-}, \link{discards.n<-}, \link{discards.wt<-}, \link[lattice]{dotplot}, \link{E}, \link{fec<-}, \link{FLCatch}, \link{FLCohort}, \link{FLMetier}, \link{FLQuant}, \link{FLQuantPoint}, \link{FLSR}, \link{harvest<-}, \link[lattice]{histogram}, \link{iter}, \link{iter<-}, \link{iters}, \link{landings<-}, \link{landings.n<-}, \link{landings.wt<-}, \link{m<-}, \link{n<-}, \link[base]{names}, \link[graphics]{plot}, \link{price<-}, \link[base]{print}, \link{propagate}, \link{quant}, \link{quant<-}, \link{quantile}, \link[stats]{rlnorm}, \link[stats]{rnorm}, \link[base]{show}, \link{spwn<-}, \link[lattice]{stripplot}, \link[base]{summary}, \link{trim}, \link[base]{units}, \link[base]{units<-}, \link[stats]{window}, \link{wt<-}, \link[lattice]{xyplot}, \link[base]{array}}
-\examples{}
+\examples{
+# creating a new FLQuant
+flq <- FLQuant(rnorm(200), dimnames=list(age=1:5, year=2000:2008), units='diff')
+summary(flq)
+
+flq[1,]
+flq[,1]
+flq[1,1] <- 0
+
+units(flq)
+quant(flq)
+
+xyplot(data ~ year, data=flq, type='b', main='FLQ Test Plot', groups=age,
+  ylab='diff', xlab='', pch=19, auto.key=TRUE)
+}
 \keyword{classes}

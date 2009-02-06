@@ -58,7 +58,7 @@ checkRun(x, con=getOption("con"))
 	by the check functions. A \code{connection} is created by \code{startTest} but is
 	subsequently closed by \code{finishTest}.
 }
-\seealso{ \code{\link{all.equal}}, \code{\link{identical}}, \code{\link{connection}}
+\seealso{ \code{\link[base]{all.equal}}, \code{\link[base]{identical}}, \code{\link[base]{connection}}
 }
 \examples{
 	setCon()

@@ -14,7 +14,7 @@
   
   Objects of this class wil be typically created from an \code{FLQuant}. The various
   statistics are calculated along the \emph{iter} dimension of the original 
-  \code{FLQuant} using \code{\link{apply}}.
+  \code{FLQuant} using \code{\link[base]{apply}}.
 
 }
 \section{Slots}{\describe{
@@ -30,37 +30,37 @@ array
 \item{}{\code{ signature(x=FLQuantPoint) }}
 \item{\link{lowq<-}(FLCore) :}{Modifies the \code{lowq} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
-\item{\link{mean}(base) :}{Accesor for \code{mean} iteration}
+\item{\link{[base]mean}(base) :}{Accesor for \code{mean} iteration}
 \item{}{\code{ signature(x=FLQuantPoint) }}
 \item{\link{mean<-}(FLCore) :}{Modifies the \code{mean} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
-\item{\link{median}(stats) :}{Accesor for \code{median} iteration}
+\item{\link[stats]{median}(stats) :}{Accesor for \code{median} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,na.rm=missing) }}
 \item{\link{median<-}(FLCore) :}{Modifies the \code{median} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
-\item{\link{plot}(graphics) :}{Plot an object of the class}
+\item{\link[graphics]{plot}(graphics) :}{Plot an object of the class}
 \item{}{\code{ signature(x=FLQuantPoint,y=missing) }}
-\item{\link{quantile}(stats) :}{Accesor for \code{lowq} or \code{uppq} iteration}
+\item{\link[stats]{quantile}(stats) :}{Accesor for \code{lowq} or \code{uppq} iteration}
 \item{}{\code{ signature(x=FLQuantPoint) }}
-\item{\link{rlnorm}(stats) :}{Creates a lognormally-distributed \code{FLQuant} using the information on an \code{FLQuantPoint}}
+\item{\link[stats]{rlnorm}(stats) :}{Creates a lognormally-distributed \code{FLQuant} using the information on an \code{FLQuantPoint}}
 \item{}{\code{ signature(n=numeric,meanlog=FLQuantPoint,sdlog=missing) }}
-\item{\link{rnorm}(stats) :}{Creates a normally-distributed \code{FLQuant} using the information on an \code{FLQuantPoint}}
+\item{\link[stats]{rnorm}(stats) :}{Creates a normally-distributed \code{FLQuant} using the information on an \code{FLQuantPoint}}
 \item{}{\code{ signature(n=numeric,mean=FLQuantPoint,sd=missing) }}
-\item{\link{show}(methods) :}{Outputs object in screen}
+\item{\link[methods]{show}(methods) :}{Outputs object in screen}
 \item{}{\code{ signature(object=FLQuantPoint) }}
-\item{\link{summary}(base) :}{Prints a summary of the object}
+\item{\link[base]{summary}(base) :}{Prints a summary of the object}
 \item{}{\code{ signature(object=FLQuantPoint) }}
 \item{\link{uppq}(FLCore) :}{Accesor for \code{uppq} iteration}
 \item{}{\code{ signature(x=FLQuantPoint) }}
 \item{\link{uppq<-}(FLCore) :}{Modifies the \code{uppq} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
-\item{\link{var}(stats) :}{Accesor for \code{var} iteration}
+\item{\link[stats]{var}(stats) :}{Accesor for \code{var} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,y=missing,na.rm=missing,use=missing) }}
 \item{\link{var<-}(FLCore) :}{Modifies the \code{var} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{lowq}, \link{lowq<-}, \link{mean}, \link{mean<-}, \link{median}, \link{median<-}, \link{plot}, \link{quantile}, \link{rlnorm}, \link{rnorm}, \link{show}, \link{summary}, \link{uppq}, \link{uppq<-}, \link{var}, \link{var<-}, \link{FLQuant}, \link{array}, \link{structure}, \link{matrix}, \link{vector}, \link{vector}, \link{vector} }
+\seealso{ \link{lowq}, \link{lowq<-}, \link[base]{mean}, \link{mean<-}, \link[stats]{median}, \link{median<-}, \link[graphics]{plot}, \link[stats]{quantile}, \link[stats]{rlnorm}, \link[stats]{rnorm}, \link[methods]{show}, \link[base]{summary}, \link{uppq}, \link{uppq<-}, \link[stats]{var}, \link{var<-}, \link{FLQuant}, \link[base]{array}}
 \examples{
 flq <- FLQuant(rnorm(2000), dim=c(10,20,1,1,1,200))
 flqp <- FLQuantPoint(flq)

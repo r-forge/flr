@@ -15,14 +15,13 @@
 \section{Extends}{\describe{
 FLlst
 list
-vector
 }}
 \section{Methods}{\describe{
-\item{\link{*}(base) :}{Describe method}
+\item{\link[base]{*}(base) :}{Describe method}
 \item{}{\code{ signature(e1=FLQuants,e2=FLQuants) }}
-\item{\link{Arith}(base) :}{Describe method}
+\item{\link[base]{Arith}(base) :}{Describe method}
 \item{}{\code{ signature(e1=FLQuants,e2=FLQuants) }}
-\item{\link{as.data.frame}(base) :}{Describe method}
+\item{\link[base]{as.data.frame}(base) :}{Describe method}
 \item{}{\code{ signature(x=FLQuants,row.names=missing,optional=missing) }}
 \item{\link{bubbles}(FLCore) :}{Describe method}
 \item{}{\code{ signature(x=formula,data=FLQuants) }}
@@ -30,16 +29,15 @@ vector
 \item{}{\code{ signature(object=FLStock,value=FLQuants) }}
 \item{\link{iter}(FLCore) :}{Describe method}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{model.frame}(stats) :}{Describe method}
+\item{\link[stats]{model.frame}(stats) :}{Describe method}
 \item{}{\code{ signature(formula=missing) }}
-\item{\link{show}(methods) :}{Describe method}
+\item{\link[methods]{show}(methods) :}{Describe method}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{summary}(base) :}{Describe method}
+\item{\link[base]{summary}(base) :}{Describe method}
 \item{}{\code{ signature(object=missing) }}
-\item{\link{xyplot}(lattice) :}{Describe method}
+\item{\link[lattice]{xyplot}(lattice) :}{Describe method}
 \item{}{\code{ signature(x=formula,data=FLQuants) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{*}, \link{Arith}, \link{as.data.frame}, \link{bubbles}, \link{catch<-}, \link{iter}, \link{model.frame}, \link{show}, \link{summary}, \link{xyplot}, \link{FLlst}, \link{list}, \link{vector} }
-\examples{}
+\seealso{ \link[base]{*}, \link[base]{Arith}, \link[base]{as.data.frame}, \link{bubbles}, \link{catch<-}, \link{iter}, \link[stats]{model.frame}, \link[methods]{show}, \link[base]{summary}, \link[lattice]{xyplot}, \link{FLlst}, \link[base]{list}}
 \keyword{classes}

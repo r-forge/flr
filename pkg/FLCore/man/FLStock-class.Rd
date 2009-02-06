@@ -39,9 +39,9 @@
 FLComp
 }}
 \section{Methods}{\describe{
-\item{\link{[}(base) :}{Subsets an FLStock by subsetting each FLQuant slot in the object}
+\item{\link[base]{[}(base) :}{Subsets an FLStock by subsetting each FLQuant slot in the object}
 \item{}{\code{ signature(x=FLStock,i=ANY,j=ANY,drop=missing) }}
-\item{\link{[<-}(base) :}{Assign to a subset of an FLStock an FLStock of equivalent dimension}
+\item{\link[base]{[<-}(base) :}{Assign to a subset of an FLStock an FLStock of equivalent dimension}
 \item{}{\code{ signature(x=FLStock,i=ANY,j=ANY,value=missing) }}
 \item{\link{as.FLBiol}(FLCore) :}{Convert an FLStock object to an FLBiol object}
 \item{}{\code{ signature(object=missing) }}
@@ -61,11 +61,11 @@ FLComp
 \item{}{\code{ signature(object=missing) }}
 \item{\link{catch.wt<-}(FLCore) :}{Assign values to the catch.wt slot of an FLStock object}
 \item{}{\code{ signature(object=FLStock,value=FLQuant) }}
-\item{\link{coerce}(methods) :}{Force an object of class FLStock to another class using as(from, to)}
+\item{\link[methods]{coerce}(methods) :}{Force an object of class FLStock to another class using as(from, to)}
 \item{}{\code{ signature(from=NULL,to=FLStock,strict=missing) }}
-\item{\link{coerce}(methods) :}{Force an object of class FLBiol to an object of class FLStock. Uses as(from, to)}
+\item{\link[methods]{coerce}(methods) :}{Force an object of class FLBiol to an object of class FLStock. Uses as(from, to)}
 \item{}{\code{ signature(from=FLBiol,to=FLStock,strict=missing) }}
-\item{\link{coerce}(methods) :}{Force an object of class FLStock be an object of class FLBiol. Uses as(from, to)}
+\item{\link[methods]{coerce}(methods) :}{Force an object of class FLStock be an object of class FLBiol. Uses as(from, to)}
 \item{}{\code{ signature(from=FLStock,to=FLBiol,strict=missing) }}
 \item{\link{computeCatch}(FLCore) :}{Calculate the total catch weight by year for an FLStock}
 \item{}{\code{ signature(object=missing) }}
@@ -129,7 +129,7 @@ FLComp
 \item{}{\code{ signature(object=missing) }}
 }}
 \author{The FLR Team}
-\seealso{ \link{[}, \link{[<-}, \link{as.FLBiol}, \link{as.FLSR}, \link{catch}, \link{catch<-}, \link{catch.n}, \link{catch.n<-}, \link{catch.wt}, \link{catch.wt<-}, \link{coerce}, \link{computeCatch}, \link{computeDiscards}, \link{computeLandings}, \link{discards}, \link{discards<-}, \link{discards.n}, \link{discards.n<-}, \link{discards.wt}, \link{discards.wt<-}, \link{harvest}, \link{harvest<-}, \link{harvest.spwn}, \link{landings}, \link{landings<-}, \link{landings.n}, \link{landings.n<-}, \link{landings.wt}, \link{landings.wt<-}, \link{m}, \link{m<-}, \link{mat}, \link{m.spwn}, \link{plot}, \link{ssb}, \link{ssbpurec}, \link{stock}, \link{stock.n}, \link{stock.wt}, \link{trim}, \link{FLComp} }
+\seealso{ \link[base]{[}, \link[base]{[<-}, \link{as.FLBiol}, \link{as.FLSR}, \link{catch}, \link{catch<-}, \link{catch.n}, \link{catch.n<-}, \link{catch.wt}, \link{catch.wt<-}, \link[methods]{coerce}, \link{computeCatch}, \link{computeDiscards}, \link{computeLandings}, \link{discards}, \link{discards<-}, \link{discards.n}, \link{discards.n<-}, \link{discards.wt}, \link{discards.wt<-}, \link{harvest}, \link{harvest<-}, \link{harvest.spwn}, \link{landings}, \link{landings<-}, \link{landings.n}, \link{landings.n<-}, \link{landings.wt}, \link{landings.wt<-}, \link{m}, \link{m<-}, \link{mat}, \link{m.spwn}, \link[graphics]{plot}, \link{ssb}, \link{ssbpurec}, \link{stock}, \link{stock.n}, \link{stock.wt}, \link{trim}, \link{FLComp} }
 \examples{
 data(ple4)
 

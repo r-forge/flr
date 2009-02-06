@@ -40,9 +40,9 @@ FLModel
 FLComp
 }}
 \section{Methods}{\describe{
-All methods are inherited, except for
-\item{\link{plot}(graphics) :}{Plot an FLSR object}
-\item{}{\code{ signature(x=FLQuant,y=missing) }}
+All methods are inherited from \code{\link{FLModel-class}}, except for
+\item{\link[graphics]{plot}(graphics) :}{Plot an FLSR object}
+\item{}{\code{ signature(x=FLSR,y=missing) }}
 }}
 \author{The FLR Team}
 \seealso{ \link{FLModel}, \link{FLComp} }
