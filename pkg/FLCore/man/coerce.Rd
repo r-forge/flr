@@ -29,14 +29,15 @@
 \alias{coerce,data.frame,FLIndex-method}
 \title{Method coerce}
 \description{
-  Coercion methods for various sets of classes are generated using the \code{ \link{coerce}} 
-  function. Users should call the corresponding generated \code{as()} method, with arguments
-  equal to the object to coerce and the name of the class to convert to.
+  Coercion methods for various sets of classes are generated using the
+  \code{\link[methods]{coerce}} function. Users should call the corresponding generated 
+  \code{as()} method, with arguments equal to the object to coerce and the name of the 
+  class to convert to.
 
-  Coercion combinations work by transferring or transforming relevant slots from the original
-  object and placing them in a new object of the target class. The descriptions below 
-  document how slots for each pair of classes are transfered or transformed. In all cases 
-  the \code{name} and \code{desc} slots are simply copied accross.
+  Coercion combinations work by transferring or transforming relevant slots from the 
+  original object and placing them in a new object of the target class. The descriptions 
+  below document how slots for each pair of classes are transfered or transformed. In all 
+  cases the \code{name} and \code{desc} slots are simply copied accross.
 }
 \section{Generic function}{
  coerce(from,to,strict) 
@@ -61,7 +62,7 @@
   description of the exact procedure.}
 \item{from=FLCohort,to=FLQuant}{The previous calculation is reversed and an 
   \code{\link{FLQuant}} is returned.}
-\item{from=FLlst,to=list}{An standard R \code{\link{list}} object is created from an
+\item{from=FLlst,to=list}{An standard R \code{\link[base]{list}} object is created from an
   \code{\link{FLlst-class}} by dropping the extra attributes.}
 }
 }

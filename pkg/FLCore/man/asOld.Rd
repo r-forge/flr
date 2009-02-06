@@ -21,9 +21,9 @@
 \alias{as.FLQuant,data.frame-method}
 \title{Old S3 coercion methods}
 \description{
-  These methods convert or coerce an object of a given class into another class. They follow
-  the S3 syntax for coercion methods and are being slowly substituted by \code{as()} (see
-  \code{\link{coerce}}. 
+  These methods convert or coerce an object of a given class into another class. They 
+  follow the S3 syntax for coercion methods and are being slowly substituted by 
+  \code{as()} (see \code{\link[methods]{coerce}}. 
 }
 \section{Generic function}{
   \describe{

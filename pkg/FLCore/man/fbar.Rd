@@ -11,13 +11,16 @@ fbar(object, ...)
 }
 \arguments{
   \item{object}{An FLStock object}
-  \item{...}{Any extra arguments}
+  \item{...}{Any extra arguments, currently unused}
 }
 \details{
 }
 \value{
+An object of class \code{\link{FLQuant-class}}
 }
 \author{FLR Team}
 \examples{
+data(ple4)
+fbar(ple4)
 }
 \keyword{methods}

@@ -24,7 +24,7 @@
 	Datasets can be loaded by issuing the \code{data} command, like in \code{data(ple4)}.
 }
 \seealso{
-\code{\link{FLStock}}, \code{\link{FLSR}}, \code{\link{FLIndex}, \code{\link{FLStock}}, \code{\link{FLIndex}}, \code{\link{FLBiol}}, \code{\link{FLFleet}}}
+\code{\link{FLStock-class}}, \code{\link{FLSR-class}}, \code{\link{FLIndex-class}, \code{\link{FLStock-class}}, \code{\link{FLIndex-class}}, \code{\link{FLBiol-class}}, \code{\link{FLFleet-class}}}
 }
 \references{
 ICES.

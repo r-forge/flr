@@ -47,7 +47,7 @@
 \item{ signature(obj=FLComp) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{\code{\link{dimnames}}, \code{\link{FLQuant}}}
+\seealso{\code{\link[base]{dimnames}}, \code{\link{FLQuant}}}
 \examples{
 flq <- FLQuant(rnorm(96), dim=c(3,8,1,4), quant='age')
 dims(flq)

@@ -37,8 +37,8 @@
   These methods return \code{TRUE} if the given object is of the corresponding class, and
   \code{FALSE} otherwise.
 
-  These methods should be substituted by calls to \code{\link{is}} and will very likely be
-  deprecated in future releases.
+  These methods should be substituted by calls to \code{\link[methods]{is}} and will very
+  likely be deprecated in future releases.
 }
 \section{Generic function}{
  is.FLQuants(object) 
@@ -59,7 +59,7 @@
 \item{ signature(object=ANY) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{\link{is}}
+\seealso{\link[methods]{is}}
 \examples{
 # This call ...
 is.FLQuant(FLQuant())

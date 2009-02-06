@@ -19,7 +19,7 @@
 \item{signature(x=FLQuant, value=list) :}{Modify FLQuant dimnames}
 }}
 \author{The FLR Team}
-\seealso{\code{\link{dimnames}}, \code{\link{FLQuant}}, \code{\link{array}}}
+\seealso{\code{\link[base]{dimnames}}, \code{\link{FLQuant}}, \code{\link[base]{array}}}
 \examples{
 flq <- FLQuant(rnorm(80), dim=c(4,10,2))
 dimnames(flq) <- list(unit=c('male', 'female'))

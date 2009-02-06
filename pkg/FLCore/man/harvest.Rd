@@ -17,7 +17,7 @@
 \item{ signature(object=FLBiol) :}{Uses the method above to calculate an approximation of harvest rate}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} \link{FLStock}}
+\seealso{ \link{FLComp}, \link{FLStock-class}}
 \examples{
 }
 \keyword{methods}

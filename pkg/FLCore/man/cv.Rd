@@ -7,8 +7,8 @@
 \title{Coefficient of Variation of FLR objects with multiple iterations}
 \description{
   The Coefficient of Variation of an object with mutiple iterations along the sixth 
-  (\code{iter}) dimension can be calculated using \code{cv()}. An object of the same class,
-  with length=1 on the sixth dimension, will be returned.
+  (\code{iter}) dimension can be calculated using \code{cv()}. An object of the same 
+  class, with length=1 on the sixth dimension, will be returned.
 
   CV of \code{x} is calculated as \eqn{\frac{sd(x)}{\hat{x}}}{sd(x)/mean(x)}.
 

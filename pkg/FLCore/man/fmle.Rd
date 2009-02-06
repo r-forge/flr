@@ -9,7 +9,7 @@
 \description{
  The \code{fmle} method fits the model specified in an \code{FLModel} object using MLE
  by minimizing the negative of the log-likelihood function, in the \code{logl} slot,
- through calls to the \code{\link{optim}} minimizaton routine.
+ through calls to the \code{\link[stats]{optim}} minimizaton routine.
 
  For a given model and log-likelihood function, the \code{fmle} method will use the 
  \code{optim} function in R to calculate the parameter vector which maximises the log-
