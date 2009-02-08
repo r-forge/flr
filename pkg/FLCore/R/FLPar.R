@@ -192,17 +192,16 @@ setMethod('summary', signature(object='FLPar'),
 # plot
 setMethod("plot", signature(x="FLPar", y="missing"),
 	function(x, y="missing", ...) {
+	  # get dimensions to condition on (skip iter)
+		condnames <- names(dimnames(x))[names(dimnames(x)) != 'iter']
+		cond <- paste(condnames, collapse="+")
+		if(cond != "") cond <- paste("|", cond)
+			formula <- formula(paste("~data", cond))
+		# set strip to show conditioning dimensions names
+		strip <- strip.custom(var.name=condnames, strip.names=c(TRUE,TRUE))
 
-			# get dimensions to condition on (skip quant)
-			condnames <- names(dimnames(x))[-1]
-			cond <- paste(condnames, collapse="+")
-			if(cond != "") cond <- paste("|", cond)
-				formula <- formula(paste("~data", cond))
-			# set strip to show conditioning dimensions names
-			strip <- strip.custom(var.name=condnames, strip.names=c(TRUE,TRUE))
-
-		densityplot(formula, as.data.frame(x, row.names='row'), ylab="", xlab="",
-			scales=list(y=list(draw=FALSE), relation='free'), col='black')
+    do.call('densityplot', list(x=formula, data=as.data.frame(x, row.names='row'),
+      ylab="", xlab="", scales=list(y=list(draw=FALSE), relation='free'), col='black'))
 	}
 )
 
@@ -210,7 +209,6 @@ setMethod("plot", signature(x="FLPar", y="missing"),
 if (!isGeneric("densityplot")) {
 	setGeneric("densityplot", useAsDefault = densityplot)
 }
-
 setMethod("densityplot", signature("formula", "FLPar"), function(x, data, ...){
 	lst <- substitute(list(...))
 	lst <- as.list(lst)[-1]
@@ -258,10 +256,7 @@ setMethod("units<-", signature(x="FLPar", value="character"),
 # as.data.frame     {{{
 setMethod("as.data.frame", signature(x="FLPar"),
 	function(x, row.names='col', optional=FALSE)
-		if(length(dim(x)) == 2 && row.names == 'col')
-			return(as.data.frame(x@.Data))
-		else
-			return(data.frame(expand.grid(dimnames(x))[-1], data=as.vector(x@.Data)))
+	  return(data.frame(expand.grid(dimnames(x)), data=as.vector(x@.Data)))
 )   # }}}
 
 # mean, median, var, quantile   {{{
