@@ -1,6 +1,7 @@
 %$Id$
 \name{as.data.frame}
 \docType{methods}
+\alias{as.data.frame-FLCore}
 \alias{as.data.frame,FLArray,missing,missing-method}
 \alias{as.data.frame,FLQuant,missing,missing-method}
 \alias{as.data.frame,FLCohort,missing,missing-method}

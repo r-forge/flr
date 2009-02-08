@@ -3,10 +3,12 @@
 \alias{mcf}
 \alias{mcf-methods}
 \alias{mcf,FLComp-method}
- \alias{mcf,list-method}
+\alias{mcf,list-method}
 \title{Method mcf}
 \description{
- This method makes FLQuants compatible with respect to their dimensionality. Hence, the FLQuants in the returned object all heve the same dimensions, padded with NAs if necessary 
+ This method makes FLQuants compatible with respect to their dimensionality. Hence, the 
+ FLQuants in the returned object all heve the same dimensions, padded with NAs if 
+ necessary 
 }
 \section{Generic function}{
  mcf(object) 

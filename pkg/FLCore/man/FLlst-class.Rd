@@ -19,10 +19,10 @@ list, vector
 \item{\link[base]{[}(base) :}{Select method.}
 \item{}{\code{ signature(x=FLlst,i=ANY,j=missing,drop=missing) }}
 \item{\link[base]{[<-}(base) :}{Replacement method for elements.}
-\item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
+\item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=ANY) }}
 \item{\link[base]{[[<-}(base) :}{Replacement method within elements.}
 \item{}{\code{ signature(x=FLlst,i=ANY,j=missing,value=missing) }}
-\item{\link[base][$<-]{\$<-}(base) :}{Replacement method for elements.}
+\item{\link[base]{\$<-}(base) :}{Replacement method for elements.}
 \item{}{\code{ signature(x=FLlst,name=character,value=missing) }}
 \item{\link[methods]{coerce}(methods) :}{Coerce method.}
 \item{}{\code{ signature(from=FLlst,to=list,strict=missing) }}

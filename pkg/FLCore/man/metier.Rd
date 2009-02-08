@@ -9,18 +9,18 @@
 \alias{metier<-,FLFleet,ANY,FLMetier-method}
 \title{Method metier}
 \description{
-\code{metier} returns a \code{link{FLMetier}} object from a \code{link{FLFleet}}.
- The \code{link{FLMetier}} can also be accessed directly by using the '[' and '[['
- methods, see example below.
+  \code{metier} returns a \code{link{FLMetier-class}} object from a
+  \code{link{FLFleet-class}}. They can also be accessed directly by using the
+  '[' and '[[' methods, see example below.
 }
 \section{Generic function}{
  metier(object,metier)
 }
 \section{Methods}{\describe{
-\item{ signature(object=FLFleet,metier=character) :}{Returns the FLMetier of the metier name }
+\item{ signature(object=FLFleet, metier=character) :}{Returns the FLMetier with the given name.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp}, \link{FLMetier}, \link{FLFleet}, \link{FLCatch},}
+\seealso{\link{FLMetier}, \link{FLFleet}, \link{FLCatch}, \link{Extract-FLCore}}
 \examples{
 data(bt4)
 names(bt4@metiers)

@@ -14,18 +14,19 @@
 \title{Method plot}
 \description{
   Standard plot methods for every FLR class. FLR plot methods are based on
-  \code{\link{lattice}}, and attempt to show a general view of the object contents.
+  \code{\link[lattice]{lattice}}, and attempt to show a general view of the object 
+  contents.
 
   Users are encouraged to write their own plotting code make use of the overloaded
-  \code{\link{lattice}} methods, for example \code{\link{xyplot}} or
-  \code{\link{bwplot}}. See also \code{\link{lattice-FLCore}}
+  \code{\link[base]{lattice}} methods, for example \code{\link[base]{xyplot}} or
+  \code{\link[base]{bwplot}}. See also \code{\link{lattice-FLCore}}.
 }
 \section{Generic function}{
  plot(x,y) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=FLQuant,y=missing) :}{Describe method}
-\item{ signature(x=FLQuantPoint,y=missing) :}{Describe method}
+\item{ signature(x=FLQuant,y=missing) :}{Plot of an \emph{FLQuant} conditioned on all dimension of length > 1.}
+\item{ signature(x=FLQuantPoint,y=missing) :}{Box and whiskers plot of the yearly time series, conditioned on all dimension of length > 1.}
 \item{ signature(x=FLPar,y=missing) :}{Describe method}
 \item{ signature(x=FLStock,y=missing) :}{Describe method}
 \item{ signature(x=FLStocks,y=missing) :}{Describe method}
@@ -35,7 +36,7 @@
 \item{ signature(x=FLSR,y=missing) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link[graphics]{plot} }
 \examples{
 plot(catch.n(ple4)[, 1:20])
 plot(catch.n(ple4)[, 1:20], type='b', pch=19, cex=0.5)

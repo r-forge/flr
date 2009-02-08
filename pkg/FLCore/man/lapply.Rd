@@ -17,9 +17,9 @@
 \examples{
 # On an FLQuants object
 flqs <- FLQuants(a=FLQuant(1:10), b=FLQuant(1:20))
-# lapply could return another FLQuants
+# lapply could return another FLQuants object
 lapply(flqs, yearSums)
-# or a simple list
+# or a simple list, depending on the function  being called
 lapply(flqs, dim)
 }
 \keyword{methods}

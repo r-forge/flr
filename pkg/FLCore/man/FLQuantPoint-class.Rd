@@ -8,8 +8,8 @@
   multiple iterations along its sixth dimension using a number of descriptive statistics.
 
   An object of this class has a set structure along its sixth dimension (\emph{iter}), 
-  which will always be of length 5, and with dimnames \code{mean},  \code{median},
-  \code{var}, \code{uppq} and \code{lowq}. They refer, respectively, to the sample mean,
+  which will always be of length 5, and with dimnames \emph{mean},  \emph{median},
+  \emph{var}, \emph{uppq} and \emph{lowq}. They refer, respectively, to the sample mean,
   sample median, variance, and lower (0.25) and upper (0.75) quantiles.
   
   Objects of this class wil be typically created from an \code{FLQuant}. The various
@@ -30,7 +30,7 @@ array
 \item{}{\code{ signature(x=FLQuantPoint) }}
 \item{\link{lowq<-}(FLCore) :}{Modifies the \code{lowq} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}
-\item{\link{[base]mean}(base) :}{Accesor for \code{mean} iteration}
+\item{\link[base]{mean}(base) :}{Accesor for \code{mean} iteration}
 \item{}{\code{ signature(x=FLQuantPoint) }}
 \item{\link{mean<-}(FLCore) :}{Modifies the \code{mean} iteration}
 \item{}{\code{ signature(x=FLQuantPoint,value=FLQuant) }}

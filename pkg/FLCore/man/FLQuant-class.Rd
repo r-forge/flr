@@ -1,6 +1,5 @@
 \name{FLQuant}
 \docType{class}
-\alias{FLQuant}
 \alias{FLQuant-class}
 \title{FLQuant class for numerical data}
 \description{
@@ -21,8 +20,8 @@
 
 }
 \section{Slots}{\describe{
-\item{.Data (\code{array}):}{A 6-D array for numeric data}
-\item{units (\code{character}):}{Units of measurement}
+\item{.Data}{A 6-D array for numeric data. \code{array}.}
+\item{units}{Units of measurement. \code{character}.}
 }}
 \section{Extends}{\describe{
 FLArray

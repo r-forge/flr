@@ -16,11 +16,11 @@
   initial values to any of the fitting method (e.g. \code{\link{fmle}}).
 
   The values in \code{lower} and \code{upper} are only used if the method selected for
-  \code{\link{optim}} is able to make use of them, like for example "L-BFGS-B", which is 
-  the default for \code{\link{fmle}}.
+  \code{\link[stats]{optim}} is able to make use of them, like for example "L-BFGS-B", 
+  which is the default for \code{\link{fmle}}.
 
-  The exact location of this information could be changed (i.e. a separate slot be
-  created), so code accessing it is encouraged to use these accesion methods.
+  The exact location of this information could be changed (i.e. a separate slot might be
+  created), so code accessing it is encouraged to use these accesor methods.
 
 }
 \section{Generic function}{
@@ -34,7 +34,7 @@ lower<-(object, value)
 \item{signature(object=FLModel, value=numeric) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLModel-class} }
 \examples{
 data(nsher)
 lower(nsher)

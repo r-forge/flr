@@ -16,14 +16,14 @@
  dynamics.
 }
 \section{Slots}{\describe{
-\item{n (\code{FLQuant}):}{ for the numbers in the population.}
-\item{m (\code{FLQuant}):}{ for the mortality rate of the population.}
-\item{wt (\code{FLQuant}):}{ for the weight of the population.}
-\item{fec (\code{FLQuant}):}{ for the fecundity/maturity/per capita birth rate.}
-\item{spwn (\code{FLQuant}):}{ for the proportion of mortality before spawning/birthing.}
-\item{name (\code{character}):}{ name of the object}
-\item{desc (\code{character}):}{ brief description of the object.}
-\item{range (\code{numeric}):}{ range of the dimensions.}
+\item{n}{for the numbers in the population. \code{FLQuant}.}
+\item{m}{ for the mortality rate of the population. \code{FLQuant}.}
+\item{wt}{ for the weight of the population. \code{FLQuant}.}
+\item{fec}{ for the fecundity/maturity/per capita birth rate. \code{FLQuant}.}
+\item{spwn}{ for the proportion of mortality before spawning/birth. \code{FLQuant}.}
+\item{name}{ name of the object. \code{character}.}
+\item{desc}{ brief description of the object. \code{character}.}
+\item{range}{ range of the dimensions. \code{numeric}.}
 }}
 \section{Extends}{\describe{
 FLComp

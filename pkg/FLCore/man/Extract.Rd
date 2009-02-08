@@ -93,13 +93,11 @@
 \item{ signature(x=FLMetier,i=ANY,j=missing) :}{Returns an \code{FLMetier} that contains the i \code{FLCatch}es of the \code{FLMetier}.  i is a vector (numeric or character) that describes the position of the \code{FLCatch}es in the \code{FLCatches} list.}
 
 % [[<-
-\item{ signature(x=ANY,i=ANY,j=ANY,value=missing) :}{Describe method}
 \item{ signature(x=FLlst,i=ANY,j=missing,value=missing) :}{Returns the specified element of the list.  For example, for an \code{FLStocks} object, stocks[[1]] will return a single \code{FLStock}.}
 \item{ signature(x=FLFleet,i=ANY,j=missing) :}{Returns the ith \code{FLMetier} of the \code{FLFleet}.  i can be a numeric describing the position of the \code{FLMetier} in the \code{FLMetiers} list, or a character string of the catch names.}
 \item{ signature(x=FLMetier,i=ANY,j=missing) :}{Returns the ith \code{FLCatch} of the \code{FLMetier}.  i can be a numeric describing the position of the \code{FLCatch} in the \code{FLCatches} list, or a character string of the catch names.  This can be used with the \code{FLFleet} accessor above to extract a single \code{FLCatch} from an \code{FLFleet} object.}
 
 % $
-\item{ signature(x=ANY,name=ANY,value=missing) :}{Describe method}
 \item{ signature(x=FLlst,name=character,value=missing) :}{Describe method}
 }}
 \author{The FLR Team}

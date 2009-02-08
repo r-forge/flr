@@ -17,7 +17,7 @@
 \item{ signature(object=list) :}{Returns an FLStocks object with the provided list as its core}
 }}
 \author{The FLR Team}
-\seealso{\link{FLStocks-class},  \link{FLlst-class}, \link{FLStock-class},}
+\seealso{\link{FLStocks-class},  \link{FLlst-class}, \link{FLStock-class}}
 \examples{
 stock <- window(ple4, 1980, 2000)
 summary(FLStocks(ple4=ple4, shortple4=stock))

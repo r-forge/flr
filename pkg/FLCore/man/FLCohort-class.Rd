@@ -1,21 +1,17 @@
 \name{FLCohort}
 \docType{class}
-\alias{FLCohort}
 \alias{FLCohort-class}
 \title{Class FLCohort}
 \description{
 This class represents cohorts in columns. It simply shifts the typical matrix representation where cohorts are found on the diagonals, into a matrix where cohorts are found in columns. It is very usefull for all analysis that want to make use of cohorts instead of years.
 }
 \section{Slots}{\describe{
-\item{.Data (\code{array}):}{Internal S4 data representation.}
-\item{units (\code{character}):}{The data units in some understandable metric.}
+\item{.Data}{Internal S4 data representation. \code{array}.}
+\item{units}{The data units in some understandable metric. \code{character}}
 }}
 \section{Extends}{\describe{
 FLArray
 array
-structure
-matrix
-vector
 }}
 \section{Methods}{\describe{
 \item{\link[base]{[}(base) :}{Subset method}

@@ -14,7 +14,7 @@ Creator method for the FLCohort class.
 \item{ signature(object=FLQuant) :}{Creates a FLCohort object from a FLQuant object. It simply shifts the matrix so that cohorts instead of years are located in the columns (second dimensions) of the array.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLCohort-class} }
 \examples{
 flq <- catch.n(ple4)
 flc <- FLCohort(flq)

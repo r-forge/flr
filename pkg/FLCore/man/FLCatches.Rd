@@ -1,5 +1,6 @@
 \name{FLCatches}
 \docType{methods}
+\alias{FLCatches}
 \alias{FLCatches-methods}
 \alias{FLCatches,ANY-method}
 \alias{FLCatches,missing-method}

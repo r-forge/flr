@@ -24,7 +24,7 @@
 \author{The FLR Team}
 \seealso{\link[stats]{AIC}, \link[stats]{logLik}, \link{FLModel}}
 \examples{
-data(ple4.sr)
-AIC(ple4.sr)
+data(nsher)
+AIC(nsher)
 }
 \keyword{methods}

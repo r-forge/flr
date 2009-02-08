@@ -268,17 +268,20 @@ setMethod("as.data.frame", signature(x="FLPar"),
 # TODO review for 3D param objects
 setMethod("mean", signature(x='FLPar'),
 	function(x, ...)
-		return(apply(x, seq(length(dim(x)))[-1], mean, ...))
+  	return(FLPar(apply(x, seq(1, length(dim(x)))[!names(dimnames(x))=='iter'],
+      mean, ...)))
 )
 
 setMethod("median", signature(x='FLPar'),
 	function(x, na.rm=FALSE)
-		return(apply(x, seq(length(dim(x)))[-1], median, na.rm=na.rm))
+  	return(FLPar(apply(x, seq(1, length(dim(x)))[!names(dimnames(x))=='iter'],
+      median, na.rm=na.rm)))
 )
 
 setMethod("var", signature(x='FLPar'),
 	function(x, y=NULL, na.rm=FALSE, use='all.obs')
-		return(apply(x, seq(length(dim(x)))[-1], var, na.rm=na.rm))
+  	return(FLPar(apply(x, seq(1, length(dim(x)))[!names(dimnames(x))=='iter'],
+      var, na.rm=na.rm, use='all.obs')))
 )   # }}}
 
 # coerce  {{{

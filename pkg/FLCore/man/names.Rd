@@ -13,7 +13,7 @@
 \item{ signature(x=FLQuant) :}{Returns the names of the dimnames of x}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link[base]{names} }
 \examples{
 data(ple4)
 names(catch.n(ple4))

@@ -20,7 +20,7 @@
 \author{The FLR Team}
 \seealso{ \link[stats4]{BIC}, \link[stats]{AIC}, \link{FLModel}, \link[stats]{logLik}}
 \examples{
-data(ple4.sr)
-BIC(ple4.sr)
+data(nsher)
+BIC(nsher)
 }
 \keyword{methods}

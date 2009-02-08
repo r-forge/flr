@@ -1,8 +1,9 @@
 \name{FLCatch}
 \docType{methods}
+\alias{FLCatch}
 \alias{FLCatch-methods}
 \alias{FLCatch,FLQuant-method}
- \alias{FLCatch,missing-method}
+\alias{FLCatch,missing-method}
 \title{Method FLCatch}
 \description{
   The \code{FLCatch} constructor method allows simple creation of new FLCatch objects
