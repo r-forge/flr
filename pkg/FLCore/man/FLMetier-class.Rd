@@ -25,17 +25,16 @@
 
 }
 \section{Slots}{\describe{
-\item{gear (\code{character}):}{Name of the gear}
-\item{effshare (\code{FLQuant}):}{Proportion of the total effort of the fleet allocated to
+\item{gear}{Name of the gear. \code{character}.}
+\item{effshare}{Proportion of the total effort of the fleet allocated to
   this metier. effshare must not be higher than 1, and the sums of effshare across all 
-  metiers within a fleet should be equal to or lower than 1}
-\item{vcost (\code{FLQuant}):}{Variable costs per unit of effort}
-\item{catches (\code{FLCatches}):}{List of \code{FLCatch} objects containing catch
-  information by stock or species}
-\item{name (\code{character}):}{Generic name slot inherited from FLComp class}
-\item{desc (\code{character}):}{Generic name slot inherited from FLComp class}
-\item{range (\code{numeric}):}{Generic range slot inherited from FLComp class indicating
- min quant, max quant, plusgroup quant, minyear and maxyear}
+  metiers within a fleet should be equal to or lower than 1. \code{FLQuant}.}
+\item{vcost}{Variable costs per unit of effort.  \code{FLQuant}.}
+\item{catches}{List of \code{FLCatch} objects containing catch
+  information by stock or species. \code{FLCatches}.}
+\item{name}{Name of the object.  \code{character}.}
+\item{desc}{Description of the object. \code{character}.}
+\item{range}{ (\code{numeric}) Named vector containing the dimensions of the object}
 }}
 \section{Extends}{\describe{
 FLComp

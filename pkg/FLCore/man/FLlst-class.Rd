@@ -6,13 +6,13 @@
 \code{FLlst} is a class that extends \code{list} but implements a set of features that give a little bit more structure to list objects. First the elements of \code{FLlst} must all be of the same class. Second it implements a lock mechanism that, when turned on, does not allow the user to increase or decrease the object length. Both features are needed to propoerly implement \code{FLFleet} class. 
 }
 \section{Slots}{\describe{
-\item{.Data (\code{list}):}{The data.}
-\item{names (\code{character}):}{Names of the list elements.}
-\item{desc (\code{character}):}{Description of the object.}
-\item{lock (\code{logical}):}{Lock mechanism, if turned on the length of the list can not be modified by adding or removing elements.}
+\item{.Data}{The data. \code{list}.}
+\item{names}{Names of the list elements. \code{character}.}
+\item{desc}{Description of the object. \code{character}.}
+\item{lock}{Lock mechanism, if turned on the length of the list can not be modified by adding or removing elements. \code{logical}.}
 }}
 \section{Extends}{\describe{
-list, vector
+list
 }}
 \section{Methods}{\describe{
 \item{\link[base]{[}(base) :}{Select method.}

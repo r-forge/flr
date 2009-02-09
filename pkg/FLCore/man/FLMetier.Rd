@@ -3,9 +3,9 @@
 \alias{FLMetier}
 \alias{FLMetier-methods}
 \alias{FLMetier,FLCatch-method}
- \alias{FLMetier,FLCatches-method}
- \alias{FLMetier,FLQuant-method}
- \alias{FLMetier,missing-method}
+\alias{FLMetier,FLCatches-method}
+\alias{FLMetier,FLQuant-method}
+\alias{FLMetier,missing-method}
 \title{Method FLMetier}
 \description{
    The \code{FLMetier} constructor method allows creation of new FLMetier objects

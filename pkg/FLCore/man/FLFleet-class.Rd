@@ -8,27 +8,30 @@
   economic data. It can account for simple or complex patterns such as several types of 
   activities and/or catches of several species.
 
-  FLFleet is thus defined along a three-levelled tree structure. First, the root of FLFleet 
-  contains data at the vessel/fleet segment levels, independent of activity and catches, 
-  such as total effort, capacity, fixed costs and crew share. Then, data dealing with the 
-  various types of activity of the fleet are dealt with at the metier level using 
-  \code{FLMetier} class, which includes slots for proportion of effort and variable costs. 
+  FLFleet is thus defined along a three-levelled tree structure. First, the root of 
+  FLFleet contains data at the vessel/fleet segment levels, independent of activity and 
+  catches, such as total effort, capacity, fixed costs and crew share. Then, data dealing 
+  with the various types of activity of the fleet are dealt with at the metier level 
+  using \code{FLMetier} class, which includes slots for proportion of effort and variable 
+  costs. 
  
-  Finally, the cath information related to the various species or stocks within each metier 
-  are dealt with a \code{FLCatch} class. The tree structure allows a flexible use of the 
-  FLFleet object, if for example not all species are caught by all metiers or if the
-  dimensions are not the same across branches.
+  Finally, the cath information related to the various species or stocks within each 
+  metier are dealt with a \code{FLCatch} class. The tree structure allows a flexible use 
+  of the FLFleet object, if for example not all species are caught by all metiers or if 
+  the dimensions are not the same across branches.
 
-  There is a certain degree of flexibility left in the slots definition, in the sense that 
-  the user may decide to store either raw unit data, for example effort by unit of capacity, 
-  variable cost by unit of effort, or to store aggregated data, for example total effort or
-  total variable costs. However, the user should be aware that some computing methods (in 
-  FLCore or other related packages) are more specifically intended for one type of data, and 
-  these should be used with caution.
+  There is a certain degree of flexibility left in the slots definition, in the sense 
+  that the user may decide to store either raw unit data, for example effort by unit of 
+  capacity, variable cost by unit of effort, or to store aggregated data, for example 
+  total effort or total variable costs. However, the user should be aware that some 
+  computing methods (in FLCore or other related packages) are more specifically intended 
+  for one type of data, and these should be used with caution.
 
   A number of accessors are defined for \code{FLFleet}, allowing to extract directly   
   specific slots at the three-levels FLFleet hierarchy i.e. from the \code{FLFleet} class
-  itself, from the \code{FLMetier} objects and from the \code{FLCatch} objects it contains. 
+  itself, from the \code{FLMetier} objects and from the \code{FLCatch} objects it 
+  contains. 
+  
   If both catch and metier arguments are specified in those, it returns the FLQuant 
   corresponding to the species. If catch argument is missing but metier argument is
   specified, it returns a FLQuants object for all stocks of the \code{FLCatches} object 
@@ -37,19 +40,19 @@
   \code{FLMetiers} object for the given specified species.
 
   Corresponding replacement methods for these slots exist for the FLQuant objects but not 
-  for the FLQuants objects, due to possible differences of dimensions across FLMetier and    
-  FLCatch objects.
+  for the FLQuants objects, due to possible differences of dimensions across FLMetier 
+  and FLCatch objects.
 }
 \section{Slots}{\describe{
-\item{effort (\code{FLQuant}):}{effort (total or per unit of capacity) }
-\item{fcost (\code{FLQuant}):}{Fixed costs (total or per unit of capacity)}
-\item{capacity (\code{FLQuant}):}{Capacity of the fleet}
-\item{crewshare (\code{FLQuant}):}{Crew share (total or per unit of capacity)}
-\item{metiers (\code{FLMetiers}):}{FLMetiers object storing a list of FLMetier objects}
-\item{name (\code{character}):}{Generic name slot inherited from FLComp class}
-\item{desc (\code{character}):}{Generic description slot inherited from FLComp class}
-\item{range (\code{numeric}):}{Generic range slot inherited from FLComp class indicating
- min quant, max quant, plusgroup quant,minyear and maxyear}
+\item{effort}{effort (total or per unit of capacity). \code{FLQuant}.}
+\item{fcost}{Fixed costs (total or per unit of capacity).  \code{FLQuant}.}
+\item{capacity}{Capacity of the fleet. \code{FLQuant}.}
+\item{crewshare}{Crew share (total or per unit of capacity). \code{FLQuant}.}
+\item{metiers}{FLMetiers object storing a list of FLMetier objects. \code{FLMetiers}.}
+\item{name}{Generic name slot inherited from FLComp class. \code{character}.}
+\item{desc}{Generic description slot inherited from FLComp class.  \code{character}.}
+\item{range}{Generic range slot inherited from FLComp class indicating
+ min quant, max quant, plusgroup quant,minyear and maxyear. \code{numeric}.}
 }}
 \section{Extends}{\describe{
 FLComp
