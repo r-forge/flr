@@ -24,7 +24,7 @@
 \item{residuals}{Residuals obtained from the model fit. \code{FLQuant}.}
 \item{model}{Model formula. \code{formula}.}
 \item{grad}{Function returning the gradient of the model. \code{function}.}
-\item{logl}{Likelihood function. \code{function}.}
+\item{logl}{Log-likelihood function. \code{function}.}
 \item{initial}{Function returning initial parameter values for the optimizer. \code{function}.}
 \item{params}{Estimated parameter values. \code{FLPar}.}
 \item{logLik}{Value of the log-likelihood. \code{logLik}.}

@@ -27,7 +27,8 @@
 \item{residuals}{Residuals obtained from the model fit. \code{FLQuant}.}
 \item{covar}{Covariates for SR model. \code{FLQuants}.}
 \item{model}{Model formula. \code{formula}.}
-\item{lkhd}{Likelihood function. \code{function}.}
+\item{grad}{Function returning the gradient of the model. \code{function}.}
+\item{logl}{Log-likelihood function. \code{function}.}
 \item{initial}{Function returning initial parameter values for the optimizer. \code{function}.}
 \item{params}{Estimated parameter values. \code{FLPar}.}
 \item{logLik}{Value of the log-likelihood. \code{logLik}.}

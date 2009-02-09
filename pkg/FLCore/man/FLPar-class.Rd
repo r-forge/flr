@@ -13,6 +13,7 @@
 }
 \section{Slots}{\describe{
 \item{.Data}{Describe slot. \code{array}.}
+\item{units}{Units of measurement. \code{character}.}
 }}
 \section{Extends}{\describe{
 
