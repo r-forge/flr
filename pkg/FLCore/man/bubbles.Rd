@@ -5,20 +5,22 @@
 \alias{bubbles,formula,FLQuant-method}
 \alias{bubbles,formula,FLQuants-method}
 \alias{bubbles,formula,FLCohort-method}
+\alias{bubbles,formula,data.frame-method}
 \title{Bubbles plot}
 \description{
 This method plots three dimensional data like matrices by age and year or age-class, very common in fisheries. The bubbles are proportional to the values on the matrix. Note that \code{bubbles} accept an argument \code{bub.scale} to control the relative size of the bubbles. Positive and negative values have separate colours.
 }
 \section{Generic function}{
- bubbles(x,data) 
+ bubbles(x, data) 
 }
 \section{Methods}{\describe{
 \item{ signature(x=formula, data=FLQuant) :}{Produce bubbles plot of the object.}
 \item{ signature(x=formula, data=FLQuants) :}{Produce a lattice of bubbles plot of the objects. Commonly used to plot residuals of VPA assessments.}
 \item{ signature(x=formula, data=FLCohort) :}{Produce bubbles plot of the object.}
+\item{ signature(x=formula, data=data.frame) :}{Produce bubbles plot of the object.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link[lattice]{lattice}, \code{\link{FLQuant-class}}, \code{\link{FLQuants-class}},\code{\link{FLCohort-class}}}
 \examples{
 data(ple4)
 bubbles(age~year, data=catch.n(ple4))

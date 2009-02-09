@@ -676,6 +676,21 @@ function(x, data, bub.scale=2.5, col=c("blue","red"), ...){
 	ans <- do.call("xyplot", call.list)
 	ans
 })
+
+setMethod("bubbles", signature(x="formula", data ="data.frame"),
+function(x, data, bub.scale=2.5, col=c("blue","red"), ...){
+	dots <- list(...)
+	dots$data <- data
+	dots$cex <- bub.scale*(abs(data$data)/max(abs(data$data),na.rm=T))+bub.scale*0.1
+	dots$col <- ifelse(data$data>0, col[1], col[2])
+	dots$panel <- function(x, y, ..., cex, subscripts){
+		panel.xyplot(x, y, cex=cex[subscripts], ...)
+	}
+	call.list <- c(x=x, dots)
+	ans <- do.call("xyplot", call.list)
+	ans
+})
+
 # }}}
 
 ## apply            {{{
