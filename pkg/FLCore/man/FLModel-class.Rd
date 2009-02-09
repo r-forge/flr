@@ -1,6 +1,5 @@
 \name{FLModel}
 \docType{class}
-\alias{FLModel}
 \alias{FLModel-class}
 \title{Class FLModel for statistical models}
 \description{

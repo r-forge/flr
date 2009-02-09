@@ -55,7 +55,7 @@ setMethod('spr0', signature(ssb='FLQuant', rec='FLQuant', fbar='FLQuant'),
 )
 
 setMethod('spr0', signature(ssb='FLStock', rec='missing', fbar='missing'),
-  function(ssb, ages=seq(dims(ssb)$min, dims(ssb)$max))
+  function(ssb)
   {
     # rec
     sr <- as.FLSR(ssb)
@@ -69,7 +69,7 @@ setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
   function(ssb, fbar)
   {
     # spr0
-    spr0(ssb=ssb(ssb), rec=rec(ssb), fbar=fbar, ages=ages)
+    spr0(ssb=ssb(ssb), rec=rec(ssb), fbar=fbar)
   }
 )
 # }}}

@@ -9,14 +9,17 @@
 \alias{setPlusGroup,FLCatch,numeric-method}
 \title{Method setPlusGroup}
 \description{
- Calculates the appropriate values for the plusgroup of an \code{FLStock} object
- and returns an \code{FLStock} object with the plusgroup set to the given age.
+ Calculates the appropriate values for the plusgroup of an object
+ and returns a new object with the plusgroup set to the given age.
+
+ \emph{quant} of the given object must be 'age', and the selected age must not be
+ greater than the oldest age present in the object.
 }
 \section{Generic function}{
  sePlusGroup(x, plusgroup) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=FLQuant, plusgroup=numeric) :}{Describe method}
+\item{ signature(x=FLQuant, plusgroup=numeric) :}{Adds values for the indicated age and older.}
 \item{ signature(x=FLStock, plusgroup=numeric) :}{
  The values for the plusgroup of the various slots in the \code{FLStock} object
  are calculated in different ways.
@@ -36,9 +39,12 @@
  harvest.spwn and m.spwn are calculated as a weighted average using the stock
  numbers at age.
 }
+\item{ signature(x=FLBiol, plusgroup=numeric) :}{Calculations are similar to FLStock above.}
+\item{ signature(x=FLCatch, plusgroup=numeric) :}{Abundances (\emph{n} slot) are added, while weights (\emph{wt}), natural mortality (\emph{m}), and fecundity (\emph{fec}) are
+averaged.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLStock-class}, \link{FLQuant-class}, \link{FLBiol-class}, \link{FLCatch-class} }
 \examples{
 data(ple4)
 ple4.pg <- setPlusGroup(ple4, 6)

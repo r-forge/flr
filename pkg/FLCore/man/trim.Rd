@@ -31,14 +31,14 @@
  trim(x) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=FLQuant) :}{Describe method}
-\item{ signature(x=FLComp) :}{Describe method}
-\item{ signature(x=FLStock) :}{Describe method}
-\item{ signature(x=FLCohort) :}{Describe method}
-\item{ signature(x=FLIndex) :}{Describe method}
+\item{ signature(x=FLQuant) :}{Trims along the specified dimensions.}
+\item{ signature(x=FLComp) :}{Trims along the specified dimensions.}
+\item{ signature(x=FLStock) :}{Trims along the specified dimensions, but ignores the \emph{quant} (first) dimension for those slots where it is always of length=1.}
+\item{ signature(x=FLCohort) :}{Trims along the specified dimensions.}
+\item{ signature(x=FLIndex) :}{Trims along the specified dimensions, but ignores the \emph{quant} (first) dimension for thoe slots where it is of length=1.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLQuant-class},  \link{FLStock-class}, \link{FLCohort-class}, \link{FLIndex-class}}
 \examples{
 data(ple4)
 

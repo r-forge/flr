@@ -1,5 +1,6 @@
 \name{FLStocks}
 \docType{methods}
+\alias{FLStocks}
 \alias{FLStocks-methods}
 \alias{FLStocks,ANY-method}
  \alias{FLStocks,missing-method}

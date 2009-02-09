@@ -25,10 +25,10 @@ mean values over the specified time period.}
 \item{\code{plusgroup} :}{Is the last age a plusgroup TRUE/FALSE}
 }}
 \section{Methods}{\describe{
-\item{ signature(object=FLStock) :}{Describe method}
+\item{ signature(object=FLStock) :}{Returns the SBB-per-unit-recruit.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLStock-class} }
 \examples{
 
 data(ple4)

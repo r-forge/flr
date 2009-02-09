@@ -1,6 +1,5 @@
 \name{FLMetiers}
 \docType{class}
-\alias{FLMetiers}
 \alias{FLMetiers-class}
 \title{Class FLMetiers}
 \description{

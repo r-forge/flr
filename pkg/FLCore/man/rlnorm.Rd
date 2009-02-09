@@ -6,7 +6,7 @@
 \alias{rlnorm,numeric,FLQuantPoint,missing-method}
 \title{Method rlnorm}
 \description{
-The random generation for the log normal distribution whose logarithm has mean equal to 'meanlog' and standard deviation equal to 'sdlog'.  'meanlog' and 'sdlog' can be given as FLQuant objects.  If both are given as FLQuant objects their dimension must be the same.  If either of these arguments are FLQuant objects, rlnorm returns an FLQuant.
+Random generation for the log normal distribution whose logarithm has mean equal to \emph{meanlog} and standard deviation equal to \emph{sdlog}.  \emph{meanlog} and \emph{sdlog} can be given as FLQuant objects.  If both are given as FLQuant objects their dimensions must be the same.  If either of these arguments are FLQuant objects, rlnorm returns an FLQuant.
 }
 \section{Generic function}{
  rlnorm(n,meanlog,sdlog) 
@@ -18,7 +18,7 @@ The random generation for the log normal distribution whose logarithm has mean e
 \item{ signature(n=numeric,meanlog=FLQuantPoint,sdlog=missing) :}{Generates random deviates for the log normal distribution.  Returns an FLQuant object.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link[stats]{rlnorm}, \link{FLQuant-class}, \link{FLQuantPoint-class}  }
 \examples{
 out <- rlnorm(1000, meanlog=FLQuant(c(5,5,5,5,5)),sdlog=FLQuant(c(0,1,2,3,4)))
 apply(log(out),2,sd)

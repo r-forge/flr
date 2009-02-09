@@ -1,5 +1,6 @@
 \name{FLMetier}
 \docType{methods}
+\alias{FLMetier}
 \alias{FLMetier-methods}
 \alias{FLMetier,FLCatch-method}
  \alias{FLMetier,FLCatches-method}

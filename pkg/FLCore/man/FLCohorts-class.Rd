@@ -1,6 +1,5 @@
 \name{FLCohorts}
 \docType{class}
-\alias{FLCohorts}
 \alias{FLCohorts-class}
 \title{Class FLCohorts}
 \description{

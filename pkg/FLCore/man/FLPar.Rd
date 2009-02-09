@@ -1,5 +1,6 @@
 \name{FLPar}
 \docType{methods}
+\alias{FLPar}
 \alias{FLPar-methods}
 \alias{FLPar,array-method}
 \alias{FLPar,missing-method}

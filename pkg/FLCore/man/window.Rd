@@ -23,7 +23,7 @@
 \item{signature(x=FLlst) :}{The window method is applied to each element in the list.}
 }}
 \author{The FLR Team}
-\seealso{\link{window}}
+\seealso{\link[stats]{window}, \link{Extract-FLCore}}
 \examples{
 flq <- FLQuant(rnorm(50), dimnames=list(age=1:5, year=1990:2000))
 window(flq, start=1995, end=1998)

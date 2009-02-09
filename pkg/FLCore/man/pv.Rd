@@ -5,14 +5,8 @@
 \alias{pv,FLQuant-method}
 \title{Population variability}
 \description{
-  The \code{pv} method computes the population variability (\emph{pv}) of an \code{FLQuant}
-  object.
-
-  Population variability is defined as:
-
-  \deqn{latex}{ascii}
-
-
+  The \code{pv} method computes the population variability (\emph{pv}) of an 
+  \code{FLQuant} object.
 }
 \section{Generic function}{
  pv(object) 

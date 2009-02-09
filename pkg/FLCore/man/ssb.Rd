@@ -44,7 +44,7 @@
 }}
 
 \author{The FLR Team}
-\seealso{ \link{FLComp} \link{FLStock}}
+\seealso{ \link{FLBiol-class} \link{FLStock-class}}
 \examples{
  data(ple4)
  units(harvest(ple4)) # check the units of the harvest slot

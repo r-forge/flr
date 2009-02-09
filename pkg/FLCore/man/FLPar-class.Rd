@@ -1,6 +1,5 @@
 \name{FLPar}
 \docType{class}
-\alias{FLPar}
 \alias{FLPar-class}
 \title{Class FLPar}
 \description{

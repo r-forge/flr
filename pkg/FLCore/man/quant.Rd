@@ -22,6 +22,17 @@
 \item{ signature(object=FLQuant,value=ANY) :}{Set the name of the first dimension of an \code{FLQuant} object.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
-\examples{}
+\seealso{ \link{FLQuant-class}, \link{FLCohort-class}}
+\examples{
+# quant is 'quant' by default
+quant(FLQuant())
+
+flq <- FLQuant(rnorm(80), dim=c(4,20), quant='age')
+
+quant(flq)
+
+quant(flq) <- 'length'
+
+summary(flq)
+}
 \keyword{methods}

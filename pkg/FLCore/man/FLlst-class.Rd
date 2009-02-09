@@ -1,6 +1,5 @@
 \name{FLlst}
 \docType{class}
-\alias{FLlst}
 \alias{FLlst-class}
 \title{Class FLlst}
 \description{

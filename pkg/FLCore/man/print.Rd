@@ -3,13 +3,14 @@
 \alias{print,FLQuant-method}
 \title{Method print}
 \description{
-    \code{print} prints its argument and returns it invisibly (via \link{invisible}(x)).
+  \code{print} prints its argument and returns it invisibly (via 
+  \link[base]{invisible}(x)).
 }
 \section{Generic function}{
  print(x) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=FLQuant) :}{Describe method}
+\item{ signature(x=FLQuant) :}{Prints the cntent of the object.}
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }

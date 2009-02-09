@@ -1,5 +1,6 @@
 \name{FLModel}
 \docType{methods}
+\alias{FLModel}
 \alias{FLModel-methods}
 \alias{FLModel,formula-method}
 \alias{FLModel,missing-method}

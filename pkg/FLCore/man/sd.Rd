@@ -14,7 +14,7 @@
 \item{signature(x=FLModel,na.rm=missing) :}{Standard deviation of a FLModel object}
 }}
 \author{The FLR Team}
-\seealso{\code{\link{sd}}, \code{\link{FLModel}} }
+\seealso{\code{\link[stats]{sd}}, \code{\link{FLModel}} }
 \examples{
 data(nsher)
 sd(nsher)

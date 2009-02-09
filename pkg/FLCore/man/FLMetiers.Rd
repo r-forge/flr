@@ -1,5 +1,6 @@
 \name{FLMetiers}
 \docType{methods}
+\alias{FLMetiers}
 \alias{FLMetiers-methods}
 \alias{FLMetiers,ANY-method}
  \alias{FLMetiers,missing-method}

@@ -1,5 +1,6 @@
 \name{FLlst}
 \docType{methods}
+\alias{FLlst}
 \alias{FLlst-methods}
 \alias{FLlst,ANY-method}
 \alias{FLlst,missing-method}

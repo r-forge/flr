@@ -1,5 +1,6 @@
 \name{FLIndices}
 \docType{methods}
+\alias{FLIndices}
 \alias{FLIndices-methods}
 \alias{FLIndices,ANY-method}
  \alias{FLIndices,missing-method}

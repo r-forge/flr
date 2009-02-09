@@ -9,7 +9,7 @@
   Standard display of an object contents in an interactive session. Objects of class
   \code{\link{FLQuant-class}} with length > 1 along the sixth dimension (\emph{iter})
   are output in a summarised form, as \code{median (mad)}, where mad is the median 
-  absolute deviation. See \code{\link{mad}}.
+  absolute deviation. See \code{\link[stats]{mad}}.
 }
 \section{Generic function}{
  show(object) 
@@ -21,5 +21,13 @@
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+# no 'iter'
+flq <- FLQuant(rnorm(80), dim=c(4,20), quant='age', units='kg')
+flq
+
+# with 'iter'
+flq <- FLQuant(rnorm(800), dim=c(4,20,1,1,1,10), quant='age', units='kg')
+flq
+}
 \keyword{methods}

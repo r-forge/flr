@@ -2,11 +2,11 @@
 \alias{r}
 \alias{r-methods}
 \alias{r,FLBiol-method}
-\title{Method for calculating intrinsic rate of increase from an FLBiol object}
+\title{Intrinsic rate of increase from an FLBiol object}
 \description{
 	For an \code{FLBiol} object with the mortality-at-age, fecundity and spwn data 
-	present in the object it calculates the intrinsic rate of increase r for the 
-	given population.
+	present in the object slots, this method calculates the intrinsic rate of increase r 
+  for the given population.
 
 	It does this using two methods:
 
@@ -30,16 +30,12 @@ To chose the method used to estimate r (Euler-Lotka or Leslie matrix) we supply 
 'el' or 'leslie' as the 'method' argument (see below). To calculate r along years or cohorts
 by supply either 'year' or 'cohort' as the 'by' argument (see below).
 
-The method can handle Monte Carlo samples (i.e. with iterations) in either the fec, m or both 
-slots required to calculate r and the conversion is done internally so that we obtain 
-an \code{FLQuant} of the correct dimensions.
+The method can handle Monte Carlo samples (i.e. with iterations) in either the fec, m or both slots required to calculate r and the conversion is done internally so that we obtain an \code{FLQuant} of the correct dimensions.
 }
 \value{
 	An object of class \code{\link{FLQuant-class}}.
 }
-\references{}
 \author{FLR Team}
-\note{}
 \seealso{\code{\link{FLBiol-class}}}
 \examples{\dontrun{
 

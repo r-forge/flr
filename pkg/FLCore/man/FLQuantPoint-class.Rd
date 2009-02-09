@@ -1,6 +1,5 @@
 \name{FLQuantPoint}
 \docType{class}
-\alias{FLQuantPoint}
 \alias{FLQuantPoint-class}
 \title{Class FLQuantPoint}
 \description{

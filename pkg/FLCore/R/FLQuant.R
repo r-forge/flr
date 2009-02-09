@@ -1028,7 +1028,7 @@ setMethod('pv', signature(object='FLQuant'),
 	{
 		# dimensions (currently working for (1,n,1,1,1,1)
 		if(any(dim(object)[c(1,3:6)] != rep(1,5)))
-			stop('pv method is currently defined for year time series, dim = c(1,n,1,1,1,1)')
+			stop('the pv method is currently defined for yearly time series only, dim = c(1,n,1,1,1,1)')
 
 		# delete NAs
 		object <- as.vector(object)

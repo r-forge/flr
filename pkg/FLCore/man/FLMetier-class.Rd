@@ -1,6 +1,5 @@
 \name{FLMetier-class}
 \docType{class}
-\alias{FLMetier}
 \alias{FLMetier-class}
 \title{Class FLMetier}
 \description{The \code{FLMetier} class is an internal class of FLFleet storing all 

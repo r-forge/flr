@@ -1,6 +1,5 @@
 \name{FLQuants}
 \docType{class}
-\alias{FLQuants}
 \alias{FLQuants-class}
 \title{Class FLQuants}
 \description{

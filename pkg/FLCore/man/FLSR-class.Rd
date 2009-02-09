@@ -1,6 +1,5 @@
 \name{FLSR}
 \docType{class}
-\alias{FLSR}
 \alias{FLSR-class}
 \title{Class FLSR}
 \description{

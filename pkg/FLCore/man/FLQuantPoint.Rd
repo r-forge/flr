@@ -1,5 +1,6 @@
 \name{FLQuantPoint}
 \docType{methods}
+\alias{FLQuantPoint}
 \alias{FLQuantPoint-methods}
 \alias{FLQuantPoint,FLQuant-method}
 \title{Method FLQuantPoint}

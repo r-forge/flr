@@ -1,6 +1,5 @@
 \name{FLStocks}
 \docType{class}
-\alias{FLStocks}
 \alias{FLStocks-class}
 \title{Class FLStocks}
 \description{

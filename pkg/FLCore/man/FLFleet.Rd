@@ -1,5 +1,6 @@
 \name{FLFleet}
 \docType{methods}
+\alias{FLFleet}
 \alias{FLFleet-methods}
 \alias{FLFleet,FLFleet-method}
 \alias{FLFleet,FLMetiers-method}

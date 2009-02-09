@@ -1,6 +1,5 @@
 \name{FLIndices}
 \docType{class}
-\alias{FLIndices}
 \alias{FLIndices-class}
 \title{Class FLIndices}
 \description{

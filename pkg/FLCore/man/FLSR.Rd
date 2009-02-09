@@ -1,5 +1,6 @@
 \name{FLSR}
 \docType{methods}
+\alias{FLSR}
 \alias{FLSR-methods}
 \alias{FLSR,ANY-method}
 \alias{FLSR,missing-method}

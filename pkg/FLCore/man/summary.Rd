@@ -28,7 +28,7 @@
 \item{ signature(object=FLModel) :}{Returns the name, desc and content of model-related slots}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} , \link{summary}}
+\seealso{\link[base]{summary}}
 \examples{
 summary(ple4)
 

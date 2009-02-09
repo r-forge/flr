@@ -9,7 +9,8 @@
 \alias{revenue,FLFleet-method}
 \title{Method revenue}
 \description{
-    Calculates the revenue from elements of an FLFleet object as the sum of the landings weight * price.
+  Calculates the revenue from elements of an FLFleet object as the sum of the landings 
+  weight-at-quant times its price by quant.
 }
 \section{Generic function}{
  revenue(object)
@@ -28,5 +29,9 @@
     ple.rev <- revenue(catches(metier(bt4,"TBB"),"ple"))
     # Calculate revenue of the catches in the metier
     TBB.rev <- revenue(metier(bt4,"TBB"))
+
+    \dontrun{
+    plot(sol.rev, type='b', ylab='revenues (euros)', xlab='')
+    }
 }
 \keyword{methods}

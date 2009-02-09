@@ -9,16 +9,28 @@
 \alias{range<-,FLComp-method}
 \title{Method range}
 \description{
-  Extraction and modification of range slot in complex FLR classes
+  Extraction and modification of the \emph{range} slot from objects of any class
+  inheriting from \code{\link{FLComp-class}}.
 }
 \section{Generic function}{
  range(x, i) 
- quant<-(x, i, value) 
+ range<-(x, i, value) 
 }
 \section{Methods}{\describe{
-\item{ signature(x=FLComp) :}{Get the name of the first dimension of an \code{FLQuant} object.}
+\item{ signature(x=FLComp, i=missing) :}{Returns the \emph{range} slot.}
+\item{ signature(x=FLComp, i=character) :}{Returns the selected element(s) from the \emph{range} slot.}
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+# example FLStock
+data(ple4)
+
+range(ple4)
+
+range(ple4, 'plusgroup')
+
+range(ple4, 'plusgroup') <- 14
+
+}
 \keyword{methods}

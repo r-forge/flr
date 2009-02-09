@@ -1,5 +1,6 @@
 \name{FLCohorts}
 \docType{methods}
+\alias{FLCohorts}
 \alias{FLCohorts-methods}
 \alias{FLCohorts,ANY-method}
 \alias{FLCohorts,missing-method}

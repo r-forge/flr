@@ -10,8 +10,8 @@
 \alias{propagate,FLPar-method}
 \title{Extend an FLQuant along the iter dimension}
 \description{
-  \code{FLQuant} or other FLR objects with a single iteration (length of 1 in the sixth
-  dimension) can be extended using the \code{propagate} method. The \code{type} argument
+  FLR objects with a single iteration (length of 1 in the sixth dimension) can be
+  extended using the \code{propagate} method. The \code{type} argument
   selects whether the new iterations are filled with the content of the first iteration 
   (\code{type='all'}) or left empty (\code{type='first'}).
 
@@ -25,8 +25,8 @@
 \section{Arguments}{
   \describe{
     \item{object :}{An FLR object to extend.}
-    \item{fill.iter :}{Copy the first iteration along the new ones ('TRUE') or leave
-      them empty ('FALSE').}
+    \item{fill.iter :}{Copy the first iteration along the new ones ('TRUE'), the default,
+    or leave them empty ('FALSE').}
     \item{iter :}{Number of iterations.}
   }
 }

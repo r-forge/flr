@@ -1,11 +1,10 @@
 \name{sweep}
 \docType{methods}
-\alias{sweep-methods}
 \alias{sweep,FLQuant-method}
 \title{Sweep out FLQuant Summaries}
 \description{
-  Return an FLQuant obtained from an input FLQuant by sweeping out a summary
-  statistic.
+  Return an \code{FLQuant} obtained from an input \code{FLQuant} by sweeping out a summary
+  statistic along the selected dimensions.
 }
 \section{Generic function}{
 sweep(x, MARGIN, STATS, FUN="-", check.margin=TRUE, \dots)
@@ -31,7 +30,7 @@ sweep(x, MARGIN, STATS, FUN="-", check.margin=TRUE, \dots)
 }
 \author{The FLR Team}
 \seealso{
-   \code{\link{apply}}
+   \code{\link[base]{sweep}}
 }
 \examples{
    data(ple4)

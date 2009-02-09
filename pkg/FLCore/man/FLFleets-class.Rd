@@ -1,6 +1,5 @@
 \name{FLFleets}
 \docType{class}
-\alias{FLFleets}
 \alias{FLFleets-class}
 \title{Class FLFleets}
 \description{

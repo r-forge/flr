@@ -1,5 +1,6 @@
 \name{FLFleets}
 \docType{methods}
+\alias{FLFleets}
 \alias{FLFleets-methods}
 \alias{FLFleets,ANY-method}
  \alias{FLFleets,missing-method}

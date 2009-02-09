@@ -12,13 +12,11 @@
  transform(\_data, \dots)
 }
 \section{Methods}{\describe{
-\item{signature(\_data=ANY) :}{New S4 generic based on \code{\link{transform}} in the base 
-  package.}
 \item{signature(\_data=FLComp) :}{Method for all complex FLR classes that extend 
-  \code{\link{FLComp}}}
+  \code{\link{FLComp-class}}}
 }}
 \author{The FLR Team}
-\seealso{\code{\link{transform}}}
+\seealso{\code{\link[base]{transform}}}
 \examples{
 data(ple4)
 ple4 <- transform(ple4, m.spwn=m.spwn+0.2)

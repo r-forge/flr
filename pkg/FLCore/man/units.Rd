@@ -10,9 +10,9 @@
 \alias{units<-,FLCohort,character-method}
 \title{units attribute for FLQuant objects}
 \description{
-  Object of class \code{\link{FLQuant}} contain an \code{units} attribute of class 
+  Objects of class \code{\link{FLQuant}} contain an \code{units} attribute of class 
   \code{character}. This should be used to store the corresponding units of measurement.
-  This attribute can be dirctly accessed and modified using the \code{units} and 
+  This attribute can be directly accessed and modified using the \code{units} and 
   \code{units<-} methods.
 
   For complex objects, \code{units} will return a named list containing the attributes of
@@ -32,7 +32,7 @@
 \item{ signature(x=FLCohort) :}{Describe method}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLComp} }
+\seealso{ \link{FLQuant-class}, \link{FLPar-class}, \link{FLCohort-class} }
 \examples{
 flq <- FLQuant(rnorm(100), dim=c(5,20), units='kg')
 units(flq)

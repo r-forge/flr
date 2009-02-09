@@ -5,9 +5,8 @@
 \alias{qapply,FLComp,function-method}
 \title{Method qapply}
 \description{
- Returns a list or else an object of type X
- containing values obtained by applying a function to margins for each
- FLQuant in a composite FLR object.
+ Returns a \code{\link[base]{list}} or \code{\link{FLlst}} containing values obtained by 
+ applying a function to margins for each FLQuant in a composite FLR object.
 }
 \section{Generic function}{
  qapply(X,FUN) 
@@ -16,7 +15,7 @@
 \item{ signature(X=FLComp,FUN=function) :}{
 
  \code{FUN} is typically a function name to be searched for from the environment
- of the call to \code{apply}. Additional arguments to the function are specified
+ of the call to \code{qapply}. Additional arguments to the function are specified
  after the function name.
  
  \code{qapply} enables functions to be applied easily to all \code{FLQuants} of

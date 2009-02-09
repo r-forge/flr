@@ -6,9 +6,10 @@
 \alias{rnorm,numeric,FLQuantPoint,missing-method}
 \title{Method rnorm}
 \description{
-  Generates random numbers following a normal distribution. mean and sd can be specified
-  as two FLQuant objects, of the same dimensions, but any of the two could be given as
-  a numeric. In this case the value will be reused accordingly.
+  Generates random numbers following a normal distribution. \emph{mean} and 
+  \emph{sd} can be specified as objects of class \code{\link{FLQuant-class}}, of the same 
+  dimensions, but any of the two could be given as a numeric. In this case the value will 
+  be reused accordingly.
 }
 \section{Generic function}{
  rnorm(n, mean, sd) 
@@ -23,7 +24,7 @@
   mean and sd from the mean and var iterations.}
 }}
 \author{The FLR Team}
-\seealso{ \link{FLQuant} }
+\seealso{\link[stats]{rnorm}, \link{FLQuant-class}, \link{FLQuantPoint-class} }
 \examples{
    data(ple4)
    rnorm(10,mean=harvest(ple4)[,"2001"], sd=harvest(ple4)[,"2001"])
