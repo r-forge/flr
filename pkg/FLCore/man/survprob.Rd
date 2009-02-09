@@ -17,7 +17,7 @@ survprob(object, ...)
 }
 \details{
   Calculates the survival probability-at-quant given the mortality information in an 
-  \code{\link{FLBiol-class]}  object - survival probability from one year to the next is 
+  \code{\link{FLBiol-class}}  object - survival probability from one year to the next is 
   simply exp(-M) and the survival probaiblity to a given quant is merely the product
   along the quant dimension of the individual survival probabilities. 
 }

@@ -5,7 +5,7 @@
 \description{
   Draws a conditional scatter plot matrix.
 
- See the help page in \code[lattice]{lattice} for a full description of each plot and all
+ See the help page in \code{\link[lattice]{lattice}} for a full description of each plot and all
  possible arguments.
 }
 \section{Generic function}{
