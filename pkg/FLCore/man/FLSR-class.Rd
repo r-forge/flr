@@ -18,21 +18,21 @@
   of them.
 }
 \section{Slots}{\describe{
-\item{name (\code{character}):}{Name of the object}
-\item{desc (\code{character}):}{Description of the object}
-\item{range (\code{numeric}):}{Range}
-\item{rec (\code{FLQuant}):}{Recruitment series}
-\item{ssb (\code{FLQuant}):}{Index of reproductive potential}
-\item{fitted (\code{FLQuant}):}{Estimated values for rec}
-\item{residuals (\code{FLQuant}):}{Residuals obtained from the model fit}
-\item{covar (\code{FLQuants}):}{Covariates for SR model}
-\item{model (\code{formula}):}{Model formula}
-\item{lkhd (\code{function}):}{Likelihood function}
-\item{initial (\code{function}):}{Function returning initial parameter values for the optimizer}
-\item{params (\code{FLPar}):}{Estimated parameter values}
-\item{logLik (\code{logLik}):}{Value of the log-likelihood}
-\item{vcov (\code{array}):}{Variance-covariance matrix}
-\item{details (\code{list}):}{extra information on the model fit procedure}
+\item{name}{Name of the object. \code{character}.}
+\item{desc}{Description of the object. \code{character}.}
+\item{range}{Range. \code{numeric}.}
+\item{rec}{Recruitment series. \code{FLQuant}.}
+\item{ssb}{Index of reproductive potential. \code{FLQuant}.}
+\item{fitted}{Estimated values for rec. \code{FLQuant}.}
+\item{residuals}{Residuals obtained from the model fit. \code{FLQuant}.}
+\item{covar}{Covariates for SR model. \code{FLQuants}.}
+\item{model}{Model formula. \code{formula}.}
+\item{lkhd}{Likelihood function. \code{function}.}
+\item{initial}{Function returning initial parameter values for the optimizer. \code{function}.}
+\item{params}{Estimated parameter values. \code{FLPar}.}
+\item{logLik}{Value of the log-likelihood. \code{logLik}.}
+\item{vcov}{Variance-covariance matrix. \code{array}.}
+\item{details}{extra information on the model fit procedure. \code{list}.}
 }}
 \section{Extends}{\describe{
 FLModel

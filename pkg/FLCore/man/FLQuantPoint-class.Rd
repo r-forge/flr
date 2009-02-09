@@ -17,8 +17,8 @@
 
 }
 \section{Slots}{\describe{
-\item{.Data (\code{array}):}{The main array holding the computed statistics}
-\item{units (\code{character}):}{Units of measurement}
+\item{.Data}{The main array holding the computed statistics. \code{array}.}
+\item{units}{Units of measurement. \code{character}.}
 }}
 \section{Extends}{\describe{
 FLQuant

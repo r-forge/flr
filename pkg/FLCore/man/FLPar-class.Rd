@@ -12,7 +12,7 @@
  median etc.) and for plotting the parameter samples.
 }
 \section{Slots}{\describe{
-\item{.Data (\code{array}):}{Describe slot}
+\item{.Data}{Describe slot. \code{array}.}
 }}
 \section{Extends}{\describe{
 
