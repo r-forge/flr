@@ -29,7 +29,7 @@ ifelse(test, yes, no)
 \item{signature(test=ANY,yes=FLArray,no=numeric):}{Substitutes values in \emph{test} with the corresponding elements in \emph{yes} for which \emph{test} is \code{TRUE}, by \emph{no} otherwise.}
 \item{signature(test=ANY,yes=numeric,no=FLArray):}{Substitutes values in \emph{test} with \emph{yes} for those elements where \emph{test} is \code{TRUE}, by the corresponding element in \emph{no} otherwise.}
 \item{signature(test=ANY,yes=FLArray,no=numeric):}{Substitutes values in \emph{test} with the corresponding elements in \emph{yes} for which \emph{test} is \code{TRUE}, by those in \emph{no} otherwise.}
-}
+}}
 \author{The FLR Team}
 \seealso{
    \code{\link[base]{ifelse}}
