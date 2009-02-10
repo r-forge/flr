@@ -361,32 +361,3 @@ setMethod("as.data.frame", signature(x="FLArray", row.names="missing",
 	}
 )   # }}}
 
-# ifelse {{{
-if (!isGeneric("ifelse")) 
-	setGeneric("ifelse", useAsDefault = ifelse)
-
-setMethod('ifelse', signature(test='ANY', yes='FLArray', no='numeric'),
-  function(test, yes, no)
-  {
-    ans <- ifelse(test, yes@.Data, no)
-    new(class(test), ans, units=units(yes))
-  }
-)
-
-setMethod('ifelse', signature(test='ANY', yes='numeric', no='FLArray'),
-  function(test, yes, no)
-  {
-    ans <- ifelse(test, yes, no@.Data)
-    new(class(test), ans, units=units(no))
-  }
-)
-
-setMethod('ifelse', signature(test='ANY', yes='FLArray', no='FLArray'),
-  function(test, yes, no)
-  {
-    if(class(yes) != class(no))
-      stop("")
-    ans <- ifelse(test, yes@.Data, no@.Data)
-    new(class(yes), ans, units=units(yes))
-  }
-) # }}}

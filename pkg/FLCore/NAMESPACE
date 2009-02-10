@@ -14,7 +14,8 @@ importFrom("stats",
   "median",
   "var",
   "rpois",
-  "sd")
+  "sd",
+  "window")
 importFrom("graphics",
 	"plot"
 )
@@ -219,7 +220,6 @@ exportMethods(
 	"harvest.spwn",
 	"harvest.spwn<-",
 	"histogram",
-  "ifelse",
   "index",
   "index<-",
   "index.q",
