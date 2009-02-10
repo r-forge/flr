@@ -22,8 +22,8 @@ FLRConstSRR getSRType(SEXP v)
    if (!isVector(v) || !isString(v))
       return FLRConst_Mean;;
 
-    SEXP dims     = GET_DIM(v),
-         dimnames = GET_DIMNAMES(v);
+    SEXP dims     = GET_DIM(v);
+         //dimnames = GET_DIMNAMES(v);
 
     short n = length(dims);
 
