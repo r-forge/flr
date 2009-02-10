@@ -219,6 +219,7 @@ exportMethods(
 	"harvest.spwn",
 	"harvest.spwn<-",
 	"histogram",
+  "ifelse",
   "index",
   "index<-",
   "index.q",
