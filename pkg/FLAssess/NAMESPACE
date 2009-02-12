@@ -1,0 +1,37 @@
+useDynLib("FLAssess")
+import("FLCore")
+importFrom("graphics",
+  "plot")
+exportClasses("FLAssess",
+  "FLAssess.retro",
+  "FLSepVPA.control",
+  "FLSP",
+  "FLVPA")
+export("assess",
+  "FLSepVPA.control",
+  "pellatom",
+  "PellaTom",
+  "pellatomC",
+  "schaefer",
+  "Schaefer",
+  "retro")
+exportMethods(
+  "+",
+  "assess",
+	"harvest",
+	"index.hat",
+	"index.hat<-",
+	"index.name",
+	"index.name<-",
+	"index.range",
+	"index.range<-",
+	"index.res",
+	"index.res<-",
+  "merge",
+  "plot",
+  "retro",
+  "SepVPA",
+  "stf",
+  "summary",
+  "VPA",
+  "FLSP")
