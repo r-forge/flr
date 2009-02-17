@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 10 Feb 2009 22:56
+# Last Change: 16 Feb 2009 23:24
 # $Id:  $
 
 # Reference:
@@ -11,6 +11,7 @@
 
 # TODO Tue 10 Feb 2009 10:56:25 PM CET IM:
 
+library(FLAssess)
 
 data(ple4)
 

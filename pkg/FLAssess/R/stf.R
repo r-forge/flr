@@ -3,15 +3,34 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 03 Apr 2008 11:22
+# Last Change: 13 Feb 2009 11:27
 # $Id: stf.R,v 1.3 2008/06/11 10:32:24 ltkell Exp $
 
 ## stf :: Generic           {{{
 if (!isGeneric("stf"))
     setGeneric("stf", function(object,...)
-	    value <- standardGeneric("stf"))
+	    standardGeneric("stf"))
 
 ## stf in FLStock objects
+
+setMethod('stf', signature(object='FLStock'),
+  function(object, nyrs=3, wts.nyrs=3, fbar.nyrs=wts.nyrs, f.rescale=FALSE,
+    arith.mean=TRUE, na.rm=TRUE)
+  {
+    dims <- dims(object)
+
+    # window object
+    object <- window(object, end=dims$maxyear + nyrs)
+
+    # average slots
+
+
+    # f.rescale
+
+  }
+)
+
+# {{{
 setMethod("stf", signature(object="FLStock"),
    function(object,nyrs=3,wts.nyrs=3,fbar.nyrs=3,f.rescale=FALSE,arith.mn=TRUE, na.rm=TRUE)
    {
@@ -33,7 +52,7 @@ setMethod("stf", signature(object="FLStock"),
 
     return(res)
     }
-)
+) # }}}
 
 stf.old<-function(object,nyrs=3,wts.nyrs=3,fbar.nyrs=NA,disc.nyrs=NA,arith.mn=TRUE, na.rm=TRUE)
 {
