@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 17 Feb 2009 12:57
+# Last Change: 18 Feb 2009 13:40
 # $Id:  $
 
 # Reference:
@@ -25,5 +25,6 @@ plot(fsp)
 # Fix r
 fsp <- fmle(fsp, start=list(K=300000, Q=10, sigma2=10), fixed=list(r=0.5))
 
+data(nhke)
 
-nhke <- fmle(nhke, start=list(K=2000, r=0.5, Q=100, sigma2=50))
+#nhke <- fmle(nhke, start=list(K=2000, r=0.5, Q=100, sigma2=50))
