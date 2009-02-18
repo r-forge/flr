@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 16 Feb 2009 23:24
+# Last Change: 17 Feb 2009 12:57
 # $Id:  $
 
 # Reference:
@@ -16,10 +16,14 @@ library(FLAssess)
 data(ple4)
 
 # create a new FLSP from ple4
-fsp <- FLSP(catch=catch(ple4), index=stock(ple4), mpar=2, delta=1, name='ple4SP',
-  model='pellatom')
+fsp <- FLSP(index=stock(ple4), catch=catch(ple4), mpar=2, delta=1, name='ple4SP', model='pellatomC')
 
-fsp <- fmle(fsp, start=list(r=0.5, K=300000, Q=10, sigma2=10))
+fsp <- fmle(fsp, start=list(r=0.5, K=500000, Q=10, sigma2=10), lower=c(1e-8, max(catch(fsp)), 1e-8, 1e-8), upper=c(1, Inf, Inf, Inf))
 
 plot(fsp)
 
+# Fix r
+fsp <- fmle(fsp, start=list(K=300000, Q=10, sigma2=10), fixed=list(r=0.5))
+
+
+nhke <- fmle(nhke, start=list(K=2000, r=0.5, Q=100, sigma2=50))
