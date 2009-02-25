@@ -1,0 +1,11 @@
+useDynLib("FLBRP")
+import("FLCore",
+       "FLash")
+importFrom("graphics",
+  "plot")
+exportClasses("FLBRP",
+  "refpts")
+exportMethods("show",
+  "refpts",
+  "FLBRP")
+
