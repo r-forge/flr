@@ -1,0 +1,39 @@
+DESIGN of SQLIteFL
+------------------
+
+- One database per session (by default SQLiteFL.db).
+
+- One set of tables per object, named as original object: catch --> catch.meta, catch.data
+
+- FLQuant: 2 tables, called object.data (as in as.data.frame(object)) and object.meta. 
+    meta to store 'quant' and 'units'
+
+- FLStock: 4 tables, called object.data (as in as.data.frame(object)), object.meta, object.slots and object.range. 
+  meta: name, desc, quant, class
+  slots: name, units, quant, year, unit season, area, iter (dim)
+
+- sql to insert an FLR object into sqlite. Returns an 'sqliteFL' handler
+
+- show(): SELECT FROM data/meta object[,,1,1,1,1] and create FLQuant.
+
+- '[': SELECT FROM data object[i,j,k,l,m,n] and create FLQuant.
+
+- '[<-': INSERT INTO data object[i,j,k,l,m,n] VALUES
+
+- quant(), unit(): SELECT quant/unit FROM meta
+
+- quant<-, unit<-: INSERT INTO meta (quant/unit) VALUES new
+
+- dimnames, dim: store in meta? How fast to retrieve from data table?
+
+- summary: directly from data and meta.
+
+- window: alter data
+
+- trim: alter data
+
+- iter: SELECT * FROM name WHERE (iter=iter)
+
+- iter<-: INSERT INTO data WHERE (iter=iter)
+
+- propagate: INSERT INTO data WHERE (iter=i)

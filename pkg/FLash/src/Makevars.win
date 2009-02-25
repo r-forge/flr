@@ -1,0 +1,4 @@
+PKG_LIBS=../inst/libs/adolc.dll $(R_HOME)/library/FLCore/libs/FLCore.dll
+PKG_CXXFLAGS=-I../inst/include
+COPTFLAG=-O0
+CXXOPTFLAG=-O0

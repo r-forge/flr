@@ -1,0 +1,4 @@
+RHOME = `R RHOME`
+PKG_LIBS=$(RHOME)/library/FLCore/libs/FLCore.so -ladolc
+PKG_CXXFLAGS= -I/usr/include/adolc -I/usr/local/include/adolc
+

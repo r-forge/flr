@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 16:58
+# Last Change: 25 Feb 2009 18:45
 # $Id:  $
 
 # catch et al {{{
@@ -238,11 +238,11 @@ equilibrium.<-  function(object)
     ## check iters in FLquants and sr.params
     #if (dims(object)$iter==1 && dims(object@sr.params)$iter ==1) OK
     #if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1) OK
-    if      (dims(object)$iter!=1 && dims(object@sr.params)$iter ==1)
-       m(object)<-propagate(m(object),iter=dims(sr.params(object))$iter)
-    else if (dims(object)$iter!=1 && dims(object@sr.params)$iter !=1)
-       if (dims(object)$iter!= dims(object@sr.params)$iter)
-          stop("Iters in sr.params don't match")
+    if      (dims(object)$iter!=1 && dims(object@params)$iter ==1)
+       m(object)<-propagate(m(object),iter=dims(params(object))$iter)
+    else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
+       if (dims(object)$iter!= dims(object@params)$iter)
+          stop("Iters in params don't match")
           
     srCode<-setSRCode(object)
 

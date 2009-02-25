@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 16:12
+# Last Change: 25 Feb 2009 19:01
 # $Id:  $
 
 
@@ -64,7 +64,7 @@ setClass("FLBRP",
       "FLComp",
       model          ="formula",
       params         ="FLPar",
-      refpts         ="array",
+      refpts         ="refpts",
       fbar           ="FLQuant",
       fbar.obs       ="FLQuant",
       landings.obs   ="FLQuant",
@@ -99,7 +99,7 @@ setClass("FLBRP",
         minfbar=as.numeric(NA), maxfbar=as.numeric(NA))),
       model        =formula(rec~a),
       params       =FLPar(as.numeric(unlist(list(a=as.double(NA))))),
-      refpts          =array(as.numeric(NA),dim=c(5,8,1),dimnames=list(refpt=c("f0.1","fmax","spr.30","msy","mey"),val=c("harvest","yield","rec","ssb","biomass","revenue","cost","profit"),iter=1)),
+      refpts          =new('refpts'),
       fbar            =new("FLQuant"),
       landings.sel    =new("FLQuant"),
       fbar.obs        =new("FLQuant"),

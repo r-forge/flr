@@ -1,0 +1,11 @@
+useDynLib("SQLiteFL")
+import("FLCore")
+exportClasses("sqliteFL",
+"sqliteFLQuant",
+"sqliteFLComp")
+exportMethods("sql",
+  "catch",
+  "catch<-",
+  "summary",
+  "dims")
+
