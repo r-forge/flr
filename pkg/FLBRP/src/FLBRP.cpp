@@ -57,6 +57,33 @@ extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR)
    return brp.Return(xbrp); 
    }
 
+extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR)
+   {
+   FLBRP brp(xbrp, xSR);
+
+   brp.Equilibrium();
+ 
+   return brp.ReturnStockN(); 
+   }
+
+extern "C" SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR)
+   {
+   FLBRP brp(xbrp, xSR);
+
+   brp.Equilibrium();
+ 
+   return brp.ReturnLandingsN(); 
+   }
+
+extern "C" SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR)
+   {
+   FLBRP brp(xbrp, xSR);
+
+   brp.Equilibrium();
+ 
+   return brp.ReturnDiscardsN(); 
+   }
+
 extern "C" SEXPDLLExport ypr(SEXP xbrp, SEXP xSR)
    {
    FLBRP brp(xbrp, xSR);
@@ -109,7 +136,7 @@ FLBRP::FLBRP(SEXP x, SEXP xSR)
    {
    Init( x);
 
-   setSR(PROTECT(duplicate(GET_SLOT(x, install("sr.params")))), xSR);
+   setSR(PROTECT(duplicate(GET_SLOT(x, install("params")))), xSR);
 
    UNPROTECT(1);
    }
@@ -376,7 +403,6 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
          ssb      = spr*sr_params[iIter][iUnit][1]-sr_params[iIter][iUnit][2];
          recruits = sr_params[iIter][iUnit][1]*ssb/(ssb+sr_params[iIter][iUnit][2]);
       break;
-         
       case FLRConst_Ricker:
          ssb      = log(spr*sr_params[iIter][iUnit][1])/sr_params[iIter][iUnit][2];
          recruits = sr_params[iIter][iUnit][1]*ssb*exp(-sr_params[iIter][iUnit][2]*ssb);
@@ -410,6 +436,21 @@ SEXP FLBRP::Return(SEXP x)
    SET_SLOT(x, install("harvest"),      harvest.Return());       
   
    return x;
+   }
+
+SEXP FLBRP::ReturnStockN(void)
+   {       
+   return stock_n.Return();
+   }
+
+SEXP FLBRP::ReturnLandingsN(void)
+   {       
+   return landings_n.Return();
+   }
+
+SEXP FLBRP::ReturnDiscardsN(void)
+   {       
+   return discards_n.Return();
    }
 
 SEXP FLBRP::ReturnSpr(void)
@@ -464,12 +505,6 @@ double t1=0;
    return x.Return();
    }
 
-
-SEXP FLBRP::ReturnLandingsN(void)
-   {       
-   return landings_n.Return();
-   }
-   
 
 double  FLBRP::QuadSearch(int iIter)
    {

@@ -3,11 +3,18 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 18:45
+# Last Change: 26 Feb 2009 00:09
 # $Id:  $
 
-# catch et al {{{
-# catch
+#landings.n
+setMethod('landings.n', signature(object='FLBRP'),
+  function(object)
+  {
+    .Call('landings_n', object, SRchar2code(SRModelName(object@model)))
+  }
+)
+
+# catch {{{
 setMethod('catch', signature(object='FLBRP'),
   function(object) {
     res <- landings(object) + discards(object)
@@ -16,9 +23,10 @@ setMethod('catch', signature(object='FLBRP'),
     else
       warning("units of discards and landings do not match")
     return(res)
-  })
+  }
+) # }}}
 
-# catch.n
+# catch.n {{{
 setMethod('catch.n', signature(object='FLBRP'),
   function(object) {
     res <- landings.n(object) + discards.n(object)
@@ -27,7 +35,8 @@ setMethod('catch.n', signature(object='FLBRP'),
     else
       warning("units of discards.n and landings.n do not match")
     return(res)
-  })
+  }
+) # }}}
 
 # catch.wt
 setMethod('catch.wt', signature(object='FLBRP'),
@@ -102,9 +111,11 @@ setMethod('discards.hat', signature(object='FLBRP'),
 
 # landings
 setMethod('landings', signature(object='FLBRP'),
-  function(object) {
+  function(object)
+  {
     return(apply(sweep(landings.n(object),c(1,3:6),landings.wt(object),"*"),2,sum))
-    })
+  }
+)
 
 setGeneric('landings.hat', function(object, ...)
 		standardGeneric('landings.hat'))

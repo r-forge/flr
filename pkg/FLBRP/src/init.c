@@ -25,6 +25,7 @@ extern SEXPDLLExport spr(SEXP xbrp, SEXP xSR);
 extern SEXPDLLExport hcrYield(SEXP xbrp, SEXP xSR, SEXP xFbar);
 extern SEXPDLLExport computeRefpts(SEXP xbrp, SEXP xref, SEXP xSR);
 extern SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR);
+extern SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR);
 
 static const R_CallMethodDef callMethods[] = {
         {"Adolc_gr_tapeless", (DL_FUNC) &Adolc_gr_tapeless, 1},
@@ -33,6 +34,7 @@ static const R_CallMethodDef callMethods[] = {
         {"spr", (DL_FUNC) &spr, 2},
         {"hcrYield", (DL_FUNC) &hcrYield, 3},
         {"computeRefpts", (DL_FUNC) &computeRefpts, 3},
+        {"landings_n", (DL_FUNC) &landings_n, 2},
         {"brp", (DL_FUNC) &brp, 3},
         {NULL, NULL, 0}
 };
@@ -49,4 +51,5 @@ void
         R_RegisterCCallable("FLBRP", "hcrYield", (DL_FUNC) &hcrYield);
         R_RegisterCCallable("FLBRP", "computeRefpts", (DL_FUNC) &computeRefpts);
         R_RegisterCCallable("FLBRP", "brp", (DL_FUNC) &brp);
+        R_RegisterCCallable("FLBRP", "brp", (DL_FUNC) &landings_n);
      }

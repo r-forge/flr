@@ -43,7 +43,10 @@ public:
    SEXP brp(SEXP);
 
    SEXP Return(SEXP);
+   SEXP ReturnStockN(void);
    SEXP ReturnLandingsN(void);
+   SEXP ReturnDiscardsN(void);
+   SEXP ReturnCatchN(void);
 
    SEXP ReturnYpr(void);
    SEXP ReturnSpr(void);
