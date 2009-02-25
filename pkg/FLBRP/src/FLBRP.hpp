@@ -1,6 +1,13 @@
 #ifndef _INC_FLBRP
 #define _INC_FLBRP
 
+#ifdef WIN32
+   #include <windows.h>
+   #define SEXPDLLExport __declspec(dllexport) SEXP __cdecl    
+#else
+   #define SEXPDLLExport SEXP    
+#endif
+
 #include "FLCoreClasses.hpp"
 #include <adouble.h>
 

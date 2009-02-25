@@ -1,11 +1,35 @@
 # class - «Short one line description»
-# FLBRP/R/class
+# FLBRP/R/class.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 12:56
+# Last Change: 25 Feb 2009 16:12
 # $Id:  $
 
+
+# refpts class {{{
+validrefpts <- function(object)
+{
+  # array must have 3 dims
+  if(length(dim(object)) != 3 )
+    return('object array must have 3 dimensions')
+
+  # names of dimnames must be refpt, value and iter
+  if(!all.equal(names(dimnames(object)), c('refpt', 'value', 'iter')))
+    return('dimnames must be refpt, value and iter')
+
+  return(TRUE)
+}
+
+setClass('refpts', representation('FLPar'),
+  prototype=prototype(new('FLPar', array(NA, dim=c(5,8,1),
+  dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), value=c('harvest', 
+  'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
+  validity=validrefpts)
+
+# }}}
+
+# FLBRP {{{
 validFLBRP <- function(object)
 {
   # (1) FLQuant objects must share dimnames[1:5] as follows
@@ -104,4 +128,4 @@ setClass("FLBRP",
       vcost           =new("FLQuant"),
       fcost           =new("FLQuant"),
       validity        =validFLBRP
-      ))
+      ))  # }}}

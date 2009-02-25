@@ -3,22 +3,8 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 13:03
+# Last Change: 25 Feb 2009 15:19
 # $Id:  $
-
-# refpts Class {{{
-validrefpts <- function(object)
-{
-  return(TRUE)
-}
-
-setClass('refpts', representation('FLPar'),
-  prototype=prototype(new('FLPar', array(NA, dim=c(5,8,1),
-  dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), value=c('harvest', 
-  'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
-  validity=validrefpts)
-
-# }}}
 
 # show {{{
 setMethod('show', signature(object='refpts'),
@@ -39,17 +25,30 @@ if (!isGeneric("refpts"))
 
 # refpts(array)
 setMethod('refpts', signature(object='array'),
-  function(object, ...)
+  function(object, iter=1, ...)
   {
-    #
-    
-    # look for dimnames in array, and reshape
-    if(is.null(dimnames(object)))
-        dimnames(object) <- list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'),
-        value=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost',
-        'profit'), iter=1:dim(object)[3])
+    # reshape object
+    if(length(dim(object)) == 2)
+      object <- array(object, dim=c(dim(object), iter))
 
-    return(new('refpts', object))
+    # add dimnames
+    if(is.null(dimnames(object)))
+    {  
+      # default dnames
+      dimnames(object) <- list(
+        refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey')[1:dim(object)[1]],
+        value=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost',
+          'profit')[1:dim(object)[2]],
+        iter=1:dim(object)[3])
+     }
+
+     return(new('refpts', object))
+  }
+)
+setMethod('refpts', signature(object='missing'),
+  function(...)
+  {
+    refpts(array(NA, dim=c(5,8)), ...)
   }
 )
 # }}}

@@ -2,13 +2,6 @@
 #include <adouble.h>
 typedef adtl::adouble adouble;
 
-#ifdef WIN32
-   #include <windows.h>
-   #define SEXPDLLExport __declspec(dllexport) SEXP __cdecl    
-#else
-   #define SEXPDLLExport SEXP    
-#endif
-
 #include "FLBRP.hpp"
 
 double t1, t2, t3, t4;

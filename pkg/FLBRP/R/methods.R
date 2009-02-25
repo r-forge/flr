@@ -1,23 +1,10 @@
-### Methods ####################################################################
+# methods - «Short one line description»
+# FLBRP/R/methods.R
 
-# Test if an object is of FLBRP class
-is.FLBRP <- function(x)
-	return(is(x, "FLBRP"))
-  
-# Calcs mean over the mean.yrs
-mnYr<-function(object,mnYrs=3,arithMn=TRUE,na.rm=TRUE)
-  {
-  if      (is.numeric(mnYrs) & length(mnYrs)==1) mnYrs<-as.character(dims(object)$maxyear-(mnYrs:1)+1)
-  else if (is.numeric(mnYrs) & length(mnYrs) >1) mnYrs<-as.character(mnYrs)
-  else if (!is.character(mnYrs)) stop("mnYrs not valid")
-
-  if (arithMn)
-    res <-    apply(    object[,mnYrs], c(1,3:6),mean,na.rm=na.rm)
-  else
-    res <-exp(apply(log(object[,mnYrs]),c(1,3:6),mean,na.rm=na.rm))
-
-  return(res)
-  }
+# Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Iago Mosqueira, Cefas
+# Last Change: 25 Feb 2009 16:58
+# $Id:  $
 
 # catch et al {{{
 # catch
@@ -27,7 +14,7 @@ setMethod('catch', signature(object='FLBRP'),
     if (units(discards(object)) == units(landings(object)))
 		  units(res) <- units(discards(object))
     else
-      warning("unit s of discards and landings do not match")
+      warning("units of discards and landings do not match")
     return(res)
   })
 
@@ -217,8 +204,7 @@ setMethod('profit', signature(object='FLBRP'),
     return(apply(revenue(object),2,sum)-costs(object))
     })
 
-
-## harvest		{{{
+## harvest
 setMethod("harvest", signature(object="FLBRP", catch="missing"),
 	function(object)
 		return(slot(object, "harvest"))
@@ -236,7 +222,7 @@ setMethod("harvest<-", signature(object="FLBRP", value="numeric"),
 		slot(object, "harvest")[] <- value
 		return(object)
 	}
-) # }}}
+)
 
 setGeneric('profit.hat', function(object, ...)
 		standardGeneric('profit.hat'))
@@ -333,11 +319,11 @@ setMethod('brp', signature(object='FLBRP'),
     ## check iters in FLquants and sr.params
     #if (dims(object)$iter==1 && dims(object@sr.params)$iter ==1) OK
     #if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1) OK
-    if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1)
-       m(object)<-propagate(m(object),iter=dims(sr.params(object))$iter)
-    else if (dims(object)$iter!=1 && dims(object@sr.params)$iter !=1)
-       if (dims(object)$iter!= dims(object@sr.params)$iter)
-          stop("Iters in sr.params don't match")
+    if (dims(object)$iter==1 && dims(object@params)$iter !=1)
+       m(object)<-propagate(m(object),iter=dims(params(object))$iter)
+    else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
+       if (dims(object)$iter!= dims(object@params)$iter)
+          stop("Iters in params don't match")
 
     srCode<-setSRCode(object)
 
@@ -383,23 +369,7 @@ setMethod('hcrYield', signature(object='FLBRP'),
         return(sum(stock.n(res)[,1]*stock.wt(res)[,1]*mat(res)[,1]*exp(-m(res)*m.spwn(res)[,1])))
         })
 
-setRefpts<-function(harvest=NULL,ssb=NULL,yield=NULL,s.r=NULL,y.r=NULL)
-   {
-   refpts<-array(as.numeric(NA),dim=c(5,5),dimnames=list(c("f0.1","fmax","spr.30","msy","mey"),c("harvest","yield","rec","ssb","profit")))
-
-   if (is.null(harvest)) a.<- as.null(1) else a.<- cbind(harvest,NA,   NA, NA, NA)
-   if (is.null(ssb))     b.<- as.null(1) else b.<- cbind(NA,     NA,   NA, ssb,NA)
-   if (is.null(yield))   c.<- as.null(1) else c.<- cbind(NA,     yield,NA, NA, NA)
-   if (is.null(s.r))     d.<- as.null(1) else d.<- cbind(NA,     NA,   1,  s.r,NA)
-   if (is.null(y.r))     e.<- as.null(1) else e.<- cbind(NA,     y.r,  1,  NA, NA)
-
-   refpts<-cbind(t(refpts),a.,b.,c.,d.,e.)
-
-   dmns<-list(iter=1,val=dimnames(refpts)[[1]],refpt=dimnames(refpts)[[2]])
-   
-   FLPar(array(refpts,dim=lapply(dmns,length),dimnames=dmns))
-   }
-
+# as.FLSR {{{
 setMethod("as.FLSR", signature(object="FLBRP"),
     function(object, ...)
 	{
@@ -423,6 +393,7 @@ setMethod("as.FLSR", signature(object="FLBRP"),
    }
 ) # }}}
 
+# as.FLStock {{{
 setMethod("as.FLStock", signature(object="FLBRP"),
     function(object, ...){
     validObject(object)
@@ -457,4 +428,4 @@ setMethod("as.FLStock", signature(object="FLBRP"),
     desc(res)<-paste("Created by coercion from 'FLStock'", desc(object))
 
     return(res)
-    })
+    })  # }}}
