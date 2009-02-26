@@ -81,11 +81,15 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     return(x)
     }) 
 
+#************ FLBiol and fleet methods ***********************************************
+
 setMethod("fwd", signature(object='FLBiol', fleets='FLCatch'),
     function(object,fleets,ctrl,
                 sr           =NULL,
                 sr.residuals =NULL, sr.residuals.mult=TRUE)
 {                         
+    object<-FLBiols(object)
+    if (length(object)>1) stop("Only implemented for 1 FLBiol")
     fleets <- FLFleets(FLFleet(fleets))
     fwd(object=object, fleets=fleets, ctrl=ctrl,sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
 }
@@ -96,6 +100,8 @@ setMethod("fwd", signature(object='FLBiol', fleets='FLFleet'),
                 sr           =NULL,
                 sr.residuals =NULL, sr.residuals.mult=TRUE)
 {                         
+    object<-FLBiols(object)
+    if (length(object)>1) stop("Only implemented for 1 FLBiol")
     fwd(object = object, fleets = FLFleets(fleets), ctrl=ctrl, sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
 }
 )
@@ -105,29 +111,60 @@ setMethod("fwd", signature(object='FLBiol', fleets='FLFleets'),
                 sr           =NULL,
                 sr.residuals =NULL, sr.residuals.mult=TRUE)
    {                         
+    object<-FLBiols(object)
+    if (length(object)>1) stop("Only implemented for 1 FLBiol")
+    fwd(object = object, fleets = fleets(fleets), ctrl=ctrl, sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
+
+})
+
+setMethod("fwd", signature(object='FLBiols', fleets='FLCatch'),
+    function(object,fleets,ctrl,
+                sr           =NULL,
+                sr.residuals =NULL, sr.residuals.mult=TRUE)
+{                         
+    if (length(object)>1) stop("Only implemented for 1 FLBiol")
+    fleets <- FLFleets(FLFleet(fleets))
+    fwd(object=object, fleets=fleets, ctrl=ctrl,sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
+}
+)
+
+setMethod("fwd", signature(object='FLBiols', fleets='FLFleet'),
+    function(object,fleets,ctrl,
+                sr           =NULL,
+                sr.residuals =NULL, sr.residuals.mult=TRUE)
+{                         
+    if (length(object)>1) stop("Only implemented for 1 FLBiol")
+    fwd(object = object, fleets = FLFleets(fleets), ctrl=ctrl, sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
+}
+)
+
+# The main one
+setMethod("fwd", signature(object='FLBiols', fleets='FLFleets'),
+    function(object,fleets,ctrl,
+                sr           =NULL,
+                sr.residuals =NULL, sr.residuals.mult=TRUE)
+   {                         
 
     # Turn biol into FLBiols
-    object<-FLBiols(object)
+#    object<-FLBiols(object)
     if (length(object)>1) stop("Only implemented for 1 FLBiol")
     biol  <-CheckNor1(object)
 
-    ## Sort out fleets input into FLFleets 
-    if (is(fleets,"FLCatch")){
-        fleets<-FLFleets(FLFleet())
-        fleets[[1]]@metiers[[1]]<-as(fleets,"FLMetier")}
-   if (is(fleets,"FLFleet"))
-      fleets<-FLFleets(fleets)
-   #if (!is(fleets,"FLFleets"))
-   #   stop("'fleets' not of type FLFleet(s)")     
-   if (length(fleets)>1)
-      stop("Only implemented for 1 FLFleet")
-   fleets<-CheckNor1(fleets)
+#    ## Sort out fleets input into FLFleets 
+#    if (is(fleets,"FLCatch")){
+#        fleets<-FLFleets(FLFleet())
+#        fleets[[1]]@metiers[[1]]<-as(fleets,"FLMetier")}
+#   if (is(fleets,"FLFleet"))
+#      fleets<-FLFleets(fleets)
+#   #if (!is(fleets,"FLFleets"))
+#   #   stop("'fleets' not of type FLFleet(s)")     
+    if (length(fleets)>1) stop("Only implemented for 1 FLFleet")
+    fleets<-CheckNor1(fleets)
 
-    if (!is(ctrl,"fwdControl"))
-        stop("ctrl not a valid 'fwdControl' object")
-    ## check iters in ctrl are '1 or n' and correct if necessary
+    if (!is(ctrl,"fwdControl")) stop("ctrl not a valid 'fwdControl' object")
+
+    # check iters in residuals, biol and ctrl@trgtArray are 1 or n and correct trgtArray if necessary
     its<-(unique(c(length(dimnames(ctrl@trgtArray)$iters), dims(object[[1]])$iters, length(dimnames(sr.residuals)$iter))))
-
     if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n")
     if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
           dmns<-dimnames(ctrl@trgtArray)
