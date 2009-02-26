@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 10:27
+# Last Change: 26 Feb 2009 11:41
 # $Id:  $
 
 # landings.n  {{{
@@ -362,16 +362,14 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
 ) # }}}
 
 # spr0 {{{
-setGeneric('spr0', function(object, ...)
-		standardGeneric('spr0'))
-setMethod('spr0', signature(object='FLBRP'),
-  function(object)
+setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
+  function(ssb)
   {
-    params(object)<-FLPar(1)
-    model( object)<-formula(rec~a)
-    fbar(object) <- FLQuant(0)
+    params(ssb)<-FLPar(1)
+    model(ssb)<-formula(rec~a)
+    fbar(ssb) <- FLQuant(0)
     
-    res<-.Call("spr", object, SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
+    res<-.Call("spr", ssb, SRchar2code(SRModelName(ssb@model)), PACKAGE = "FLBRP")
 
     return(res)
   }
