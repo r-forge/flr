@@ -48,15 +48,6 @@ extern "C" SEXPDLLExport Adolc_gr_tapeless(SEXP xX)
    return Grad;
    }
 
-extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR)
-   {
-   FLBRP brp(xbrp, xSR);
-
-   brp.Equilibrium();
- 
-   return brp.Return(xbrp); 
-   }
-
 extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR)
    {
    FLBRP brp(xbrp, xSR);
