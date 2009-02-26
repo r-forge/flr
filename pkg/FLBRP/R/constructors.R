@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 00:05
+# Last Change: 26 Feb 2009 14:46
 # $Id:  $
 
 # FLBRP {{{
@@ -20,7 +20,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
 
 # FLBRP(object=FLStock, sr=missing)
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
-  function(object, model=formula(rec~a), params=FLPar(as.numeric(NA), params='a'),
+  function(object, model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=seq(0, 4, 0.04), nyrs=3, na.rm=TRUE, mean='arithmetic', ...)
   {
     # dims & dimnames
