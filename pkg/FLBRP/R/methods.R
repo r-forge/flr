@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 09:38
+# Last Change: 26 Feb 2009 10:27
 # $Id:  $
 
 # landings.n  {{{
@@ -297,84 +297,82 @@ setMethod('ypr', signature(object='FLBRP'),
   }
 ) # }}}
 
+# computeRefpts {{{
 setGeneric('computeRefpts', function(object, ...)
 		standardGeneric('computeRefpts'))
 setMethod('computeRefpts', signature(object='FLBRP'),
  function(object)
     {
-    ## check iters in FLquants and sr.params
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter ==1) OK
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1) OK
-    if (dims(object)$iter!=1 && dims(object@sr.params)$iter ==1)
-       {
-       if (dims(m(object))$iter==1) m(object)<-propagate(m(object),iter=dims(sr.params(object))$iter)
-       }
-    else if (dims(object)$iter!=1 && dims(object@sr.params)$iter !=1)
-       if (dims(object)$iter!= dims(object@sr.params)$iter)
-          stop("Iters in sr.params don't match")
+      #
+      if (dims(object)$iter!=1 && dims(object@params)$iter ==1)
+      {
+        if (dims(m(object))$iter==1)
+          m(object)<-propagate(m(object),iter=dims(params(object))$iter)
+      }
+      else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
+        if (dims(object)$iter!= dims(object@params)$iter)
+          stop("Iters in params don't match")
 
-    srCode<-setSRCode(object)
-    
-    res<-.Call("computeRefpts", object, refpts(object), srCode, PACKAGE = "FLBRP")
+    res <- .Call("computeRefpts", object, refpts(object),
+      SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
 
-    return(res)
-    return(FLPar(res))
-    })
+    return(refpts(res))
+  }
+) # }}}
 
+#  brp  {{{
 setGeneric('brp', function(object, ...)
 		standardGeneric('brp'))
 setMethod('brp', signature(object='FLBRP'),
   function(object)
     {
-    ## check iters in FLquants and sr.params
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter ==1) OK
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1) OK
     if (dims(object)$iter==1 && dims(object@params)$iter !=1)
+       m(object) <- propagate(m(object), iter=dims(params(object))$iter)
+    else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
+       if (dims(object)$iter!= dims(object@params)$iter)
+          stop("Iters in params don't match")
+
+    res<-.Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
+      PACKAGE = "FLBRP")
+
+    units(harvest(res))<-"f"
+
+    return(res)
+  }
+) # }}}
+
+# hcrYield  {{{
+setGeneric('hcrYield', function(object, fbar, ...)
+		standardGeneric('hcrYield')
+)
+setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
+  function(object, fbar)
+  {
+    if      (dims(object)$iter!=1 && dims(object@params)$iter ==1)
        m(object)<-propagate(m(object),iter=dims(params(object))$iter)
     else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
        if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    srCode<-setSRCode(object)
+    res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
+      fbar, PACKAGE = "FLBRP")
 
-    res<-.Call("brp", object, refpts(object), srCode, PACKAGE = "FLBRP")
+    return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
+   }
+) # }}}
 
-    units(harvest(res))<-"f"
+# spr0 {{{
+setGeneric('spr0', function(object, ...)
+		standardGeneric('spr0'))
+setMethod('spr0', signature(object='FLBRP'),
+  function(object)
+  {
+    params(object)<-FLPar(1)
+    model( object)<-formula(rec~a)
+    fbar(object) <- FLQuant(0)
+    
+    res<-.Call("spr", object, SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
 
     return(res)
-    })
-
-setGeneric('hcrYield', function(object,fbar,...)
-		standardGeneric('hcrYield')
-)
-setMethod('hcrYield', signature(object='FLBRP'),
-  function(object,fbar)
-    {
-    ## check iters in FLquants and sr.params
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter ==1) OK
-    #if (dims(object)$iter==1 && dims(object@sr.params)$iter !=1) OK
-    if      (dims(object)$iter!=1 && dims(object@sr.params)$iter ==1)
-       m(object)<-propagate(m(object),iter=dims(sr.params(object))$iter)
-    else if (dims(object)$iter!=1 && dims(object@sr.params)$iter !=1)
-       if (dims(object)$iter!= dims(object@sr.params)$iter)
-          stop("Iters in sr.params don't match")
-
-    if (!(inherits(fbar,"FLQuant")) && inherits(fbar,"numeric")) fbar<-as.FLQuant(fbar)
-    if (!(inherits(fbar,"FLQuant"))) stop("fbar has to be of type FLQuant")
-
-    srCode<-setSRCode(object)
-
-    res<-.Call("hcrYield", object, srCode, fbar, PACKAGE = "FLBRP")
-
-    #return(res)
-    return(apply(sweep(res,c(1,3:6),landings.wt(object),"*"),2,sum))
-   }
-)
-
-  setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
-     function(ssb)
-        {
-        res<-equilibrium(FLBRP(ssb,fbar=0))
-
-        return(sum(stock.n(res)[,1]*stock.wt(res)[,1]*mat(res)[,1]*exp(-m(res)*m.spwn(res)[,1])))
-        })
+  }
+) # }}}

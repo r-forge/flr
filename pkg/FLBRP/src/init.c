@@ -47,7 +47,6 @@ void
         R_registerRoutines(info, NULL, callMethods, NULL, NULL);
         R_useDynamicSymbols(info, FALSE);
         R_RegisterCCallable("FLBRP", "Adolc_gr_tapeless", (DL_FUNC) Adolc_gr_tapeless);
-        R_RegisterCCallable("FLBRP", "equilibrium", (DL_FUNC) &equilibrium);
         R_RegisterCCallable("FLBRP", "ypr", (DL_FUNC) &ypr);
         R_RegisterCCallable("FLBRP", "spr", (DL_FUNC) &spr);
         R_RegisterCCallable("FLBRP", "hcrYield", (DL_FUNC) &hcrYield);
