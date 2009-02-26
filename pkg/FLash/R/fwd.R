@@ -5,7 +5,6 @@
 # Last Change: 27 Nov 2007 19:20
 # $Id: fwd.R,v 1.44 2009/02/26 09:26:11 fas00 Exp $
 
-  
 ## fwd(FLStock)
 if (!isGeneric("fwd"))
   setGeneric("fwd", function(object, fleets, ...)
@@ -57,8 +56,8 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
 #     if (!all(as.character(ctrl@target[,"quantity"]) %in% quantityNms()))
 #         stop("invalid quantity in control target")
          
-     if (any(as.character(ctrl@target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
-         stop("fwd(FLStock) not implemented for 'effort','costs','revenue' or 'profit'")         
+#     if (any(as.character(ctrl@target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
+#         stop("fwd(FLStock) not implemented for 'effort','costs','revenue' or 'profit'")         
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
           
