@@ -6,6 +6,7 @@ importFrom("graphics",
 exportClasses("FLBRP",
   "refpts")
 exportMethods(
+  "coerce",
   "catch",
   "catch.hat",
   "catch.n",

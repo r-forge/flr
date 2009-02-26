@@ -3,66 +3,42 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 09:39
+# Last Change: 26 Feb 2009 10:49
 # $Id:  $
 
 # as.FLSR {{{
-setMethod("as.FLSR", signature(object="FLBRP"),
-    function(object, ...)
+setAs('FLBRP', 'FLSR',
+  function(from)
 	{
-        validObject(object)
 
-        rec <- rec.obs(object)
-        ssb <- ssb.obs(object)
-
-        # create the FLSR object
-
-        sr <- new("FLSR", rec = rec,ssb = ssb, name = object@name,
-            desc = "'rec' and 'ssb' slots obtained from a 'FLBRP' object")
-
-        slot(sr, "fitted")    <- FLQuant(dimnames = dimnames(slot(sr, "rec")))
-        slot(sr, "residuals") <- FLQuant(dimnames = dimnames(slot(sr, "rec")))
-
-        units(slot(sr, "fitted")) <- units(slot(sr, "rec"))
-
-        validObject(sr)
-        return(sr)
+    FLSR(name=from@name, desc = "'rec' and 'ssb' slots obtained from a 'FLBRP' from",
+      rec=rec.obs(from), ssb=ssb.obs(from))
+    
+    if(validObject(sr))
+      return(sr)
+    else
+      stop("invalid object created. Please check input object")
    }
 ) # }}}
 
 # as.FLStock {{{
-setMethod("as.FLStock", signature(object="FLBRP"),
-    function(object, ...){
-    validObject(object)
+setAs('FLBRP', 'FLStock',
+  function(from)
+  {
+    # FLStock()
+    res <- FLStock(stock.wt=stock.wt(from), catch.wt=catch.wt(from),
+      discards.wt=discards.wt(from), landings.wt=landings.wt(from),
+      m=m(from), mat=mat(from), harvest=harvest(from),
+      harvest.spwn=harvest.spwn(from), m.spwn=m.spwn(from),
+      stock=stock(from), stock.n=stock.n(from),
+      discards=discards(from), discards.n=discards.n(from),
+      catch=catch(from), catch.n=catch.n(from),
+      name=name(from), desc=paste("Created by coercion from 'FLStock'", desc(object)))
 
-    dms     <-dimnames(m(oidBrp))
-    dms$year<-dimnames(fbar(object))$year
-    res     <-FLStock(FLQuant(NA,dimnames=dms))
-
-    stock.wt(   res)[]<-stock.wt(   object)
-    catch.wt(   res)[]<-catch.wt(   object)
-    discards.wt(res)[]<-discards.wt(object)
-    landings.wt(res)[]<-landings.wt(object)
-
-    m(            res)[]<-m(           object)
-    mat(          res)[]<-mat(         object)
-    harvest(      res)[]<-harvest(     object)
-    units(harvest(res))<-units(harvest(object))
-    harvest.spwn (res)[]<-harvest.spwn(object)
-    m.spwn(       res)[]<-m.spwn(      object)
-
-    stock(     res)[]<-stock(     object)
-    stock.n(   res)[]<-stock.n(   object)
-    discards(  res)[]<-discards(  object)
-    discards.n(res)[]<-discards.n(object)
-    catch(     res)[]<-catch(     object)
-    catch.n(   res)[]<-catch.n(   object)
-
-    range(res,c("min","max","plusgroup","minfbar","maxfbar"))<-range(res,c("min","max","plusgroup","minfbar","maxfbar"))
-    range(res,c("minyear","maxyear"))<-c(dims(fbar(object))$minyear,dims(fbar(object))$maxyear)
-
-    name(res)<-name(object)
-    desc(res)<-paste("Created by coercion from 'FLStock'", desc(object))
-
+    # range
+    range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear',
+      'maxyear')])
+    
     return(res)
-    })  # }}}
+  }
+) # }}}
