@@ -1,9 +1,9 @@
 # refpts - «Short one line description»
-# refpts
+# FLBRP/R/refpts.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 12:11
+# Last Change: 26 Feb 2009 14:31
 # $Id:  $
 
 # show {{{

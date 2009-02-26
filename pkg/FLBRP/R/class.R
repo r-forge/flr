@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 12:16
+# Last Change: 26 Feb 2009 13:21
 # $Id:  $
 
 
@@ -98,7 +98,7 @@ setClass("FLBRP",
         plusgroup=as.numeric(NA), minyear=as.numeric(NA), maxyear=as.numeric(NA),
         minfbar=as.numeric(NA), maxfbar=as.numeric(NA))),
       model        =formula(rec~a),
-      params       =FLPar(as.numeric(unlist(list(a=as.double(NA))))),
+      params       =FLPar(1),
       refpts          =new('refpts'),
       fbar            =new("FLQuant"),
       landings.sel    =new("FLQuant"),

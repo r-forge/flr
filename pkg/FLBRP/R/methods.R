@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 12:10
+# Last Change: 26 Feb 2009 14:31
 # $Id:  $
 
 # landings.n  {{{
@@ -332,7 +332,7 @@ setMethod('brp', signature(object='FLBRP'),
        if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    res<-.Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
+    res <- .Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
       PACKAGE = "FLBRP")
 
     units(harvest(res))<-"f"
@@ -369,7 +369,7 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
     model(ssb)<-formula(rec~a)
     fbar(ssb) <- FLQuant(0)
     
-    res<-.Call("spr", ssb, SRchar2code(SRModelName(ssb@model)), PACKAGE = "FLBRP")
+    res <- .Call("spr", ssb, SRchar2code(SRModelName(ssb@model)), PACKAGE = "FLBRP")
 
     return(res)
   }
