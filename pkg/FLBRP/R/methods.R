@@ -1,9 +1,9 @@
-# methods - «Short one line description»
+# methods - methods for FLBRP
 # FLBRP/R/methods.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 14:31
+# Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
+# Last Change: 26 Feb 2009 16:14
 # $Id:  $
 
 # landings.n  {{{
@@ -356,7 +356,6 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
 
     res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
       fbar, PACKAGE = "FLBRP")
-
     return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
    }
 ) # }}}

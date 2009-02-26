@@ -2,8 +2,8 @@
 # FLBRP/R/refpts.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 14:31
+# Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
+# Last Change: 26 Feb 2009 16:14
 # $Id:  $
 
 # show {{{
