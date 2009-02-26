@@ -46,12 +46,13 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     #if (is.character(sr)) stop(sr)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
-    its<-sort(unique(c(length(dimnames(ctrl@trgtArray)$iter), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
-    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n") 
-    if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
-          dmns<-dimnames(ctrl@trgtArray)
-          dmns$iters<-1:its[2]
-          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
+    ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
+#    its<-sort(unique(c(length(dimnames(ctrl@trgtArray)$iter), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
+#    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n") 
+#    if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
+#          dmns<-dimnames(ctrl@trgtArray)
+#          dmns$iters<-1:its[2]
+#          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
      if (!is(ctrl@target[,"quantity"],"factor"))
         ctrl@target[,"quantity"]<-factor(ctrl@target[,"quantity"],quantityNms())
@@ -161,15 +162,19 @@ setMethod("fwd", signature(object='FLBiols', fleets='FLFleets'),
     if (length(fleets)>1) stop("Only implemented for 1 FLFleet")
     fleets<-CheckNor1(fleets)
 
+    yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
+    sr<-setSR(sr=sr, object=biol[[1]], yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
+
     if (!is(ctrl,"fwdControl")) stop("ctrl not a valid 'fwdControl' object")
 
     # check iters in residuals, biol and ctrl@trgtArray are 1 or n and correct trgtArray if necessary
-    its<-(unique(c(length(dimnames(ctrl@trgtArray)$iters), dims(object[[1]])$iters, length(dimnames(sr.residuals)$iter))))
-    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n")
-    if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
-          dmns<-dimnames(ctrl@trgtArray)
-          dmns$iters<-1:its[2]
-          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
+ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
+#    its<-(unique(c(length(dimnames(ctrl@trgtArray)$iters), dims(object[[1]])$iters, length(dimnames(sr.residuals)$iter))))
+#    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n")
+#    if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
+#          dmns<-dimnames(ctrl@trgtArray)
+#          dmns$iters<-1:its[2]
+#          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
      if (!is(ctrl@target[,"quantity"],"factor"))
         ctrl@target[,"quantity"]<-factor(ctrl@target[,"quantity"],quantityNms())
@@ -186,7 +191,6 @@ setMethod("fwd", signature(object='FLBiols', fleets='FLFleets'),
       }
    if (!validObject(ctrl))
        stop("ctrl not a valid 'fwdControl' object")
-   yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
 
 
     #browser()
@@ -228,7 +232,7 @@ setMethod("fwd", signature(object='FLBiols', fleets='FLFleets'),
 #         stop("iters in object and sr.residuals don't match")
     #sr<-setSR(sr=sr, object = object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
 #browser()
-    sr<-setSR(sr=sr, object=biol[[1]], yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
+#    sr<-setSR(sr=sr, object=biol[[1]], yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
    #if (is.character(sr)) 
    #   stop(sr)
 

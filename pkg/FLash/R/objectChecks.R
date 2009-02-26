@@ -45,3 +45,15 @@ chkFleets<-function(fleets){
             }}}
    }    
     
+chkTrgtArrayIters <- function(object,trgtArray,sr)
+{
+    if (is(object,'FLlst')) object <- object[[1]]
+    its<-sort(unique(c(length(dimnames(trgtArray)$iters), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
+    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n") 
+    if (length(its)==2 & dimnames(trgtArray)$iter == 1){
+        dmns<-dimnames(trgtArray)
+        dmns$iters<-1:its[2]
+        trgtArray<-array(trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
+    return(trgtArray)
+}
+
