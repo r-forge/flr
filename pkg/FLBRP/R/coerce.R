@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 10:49
+# Last Change: 26 Feb 2009 12:00
 # $Id:  $
 
 # as.FLSR {{{
@@ -33,7 +33,7 @@ setAs('FLBRP', 'FLStock',
       stock=stock(from), stock.n=stock.n(from),
       discards=discards(from), discards.n=discards.n(from),
       catch=catch(from), catch.n=catch.n(from),
-      name=name(from), desc=paste("Created by coercion from 'FLStock'", desc(object)))
+      name=name(from), desc=paste("Created by coercion from 'FLStock'", desc(from)))
 
     # range
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear',

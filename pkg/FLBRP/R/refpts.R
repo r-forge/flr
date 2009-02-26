@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 15:19
+# Last Change: 26 Feb 2009 12:11
 # $Id:  $
 
 # show {{{
@@ -48,7 +48,7 @@ setMethod('refpts', signature(object='array'),
 setMethod('refpts', signature(object='missing'),
   function(...)
   {
-    refpts(array(NA, dim=c(5,8)), ...)
+    refpts(array(as.numeric(NA), dim=c(5,8)), ...)
   }
 )
 # }}}

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 26 Feb 2009 11:41
+# Last Change: 26 Feb 2009 12:10
 # $Id:  $
 
 # landings.n  {{{
@@ -320,7 +320,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
   }
 ) # }}}
 
-#  brp  {{{
+# brp  {{{
 setGeneric('brp', function(object, ...)
 		standardGeneric('brp'))
 setMethod('brp', signature(object='FLBRP'),

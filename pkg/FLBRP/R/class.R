@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 19:01
+# Last Change: 26 Feb 2009 12:16
 # $Id:  $
 
 
@@ -22,7 +22,7 @@ validrefpts <- function(object)
 }
 
 setClass('refpts', representation('FLPar'),
-  prototype=prototype(new('FLPar', array(NA, dim=c(5,8,1),
+  prototype=prototype(new('FLPar', array(as.numeric(NA), dim=c(5,8,1),
   dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), value=c('harvest', 
   'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
   validity=validrefpts)
