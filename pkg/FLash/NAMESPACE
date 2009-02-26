@@ -1,2 +1,10 @@
 useDynLib("FLash")
 import("FLCore")
+export("calcF",
+       "expandAgeFLStock")
+exportClasses("fwdControl")
+exportMethods("fwd",
+              "fwdControl",
+              "+",
+              "show",
+            "setSR")

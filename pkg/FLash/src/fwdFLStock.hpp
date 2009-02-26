@@ -3,7 +3,7 @@
 
 #include "flc_adolc.hpp"
 #include "flc.hpp"
-//#include "FLCoreClasses_pointer.hpp"
+#include "FLCoreClasses_pointer.hpp"
 
 double norm(double *, int);
 
