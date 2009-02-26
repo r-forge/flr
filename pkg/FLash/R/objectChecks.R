@@ -57,3 +57,15 @@ chkTrgtArrayIters <- function(object,trgtArray,sr)
     return(trgtArray)
 }
 
+# check target quantity is factor and that it is currently implemented
+chkTargetQuantity <- function(target)
+{
+    quantityNms<- c("ssb","biomass","catch","landings","discards","f","z","f.landings","f.discards","effort","costs","revenue","profit","mnsz")
+    if (!is(target[,"quantity"],"factor"))
+        target[,"quantity"]<-factor(target[,"quantity"],quantityNms())
+    if (!all(as.character(target[,"quantity"]) %in% quantityNms()))
+        stop("invalid quantity in control target")
+    if (any(as.character(target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
+        stop("fwd not yet implemented for 'effort','costs','revenue' or 'profit'")         
+}
+
