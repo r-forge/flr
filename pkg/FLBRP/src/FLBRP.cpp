@@ -372,11 +372,11 @@ void FLBRP::hcrYield(SEXP xfbar)
 
             for (iArea=1; iArea<=nareas; iArea++)
                 {
-                double FMult    = fbar(1,iYr,iUnit,iSeason,iArea,iIter); 
+                double FMult    = _fbar(1,iYr,iUnit,iSeason,iArea,iIter); 
                 double recruits = Recruits(FMult, iIter);
                 harvest(iAge,iYr,iUnit,iSeason,iArea,iIter) = F;
-                catch_n                                        = stock_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*(F/Z)*(1-expZ);
-                catch_sel                                      = discards_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)+landings_sel(iAge,minyr,iUnit,iSeason,iArea,iIter);
+                catch_n = stock_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*(F/Z)*(1-expZ);
+                catch_sel = discards_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)+landings_sel(iAge,minyr,iUnit,iSeason,iArea,iIter);
                 discards_n(iAge,iYr,iUnit,iSeason,iArea,iIter) = catch_n*discards_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)/catch_sel;
                 landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter) = catch_n-discards_n(  iAge,minyr,iUnit,iSeason,iArea,iIter);
                 }

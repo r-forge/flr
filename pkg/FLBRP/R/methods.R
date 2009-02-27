@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 27 Feb 2009 12:53
+# Last Change: 27 Feb 2009 18:11
 # $Id:  $
 
 # landings.n  {{{
@@ -348,7 +348,10 @@ setGeneric('hcrYield', function(object, fbar, ...)
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
   {
-    if      (dims(object)$iter!=1 && dims(object@params)$iter ==1)
+    if(!identical(dim(fbar), dim(fbar(object))))
+      stop("input fbar must be the same length as fbar(object)")
+
+    if(dims(object)$iter!=1 && dims(object@params)$iter ==1)
        m(object)<-propagate(m(object),iter=dims(params(object))$iter)
     else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
        if (dims(object)$iter!= dims(object@params)$iter)
@@ -356,6 +359,7 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
 
     res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
       fbar, PACKAGE = "FLBRP")
+    
     return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
    }
 )
@@ -379,3 +383,12 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
     return(res)
   }
 ) # }}}
+
+setMethod('propagate', signature(object='FLBRP'),
+  function(object, iter, fill.iter=TRUE, ...)
+  {
+    res <- callNextMethod(...)
+    refpts(res) <- propagate(refpts(res), iter=iter, fill.iter=fill.iter)
+    return(res)
+  }
+)

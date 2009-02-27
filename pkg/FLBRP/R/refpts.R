@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:14
+# Last Change: 27 Feb 2009 18:08
 # $Id:  $
 
 # show {{{
@@ -12,7 +12,7 @@ setMethod('show', signature(object='refpts'),
   {
 		cat("An object of class \"refpts\":\n")
 		if(dim(object)[3] > 1)
-			cat("iters: ", dim(object)[1],"\n")
+			cat("iters: ", dim(object)[3],"\n")
     cat("\n")
     show(apply(object, 1:2, median, na.rm=TRUE))
   }
@@ -30,6 +30,8 @@ setMethod('refpts', signature(object='array'),
     # reshape object
     if(length(dim(object)) == 2)
       object <- array(object, dim=c(dim(object), iter))
+    else if (dim(object)[3] < iter)
+      object <- array(object, dim=c(dim(object)[-3], iter))
 
     # add dimnames
     if(is.null(dimnames(object)))
@@ -51,4 +53,23 @@ setMethod('refpts', signature(object='missing'),
     refpts(array(as.numeric(NA), dim=c(5,8)), ...)
   }
 )
+
+setMethod('refpts', signature(object='refpts'),
+  function(object, ...)
+  {
+    refpts(object@.Data, ...)
+  }
+)
+
 # }}}
+
+# propagate {{{
+setMethod('propagate', signature(object='refpts'),
+  function(object, iter, fill.iter=TRUE)
+  {
+    res <- refpts(object, iter=iter)
+    if(fill.iter== FALSE)
+      res[,,2:iter] <- as.numeric(NA)
+    return(res)
+   }
+) # }}}
