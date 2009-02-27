@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 27 Feb 2009 18:11
+# Last Change: 27 Feb 2009 23:11
 # $Id:  $
 
 # landings.n  {{{
@@ -384,11 +384,16 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
   }
 ) # }}}
 
+# propagate {{{
 setMethod('propagate', signature(object='FLBRP'),
-  function(object, iter, fill.iter=TRUE, ...)
+  function(object, iter, fill.iter=TRUE)
   {
-    res <- callNextMethod(...)
+    # FLQuant
+    res <- qapply(object, propagate, iter=iter, fill.iter=fill.iter)
+    # refpts
     refpts(res) <- propagate(refpts(res), iter=iter, fill.iter=fill.iter)
+    # params
+    params(res) <- propagate(params(res), iter=iter, fill.iter=fill.iter)
     return(res)
   }
-)
+) # }}}
