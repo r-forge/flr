@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:14
+# Last Change: 27 Feb 2009 11:33
 # $Id:  $
 
 # landings.n  {{{
@@ -288,8 +288,8 @@ setGeneric('ypr', function(object, ...)
 setMethod('ypr', signature(object='FLBRP'),
   function(object)
   {
-    sr.params(object)<-FLPar(1)
-    sr.model( object)<-formula(rec~a)
+    params(object)<-FLPar(1)
+    model( object)<-formula(rec~a)
     
     res<-.Call("ypr", object, SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
 
@@ -347,7 +347,7 @@ setGeneric('hcrYield', function(object, fbar, ...)
 )
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
-  {
+  {browser()
     if      (dims(object)$iter!=1 && dims(object@params)$iter ==1)
        m(object)<-propagate(m(object),iter=dims(params(object))$iter)
     else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
@@ -358,6 +358,12 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
       fbar, PACKAGE = "FLBRP")
     return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
    }
+)
+setMethod('hcrYield', signature(object='FLBRP', fbar='numeric'),
+  function(object, fbar)
+  {
+    hcrYield(object, FLQuant(fbar))
+  }
 ) # }}}
 
 # spr0 {{{

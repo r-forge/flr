@@ -1,6 +1,8 @@
 useDynLib("FLBRP")
-import("FLCore",
-       "FLash")
+import("FLCore")
+importFrom("FLash",
+  "SRModelName",
+  "SRchar2code")
 importFrom("graphics",
   "plot")
 exportClasses("FLBRP",

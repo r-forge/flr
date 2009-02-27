@@ -3,13 +3,18 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 20:07
+# Last Change: 27 Feb 2009 10:16
 # $Id:  $
 
 ## createFLAccesors		{{{
-createFLAccesors <- function(object, exclude=character(1)) {
+createFLAccesors <- function(class, exclude=character(1), include=missing) {
+  
+  object <- class
 
-	slots <- getSlots(class(object))[!names(getSlots(class(object)))%in%exclude]
+  if(!missing(include))
+  	slots <- getSlots(class)[include]
+  else
+  	slots <- getSlots(class)[!names(getSlots(class))%in%exclude]
 
 	defined <- list()
 
@@ -26,8 +31,8 @@ createFLAccesors <- function(object, exclude=character(1)) {
 		list(x=x))
 		)
 		eval(
-		substitute(setMethod(x, signature(y), function(object) return(slot(object, x))), list(x=x,
-			y=class(object)))
+		substitute(setMethod(x, signature(y), function(object) return(slot(object, x))),
+      list(x=x, y=class))
 		)
 		# create replacement method
 		xr <- paste(x, "<-", sep="")
@@ -37,11 +42,16 @@ createFLAccesors <- function(object, exclude=character(1)) {
 		)
 		eval(
 		substitute(setMethod(x, signature(object=y, value=v), function(object, value)
-			{slot(object, s) <- value; object}), list(x=xr, y=class(object), s=x,
-			v=unname(slots[x])))
+			{slot(object, s) <- value; if(validObject(object)) object else stop("")}),
+      list(x=xr, y=class, s=x, v=unname(slots[x])))
 		)
-		defined[[x]] <- c(x, xr, paste('alias{',x,',',class(object),'-method}', sep=''),
-			paste('\alias{',xr,',',class(object),',',unname(slots[x]), '-method}', sep=''),
+    if(any(unname(slots[x]) %in% c('FLArray', 'FLQuant', 'FLCohort', 'refpts', 'FLPar')))
+    eval(
+		substitute(setMethod(x, signature(object=y, value="numeric"), function(object, value)
+			{slot(object, s)[] <- value; object}), list(x=xr, y=object, s=x))
+		)
+		defined[[x]] <- c(x, xr, paste('alias{',x,',', class,'-method}', sep=''),
+			paste('\alias{',xr,',', class,',',unname(slots[x]), '-method}', sep=''),
 			paste('\alias{',x,'-methods}', sep=''),
 			paste('\alias{"',xr, '"-methods}', sep='')
 		)
@@ -49,5 +59,5 @@ createFLAccesors <- function(object, exclude=character(1)) {
 	return(defined)
 }	# }}}
 
-invisible(createFLAccesors(new("FLBRP"), exclude=c("range","name","desc","harvest",
+invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest",
   "landings.n", "stock.n", "discards.n")))

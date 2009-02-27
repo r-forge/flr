@@ -4,8 +4,6 @@ typedef adtl::adouble adouble;
 
 #include "FLBRP.hpp"
 
-double t1, t2, t3, t4;
-
 int RP_harvest=0,                
     RP_yield  =1,                
     RP_rec    =2,                
@@ -46,6 +44,15 @@ extern "C" SEXPDLLExport Adolc_gr_tapeless(SEXP xX)
    UNPROTECT(1);
 
    return Grad;
+   }
+
+extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR)
+   {
+   FLBRP brp(xbrp, xSR);
+
+   brp.Equilibrium();
+ 
+   return brp.Return(xbrp); 
    }
 
 extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR)
@@ -179,12 +186,9 @@ void FLBRP::Init(SEXP x)
       }
 
    fbar.Init(           GET_SLOT(x, install("fbar")));       
-   stock_n.Init(        GET_SLOT(x, install("stock.n")));       
-   landings_n.Init(     GET_SLOT(x, install("landings.n")));    
-   discards_n.Init(     GET_SLOT(x, install("discards.n")));    
+
    landings_sel.Init(   GET_SLOT(x, install("landings.sel")));  
    discards_sel.Init(   GET_SLOT(x, install("discards.sel")));  
-   harvest.Init(        GET_SLOT(x, install("harvest")));       
    bycatch_harvest.Init(GET_SLOT(x, install("bycatch.harvest")));
    stock_wt.Init(       GET_SLOT(x, install("stock.wt")));      
    landings_wt.Init(    GET_SLOT(x, install("landings.wt")));   
@@ -208,12 +212,8 @@ void FLBRP::Init(SEXP x)
    nareas   = m.nareas();
    
    niters   = fbar.niters();          
-   niters   = __max(niters,stock_n.niters());       
-   niters   = __max(niters,landings_n.niters());    
-   niters   = __max(niters,discards_n.niters());    
    niters   = __max(niters,landings_sel.niters());  
    niters   = __max(niters,discards_sel.niters());  
-   niters   = __max(niters,harvest.niters());       
    niters   = __max(niters,bycatch_harvest.niters());
    niters   = __max(niters,stock_wt.niters());      
    niters   = __max(niters,landings_wt.niters());   
@@ -227,6 +227,11 @@ void FLBRP::Init(SEXP x)
    niters   = __max(niters,cost_fix.niters());      
    niters   = __max(niters,cost_var.niters());      
    niters   = __max(niters,price.niters());         
+
+   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
 
    // ensure relative abundance
    int iIter, iAge, iYr, iUnit, iSeason, iArea;  
@@ -624,7 +629,7 @@ void  FLBRP::QSBracket(double *x, int iIter)
  
       case FLRConst_BRPMaxYPR:
          do {
-            t1 = YPR(x[2], iIter);
+            t = YPR(x[2], iIter);
 
             x[2] *= 1.25;
             }
@@ -1224,7 +1229,10 @@ double  FLBRP::FMSY(int iIter)
    }
 
 double  FLBRP::FMEY(int iIter)
-   {
+   { 
+   if (R_IsNA(Profit(0.1, iIter)))
+	  return R_NaReal;
+  
    TargetType = FLRConst_BRPMEY;
 
    return QuadSearch(iIter);
@@ -1262,6 +1270,12 @@ SEXP FLBRP::brp(SEXP Object)
    dim[0] = INTEGER(dims)[0];
    dim[1] = INTEGER(dims)[1];
    dim[2] = INTEGER(dims)[2];
+
+double t1,t2,t3;
+
+t1 = dim[0];
+t2 = dim[1];
+t3 = dim[2];
        	 
    short iRef, iIter, i, j, k, l=0;
 
