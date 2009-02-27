@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 27 Feb 2009 11:33
+# Last Change: 27 Feb 2009 12:53
 # $Id:  $
 
 # landings.n  {{{
@@ -347,7 +347,7 @@ setGeneric('hcrYield', function(object, fbar, ...)
 )
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
-  {browser()
+  {
     if      (dims(object)$iter!=1 && dims(object@params)$iter ==1)
        m(object)<-propagate(m(object),iter=dims(params(object))$iter)
     else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)

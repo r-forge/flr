@@ -1451,16 +1451,16 @@ t3 = dim[2];
       }
     delete [] (D);
 
-   //SEXP flpar;
+   SEXP refpts;
 
-   //PROTECT(flpar = NEW_OBJECT(MAKE_CLASS("FLPar")));
+   PROTECT(refpts = NEW_OBJECT(MAKE_CLASS("refpts")));
 
-   //flpar = R_do_slot_assign(flpar, install(".Data"), v3);
+   refpts = R_do_slot_assign(refpts, install(".Data"), v3);
    
-   UNPROTECT(2);
+   UNPROTECT(3);
 
-   return v3;   
-   //return flpar;   
+   //return v3;   
+   return refpts;   
    }
 
 void FLBRP::setSR(SEXP xModel, SEXP xCode)
