@@ -143,6 +143,7 @@ protected:
    double PPRGrad(double, int);
 
    double YieldGrad(  double FMult, int iIter);
+   double RecGrad(    double FMult, int iIter);
    double SSBGrad(    double FMult, int iIter);
    double BiomassGrad(double FMult, int iIter);
    double ProfitGrad( double FMult, int iIter);

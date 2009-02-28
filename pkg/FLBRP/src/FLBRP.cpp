@@ -228,10 +228,10 @@ void FLBRP::Init(SEXP x)
    niters   = __max(niters,cost_var.niters());      
    niters   = __max(niters,price.niters());         
 
-   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
 
    // ensure relative abundance
    int iIter, iAge, iYr, iUnit, iSeason, iArea;  
@@ -273,7 +273,7 @@ void FLBRP::Init(SEXP x)
 FLBRP::~FLBRP(void)      
    {
    //unalloc sr      
-   for (int i=1; i<=niters; i++)
+   for (int i=1; i<=3; i++)
       {
       for (int j=1; j<=nunits; j++)
         delete [] (sr_params[i][j]+1);
@@ -396,26 +396,26 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
    switch(sr_model[iUnit]) 
       {
       case FLRConst_BevHolt: 
-         ssb      = spr*sr_params[iIter][iUnit][1]-sr_params[iIter][iUnit][2];
-         recruits = sr_params[iIter][iUnit][1]*ssb/(ssb+sr_params[iIter][iUnit][2]);
+         ssb      = spr*sr_params[1][iUnit][iIter]-sr_params[2][iUnit][iIter];
+         recruits = sr_params[1][iUnit][iIter]*ssb/(ssb+sr_params[2][iUnit][iIter]);
       break;
       case FLRConst_Ricker:
-         ssb      = log(spr*sr_params[iIter][iUnit][1])/sr_params[iIter][iUnit][2];
-         recruits = sr_params[iIter][iUnit][1]*ssb*exp(-sr_params[iIter][iUnit][2]*ssb);
+         ssb      = log(spr*sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter];
+         recruits = sr_params[1][iUnit][iIter]*ssb*exp(-sr_params[2][iUnit][iIter]*ssb);
       break;
       
       case FLRConst_SRR_shepherd:
-          ssb     = pow((spr-sr_params[iIter][iUnit][1])/sr_params[iIter][iUnit][2], 1.0/(sr_params[iIter][iUnit][3]+1.0));
-         recruits = sr_params[iIter][iUnit][1] * ssb/pow(sr_params[iIter][iUnit][2] + ssb,sr_params[iIter][iUnit][3]);
+          ssb     = pow((spr-sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter], 1.0/(sr_params[iIter][iUnit][3]+1.0));
+         recruits = sr_params[1][iUnit][iIter] * ssb/pow(sr_params[2][iUnit][iIter] + ssb,sr_params[iIter][iUnit][3]);
       break;
         
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params[iIter][iUnit][2] ? 0.0 : spr*sr_params[iIter][iUnit][1]*sr_params[iIter][iUnit][2]);
-         recruits = (ssb < 1/sr_params[iIter][iUnit][2] ? 0.0 : ssb*sr_params[iIter][iUnit][1]*sr_params[iIter][iUnit][2]);
+         ssb      = (spr < 1/sr_params[2][iUnit][iIter] ? 0.0 : spr*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
+         recruits = (ssb < 1/sr_params[2][iUnit][iIter] ? 0.0 : ssb*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
       break;
   
       case FLRConst_Mean: default:
-         recruits = sr_params[iIter][iUnit][1];
+         recruits = sr_params[1][iUnit][iIter];
       break;
       }
 
@@ -1395,6 +1395,32 @@ t3 = dim[2];
          //D[iRef][RP_harvest][iIter] = TargetSSB(D[iRef][RP_ssb     ][iIter],iIter);
          D[iRef][RP_harvest][iIter] = x;
          }
+       //rec  
+       else if (R_IsNA(D[iRef][RP_harvest][iIter]) && 
+                R_IsNA(D[iRef][RP_yield  ][iIter]) && 
+                R_IsNA(D[iRef][RP_ssb    ][iIter]) && 
+                R_IsNA(D[iRef][RP_biomass][iIter]) && 
+                R_IsNA(D[iRef][RP_revenue][iIter]) && 
+                R_IsNA(D[iRef][RP_cost   ][iIter]) && 
+                R_IsNA(D[iRef][RP_profit ][iIter]) && !R_IsNA(D[iRef][RP_rec][iIter]))
+         {
+         int Iters=0;
+ 	      double x=0.1,f,dgdx;
+
+		     do
+           {
+           Iters++;
+           //do Newton Raphson to estimate N
+
+           f    = pow(D[iRef][RP_rec][iIter]-Recruits(x,iIter+1),2);
+           dgdx = -2*(D[iRef][RP_rec][iIter]-SSB(x,iIter+1))*RecGrad(x,iIter+1);
+
+           x = x - f / dgdx;
+           }
+        while (fabs(f) >= NR_TOL && Iters <= NR_ITS);
+
+         D[iRef][RP_harvest][iIter] = x;
+         }
        //biomass  
        else if (R_IsNA(D[iRef][RP_harvest][iIter]) && 
                 R_IsNA(D[iRef][RP_yield  ][iIter]) && 
@@ -1421,13 +1447,14 @@ t3 = dim[2];
          D[iRef][RP_harvest][iIter] = x;
          }
       
-       D[iRef][RP_yield  ][iIter] = yield(   D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_rec    ][iIter] = Recruits(D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_ssb    ][iIter] = SSB(     D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_biomass][iIter] = Biomass( D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_revenue][iIter] = Revenue( D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_cost   ][iIter] = Cost(    D[iRef][RP_harvest][iIter],iIter+1);
-       D[iRef][RP_profit ][iIter] = Profit(  D[iRef][RP_harvest][iIter],iIter+1);
+      if (!R_IsNA(D[iRef][RP_harvest][iIter])){
+	       D[iRef][RP_yield  ][iIter] = yield(   D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_rec    ][iIter] = Recruits(D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_ssb    ][iIter] = SSB(     D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_biomass][iIter] = Biomass( D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_revenue][iIter] = Revenue( D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_cost   ][iIter] = Cost(    D[iRef][RP_harvest][iIter],iIter+1);
+          D[iRef][RP_profit ][iIter] = Profit(  D[iRef][RP_harvest][iIter],iIter+1);}
        }
 
     //Allocate memory
@@ -1486,17 +1513,17 @@ void FLBRP::setSR(SEXP xModel, SEXP xCode)
    short i, j, k, l=0;
 
    //alloc      
-   sr_params = new double**[niters]-1;
-   for(i=1; i<=niters; i++) 
+   sr_params = new double**[3]-1;
+   for(i=1; i<=3; i++) 
       {
       sr_params[i]  = new double*[nunits]-1;
       for(j=1; j<=nunits; j++) 
-         sr_params[i][j] = new double[3]-1;
+         sr_params[i][j] = new double[niters]-1;
       }
 
-   for (i = 1; i <= niters; i++)
+   for (i = 1; i <= 3; i++)
      for (j = 1; j <= nunits; j++)
-       for (k = 1; k <= 3; k++)
+       for (k = 1; k <= niters; k++)
          sr_params[i][j][k] = 1.0;       
 
    if (niters != INTEGER(dims)[length(dims)-1])
@@ -1514,17 +1541,17 @@ t3=INTEGER(dims)[2];
    i = 0;
    double t=0.0;
    int iparam, iter;
-   for (iparam=1; iparam<=INTEGER(dims)[0]; iparam++)
-     for (iter=1; iter<=niters; iter++)
+   for (iter=1; iter<=niters; iter++)
+     for (iparam=1; iparam<=INTEGER(dims)[0]; iparam++)
        {
        j=__min(i,INTEGER(dims)[0]*INTEGER(dims)[1]); 
        i++;
-       sr_params[iter][1][iparam] = (a)[j];       
+       sr_params[iparam][1][iter] = (a)[j];       
 	    }
   
-   for (i = 1; i <= niters; i++)
+   for (i = 1; i <= 3; i++)
      for (j = 2; j <= nunits; j++)
-       for (k = 1; k <= 3; k++)  
+       for (k = 1; k <= nunits; k++)  
           sr_params[i][j][k] = sr_params[i][1][k];       
 
     UNPROTECT(1);
@@ -1740,27 +1767,27 @@ adouble FLBRP::Recruits(adouble FMult, int iUnit, int iIter)
    switch(sr_model[iUnit]) 
       {
       case FLRConst_BevHolt: 
-         ssb      = spr*sr_params[iIter][iUnit][1]-sr_params[iIter][iUnit][2];
-         recruits = sr_params[iIter][iUnit][1]*ssb/(ssb+sr_params[iIter][iUnit][2]);
+         ssb      = spr*sr_params[1][iUnit][iIter]-sr_params[2][iUnit][iIter];
+         recruits = sr_params[1][iUnit][iIter]*ssb/(ssb+sr_params[2][iUnit][iIter]);
       break;
          
       case FLRConst_Ricker:
-         ssb      = adtl::log(spr*sr_params[iIter][iUnit][1])/sr_params[iIter][iUnit][2];
-         recruits = sr_params[iIter][iUnit][1]*ssb*adtl::exp(-sr_params[iIter][iUnit][2]*ssb);
+         ssb      = adtl::log(spr*sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter];
+         recruits = sr_params[1][iUnit][iIter]*ssb*adtl::exp(-sr_params[2][iUnit][iIter]*ssb);
       break;
       
       case FLRConst_SRR_shepherd:
-          ssb     = adtl::pow((spr-sr_params[iIter][iUnit][1])/sr_params[iIter][iUnit][2], 1.0/(sr_params[iIter][iUnit][3]+1.0));
-         recruits = sr_params[iIter][iUnit][1] * ssb/adtl::pow(sr_params[iIter][iUnit][2] + ssb,sr_params[iIter][iUnit][3]);
+          ssb     = adtl::pow((spr-sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter], 1.0/(sr_params[iIter][iUnit][3]+1.0));
+         recruits = sr_params[1][iUnit][iIter] * ssb/adtl::pow(sr_params[2][iUnit][iIter] + ssb,sr_params[iIter][iUnit][3]);
       break;
         
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params[iIter][iUnit][2] ? 0.0 : spr*sr_params[iIter][iUnit][1]*sr_params[iIter][iUnit][2]);
-         recruits = (ssb < 1/sr_params[iIter][iUnit][2] ? 0.0 : ssb*sr_params[iIter][iUnit][1]*sr_params[iIter][iUnit][2]);
+         ssb      = (spr < 1/sr_params[2][iUnit][iIter] ? 0.0 : spr*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
+         recruits = (ssb < 1/sr_params[2][iUnit][iIter] ? 0.0 : ssb*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
       break;
   
       case FLRConst_Mean: default:
-         recruits = sr_params[iIter][iUnit][1];
+         recruits = sr_params[1][iUnit][iIter];
       break;
       }
 
@@ -1860,6 +1887,21 @@ double FLBRP::SSBGrad(double FMult, int iIter)
 
    for (int iUnit=1; iUnit<=nunits; iUnit++)
       result += SPR(FMult_ad,iUnit,iIter)*Recruits(FMult_ad,iUnit,iIter);
+
+   double RtnVal = result.getADValue();
+
+   return RtnVal;
+   }
+
+double FLBRP::RecGrad(double FMult, int iIter)
+  {
+  adouble result=0.0;
+  adouble FMult_ad;
+  FMult_ad = FMult;
+  FMult_ad.setADValue(1);
+
+   for (int iUnit=1; iUnit<=nunits; iUnit++)
+      result += Recruits(FMult_ad,iUnit,iIter);
 
    double RtnVal = result.getADValue();
 
