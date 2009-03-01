@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 27 Feb 2009 10:16
+# Last Change: 01 Mar 2009 14:02
 # $Id:  $
 
 ## createFLAccesors		{{{
@@ -59,5 +59,5 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 	return(defined)
 }	# }}}
 
-invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest",
+invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest", "refpts",
   "landings.n", "stock.n", "discards.n")))

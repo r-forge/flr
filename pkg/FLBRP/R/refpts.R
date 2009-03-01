@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 28 Feb 2009 23:32
+# Last Change: 01 Mar 2009 14:26
 # $Id:  $
 
 # show {{{
@@ -79,3 +79,74 @@ setMethod('propagate', signature(object='refpts'),
     return(res)
    }
 ) # }}}
+
+# TODO
+# refpts(FLBRP, 'f0.1', 'harvest')<-
+
+# refpts<-  {{{
+if (!isGeneric("refpts<-"))
+	setGeneric("refpts<-", function(object, ..., value)
+		standardGeneric("refpts<-"))
+
+setMethod('refpts<-', signature(object='FLBRP', value='refpts'),
+  function(object, value)
+  {
+    slot(object, 'refpts') <- value
+    return(object)
+  }
+)
+setMethod('refpts', signature(object='FLBRP', value='numeric'),
+  function(object, ..., value)
+  {
+    args <- list(...)
+
+    #
+    if(length(args) > 0)
+    {
+    }
+    else
+    {
+    }
+  }
+)
+
+# }}}
+
+# refpts  {{{
+setMethod('refpts', signature(object='FLBRP'),
+  function(object, ...)
+  {
+    args <- list(...)
+    refpts <- slot(object, 'refpts')
+    
+    # selection required
+    if(length(args) > 0)
+    {
+      # match and sort args names
+      nargs <- names(args)
+      select <- args[match(names(dimnames(refpts)), nargs)]
+      names(select) <- c('i', 'j', 'k')
+      select <- select[!unlist(lapply(select, is.null))]
+      select <- lapply(select, as.character)
+
+      return(do.call('[', c(list(x=refpts), select)))
+      
+    }
+    else
+      return(refpts)
+  }
+) # }}}
+
+# f0.1
+f0.1 <- function(object)
+{
+  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1')
+  computeRefpts(object)
+}
+
+# fmax
+fmax <- function(object)
+{
+  refpts(object) <- refpts(as.numeric(NA), refpt='fmax')
+  computeRefpts(object)
+}
