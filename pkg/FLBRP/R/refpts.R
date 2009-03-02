@@ -3,20 +3,8 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 09:39
+# Last Change: 02 Mar 2009 11:20
 # $Id:  $
-
-# show {{{
-setMethod('show', signature(object='refpts'),
-  function(object)
-  {
-		cat("An object of class \"refpts\":\n")
-		if(dim(object)[3] > 1)
-			cat("iters: ", dim(object)[3],"\n")
-    cat("\n")
-    show(apply(object, 1:2, median, na.rm=TRUE))
-  }
-) # }}}
 
 # constructors  {{{
 if (!isGeneric("refpts"))
@@ -44,7 +32,9 @@ setMethod('refpts', signature(object='array'),
         iter=1:dim(object)[3])
     }
      
-     return(new('refpts', as.numeric(object)))
+     return(
+     new('refpts', object)
+     )
   }
 )
 setMethod('refpts', signature(object='missing'),
@@ -69,6 +59,18 @@ setMethod('refpts', signature(object='refpts'),
 
 # }}}
 
+# show {{{
+setMethod('show', signature(object='refpts'),
+  function(object)
+  {
+		cat("An object of class \"refpts\":\n")
+		if(dim(object)[3] > 1)
+			cat("iters: ", dim(object)[3],"\n")
+    cat("\n")
+    show(apply(object, 1:2, median, na.rm=TRUE))
+  }
+) # }}}
+
 # propagate {{{
 setMethod('propagate', signature(object='refpts'),
   function(object, iter, fill.iter=TRUE)
@@ -79,9 +81,6 @@ setMethod('propagate', signature(object='refpts'),
     return(res)
    }
 ) # }}}
-
-# TODO
-# refpts(FLBRP, 'f0.1', 'harvest')<-
 
 # refpts<-  {{{
 if (!isGeneric("refpts<-"))
@@ -100,15 +99,23 @@ setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
   {
     args <- list(...)
 
-    #
+    # selection required
     if(length(args) > 0)
-    {
-      return(TRUE)
+    { 
+      # match and sort args names
+      if(!is.null(names(args)))
+        args <- args[match(names(dimnames(refpts(object))), names(args))]
+      names(args) <- c('i', 'j', 'k')[seq(length(args))]
+      args <- args[!unlist(lapply(args, is.null))]
+      args <- lapply(args, as.character)
+
+      refpts(object) <- do.call('[<-', c(list(x=refpts(object)), args, list(value=value)))
     }
     else
     {
-      return(TRUE)
+      refpts(object)[] <- value
     }
+    return(object)
   }
 )
 
@@ -125,19 +132,21 @@ setMethod('refpts', signature(object='FLBRP'),
     if(length(args) > 0)
     {
       # match and sort args names
-      nargs <- names(args)
-      select <- args[match(names(dimnames(refpts)), nargs)]
-      names(select) <- c('i', 'j', 'k')
-      select <- select[!unlist(lapply(select, is.null))]
-      select <- lapply(select, as.character)
+      if(!is.null(names(args)))
+        args <- args[match(names(dimnames(refpts)), names(args))]
+      names(args) <- c('i', 'j', 'k')[seq(length(args))]
+      args <- args[!unlist(lapply(args, is.null))]
+      args <- lapply(args, as.character)
 
-      return(do.call('[', c(list(x=refpts), select)))
+      return(do.call('[', c(list(x=refpts), args)))
       
     }
     else
       return(refpts)
   }
 ) # }}}
+
+# recalculations  {{{
 
 # f0.1
 f0.1 <- function(object)
@@ -152,3 +161,5 @@ fmax <- function(object)
   refpts(object) <- refpts(as.numeric(NA), refpt='fmax')
   computeRefpts(object)
 }
+
+# }}}

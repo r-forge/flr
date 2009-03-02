@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 27 Feb 2009 23:11
+# Last Change: 02 Mar 2009 11:20
 # $Id:  $
 
 # landings.n  {{{
@@ -316,7 +316,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
     res <- .Call("computeRefpts", object, refpts(object),
       SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
 
-    return(refpts(res))
+    return(res)
   }
 ) # }}}
 
