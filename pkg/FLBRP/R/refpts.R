@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 01 Mar 2009 14:26
+# Last Change: 02 Mar 2009 09:39
 # $Id:  $
 
 # show {{{
@@ -44,7 +44,7 @@ setMethod('refpts', signature(object='array'),
         iter=1:dim(object)[3])
     }
      
-     return(new('refpts', object))
+     return(new('refpts', as.numeric(object)))
   }
 )
 setMethod('refpts', signature(object='missing'),
@@ -95,7 +95,7 @@ setMethod('refpts<-', signature(object='FLBRP', value='refpts'),
     return(object)
   }
 )
-setMethod('refpts', signature(object='FLBRP', value='numeric'),
+setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
   function(object, ..., value)
   {
     args <- list(...)
@@ -103,9 +103,11 @@ setMethod('refpts', signature(object='FLBRP', value='numeric'),
     #
     if(length(args) > 0)
     {
+      return(TRUE)
     }
     else
     {
+      return(TRUE)
     }
   }
 )
