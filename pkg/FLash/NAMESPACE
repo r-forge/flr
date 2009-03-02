@@ -2,11 +2,10 @@ useDynLib("FLash")
 import("FLCore")
 export("calcF",
        "expandAgeFLStock",
-       "SRchar2code",
-       "SRModelName")
+       "SRchar2code")
 exportClasses("fwdControl")
 exportMethods("fwd",
               "fwdControl",
               "+",
               "show",
-            "setSR")
+              "setSR")
