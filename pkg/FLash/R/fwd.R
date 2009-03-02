@@ -15,6 +15,8 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr          =NULL,
                sr.residuals=NULL, sr.residuals.mult=TRUE)
     {
+    
+    
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
@@ -51,6 +53,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
 #          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
 ctrl@target <- chkTargetQuantity(ctrl@target)
+
 #     if (!is(ctrl@target[,"quantity"],"factor"))
 #        ctrl@target[,"quantity"]<-factor(ctrl@target[,"quantity"],quantityNms())
 #     if (!all(as.character(ctrl@target[,"quantity"]) %in% quantityNms()))
@@ -191,7 +194,6 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
        stop("ctrl not a valid 'fwdControl' object")
 
 
-    #browser()
 
 
    ##check dims of fleet and biol
