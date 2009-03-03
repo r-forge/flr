@@ -3,12 +3,61 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 27 Feb 2009 12:33
+# Last Change: 03 Mar 2009 17:51
 # $Id$
 
 # FLBRP {{{
 setGeneric('FLBRP', function(object, sr, ...)
   standardGeneric('FLBRP'))
+
+# FLBRP(object='missing', sr='ANY')
+setMethod('FLBRP', signature(object='missing', sr='missing'),
+  function(model=formula(rec~a), params=FLPar(1, params='a'),
+    fbar=FLQuant(seq(0, 4, 0.04)), ...)
+  {
+    args <- list(...)
+
+    res <- do.call(new, c(list(Class='FLBRP', model=model, params=params, fbar=fbar),
+      args))
+
+    # resize: years
+    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
+      'profit.obs')
+    # find slots not provided as argument
+    empty <- !slots %in% names(args)
+    # if any of them given, use for sizing
+    if(any(empty == FALSE))
+      for(i in slots[empty])
+        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+
+    # warn: slots to dissapear
+    # c('stock.n', 'landings.n', 'discards.n', 'harvest')
+
+    # resize: ages
+    slots <- c('landings.sel', 'discards.sel', 'harvest', 'bycatch.harv', 'stock.wt',
+      'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
+      'availability', 'price', 'vcost', 'fcost')
+    # find slots not provided as argument
+    empty <- !slots %in% names(args)
+    # if any of them given, use for sizing
+    if(any(empty == FALSE))
+      for(i in slots[empty])
+        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+
+    return(res)
+
+  }
+)
+
+# FLBRP(object='missing', sr='FLSR')
+setMethod('FLBRP', signature(object='missing', sr='FLSR'),
+  function(sr, ...)
+  {
+    args <- list(...)
+
+    do.call('FLBRP', c(list(model=model(sr), params=params(sr)), args))
+  }
+)
 
 # FLBRP(object=FLStock, sr=FLSR)
 setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
@@ -103,6 +152,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     return(res)
   }
 )
+
 
 # FLBRP(object=missing, sr=ANY)
 
