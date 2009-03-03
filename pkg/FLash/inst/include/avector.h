@@ -55,7 +55,7 @@ class asubv;
 class ADOLC_DLL_EXPORT err_retu {
     const char* message;
 public:
-    err_retu(char* x) {
+    err_retu(const char* x) {
         printf("%s \n",x);
     };
 };
