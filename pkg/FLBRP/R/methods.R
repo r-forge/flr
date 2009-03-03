@@ -3,14 +3,15 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 03 Mar 2009 15:20
+# Last Change: 02 Mar 2009 11:20
 # $Id$
 
 # landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
   function(object)
   {
-    .Call('landings_n', object, SRchar2code(SRModelName(object@model)))
+    .Call('landings_n', object, SRchar2code(SRModelName(object@model)),
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
 
@@ -18,7 +19,8 @@ setMethod('landings.n', signature(object='FLBRP'),
 setMethod('discards.n', signature(object='FLBRP'),
   function(object)
   {
-    .Call('discards_n', object, SRchar2code(SRModelName(object@model)))
+   .Call('discards_n', object, SRchar2code(SRModelName(object@model)),
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
 
@@ -26,7 +28,8 @@ setMethod('discards.n', signature(object='FLBRP'),
 setMethod('stock.n', signature(object='FLBRP'),
   function(object)
   {
-    .Call('stock_n', object, SRchar2code(SRModelName(object@model)))
+    .Call('stock_n', object, SRchar2code(SRModelName(object@model)),
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
 
@@ -276,7 +279,8 @@ setMethod('spr', signature(object='FLBRP'),
     params(object)<-FLPar(1)
     model( object)<-formula(rec~a)
     
-    res<-.Call("spr", object, SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
+    res<-.Call("spr", object, SRchar2code(SRModelName(object@model)),
+                       FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -291,7 +295,8 @@ setMethod('ypr', signature(object='FLBRP'),
     params(object)<-FLPar(1)
     model( object)<-formula(rec~a)
     
-    res<-.Call("ypr", object, SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
+    res<-.Call("ypr", object, SRchar2code(SRModelName(object@model)),
+                       FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -313,8 +318,8 @@ setMethod('computeRefpts', signature(object='FLBRP'),
         if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    res <- .Call("computeRefpts", object, refpts(object),
-      SRchar2code(SRModelName(object@model)), PACKAGE = "FLBRP")
+    res <- .Call("computeRefpts", object, refpts(object),SRchar2code(SRModelName(object@model)),
+                        FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -332,7 +337,8 @@ setMethod('brp', signature(object='FLBRP'),
        if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    res <- .Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
+     res <- .Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
+                        FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
     units(harvest(res))<-"f"
@@ -358,6 +364,7 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
           stop("Iters in params don't match")
 
     res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
+                    FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       fbar, PACKAGE = "FLBRP")
     
     return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
@@ -378,7 +385,8 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
     model(ssb)<-formula(rec~a)
     fbar(ssb) <- FLQuant(0)
     
-    res <- .Call("spr", ssb, SRchar2code(SRModelName(ssb@model)), PACKAGE = "FLBRP")
+    res <- .Call("spr", ssb, SRchar2code(SRModelName(ssb@model)),
+                  FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))), PACKAGE = "FLBRP")
 
     return(res)
   }
