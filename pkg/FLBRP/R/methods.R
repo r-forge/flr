@@ -3,8 +3,8 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 11:20
-# $Id:  $
+# Last Change: 03 Mar 2009 15:20
+# $Id$
 
 # landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
