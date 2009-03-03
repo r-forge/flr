@@ -1,3 +1,11 @@
+/*
+ * FLBRP.cpp = 
+ *
+ * Author : Laurie Kell <laurence.kell@cefas.co.uk> Cefas, UK
+ * Last Change: 03 Mar 2009 15:39
+ * $Id$
+ *
+ */
 #define ADOLC_TAPELESS
 #include <adouble.h>
 typedef adtl::adouble adouble;
@@ -15,7 +23,7 @@ int RP_harvest=0,
 
 #define QS_ITS     500     
 #define QS_TOL     1e-10
-#define QS_INC     1.75     
+#define QS_INC     1.75
                                 
 extern "C" SEXPDLLExport Adolc_gr_tapeless(SEXP xX)
    {
@@ -229,10 +237,10 @@ void FLBRP::Init(SEXP x)
    niters   = __max(niters,cost_var.niters());      
    niters   = __max(niters,price.niters());         
 
-   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
-   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
 
    // ensure relative abundance
    int iIter, iAge, iYr, iUnit, iSeason, iArea;  
@@ -548,7 +556,7 @@ double  FLBRP::QuadSearch(int iIter)
          else
             x[1] = Newx;
       }
-   while ((fabs(x[2] - x[0]) > QS_TOL) && (fabs(x[0] - x[1])) > QS_TOL  && (fabs(x[1] - x[2]) > QS_TOL) && 
+   while ((fabs(x[2] - x[0]) > QS_TOL) && (fabs(x[0] - x[1])) > QS_TOL  && (fabs(x[1] - x[2]) > QS_TOL) &&
           (fabs(F[2] - F[0]) > QS_TOL) && (fabs(F[0] - F[1])) > QS_TOL  && (fabs(F[1] - F[2]) > QS_TOL) &&Iter++ < QS_ITS);
 
    return x[1];
@@ -1372,13 +1380,13 @@ t3 = dim[2];
        //Y/S or exploitation rate ref pt
        else if (!R_IsNA(D[iRef][RP_yield][iIter]) && !R_IsNA(D[iRef][RP_ssb][iIter]) && R_IsNA(D[iRef][RP_harvest][iIter]) && R_IsNA(D[iRef][RP_rec][iIter]))
          D[iRef][RP_harvest][iIter] = TargetYS(D[iRef][RP_yield  ][iIter]/D[iRef][RP_ssb][iIter],iIter+1);
-       //ssb  
-       else if (R_IsNA(D[iRef][RP_harvest][iIter]) && 
-                R_IsNA(D[iRef][RP_yield  ][iIter]) && 
-                R_IsNA(D[iRef][RP_rec    ][iIter]) && 
-                R_IsNA(D[iRef][RP_biomass][iIter]) && 
-                R_IsNA(D[iRef][RP_revenue][iIter]) && 
-                R_IsNA(D[iRef][RP_cost   ][iIter]) && 
+       //ssb
+       else if (R_IsNA(D[iRef][RP_harvest][iIter]) &&
+                R_IsNA(D[iRef][RP_yield  ][iIter]) &&
+                R_IsNA(D[iRef][RP_rec    ][iIter]) &&
+                R_IsNA(D[iRef][RP_biomass][iIter]) &&
+                R_IsNA(D[iRef][RP_revenue][iIter]) &&
+                R_IsNA(D[iRef][RP_cost   ][iIter]) &&
                 R_IsNA(D[iRef][RP_profit ][iIter]) && !R_IsNA(D[iRef][RP_ssb][iIter]))
          {
          int Iters=0;
@@ -1400,12 +1408,12 @@ t3 = dim[2];
          D[iRef][RP_harvest][iIter] = x;
          }
        //rec  
-       else if (R_IsNA(D[iRef][RP_harvest][iIter]) && 
-                R_IsNA(D[iRef][RP_yield  ][iIter]) && 
-                R_IsNA(D[iRef][RP_ssb    ][iIter]) && 
-                R_IsNA(D[iRef][RP_biomass][iIter]) && 
-                R_IsNA(D[iRef][RP_revenue][iIter]) && 
-                R_IsNA(D[iRef][RP_cost   ][iIter]) && 
+       else if (R_IsNA(D[iRef][RP_harvest][iIter]) &&
+                R_IsNA(D[iRef][RP_yield  ][iIter]) &&
+                R_IsNA(D[iRef][RP_ssb    ][iIter]) &&
+                R_IsNA(D[iRef][RP_biomass][iIter]) &&
+                R_IsNA(D[iRef][RP_revenue][iIter]) &&
+                R_IsNA(D[iRef][RP_cost   ][iIter]) &&
                 R_IsNA(D[iRef][RP_profit ][iIter]) && !R_IsNA(D[iRef][RP_rec][iIter]))
          {
          int Iters=0;

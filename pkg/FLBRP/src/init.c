@@ -1,7 +1,7 @@
 /*
  * init.c = 
  *
- * Author : Iago Mosqueira <imosqueira@suk.azti.es> AZTI Tecnalia 
+ * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK
  * $Id$
  *
  */

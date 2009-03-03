@@ -1,3 +1,11 @@
+/*
+ * FLBRP.hpp = 
+ *
+ * Author : Laurie Kell <laurence.kell@cefas.co.uk> Cefas, UK
+ * Last Change: 03 Mar 2009 15:39
+ * $Id$
+ *
+ */
 #ifndef _INC_FLBRP
 #define _INC_FLBRP
 
