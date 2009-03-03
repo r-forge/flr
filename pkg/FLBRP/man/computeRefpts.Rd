@@ -1,0 +1,18 @@
+\name{computeRefpts}
+\docType{methods}
+\alias{computeRefpts}
+\title{estimate BRPs}
+\description{
+}
+\section{Generic function}{
+ computeRefpts(object) 
+}
+\section{Methods}{\describe{
+\item{}{}
+  }
+}
+\author{The FLR Team}
+\seealso{}
+\examples{
+}
+\keyword{methods}
