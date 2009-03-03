@@ -3,14 +3,14 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 03 Mar 2009 18:09
+# Last Change: 03 Mar 2009 19:40
 # $Id$
 
 # FLBRP {{{
 setGeneric('FLBRP', function(object, sr, ...)
   standardGeneric('FLBRP'))
 
-# FLBRP(object='missing', sr='ANY')
+# FLBRP(object='missing', sr='missing')
 setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04)), ...)
@@ -37,6 +37,15 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
       'availability', 'price')
+    # find slots not provided as argument
+    empty <- !slots %in% names(args)
+    # if any of them given, use for sizing
+    if(any(empty == FALSE))
+      for(i in slots[empty])
+        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+  
+    # resize: cost
+    slots <- c('vcost', 'fcost')
     # find slots not provided as argument
     empty <- !slots %in% names(args)
     # if any of them given, use for sizing
