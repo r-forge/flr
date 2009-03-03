@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 03 Mar 2009 17:51
+# Last Change: 03 Mar 2009 18:09
 # $Id$
 
 # FLBRP {{{
@@ -34,9 +34,9 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     # c('stock.n', 'landings.n', 'discards.n', 'harvest')
 
     # resize: ages
-    slots <- c('landings.sel', 'discards.sel', 'harvest', 'bycatch.harv', 'stock.wt',
+    slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
-      'availability', 'price', 'vcost', 'fcost')
+      'availability', 'price')
     # find slots not provided as argument
     empty <- !slots %in% names(args)
     # if any of them given, use for sizing
