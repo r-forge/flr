@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     uni5_for.mc
- Revision: $Id: uni5_for.c,v 1.3 2004/10/07 12:10:23 kowarz Exp $
+ Revision: $Id$
  Contents: Contains the routines :
            zos_forward (zero-order-scalar forward mode):      define _ZOS_   
            fos_forward (first-order-scalar forward mode):     define _FOS_

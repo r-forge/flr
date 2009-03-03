@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurie Kell, Cefas
-# $Id: SepVPA.R,v 1.4 2008/03/24 21:56:48 imosqueira Exp $
+# $Id$
 
 ## FLSepVPA.control class {{{
 

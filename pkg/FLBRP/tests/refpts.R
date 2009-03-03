@@ -3,8 +3,8 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:32
-# $Id:  $
+# Last Change: 02 Mar 2009 19:54
+# $Id$
 
 library(FLBRP)
 
@@ -25,3 +25,14 @@ fbrp <- brp(fbrp)
 summary(fbrp)
 
 refpts(fbrp)
+
+refpts(fbrp, refpt='fmax')
+refpts(fbrp, quantity='yield')
+refpts(fbrp, refpt='fmax', quantity='yield')
+
+refpts(fbrp, refpt='fmax', quantity='harvest') <- 0.4
+refpts(fbrp, 'fmax', 'harvest') <- 0.4
+refpts(fbrp)
+
+
+

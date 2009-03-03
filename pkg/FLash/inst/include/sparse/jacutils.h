@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     sparse/jacutils.h
- Revision: $Id: jacutils.h,v 1.1 2008/01/14 12:13:36 imosqueira Exp $
+ Revision: $Id$
  Contents: This file containts declarations of jacobian utilities.
  
  Copyright (c) 2004

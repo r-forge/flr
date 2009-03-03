@@ -3,7 +3,7 @@
  * SQLiteFL/src/methods.c
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK
- * $Id: methods.c,v 1.12 2009/01/09 15:26:26 imosqueira Exp $
+ * $Id$
  *
  */
 

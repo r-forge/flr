@@ -91,3 +91,5 @@ exportMethods(
   "price<-",
   "vcost<-",
   "fcost<-")
+export("f0.1",
+  "fmax")

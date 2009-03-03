@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     adouble_p.h
- Revision: $Id: adouble_p.h,v 1.1 2008/01/14 12:12:52 imosqueira Exp $
+ Revision: $Id$
  Contents: adouble_p.h contains the private funtions from the active conext
            necessary to compile ADOL-C but not intended to be called by ADOL-C
            users.

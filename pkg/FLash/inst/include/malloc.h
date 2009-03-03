@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     malloc.h
- Revision: $Id: malloc.h,v 1.1 2008/01/14 12:13:06 imosqueira Exp $
+ Revision: $Id$
  Contents: malloc replacements for not gnu compatible malloc system functions
  
  Copyright (c) 2005

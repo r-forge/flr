@@ -3,7 +3,7 @@
  * SQLiteFL/src/exports.h
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK
- * $Id: exports.h,v 1.14 2009/02/20 15:44:39 imosqueira Exp $
+ * $Id$
  *
  */
 

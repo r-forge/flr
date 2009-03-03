@@ -3,7 +3,7 @@
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLSP.R,v 1.4 2008/06/20 11:42:30 imosqueira Exp $
+# $Id$
 
 # class FLSP {{{
 setClass('FLSP', representation(

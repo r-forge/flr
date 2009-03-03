@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     forward_partx.c
- Revision: $Id: forward_partx.c,v 1.2 2004/05/24 10:50:33 kowarz Exp $
+ Revision: $Id$
  Contents: 
  
  Copyright (c) 2004

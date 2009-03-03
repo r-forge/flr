@@ -1,6 +1,6 @@
 # -*- Makefile -*-
-#  $Id: Makevars,v 1.9 2009/02/20 15:44:39 imosqueira Exp $
-PKG_CFLAGS=-Wunused
+#  $Id$
+PKG_CFLAGS=-Wunused -pedantic
 PKG_LIBS = $(SUBLIBS)
 
 MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf

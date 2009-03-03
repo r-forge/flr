@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 01 Sep 2008 16:02
-# $Id: FLAssess-class.R,v 1.18 2009/02/04 11:47:37 fas00 Exp $
+# $Id$
 
 # Reference:
 # Notes:

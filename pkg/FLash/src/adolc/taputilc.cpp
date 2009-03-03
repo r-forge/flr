@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     tapeutilc.cpp
- Revision: $Id: taputilc.cpp,v 1.2 2004/05/24 10:50:41 kowarz Exp $
+ Revision: $Id$
  Contents: C++ interface for initialization and stopage of the taping 
            process
  

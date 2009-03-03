@@ -3,8 +3,8 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 11:20
-# $Id:  $
+# Last Change: 02 Mar 2009 19:45
+# $Id$
 
 # constructors  {{{
 if (!isGeneric("refpts"))
@@ -27,7 +27,7 @@ setMethod('refpts', signature(object='array'),
       # default dnames
       dimnames(object) <- list(
         refpt=refpt[1:dim(object)[1]],
-        value=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost',
+        quantity=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost',
           'profit')[1:dim(object)[2]],
         iter=1:dim(object)[3])
     }

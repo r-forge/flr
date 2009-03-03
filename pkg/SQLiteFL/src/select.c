@@ -3,7 +3,7 @@
  * SQLiteFL/src/select.c
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK
- * $Id: select.c,v 1.11 2009/01/08 11:23:48 imosqueira Exp $
+ * $Id$
  *
  */
 
@@ -147,7 +147,8 @@ SEXP selectFLComp(SEXP Rdbname, SEXP Rname)
   int rc;
   sqlite3 *db;
   sqlite3_stmt *stmt;
-  const char *tail, *class, *slot;
+  const char *tail;
+  const unsigned char *class, *slot;
   char *sql;
 
   /* OPEN */
@@ -191,7 +192,7 @@ SEXP selectFLComp(SEXP Rdbname, SEXP Rname)
   class = sqlite3_column_text(stmt, 0);
 
   /* CREATE empty object */
-  PROTECT(Object = NEW_OBJECT(MAKE_CLASS(class)));
+  PROTECT(Object = NEW_OBJECT(MAKE_CLASS((char *)class)));
 
   /* GET slot names */
   sql = sqlite3_mprintf("SELECT slot FROM %q_slots;", CHAR(STRING_ELT(Rname, 0)));
@@ -217,8 +218,8 @@ SEXP selectFLComp(SEXP Rdbname, SEXP Rname)
   while(rc == SQLITE_ROW) {
     /* SET slot in Object */
     slot = sqlite3_column_text(stmt, 0);
-    Quant = (SEXP) getSlotFLComp(db, CHAR(STRING_ELT(Rname, 0)), slot);
-    SET_SLOT(Object, install(slot), Quant);
+    Quant = (SEXP) getSlotFLComp(db, CHAR(STRING_ELT(Rname, 0)), (char *) slot);
+    SET_SLOT(Object, install((char *) slot), Quant);
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
     if(rc != SQLITE_DONE & rc != SQLITE_ROW) {

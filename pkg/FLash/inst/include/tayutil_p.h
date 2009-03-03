@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     tayutil_p.h
- Revision: $Id: tayutil_p.h,v 1.1 2008/01/14 12:13:21 imosqueira Exp $
+ Revision: $Id$
  Contents: Management for the value stack tape (Taylors)
            (ADOL-C internal routines)
  

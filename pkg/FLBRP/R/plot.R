@@ -3,7 +3,7 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
 # Last Change: 26 Feb 2009 16:11
-# $Id:  $
+# $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
 p.<-  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "yield.ssb", "profit.harvest", "profit.ssb", ""),cols=c(1, 2, 8, 5, 6, 10, 12),obs=FALSE,refpts=TRUE,ts="missing",...){

@@ -1,4 +1,4 @@
-/** $Id: flc.cpp,v 1.22 2009/02/18 08:44:47 ltkell Exp $ **/
+/** $Id$ **/
 #include "flc.hpp"
 
 double t1, t2, t3, t4, t5, t6;

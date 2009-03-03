@@ -1,4 +1,4 @@
-/** $Id: FLCoreClasses_pointer.cpp,v 1.2 2008/10/06 09:49:59 ltkell Exp $ **/
+/** $Id$ **/
 #include "FLCoreClasses_pointer.hpp"
 
 FLQuant_pointer::FLQuant_pointer(void)      

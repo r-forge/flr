@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas
 # Last Change: 11 Jun 2008 14:21
-# $Id: fwdTarget.R,v 1.8 2009/02/26 09:26:11 fas00 Exp $
+# $Id$
 
 # target  {{{
 if (!isGeneric("fwdTarget"))

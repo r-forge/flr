@@ -3,7 +3,7 @@
  * SQLiteFL/src/functions.c
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK
- * $Id: functions.c,v 1.10 2009/01/08 11:23:48 imosqueira Exp $
+ * $Id$
  *
  */
 
@@ -16,11 +16,12 @@ int checkFLCompTables(sqlite3 *db, const char *name)
   int rc;
   char *sql;
   sqlite3_stmt *stmt;
-  const char *tail, *tname;
+  const char *tail;
+  const unsigned char *tname;
 
   /* CHECK if the four table names are present */
   /* SELECT table names */
-  sql = sqlite3_mprintf("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%q\_%q' ORDER by name;", name, "%");
+  sql = sqlite3_mprintf("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%q\\_%q' ORDER by name;", name, "%");
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -29,13 +30,13 @@ int checkFLCompTables(sqlite3 *db, const char *name)
   }
   rc = sqlite3_step(stmt);
   /* Can statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     return(rc);
   }
   while(rc == SQLITE_ROW) {
     /* strcmp */
     tname = sqlite3_column_text(stmt, 0);
-    if(strcmp(strrchr(tname, '_'), "_data") != 0 & strcmp(strrchr(tname, '_'), "_slots") != 0 & strcmp(strrchr(tname, '_'), "_meta") != 0 & strcmp(strrchr(tname, '_'), "_range") != 0)
+    if((strcmp(strrchr((char*) tname, '_'), "_data") != 0) & (strcmp(strrchr((char*) tname, '_'), "_slots") != 0) & (strcmp(strrchr((char*) tname, '_'), "_meta") != 0) & (strcmp(strrchr((char*) tname, '_'), "_range") != 0))
     {
      return(300);
     }
@@ -73,7 +74,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -104,7 +105,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -113,7 +114,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d1, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d1, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
     if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -149,7 +150,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d2, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d2, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -185,7 +186,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d3, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d3, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
     if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -221,7 +222,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d4, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d4, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -257,7 +258,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d5, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d5, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -293,7 +294,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d6, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d6, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -328,7 +329,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     UNPROTECT(11);
     return(Rval);
   }
-  SET_STRING_ELT(names, 0, mkChar(sqlite3_column_text(stmt, 0)));
+  SET_STRING_ELT(names, 0, mkChar((char *)sqlite3_column_text(stmt, 0)));
   SET_STRING_ELT(names, 1, mkChar("year"));
   SET_STRING_ELT(names, 2, mkChar("unit"));
   SET_STRING_ELT(names, 3, mkChar("season"));
@@ -358,7 +359,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     UNPROTECT(12);
     return(Rval);
   }
-  SET_STRING_ELT(units, 0, mkChar(sqlite3_column_text(stmt, 0)));
+  SET_STRING_ELT(units, 0, mkChar((char *)sqlite3_column_text(stmt, 0)));
 
   /* data */
   PROTECT(v = Rf_allocArray(REALSXP, dim)); 
@@ -442,7 +443,7 @@ SEXP getMetaFLComp(sqlite3 *db, const char *name, const char *field)
     return (Rval);
   }
   UNPROTECT(1);
-  return(mkString(sqlite3_column_text(stmt, 0)));
+  return(mkString((char *)sqlite3_column_text(stmt, 0)));
 } /* }}} */
 
 /* Function SEXP getRangeFLComp(sqlite3 *db, const char *name)   {{{*/
@@ -511,7 +512,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
   i = 0;
   while(rc == SQLITE_ROW) {
     /* SET name and value in range vectors */
-    SET_STRING_ELT(NamesR, i, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(NamesR, i, mkChar((char *)sqlite3_column_text(stmt, 0)));
     REAL(Range)[i] = sqlite3_column_double(stmt, 1);
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
@@ -623,7 +624,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d1, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d1, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
     if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -659,7 +660,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d2, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d2, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -695,7 +696,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d3, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d3, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
     if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -731,7 +732,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d4, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d4, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -767,7 +768,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d5, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d5, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -803,7 +804,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   i = 0;
   while(rc == SQLITE_ROW) {
-    SET_STRING_ELT(d6, i++, mkChar(sqlite3_column_text(stmt, 0)));
+    SET_STRING_ELT(d6, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
   if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
@@ -838,7 +839,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     UNPROTECT(11);
     return(Rval);
   }
-  SET_STRING_ELT(names, 0, mkChar(sqlite3_column_text(stmt, 0)));
+  SET_STRING_ELT(names, 0, mkChar((char *) sqlite3_column_text(stmt, 0)));
   SET_STRING_ELT(names, 1, mkChar("year"));
   SET_STRING_ELT(names, 2, mkChar("unit"));
   SET_STRING_ELT(names, 3, mkChar("season"));
@@ -868,7 +869,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     UNPROTECT(12);
     return(Rval);
   }
-  SET_STRING_ELT(units, 0, mkChar(sqlite3_column_text(stmt, 0)));
+  SET_STRING_ELT(units, 0, mkChar((char *) sqlite3_column_text(stmt, 0)));
 
   /* data */
   PROTECT(v = Rf_allocArray(REALSXP, dim)); 

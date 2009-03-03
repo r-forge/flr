@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     avector.h
- Revision: $Id: avector.h,v 1.1 2008/01/14 12:12:56 imosqueira Exp $
+ Revision: $Id$
  Contents: Avector.h defines classes of vectors and matrices.
            badoublev  --> class of basic active vectors. 
            adubv      --> class of temporary active vectors.

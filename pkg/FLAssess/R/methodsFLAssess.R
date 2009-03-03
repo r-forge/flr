@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLAssess-methods.R,v 1.83 2009/02/10 12:57:10 fas00 Exp $
+# $Id$
 
 # summary {{{
 setMethod("summary", signature(object="FLAssess"),

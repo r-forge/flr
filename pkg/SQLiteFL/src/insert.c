@@ -3,7 +3,7 @@
  * SQLiteFL/src/insert.c
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas, UK 
- * $Id: insert.c,v 1.20 2009/02/18 23:18:57 imosqueira Exp $
+ * $Id$
  *
  */
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     adouble.cpp
- Revision: $Id: adouble.cpp,v 1.2 2004/05/24 10:50:28 kowarz Exp $
+ Revision: $Id$
  Contents: adouble.C contains that definitions of procedures used to 
            define various badouble, adub, asub and adouble operations. 
            These operations actually have two purposes.

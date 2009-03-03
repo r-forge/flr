@@ -3,7 +3,7 @@
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
 # Last Change: 27 Nov 2007 19:20
-# $Id: fwd.R,v 1.44 2009/02/26 09:26:11 fas00 Exp $
+# $Id$
 
 ## fwd(FLStock)
 if (!isGeneric("fwd"))

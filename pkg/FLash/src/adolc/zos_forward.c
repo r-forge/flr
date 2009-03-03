@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     zos_forward.c
- Revision: $Id: zos_forward.c,v 1.2 2004/05/24 10:50:44 kowarz Exp $
+ Revision: $Id$
  Contents: zos_forward (zero-order-scalar forward mode)
  
  Copyright (c) 2004

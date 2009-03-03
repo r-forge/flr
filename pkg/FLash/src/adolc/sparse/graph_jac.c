@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     sparse/graph_jac.c
- Revision: $Id: graph_jac.c,v 1.2 2005/04/13 10:50:53 andrea Exp $
+ Revision: $Id$
  Contents: graph utilities for SPARSE package
  
  Copyright (c) 2005

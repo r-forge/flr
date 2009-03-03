@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: SQLiteFL.R,v 1.15 2009/01/21 12:21:33 imosqueira Exp $
+# $Id$
 
 # -----
 library(SQLiteFL)

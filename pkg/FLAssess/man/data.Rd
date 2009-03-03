@@ -1,4 +1,4 @@
-% $Id: data.Rd,v 1.5 2006/06/06 09:31:53 fas00 Exp $
+% $Id$
 \name{data}
 \alias{ass}
 \title{FLAssess dataset}

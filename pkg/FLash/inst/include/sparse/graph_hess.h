@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     sparse/graph_hess.h
- Revision: $Id: graph_hess.h,v 1.1 2008/01/14 12:13:33 imosqueira Exp $
+ Revision: $Id$
  Contents: This file containts utilities for graph coloring and seed matrix 
            algorithms.
  

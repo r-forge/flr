@@ -13,8 +13,9 @@ int RP_harvest=0,
     RP_cost   =6,                
     RP_profit =7;               
 
-#define NR_TOL     1e-20
-#define NR_ITS     200     
+#define QS_ITS     500     
+#define QS_TOL     1e-10
+#define QS_INC     1.75     
                                 
 extern "C" SEXPDLLExport Adolc_gr_tapeless(SEXP xX)
    {
@@ -46,75 +47,75 @@ extern "C" SEXPDLLExport Adolc_gr_tapeless(SEXP xX)
    return Grad;
    }
 
-extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.Equilibrium();
  
    return brp.Return(xbrp); 
    }
 
-extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.Equilibrium();
  
    return brp.ReturnStockN(); 
    }
 
-extern "C" SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.Equilibrium();
  
    return brp.ReturnLandingsN(); 
    }
 
-extern "C" SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.Equilibrium();
  
    return brp.ReturnDiscardsN(); 
    }
 
-extern "C" SEXPDLLExport ypr(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport ypr(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    return brp.ReturnYpr(); 
    }
 
-extern "C" SEXPDLLExport spr(SEXP xbrp, SEXP xSR)
+extern "C" SEXPDLLExport spr(SEXP xbrp, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    return brp.ReturnSpr(); 
    }
 
-extern "C" SEXPDLLExport hcrYield(SEXP xbrp, SEXP xSR, SEXP xFbar)
+extern "C" SEXPDLLExport hcrYield(SEXP xbrp, SEXP xSR, SEXP xPar, SEXP xFbar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.hcrYield(xFbar);
  
    return brp.ReturnLandingsN(); 
    }
 
-extern "C" SEXPDLLExport computeRefpts(SEXP xbrp, SEXP xref, SEXP xSR)
+extern "C" SEXPDLLExport computeRefpts(SEXP xbrp, SEXP xref, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    return brp.brp(xref); 
    }
 
-extern "C" SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR)
+extern "C" SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR, SEXP xPar)
    {
-   FLBRP brp(xbrp, xSR);
+   FLBRP brp(xbrp, xSR, xPar);
 
    brp.Equilibrium();
    
@@ -130,11 +131,11 @@ FLBRP::FLBRP(void)
    ; 
    }
 
-FLBRP::FLBRP(SEXP x, SEXP xSR)
+FLBRP::FLBRP(SEXP x, SEXP xSR, SEXP xPar)
    {
    Init( x);
 
-   setSR(PROTECT(duplicate(GET_SLOT(x, install("params")))), xSR);
+   setSR(PROTECT(duplicate(GET_SLOT(x, install("params")))), xSR, xPar);
 
    UNPROTECT(1);
    }
@@ -228,10 +229,10 @@ void FLBRP::Init(SEXP x)
    niters   = __max(niters,cost_var.niters());      
    niters   = __max(niters,price.niters());         
 
-   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
-   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
-   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
-   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
+   stock_n.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   discards_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   landings_n.Init(minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
+   harvest.Init(   minage,maxage,fbar.minyr(),fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);     
 
    // ensure relative abundance
    int iIter, iAge, iYr, iUnit, iSeason, iArea;  
@@ -273,6 +274,7 @@ void FLBRP::Init(SEXP x)
 FLBRP::~FLBRP(void)      
    {
    //unalloc sr      
+/*
    for (int i=1; i<=3; i++)
       {
       for (int j=1; j<=nunits; j++)
@@ -281,6 +283,7 @@ FLBRP::~FLBRP(void)
       delete [] (sr_params[i]+1);
       }
     delete [] (sr_params+1);
+*/
 
    delete [] (sr_model+1);
    }                               
@@ -396,26 +399,26 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
    switch(sr_model[iUnit]) 
       {
       case FLRConst_BevHolt: 
-         ssb      = spr*sr_params[1][iUnit][iIter]-sr_params[2][iUnit][iIter];
-         recruits = sr_params[1][iUnit][iIter]*ssb/(ssb+sr_params[2][iUnit][iIter]);
+         ssb      = spr*sr_params(1,1,iUnit,1,1,iIter)-sr_params(2,1,iUnit,1,1,iIter);
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(ssb+sr_params(2,1,iUnit,1,1,iIter));
       break;
       case FLRConst_Ricker:
-         ssb      = log(spr*sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter];
-         recruits = sr_params[1][iUnit][iIter]*ssb*exp(-sr_params[2][iUnit][iIter]*ssb);
+         ssb      = log(spr*sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter);
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb*exp(-sr_params(2,1,iUnit,1,1,iIter)*ssb);
       break;
       
       case FLRConst_SRR_shepherd:
-          ssb     = pow((spr-sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter], 1.0/(sr_params[iIter][iUnit][3]+1.0));
-         recruits = sr_params[1][iUnit][iIter] * ssb/pow(sr_params[2][iUnit][iIter] + ssb,sr_params[iIter][iUnit][3]);
+          ssb     = pow((spr-sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter), 1.0/(sr_params(3,1,iUnit,1,1,iIter)+1.0));
+         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
       break;
         
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params[2][iUnit][iIter] ? 0.0 : spr*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
-         recruits = (ssb < 1/sr_params[2][iUnit][iIter] ? 0.0 : ssb*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
+         ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+         recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
       break;
   
       case FLRConst_Mean: default:
-         recruits = sr_params[1][iUnit][iIter];
+         recruits = sr_params(1,1,iUnit,1,1,iIter);
       break;
       }
 
@@ -522,7 +525,7 @@ double  FLBRP::QuadSearch(int iIter)
       Newf = QSGetFunc(Newx, iIter);
     
       //Check for one sided convergence
-      if (fabs(Newx - x[1]) < 0.0001)
+      if (fabs(Newx - x[1]) < 0.000000001)
          if (x[1] - x[0] >= x[2] - x[1])
             Newx = x[1] - (x[2] - x[1]);
          else
@@ -545,7 +548,8 @@ double  FLBRP::QuadSearch(int iIter)
          else
             x[1] = Newx;
       }
-   while (fabs(x[2] - x[0]) > 10.0e-20 && fabs(x[0] - x[1]) > 10.0e-20  && fabs(x[1] - x[2]) > 10.0e-20 && Iter++ < 500);
+   while ((fabs(x[2] - x[0]) > QS_TOL) && (fabs(x[0] - x[1])) > QS_TOL  && (fabs(x[1] - x[2]) > QS_TOL) && 
+          (fabs(F[2] - F[0]) > QS_TOL) && (fabs(F[0] - F[1])) > QS_TOL  && (fabs(F[1] - F[2]) > QS_TOL) &&Iter++ < QS_ITS);
 
    return x[1];
    }
@@ -597,87 +601,86 @@ void  FLBRP::QSBracket(double *x, int iIter)
    int Iter=0;
 
    x[0] = 0.0;
-   x[2] = 0.025;
-
-   double t, slopeOrig;
+   x[2] = 0.11;
+ 
+   double t, t2, slopeOrig;
    
    switch (TargetType) {
       case FLRConst_BRPMSY:
          do { 
-            t = yield(x[2], iIter);
-            x[2] *= 1.25;
+            x[2] *= QS_INC;
+//            t  = yield(x[2], iIter);
             }
-         while (YieldGrad(x[2], iIter)>=0.0 && yield(x[2], iIter)>t && Iter++ < 200);
-         x[0] =  x[2]/1.25;
-         x[1] = (x[0]+x[2])/2.0;
+         while (YieldGrad(x[2], iIter)>=0.0 && Iter++ < QS_ITS);
+//         while (t2>t && Iter++ < QS_ITS);
          break;
 
 //      case FLRConst_BRPMEY:     
 //         do { 
 //            t=Profit(    x[2], iIter);
-//           x[2] *= 1.25;
+//           x[2] *= QS_INC;
 //            }
-//         while (ProfitGrad(x[2], iIter)>=0.0 && yield(x[2], iIter)>t && Iter++ < 200);
-//         x[0] =  x[2]/1.25;
+//         while (ProfitGrad(x[2], iIter)>=0.0 && yield(x[2], iIter)>t && Iter++ < QS_ITS);
+//         x[0] =  x[2]/QS_INC;
 //         x[1] = (x[0]+x[2])/2.0;
          do { 
             t = yield(x[2], iIter);
-            x[2] *= 1.25;
+            x[2] *= QS_INC;
             }
-         while (YieldGrad(x[2], iIter)>=0.0 && yield(x[2], iIter)>t && Iter++ < 200);
+         while (YieldGrad(x[2], iIter)>=0.0 && yield(x[2], iIter)>t && Iter++ < QS_ITS);
          break;
  
       case FLRConst_BRPMaxYPR:
          do {
             t = YPR(x[2], iIter);
 
-            x[2] *= 1.25;
+            x[2] *= QS_INC;
             }
-         while (YPRGrad(x[2], iIter)>=0.0 && YPR(x[2], iIter)>t && Iter++ < 200);
+         while (YPRGrad(x[2], iIter)>=0.0 && YPR(x[2], iIter)>t && Iter++ < QS_ITS);
          break;
 
       case FLRConst_BRPF0pt1: 
          slopeOrig = YPRGrad(x[0], iIter);
          do {
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
             t     = YPRGrad(x[2], iIter);
             }
-         while (t >= slopeOrig*0.1 && Iter++ < 200);
+         while (t >= slopeOrig*0.1 && Iter++ < QS_ITS);
          break;
 
       case FLRConst_BRPSPRPercMax:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (SPR(x[2], iIter)/SPR(0.0, iIter)-Target > 0.0);
          break;
 
       case FLRConst_BRPYield:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (yield(x[2], iIter)-Target > 0.0);
          break;
       
 	  case FLRConst_BRPYS:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (yield(x[2], iIter)/SSB(x[2], iIter)-Target > 0.0);
          break;
 
       case FLRConst_BRPYPR:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (YPR(x[2], iIter)-Target > 0.0);
          break;
 
       case FLRConst_BRPSPR:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (SPR(x[2], iIter)-Target > 0.0);
          break;
 
       case FLRConst_BRPSSB:
          do 
-            x[2] *= 2.0;
+            x[2] *= QS_INC;
          while (SSB(x[2], iIter)-Target > 0.0);
          break;
      
@@ -685,7 +688,8 @@ void  FLBRP::QSBracket(double *x, int iIter)
          break;
       }
 
-   x[1] = (x[0]+x[2])/2.0;
+   x[0] = 0.0/QS_INC;
+   x[1] = (x[0]+x[2])/2;
    }
 
 double FLBRP::SPR(double FMult, int iUnit, int iIter)
@@ -1341,7 +1345,7 @@ t3 = dim[2];
 
            x = x - f / dgdx;
            }
-        while (fabs(f) >= NR_TOL && Iters <= NR_ITS);
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
 
          //D[iRef][RP_harvest][iIter] = TargetSSB(D[iRef][RP_ssb     ][iIter],iIter);
          D[iRef][RP_harvest][iIter] = x;
@@ -1390,7 +1394,7 @@ t3 = dim[2];
 
            x = x - f / dgdx;
            }
-        while (fabs(f) >= NR_TOL && Iters <= NR_ITS);
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
 
          //D[iRef][RP_harvest][iIter] = TargetSSB(D[iRef][RP_ssb     ][iIter],iIter);
          D[iRef][RP_harvest][iIter] = x;
@@ -1417,7 +1421,7 @@ t3 = dim[2];
 
            x = x - f / dgdx;
            }
-        while (fabs(f) >= NR_TOL && Iters <= NR_ITS);
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
 
          D[iRef][RP_harvest][iIter] = x;
          }
@@ -1442,7 +1446,7 @@ t3 = dim[2];
 
            x = x - f / dgdx;
            }
-         while (fabs(f) >= NR_TOL && Iters <= NR_ITS);
+         while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
 
          D[iRef][RP_harvest][iIter] = x;
          }
@@ -1490,7 +1494,7 @@ t3 = dim[2];
    return refpts;   
    }
 
-void FLBRP::setSR(SEXP xModel, SEXP xCode)
+void FLBRP::setSR(SEXP xModel, SEXP xCode, SEXP xPar)
    {
    if (!isVector(xCode) || !isNumeric(xCode)) 
       return;
@@ -1498,6 +1502,9 @@ void FLBRP::setSR(SEXP xModel, SEXP xCode)
    sr_model    = new FLRConstSRR [nunits]-1;
    sr_model[1] = (FLRConstSRR)INTEGER(xCode)[0];
 
+   sr_params.Init(xPar);
+
+/*
    SEXP v        = PROTECT(duplicate(GET_SLOT(xModel, install(".Data")))),
         dims     = GET_DIM(v);
 
@@ -1511,6 +1518,7 @@ void FLBRP::setSR(SEXP xModel, SEXP xCode)
       }
 
    short i, j, k, l=0;
+
 
    //alloc      
    sr_params = new double**[3]-1;
@@ -1532,12 +1540,6 @@ void FLBRP::setSR(SEXP xModel, SEXP xCode)
       return;
       }
 
-int t1, t2, t3;
-
-t1=INTEGER(dims)[0];
-t2=INTEGER(dims)[1];
-t3=INTEGER(dims)[2];
-
    i = 0;
    double t=0.0;
    int iparam, iter;
@@ -1555,6 +1557,7 @@ t3=INTEGER(dims)[2];
           sr_params[i][j][k] = sr_params[i][1][k];       
 
     UNPROTECT(1);
+*/
     }
 
 double FLBRP::SPR(double FMult, int iIter)
@@ -1767,27 +1770,27 @@ adouble FLBRP::Recruits(adouble FMult, int iUnit, int iIter)
    switch(sr_model[iUnit]) 
       {
       case FLRConst_BevHolt: 
-         ssb      = spr*sr_params[1][iUnit][iIter]-sr_params[2][iUnit][iIter];
-         recruits = sr_params[1][iUnit][iIter]*ssb/(ssb+sr_params[2][iUnit][iIter]);
+         ssb      = spr*sr_params(1,1,iUnit,1,1,iIter)-sr_params(2,1,iUnit,1,1,iIter);
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(ssb+sr_params(2,1,iUnit,1,1,iIter));
       break;
          
       case FLRConst_Ricker:
-         ssb      = adtl::log(spr*sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter];
-         recruits = sr_params[1][iUnit][iIter]*ssb*adtl::exp(-sr_params[2][iUnit][iIter]*ssb);
+         ssb      = adtl::log(spr*sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter);
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb*adtl::exp(-sr_params(2,1,iUnit,1,1,iIter)*ssb);
       break;
       
       case FLRConst_SRR_shepherd:
-          ssb     = adtl::pow((spr-sr_params[1][iUnit][iIter])/sr_params[2][iUnit][iIter], 1.0/(sr_params[iIter][iUnit][3]+1.0));
-         recruits = sr_params[1][iUnit][iIter] * ssb/adtl::pow(sr_params[2][iUnit][iIter] + ssb,sr_params[iIter][iUnit][3]);
+          ssb     = adtl::pow((spr-sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter), 1.0/(sr_params(3,1,iUnit,1,1,iIter)+1.0));
+         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/adtl::pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
       break;
         
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params[2][iUnit][iIter] ? 0.0 : spr*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
-         recruits = (ssb < 1/sr_params[2][iUnit][iIter] ? 0.0 : ssb*sr_params[1][iUnit][iIter]*sr_params[2][iUnit][iIter]);
+         ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+         recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
       break;
   
       case FLRConst_Mean: default:
-         recruits = sr_params[1][iUnit][iIter];
+         recruits = sr_params(1,1,iUnit,1,1,iIter);
       break;
       }
 

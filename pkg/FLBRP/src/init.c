@@ -2,7 +2,7 @@
  * init.c = 
  *
  * Author : Iago Mosqueira <imosqueira@suk.azti.es> AZTI Tecnalia 
- * $Id: $
+ * $Id$
  *
  */
 
@@ -21,25 +21,25 @@
 extern SEXPDLLExport Adolc_gr_tapeless(SEXP xX);
 extern SEXPDLLExport ypr(SEXP xbrp, SEXP xSR);
 extern SEXPDLLExport spr(SEXP xbrp, SEXP xSR);
-extern SEXPDLLExport hcrYield(SEXP xbrp, SEXP xSR, SEXP xFbar);
-extern SEXPDLLExport computeRefpts(SEXP xbrp, SEXP xref, SEXP xSR);
-extern SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR);
-extern SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR);
-extern SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR);
-extern SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR);
-extern SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR);
+extern SEXPDLLExport hcrYield(SEXP xbrp, SEXP xSR, SEXP xPar, SEXP xFbar);
+extern SEXPDLLExport computeRefpts(SEXP xbrp, SEXP xref, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR, SEXP xPar);
 
 static const R_CallMethodDef callMethods[] = {
         {"Adolc_gr_tapeless", (DL_FUNC) &Adolc_gr_tapeless, 1},
-        {"ypr", (DL_FUNC) &ypr, 2},
-        {"spr", (DL_FUNC) &spr, 2},
-        {"hcrYield", (DL_FUNC) &hcrYield, 3},
-        {"computeRefpts", (DL_FUNC) &computeRefpts, 3},
-        {"brp", (DL_FUNC) &brp, 3},
-        {"landings_n", (DL_FUNC) &landings_n, 2},
-        {"discards_n", (DL_FUNC) &discards_n, 2},
-        {"stock_n", (DL_FUNC) &stock_n, 2},
-        {"equilibrium", (DL_FUNC) &equilibrium, 2},
+        {"ypr", (DL_FUNC) &ypr, 3},
+        {"spr", (DL_FUNC) &spr, 3},
+        {"hcrYield", (DL_FUNC) &hcrYield, 4},
+        {"computeRefpts", (DL_FUNC) &computeRefpts, 4},
+        {"brp", (DL_FUNC) &brp, 4},
+        {"landings_n", (DL_FUNC) &landings_n, 3},
+        {"discards_n", (DL_FUNC) &discards_n, 3},
+        {"stock_n", (DL_FUNC) &stock_n, 3},
+        {"equilibrium", (DL_FUNC) &equilibrium, 3},
         {NULL, NULL, 0}
 };
 

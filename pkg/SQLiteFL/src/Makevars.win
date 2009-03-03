@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-#  $Id: Makevars.win,v 1.7 2009/01/21 14:41:22 imosqueira Exp $
+#  $Id$
 PKG_CFLAGS=-Wunused
 PKG_LIBS = $(SUBLIBS)
 

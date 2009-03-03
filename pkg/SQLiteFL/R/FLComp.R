@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# $Id: FLComp.R,v 1.10 2009/02/20 15:44:36 imosqueira Exp $
+# $Id$
 
 # sql {{{
 setGeneric('sql', function(object, ...)

@@ -4,7 +4,7 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
 # Last Change: 27 Feb 2009 12:33
-# $Id:  $
+# $Id$
 
 # FLBRP {{{
 setGeneric('FLBRP', function(object, sr, ...)

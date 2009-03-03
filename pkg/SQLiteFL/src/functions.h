@@ -1,5 +1,5 @@
 /*
- * $Id: functions.h,v 1.6 2009/01/21 12:21:33 imosqueira Exp $
+ * $Id$
  */
 
 #include <R.h>

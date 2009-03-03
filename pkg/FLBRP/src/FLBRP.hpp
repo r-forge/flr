@@ -34,7 +34,7 @@ class FLBRP
 {
 public:                                             
    FLBRP(void);
-   FLBRP(SEXP,SEXP);
+   FLBRP(SEXP,SEXP,SEXP);
   ~FLBRP(void);
       
    void Init(   SEXP);
@@ -57,7 +57,7 @@ protected:
        nunits, nseasons, nareas, niters;
    
    FLRConstSRR   *sr_model; 
-   double       ***sr_params;
+   FLQuant       sr_params;
 
    FLQuant      fbar,
                 stock_n,        
@@ -81,7 +81,7 @@ protected:
                 price;          
 
    bool isFLBRP(SEXP);
-   void setSR(  SEXP,SEXP);
+   void setSR(  SEXP,SEXP,SEXP);
    void Equilibrium(int);
    
    FLRConstBRPTarget TargetType;

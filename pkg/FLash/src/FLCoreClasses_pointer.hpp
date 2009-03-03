@@ -1,4 +1,4 @@
-/** $Id: FLCoreClasses_pointer.hpp,v 1.1 2008/02/17 18:35:06 ltkell Exp $ **/
+/** $Id$ **/
 #ifndef _INC_FLCoreClasses_pointer
 #define _INC_FLCoreClasses_pointer
 

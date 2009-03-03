@@ -4,7 +4,7 @@
  * Author : Finlay Scott <finaly.scott@cefas.co.uk>
  *
  * Last Change: 21 May 2008 16:25
- * $Id: FLSP.cpp,v 1.3 2008/06/20 11:42:31 imosqueira Exp $
+ * $Id$
  *
  */
 

@@ -1,4 +1,4 @@
-/** $Id: flc.hpp,v 1.11 2008/12/19 09:09:26 ltkell Exp $ **/
+/** $Id$ **/
 
 #ifndef _INC_flc
 #define _INC_flc

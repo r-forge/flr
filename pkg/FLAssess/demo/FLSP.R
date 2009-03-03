@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 19 Jun 2008 18:31
-# $Id: FLSP.R,v 1.1 2008/06/20 11:44:16 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

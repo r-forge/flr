@@ -4,7 +4,7 @@
 # Maintainer: Laurie Kell
 # Additions:
 # Last Change: 02 May 2008 11:46
-# $Id: VPA.R,v 1.13 2009/02/10 12:03:36 fas00 Exp $
+# $Id$
 
 # Reference:
 # Notes:

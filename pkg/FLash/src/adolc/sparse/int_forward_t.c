@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     int_forward_t.c
- Revision: $Id: int_forward_t.c,v 1.2 2004/05/24 10:50:49 kowarz Exp $
+ Revision: $Id$
  Contents: int_forward_tigh
            ( first-order-vector forward mode for bit patterns,
              tight version = basepoint check,  more precize )

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     tayutil.h
- Revision: $Id: tayutil.h,v 1.1 2008/01/14 12:13:20 imosqueira Exp $
+ Revision: $Id$
  Contents: Management for the value stack tape (Taylors)
  
  Copyright (c) 2004

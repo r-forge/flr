@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     sparse/hessutils.c
- Revision: $Id: hessutils.c,v 1.2 2005/04/13 10:50:53 andrea Exp $
+ Revision: $Id$
  Contents: drivers and utilities for sparse Hessians
  
  Copyright (c) 2005

@@ -3,7 +3,7 @@
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
 # Last Change: 27 Nov 2007 19:20
-# $Id: fwdControl.R,v 1.14 2009/02/18 08:44:47 ltkell Exp $
+# $Id$
 
 validFwdControl <- function(object){
 	return(TRUE)

@@ -1,4 +1,4 @@
-% $Id: retro.Rd,v 1.12 2009/02/10 16:28:17 fas00 Exp $
+% $Id$
 \name{retro-methods}
 \docType{methods}
 \alias{retro}

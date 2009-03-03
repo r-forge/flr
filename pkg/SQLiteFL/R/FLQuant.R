@@ -4,7 +4,7 @@
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 02 Jan 2009 13:52
-# $Id: FLQuant.R,v 1.5 2009/01/02 16:56:23 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

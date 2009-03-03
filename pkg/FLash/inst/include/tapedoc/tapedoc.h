@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     tapedoc/tapedoc.h
- Revision: $Id: tapedoc.h,v 1.1 2008/01/14 12:13:40 imosqueira Exp $
+ Revision: $Id$
  Contents: Contains declaration of tapedoc driver.
  
  Copyright (c) 2004

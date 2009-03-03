@@ -4,7 +4,7 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 25 Feb 2009 15:47
-# $Id:  $
+# $Id$
 
 setMethod('setPlusGroup', signature(x='FLBRP'),
   function(x, plusgroup)

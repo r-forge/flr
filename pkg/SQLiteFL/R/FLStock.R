@@ -4,7 +4,7 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
 # Last Change: 25 Feb 2009 00:14
-# $Id: FLStock.R,v 1.2 2009/02/20 15:44:39 imosqueira Exp $
+# $Id$
 
 # Reference:
 # Notes:

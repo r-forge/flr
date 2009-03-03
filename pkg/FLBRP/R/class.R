@@ -3,8 +3,8 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:14
-# $Id:  $
+# Last Change: 02 Mar 2009 19:44
+# $Id$
 
 
 # refpts class {{{
@@ -14,16 +14,16 @@ validrefpts <- function(object)
   if(length(dim(object)) != 3 )
     return('object array must have 3 dimensions')
 
-  # names of dimnames must be refpt, value and iter
-  if(!all.equal(names(dimnames(object)), c('refpt', 'value', 'iter')))
-    return('dimnames must be refpt, value and iter')
+  # names of dimnames must be refpt, quantity and iter
+  if(!all.equal(names(dimnames(object)), c('refpt', 'quantity', 'iter')))
+    return('dimnames must be refpt, quantity and iter')
 
   return(TRUE)
 }
 
 setClass('refpts', representation('FLPar'),
   prototype=prototype(new('FLPar', array(as.numeric(NA), dim=c(5,8,1),
-  dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), value=c('harvest', 
+  dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), quantity=c('harvest', 
   'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
   validity=validrefpts)
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     common.h
- Revision: $Id: common.h,v 1.1 2008/01/14 12:12:57 imosqueira Exp $
+ Revision: $Id$
  Contents: Common (global) ADOL-C header  
  
  Copyright (c) 2004

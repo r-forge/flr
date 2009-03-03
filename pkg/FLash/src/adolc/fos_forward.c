@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
  File:     fos_forward.c
- Revision: $Id: fos_forward.c,v 1.2 2004/05/24 10:50:34 kowarz Exp $
+ Revision: $Id$
  Contents: fos_forward (first-order-scalar forward mode)
  
  Copyright (c) 2004

@@ -3,7 +3,7 @@
  * SQLiteFL/src/init.c
  *
  * Author : Iago Mosqueira <iago.mosqueira@cefas.co.uk> Cefas
- * $Id: init.c,v 1.4 2009/02/20 15:44:39 imosqueira Exp $
+ * $Id$
  *
  */
 
