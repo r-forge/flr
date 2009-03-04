@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 04 Mar 2009 19:05
+# Last Change: 04 Mar 2009 22:39
 # $Id$
 
 # FLBRP {{{
@@ -48,7 +48,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     if(!'range' %in% names(args))
     {
       dims <- dims(slot(res, i))
-      range <- list(min=dims$min, max=dims$max, minfbar=dims$min, minfbar=dims$max,
+      range <- list(min=dims$min, max=dims$max, minfbar=dims$min, maxfbar=dims$max,
         plusgroup=dims$max)
       slot(res, 'range') <- unlist(range)
     }
