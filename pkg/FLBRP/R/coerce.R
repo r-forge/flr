@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:14
+# Last Change: 04 Mar 2009 23:45
 # $Id$
 
 # as.FLSR {{{
@@ -26,13 +26,15 @@ setAs('FLBRP', 'FLStock',
   function(from)
   {
     # FLStock()
-    res <- FLStock(stock.wt=stock.wt(from), catch.wt=catch.wt(from),
+    res <- FLStock(
+      # TODO extend slots for years
+      catch=catch(from), catch.n=catch.n(from), catch.wt=catch.wt(from),
+      stock.wt=stock.wt(from), 
       discards.wt=discards.wt(from), landings.wt=landings.wt(from),
       m=m(from), mat=mat(from), harvest=harvest(from),
       harvest.spwn=harvest.spwn(from), m.spwn=m.spwn(from),
       stock=stock(from), stock.n=stock.n(from),
       discards=discards(from), discards.n=discards.n(from),
-      catch=catch(from), catch.n=catch.n(from),
       name=name(from), desc=paste("Created by coercion from 'FLStock'", desc(from)))
 
     # range
