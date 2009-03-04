@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 04 Mar 2009 10:38
+# Last Change: 04 Mar 2009 19:27
 # $Id$
 
 library(FLBRP)
@@ -38,7 +38,4 @@ refpts(fbrp) <- computeRefpts(fbrp)
 
 f0.1(fbrp)
 fmax(fbrp)
-
-
-
 
