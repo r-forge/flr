@@ -6,6 +6,7 @@
 }
 \section{Slots}{\describe{
 \item{}{}
+  }
 }
 \section{Extends}{\describe{
 FLPar

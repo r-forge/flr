@@ -3,6 +3,7 @@
 \alias{coerce,FLlst,list-method}
 \title{coercion of FLBRP objects}
 \description{
+  Methods to transform from and to class \code{\link{FLBRP-class}}.
 }
 \section{Generic function}{
  brp(object) 

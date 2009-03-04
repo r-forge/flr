@@ -3,6 +3,7 @@
 \alias{computeRefpts}
 \title{estimate BRPs}
 \description{
+  Estimates all specified reference points and returns an object of class \code{\link{refpts-class}}.
 }
 \section{Generic function}{
  computeRefpts(object) 

@@ -77,7 +77,6 @@ exportMethods(
   "profit.obs<-",
   "landings.sel<-",
   "discards.sel<-",
-  "harvest<-",
   "bycatch.harvest<-",
   "stock.wt<-",
   "landings.wt<-",

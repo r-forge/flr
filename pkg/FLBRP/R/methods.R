@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 11:20
+# Last Change: 04 Mar 2009 16:39
 # $Id$
 
 # landings.n  {{{
@@ -246,21 +246,15 @@ setMethod('profit', signature(object='FLBRP'),
 ## harvest {{{
 setMethod("harvest", signature(object="FLBRP", catch="missing"),
 	function(object)
-		return(slot(object, "harvest"))
-)
-
-## harvest<-
-setMethod("harvest<-", signature(object="FLBRP", value="FLQuant"),
-	function(object, value) {
-		slot(object, "harvest") <- value
-		return(object)
-	}
-)
-setMethod("harvest<-", signature(object="FLBRP", value="numeric"),
-	function(object, value) {
-		slot(object, "harvest")[] <- value
-		return(object)
-	}
+  {
+    # selectivity
+    sel <- expand(landings.sel(object) + discards.sel(object),
+      year=dimnames(fbar(object))$year)
+    sel[,] <- sel[,1]
+    sel <- sweep(sel, 2, fbar(object), '*')
+    units(sel) <- 'f'
+    return(sel)
+  }
 ) # }}}
 
 # profit.hat  {{{
@@ -340,8 +334,6 @@ setMethod('brp', signature(object='FLBRP'),
      res <- .Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
                         FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
-
-    units(harvest(res))<-"f"
 
     return(res)
   }

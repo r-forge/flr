@@ -3,6 +3,7 @@
 \alias{brp}
 \title{brp method for estimating BRPs}
 \description{
+  Estimates all specified reference points and returns an object of class \code{\link{FLBP-class}}.
 }
 \section{Generic function}{
  brp(object) 

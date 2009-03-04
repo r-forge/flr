@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 03 Mar 2009 19:40
+# Last Change: 04 Mar 2009 18:21
 # $Id$
 
 # FLBRP {{{
@@ -12,8 +12,8 @@ setGeneric('FLBRP', function(object, sr, ...)
 
 # FLBRP(object='missing', sr='missing')
 setMethod('FLBRP', signature(object='missing', sr='missing'),
-  function(model=formula(rec~a), params=FLPar(1, params='a'),
-    fbar=FLQuant(seq(0, 4, 0.04)), ...)
+  function(..., model=formula(rec~a), params=FLPar(1, params='a'),
+    fbar=FLQuant(seq(0, 4, 0.04)))
   {
     args <- list(...)
 
@@ -43,6 +43,14 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     if(any(empty == FALSE))
       for(i in slots[empty])
         slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+
+    # range
+    if(!'range' %in% names(args))
+    {
+      dims <- dims(slot(res, i))
+      range <- list(min=dims$min, max=dims$max, minfbar=dims$min, minfbar=dims$max)
+      slot(res, 'range') <- unlist(range)
+    }
   
     # resize: cost
     slots <- c('vcost', 'fcost')
@@ -102,10 +110,12 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     scaling <- apply(scaling, c(1,3:6), foo)
 
     # NEW FLBRP
-    res <- new('FLBRP', range=object@range,
-      
+    res <- new('FLBRP',
+      # range
+      range=object@range[c('min', 'max', 'plusgroup', 'minfbar', 'maxfbar')],
+
       # fbar
-      fbar=FLQuant(fbar, units=units(object@harvest)),
+      fbar=FLQuant(fbar, units=units(object@harvest), quant=dims$quant),
 
       # slots to be mean of nyrs (m, mat, harvest,spwn, m.spwn, discards.wt, landings.wt)
       m = apply(object@m[,years], c(1,3:6), foo),
@@ -161,8 +171,5 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     return(res)
   }
 )
-
-
-# FLBRP(object=missing, sr=ANY)
 
 # }}}
