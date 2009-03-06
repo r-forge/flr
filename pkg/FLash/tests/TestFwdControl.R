@@ -1,3 +1,5 @@
+library(FLash)
+
 ##Target
 res<-fwdControl(data.frame(year=1990,val=1))
 
