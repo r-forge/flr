@@ -14,14 +14,14 @@ setMethod("summary", signature(object="FLAssess"),
     if(length(object@index) >= 1)
     {
       indnm <- names(object@index)
-	for (i in 1:length(indnm))
-	{
-		cat(indnm[i], ":\n")
-			cat("\tindex     : [", dim(object@index[[i]]),"]\n")
-			cat("\tindex.res : [", dim(object@index.res[[i]]),"]\n")
-			cat("\tindex.hat : [", dim(object@index.hat[[i]]),"]\n")
-			cat("\tindex.var : [", dim(object@index.var[[i]]),"]\n")
-	}
+	    for (i in 1:length(indnm))
+	    {
+    		cat(indnm[i], ":\n")
+		  	cat("\tindex     : [", dim(object@index[[i]]),"]\n")
+			  cat("\tindex.res : [", dim(object@index.res[[i]]),"]\n")
+  			cat("\tindex.hat : [", dim(object@index.hat[[i]]),"]\n")
+	  		cat("\tindex.var : [", dim(object@index.var[[i]]),"]\n")
+	    }
     }
   }
 ) # }}}
