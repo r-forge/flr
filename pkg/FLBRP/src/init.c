@@ -28,6 +28,7 @@ extern SEXPDLLExport landings_n(SEXP xbrp, SEXP xSR, SEXP xPar);
 extern SEXPDLLExport discards_n(SEXP xbrp, SEXP xSR, SEXP xPar);
 extern SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR, SEXP xPar);
 extern SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR, SEXP xPar);
+extern SEXPDLLExport brp2stk(SEXP xstk, SEXP xbrp, SEXP xSR, SEXP xPar);
 
 static const R_CallMethodDef callMethods[] = {
         {"Adolc_gr_tapeless", (DL_FUNC) &Adolc_gr_tapeless, 1},
@@ -40,6 +41,7 @@ static const R_CallMethodDef callMethods[] = {
         {"discards_n", (DL_FUNC) &discards_n, 3},
         {"stock_n", (DL_FUNC) &stock_n, 3},
         {"equilibrium", (DL_FUNC) &equilibrium, 3},
+        {"brp2stk", (DL_FUNC) &brp2stk, 4},
         {NULL, NULL, 0}
 };
 
@@ -58,4 +60,5 @@ void
         R_RegisterCCallable("FLBRP", "discards_n", (DL_FUNC) &discards_n);
         R_RegisterCCallable("FLBRP", "stock_n", (DL_FUNC) &stock_n);
         R_RegisterCCallable("FLBRP", "equilibrium", (DL_FUNC) &equilibrium);
+        R_RegisterCCallable("FLBRP", "brp2stk", (DL_FUNC) &equilibrium);
      }

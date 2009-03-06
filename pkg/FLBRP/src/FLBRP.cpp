@@ -2,7 +2,7 @@
  * FLBRP.cpp = 
  *
  * Author : Laurie Kell <laurence.kell@cefas.co.uk> Cefas, UK
- * Last Change: 03 Mar 2009 15:39
+ * Last Change: 06 Mar 2009 16:01
  * $Id$
  *
  */
@@ -62,6 +62,15 @@ extern "C" SEXPDLLExport equilibrium(SEXP xbrp, SEXP xSR, SEXP xPar)
    brp.Equilibrium();
  
    return brp.Return(xbrp); 
+   }
+
+extern "C" SEXPDLLExport brp2stk(SEXP stk, SEXP xbrp, SEXP xSR, SEXP xPar)
+   {
+   FLBRP brp(xbrp, xSR, xPar);
+
+   brp.Equilibrium();
+ 
+   return brp.ReturnStk(stk); 
    }
 
 extern "C" SEXPDLLExport stock_n(SEXP xbrp, SEXP xSR, SEXP xPar)
@@ -445,6 +454,47 @@ SEXP FLBRP::Return(SEXP x)
    return x;
    }
 
+SEXP FLBRP::ReturnStk(SEXP x)
+   { 
+   FLQuant _stock(   GET_SLOT(x, install("stock")));
+   FLQuant _catch(   GET_SLOT(x, install("catch")));
+   FLQuant _landings(GET_SLOT(x, install("landings")));
+   FLQuant _discards(GET_SLOT(x, install("discards")));
+   FLQuant _catch_wt(GET_SLOT(x, install("catch.wt")));
+   FLQuant catch_n(minage,maxage,fbar.minyr(),fbar.maxyr(),nunits,nseasons,nareas,niters,0);
+      
+   SET_SLOT(x, install("stock.n"),    stock_n.Return());       
+   SET_SLOT(x, install("landings.n"), landings_n.Return());    
+   SET_SLOT(x, install("discards.n"), discards_n.Return());    
+   SET_SLOT(x, install("catch.n"),    catch_n.Return());    
+   SET_SLOT(x, install("harvest"),    harvest.Return());       
+  
+   for (int iIter=1; iIter<=niters; iIter++)
+     for (int iUnit=1; iUnit<=nunits; iUnit++)
+       for (int iSeason=1; iSeason<=nseasons; iSeason++)
+         for (int iArea=1; iArea<=nareas; iArea++)
+           for (int iYr=fbar.minyr(); iYr<=fbar.maxyr(); iYr++){
+
+              _stock(   _stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =  
+              _catch(   _stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =  
+              _landings(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =
+              _discards(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =
+              _catch_wt(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) = 0.0;
+           
+              for (int iAge=minage; iAge<=maxage; iAge++){
+                 _stock(iAge,iYr,iUnit,iSeason,iArea,iIter)    += stock_n(   iAge,iYr,iUnit,iSeason,iArea,iIter)*stock_wt(   iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 _landings(iAge,iYr,iUnit,iSeason,iArea,iIter) += landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*landings_wt(iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 _discards(iAge,iYr,iUnit,iSeason,iArea,iIter) += discards_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_wt(iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 catch_n(iAge,iYr,iUnit,iSeason,iArea,iIter)   += landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_n( iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 _catch_wt(iAge,iYr,iUnit,iSeason,iArea,iIter) +=(landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*landings_wt(iAge,iYr,iUnit,iSeason,iArea,iIter)+
+                                                                  discards_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_wt(iAge,iYr,iUnit,iSeason,iArea,iIter))/
+                                                                 (landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter)+landings_n( iAge,iYr,iUnit,iSeason,iArea,iIter));
+                  }
+           }
+   
+   return x;
+   }
+
 SEXP FLBRP::ReturnStockN(void)
    {       
    return stock_n.Return();
@@ -464,7 +514,7 @@ SEXP FLBRP::ReturnSpr(void)
    {       
    Equilibrium();
 
-double t1=0;
+double t1,t2,t3,t4,t5,t6,t7;
  
    FLQuant x(1, 1, fbar.minyr(), fbar.maxyr(), nunits, nseasons, nareas, niters, 0.0);
 
@@ -480,7 +530,16 @@ double t1=0;
                                                       mat(     iAge,1,  iUnit,iSeason,iArea,iIter)*
                                                   exp(-harvest(iAge,iYr,iUnit,iSeason,iArea,iIter)*harvest_spwn(iAge,  1,iUnit,iSeason,iArea,iIter)
                                                       -m(      iAge,1,  iUnit,iSeason,iArea,iIter)*m_spwn(      iAge,  1,iUnit,iSeason,iArea,iIter));
-                  t1=x(1,iYr,iUnit,iSeason,iArea,iIter);
+
+                 t1 =stock_n( iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 t2 =stock_wt(iAge,1,  iUnit,iSeason,iArea,iIter);
+                 t3 =mat(     iAge,1,  iUnit,iSeason,iArea,iIter);
+                 t4 =harvest( iAge,iYr,iUnit,iSeason,iArea,iIter);
+                 t5 =harvest_spwn(iAge,  1,iUnit,iSeason,iArea,iIter);
+                 t6 =m(           iAge,1,  iUnit,iSeason,iArea,iIter);
+                 t7 =m_spwn(      iAge,  1,iUnit,iSeason,iArea,iIter);
+
+                  t1=harvest(iAge,iYr,iUnit,iSeason,iArea,iIter);
                   //x(1,iYr,iUnit,iSeason,iArea,iIter)=stock_n( 10,iYr,iUnit,iSeason,iArea,iIter);
 }
                   }
@@ -1511,61 +1570,6 @@ void FLBRP::setSR(SEXP xModel, SEXP xCode, SEXP xPar)
    sr_model[1] = (FLRConstSRR)INTEGER(xCode)[0];
 
    sr_params.Init(xPar);
-
-/*
-   SEXP v        = PROTECT(duplicate(GET_SLOT(xModel, install(".Data")))),
-        dims     = GET_DIM(v);
-
-   double *a     = NUMERIC_POINTER(v);
-   
-   if (length(dims) < 2)
-      {
-      UNPROTECT(1);
-  
-      return;
-      }
-
-   short i, j, k, l=0;
-
-
-   //alloc      
-   sr_params = new double**[3]-1;
-   for(i=1; i<=3; i++) 
-      {
-      sr_params[i]  = new double*[nunits]-1;
-      for(j=1; j<=nunits; j++) 
-         sr_params[i][j] = new double[niters]-1;
-      }
-
-   for (i = 1; i <= 3; i++)
-     for (j = 1; j <= nunits; j++)
-       for (k = 1; k <= niters; k++)
-         sr_params[i][j][k] = 1.0;       
-
-   if (niters != INTEGER(dims)[length(dims)-1])
-      {
-      UNPROTECT(1);    
-      return;
-      }
-
-   i = 0;
-   double t=0.0;
-   int iparam, iter;
-   for (iter=1; iter<=niters; iter++)
-     for (iparam=1; iparam<=INTEGER(dims)[0]; iparam++)
-       {
-       j=__min(i,INTEGER(dims)[0]*INTEGER(dims)[1]); 
-       i++;
-       sr_params[iparam][1][iter] = (a)[j];       
-	    }
-  
-   for (i = 1; i <= 3; i++)
-     for (j = 2; j <= nunits; j++)
-       for (k = 1; k <= nunits; k++)  
-          sr_params[i][j][k] = sr_params[i][1][k];       
-
-    UNPROTECT(1);
-*/
     }
 
 double FLBRP::SPR(double FMult, int iIter)
@@ -1836,58 +1840,6 @@ double FLBRP::ProfitGrad(double FMult, int iIter)
    double t      = ReturnValue.getValue();
    return RtnVal;
    }
-
-/*
-double FLBRP::YieldGrad(double FMult, int iIter)
-   {
-   adouble FMult_ad;
-   FMult_ad = FMult;
-   FMult_ad.setADValue(1);
-
-   adouble ReturnValue = 0.0;
- 
-   adouble F          = 0.0,
-           Z          = 0.0,
-           expZ       = 0.0,
-           catch_n    = 0.0,
-           landings_n = 0.0;
-
-   adouble N = Recruits(FMult_ad, 1, iIter);
-
-   int iAge, iUnit, iSeason, iArea;
-   for (iUnit=1; iUnit<=nunits; iUnit++)
-     {
-     adouble N = Recruits(FMult_ad, iUnit, iIter);
-
-     for (iAge=minage; iAge<=maxage; iAge++)
-       for (iSeason=1; iSeason<=nseasons; iSeason++)
-         {
-         for (iArea=1; iArea<=nareas; iArea++)
-           {
-           F     += FMult*(discards_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)+landings_sel(iAge,minyr,iUnit,iSeason,iArea,iIter));
-           Z     += F+m( iAge,minyr,iUnit,iSeason,iArea,iIter)+bycatch_harvest(iAge,minyr,iUnit,iSeason,iArea,iIter);
-           expZ   = adtl::exp(-Z);
-           }
-              
-         if (iAge == plusgrp && iSeason==nseasons)
-           N  *= (-1.0/(expZ-1.0));
-
-         for (iArea=1; iArea<=nareas; iArea++)
-           {
-           catch_n      = N*(F/Z)*(1-expZ);
-           landings_n   = catch_n*landings_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)/(landings_sel(iAge,minyr,iUnit,iSeason,iArea,iIter)+discards_sel(iAge,minyr,iUnit,iSeason,iArea,iIter));
-           ReturnValue += landings_n*landings_wt(iAge,minyr,iUnit,iSeason,iArea,iIter); 
-           }    
-
-         N *= expZ;
-         }
-     }
-
-   double RtnVal = ReturnValue.getADValue();
-   double t      = ReturnValue.getValue();
-   return RtnVal;
-   }
-*/
 
 double FLBRP::SSBGrad(double FMult, int iIter)
   {
