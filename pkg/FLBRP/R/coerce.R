@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 04 Mar 2009 23:45
+# Last Change: 05 Mar 2009 18:07
 # $Id$
 
 # as.FLSR {{{
@@ -27,7 +27,7 @@ setAs('FLBRP', 'FLStock',
   {
     # FLStock()
     res <- FLStock(
-      # TODO extend slots for years
+      # TODO extend slots for years: check all slots present
       catch=catch(from), catch.n=catch.n(from), catch.wt=catch.wt(from),
       stock.wt=stock.wt(from), 
       discards.wt=discards.wt(from), landings.wt=landings.wt(from),

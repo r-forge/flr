@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 19:44
+# Last Change: 05 Mar 2009 18:42
 # $Id$
 
 
@@ -50,9 +50,8 @@ validFLBRP <- function(object)
   # range
   dims <- dims(object)
   range <- as.list(object@range)
-  if(range$min < dims$min | range$max > dims$max | range$minyear < dims$minyear |
-    range$maxyear > dims$maxyear | range$plusgroup > dims$max | range$minfbar < dims$min
-    | range$maxfbar > dims$max)
+  if(range$min < dims$min | range$max > dims$max | range$plusgroup > dims$max |   
+    range$minfbar < dims$min | range$maxfbar > dims$max)
     return("mismatch between range and object dimensions")
 
   return(TRUE)
@@ -95,8 +94,7 @@ setClass("FLBRP",
       name            =character(0),
       desc            =character(0),
       range           =unlist(list(min=as.numeric(NA), max=as.numeric(NA),
-        plusgroup=as.numeric(NA), minyear=as.numeric(NA), maxyear=as.numeric(NA),
-        minfbar=as.numeric(NA), maxfbar=as.numeric(NA))),
+        plusgroup=as.numeric(NA), minfbar=as.numeric(NA), maxfbar=as.numeric(NA))),
       model        =formula(rec~a),
       params       =FLPar(1),
       refpts          =new('refpts'),

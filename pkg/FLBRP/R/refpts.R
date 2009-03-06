@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Mar 2009 19:45
+# Last Change: 05 Mar 2009 19:17
 # $Id$
 
 # constructors  {{{
@@ -13,14 +13,14 @@ if (!isGeneric("refpts"))
 
 # refpts(array)
 setMethod('refpts', signature(object='array'),
-  function(object, iter=1, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), ...)
+  function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
   {
-    # reshape object
+    # reshape object for iter
     if(length(dim(object)) < 3)
       object <- array(object, dim=c(dim(object), iter))
     else if (dim(object)[3] < iter)
       object <- array(object, dim=c(dim(object)[-3], iter))
-
+    
     # add dimnames
     if(is.null(dimnames(object)))
     {  
@@ -45,9 +45,9 @@ setMethod('refpts', signature(object='missing'),
 )
 
 setMethod('refpts', signature(object='numeric'),
-  function(object, ...)
+  function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
   {
-    refpts(array(object, dim=c(1,8,1)), ...)
+    refpts(array(object, dim=c(length(refpt), 8, iter)), refpt=refpt, iter=iter, ...)
   }
 )
 setMethod('refpts', signature(object='refpts'),

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 04 Mar 2009 23:45
+# Last Change: 05 Mar 2009 18:46
 # $Id$
 
 # landings.n  {{{
@@ -324,7 +324,7 @@ setGeneric('brp', function(object, ...)
 		standardGeneric('brp'))
 setMethod('brp', signature(object='FLBRP'),
   function(object)
-    {browser()
+    {
     if (dims(object)$iter==1 && dims(object@params)$iter !=1)
        m(object) <- propagate(m(object), iter=dims(params(object))$iter)
     else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
