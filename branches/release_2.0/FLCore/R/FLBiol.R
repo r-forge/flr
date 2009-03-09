@@ -286,8 +286,8 @@ setMethod("ssn", signature(object="FLBiol"),
 
 # harvest {{{
 setMethod('harvest', signature(object='FLBiol', catch='missing'),
-  function(object)
-  {
+  function(object, fratio=1)
+    {
     now <- object@n
     dims <- dim(now)
     res <- now
@@ -299,7 +299,58 @@ setMethod('harvest', signature(object='FLBiol', catch='missing'),
     res[dims[1],] <- res[dims[1]-1,]
 
     # trim out last year
-    res <- res[,1:(dims[2]-1)]
+    res <- res[,1:(dims[2]-1)]-m(object)[,1:(dims[2]-1)]
+
+  ##Plusgroup stuff
+  pgF<-function(object, hrvst, a=1)
+  {
+
+    #deriv(y~n1*exp(-f-m2)+n2*exp(-f*a-m2)-n3,"f")
+    d.<-function(f,n1,n2,n3,m1,m2,a=1){
+            .expr1 <- -f
+            .expr4 <- n1 * exp(.expr1 - m2)
+            .expr7 <- exp(.expr1 * a - m2)
+            .value <- .expr4 + n2 * .expr7 - n3
+            .grad <- array(0, c(length(.value), 1L), list(NULL, c("f")))
+            .grad[, "f"] <- -(n2 * (.expr7 * a) + .expr4)
+            attr(.value, "gradient") <- .grad
+
+            return(.value)
+        }
+
+    for (i in 1:(dims(hrvst)$year)){
+      n1<-c(n(object)[ac(range(object,"plusgroup")-1),i])
+      n2<-c(n(object)[ac(range(object,"plusgroup"))  ,i])
+      n3<-c(n(object)[ac(range(object,"plusgroup"))  ,i+1])
+
+      m1<-c(m(object)[ac(range(object,"plusgroup")-1),i])
+      m2<-c(m(object)[ac(range(object,"plusgroup"))  ,i])
+
+      x    <-0.1
+      f.   <-10
+      Iters<-0
+      while (abs(f.) >= 10e-10 && Iters <= 50)
+        {
+        Iters<-Iters+1
+        res<-d.(x,n1,n2,n3,m1,m2,a)
+
+        f.   = res[[1]]
+        dfdx = attr(res,"gradient")
+
+        x = (x - f./dfdx)
+        }
+
+      hrvst[ac(range(object,"plusgroup"))  ,i]<-x
+      hrvst[ac(range(object,"plusgroup")-1),i]<-x*a
+      }
+
+    return(hrvst)
+    }
+    
+    if (("plusgroup" %in% names(range(object)) && !is.na(range(object,"plusgroup"))))
+     res<-pgF(object, res, a=fratio)
+
+    units(res) <- 'f'
 
     return(res)
   }
@@ -629,8 +680,47 @@ setMethod('rec', signature(object='FLBiol'),
   function(object, rec.age=ac(dims(object)$min))
   {
     if(dims(object)$quant == 'age')
-      quantSums(n(object)[rec.age,])
+      n(object)[rec.age,]
     else
       stop("rec(FLBiol) only defined for age-based objects")
   }
+) # }}}
+
+# fbar {{{
+setMethod("fbar", signature(object="FLBiol"),
+ function(object, ...)
+ {
+  if (!("minfbar" %in% names(range(object))))
+    range(object,"minfbar") <- dims(object)$min+1
+
+  if (!("maxfbar" %in% names(range(object))))
+    range(object,"maxfbar")<-dims(object)$max-1
+
+  if (is.na(object@range["minfbar"]))
+    object@range["minfbar"]<-object@range["min"]+1
+
+  if (is.na(object@range["maxfbar"]))
+    object@range["maxfbar"]<-object@range["max"]-1
+
+  fbarRng<-range(object,"minfbar"):(range(object,"maxfbar")-1)
+
+  res <- log(n(object)[ac(fbarRng),-dims(object)$year]/n(object)[ac(fbarRng+
+    1),-1])-m(object)[ac(fbarRng),-dims(object)$year]
+
+  res<-apply(res,c(2:6),mean)
+
+  return(res)
+
+  } 
+) # }}}
+
+# catch.n {{{
+setMethod("catch.n", signature(object="FLBiol"),
+  function(object)
+  {
+    hrvst<-harvest(object)
+    z <- hrvst+m(object)[,-dims(n(object))$year]
+    res <- n(object)[,-dims(n(object))$year]*hrvst/z*(1-exp(-z))
+    return(res)
+   }
 ) # }}}

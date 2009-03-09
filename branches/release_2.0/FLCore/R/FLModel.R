@@ -535,8 +535,9 @@ setMethod('nls',
     formula@residuals <- log(formula@fitted/eval(as.list(formula@model)[[2]], data))
     
     # force dimnames[1:5] in 'fitted' and 'residuals' to match
-    dimnames(fitted(formula))[1:5] <- dimnames(do.call(as.character(
-      as.list(formula@model)[2]), list(formula)))[1:5]
+    
+    dimnames(fitted(formula))[1:5] <- dimnames(do.call(slot, list(formula,
+    as.character(as.list(formula@model)[2]))))[1:5]
     dimnames(residuals(formula)) <- dimnames(fitted(formula))
 
     return(formula)
@@ -767,8 +768,8 @@ if (!isGeneric("lower<-"))
 setReplaceMethod("lower", signature(object="FLModel", value="numeric"),
   function(object, value)
   {
-    if(length(value) != dim(params(object))[2])
-      stop('Need to specify a lower value for each parameter')
+    if(length(value) < dim(params(object))[1])
+      value <- rep(value, length=dim(params(object))[1])
     attr(slot(object, 'initial'), 'lower') <- value
     return(object)
   }
@@ -787,8 +788,8 @@ if (!isGeneric("upper<-"))
 setReplaceMethod("upper", signature(object="FLModel", value="numeric"),
   function(object, value)
   {
-    if(length(value) != dim(params(object))[2])
-      stop('Need to specify a upper value for each parameter')
+    if(length(value) != dim(params(object))[1])
+      value <- rep(value, length=dim(params(object))[1])
     attr(slot(object, 'initial'), 'upper') <- value
     return(object)
   }

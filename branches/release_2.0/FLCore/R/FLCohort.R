@@ -27,7 +27,8 @@ setMethod("FLCohort", signature("FLQuant"), function(object, ...){
 
 	# dimensions and co
 	dnobj <- dimnames(object)
-	astart <- as.numeric(dnobj[[1]][1])
+	astart <- ifelse(!is.na(dims(object)$min), dims(object)$min,
+    stop("FLQuant has no numeric 'age', cannot convert to FLCohort."))
 	ystart <- as.numeric(dnobj$year[1])
 	dobj <- dim(object)	
 	dflc <- dobj
@@ -42,7 +43,7 @@ setMethod("FLCohort", signature("FLQuant"), function(object, ...){
 	dimnames(flc) <- dn.lst
 
 	# creating the index
-	m <- flc[,,1,1,1,1]
+	m <- matrix(flc[,,1,1,1,1], ncol=dflc[2], nrow=dflc[1], dimnames=dimnames(flc)[1:2])
 	lst <- split(1:ncol(object),1:ncol(object))
 	lst <- lapply(lst, function(count){	
 		paste("row(m)==(-col(m)+", dobj[1] + count, ")", sep="")
