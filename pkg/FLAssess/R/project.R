@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 06 Mar 2009 11:09
+# Last Change: 09 Mar 2009 20:00
 # $Id:  $
 
 if (!isGeneric("project"))
@@ -82,7 +82,7 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="numeric", ca
     har <- FLQuant(dimnames=c(dimnames(sel)[c(1,3:6)], list(year=years)))
     har[] <- sel
 
-    # call project
+    # call project(stock, sr, harvest=FLQuant)
     project(stock, sr, har/as.numeric(quantMeans(har[ac(seq(range(stock, 'minfbar'), 
       range(stock, 'maxfbar')))])) * harvest, years=years)
 
@@ -97,7 +97,7 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="FLQuant",
     # turn harvest quant into numeric if needed
     if(dim(harvest)[1] == 1 & dims(stock)[dims(stock)$quant] > 1)
       return(project(stock=stock, sr=sr, harvest=as.numeric(harvest), years=years, ...))
-
+    
     # get rec.age
     rec.age <- as.numeric(dimnames(rec(sr))$age[1])
     
@@ -119,7 +119,11 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="FLQuant",
             [page, pyear] + harvest(stock)[page, pyear]))
         }
         # abundance at first age
-        stock.n(stock)[1,i] <- predict(sr, ssb=ssb(stock)[,ac(as.numeric(i)-rec.age)])
+        # TODO Bad hack to get geomean to work. Need to dispatch properly
+        if (all.equal(model(sr), rec~a))
+          stock.n(stock)[1,i] <- predict(sr)
+        else
+          stock.n(stock)[1,i] <- predict(sr, ssb=ssb(stock)[,ac(as.numeric(i)-rec.age)])
         
         # plusgroup
         pgroup <- range(stock, 'plusgroup')
@@ -143,6 +147,36 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="FLQuant",
       # (1) apply mean proportions-at-age
 
       return(stock)
+  }
+) # }}}
+
+# project(stock=FLStock, sr=missing, harvest=ANY, catch=ANY) {{{
+setMethod('project', signature(stock='FLStock', sr='missing', harvest='ANY', 
+  catch='missing'),
+  function(stock, harvest, years, frec=exp(yearMeans(log(rec(stock)
+    [,!dimnames(catch(stock))$year %in% ac(years)]), na.rm=TRUE))
+    , ...)
+  {
+    sr <- as.FLSR(stock, model=geomean)
+    
+    # geomean of all series
+    params(sr) <- FLPar(as.numeric(frec))
+    project(stock=stock, sr=sr, harvest=harvest, years=years, ...)
+  }
+) # }}}
+
+# project(stock=FLStock, sr=missing, harvest=missing, catch=ANY) {{{
+setMethod('project', signature(stock='FLStock', sr='missing', harvest='missing', 
+  catch='ANY'),
+  function(stock, catch, years,
+    frec=exp(yearMeans(log(rec(stock)[,!dimnames(catch(stock))$year %in% ac(years)]),
+    na.rm=TRUE)), ...)
+  {
+    sr <- as.FLSR(stock, model=geomean)
+    
+    # geomean of all series
+    params(sr) <- FLPar(as.numeric(frec))
+    project(stock=stock, sr=sr, catch=catch, years=years, ...)
   }
 ) # }}}
 
