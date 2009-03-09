@@ -30,6 +30,7 @@ exportMethods(
   "merge",
   "plot",
   "retro",
+  "project",
   "SepVPA",
   "stf",
   "summary",
