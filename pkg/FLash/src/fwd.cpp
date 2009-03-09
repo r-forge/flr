@@ -386,25 +386,26 @@ adouble fwd::FbarDiscards(FLQuant2_adolc &ad_f, int ispp, int iyr, int iunit, in
 
 double fwd::getVal(FLRConst_Target quantity, int ispp,  int iyr, int iunit, int iseason, int iarea, int iter)
    {   
-   switch(quantity){
-       case FLRConst_F:
-         return flc::Fbar(           ispp, iyr,  iunit, iseason, iarea, iter);
-  	    case FLRConst_FLandings:
-         return flc::FbarLandings(   ispp, iyr,  iunit, iseason, iarea, iter);
-   	 case FLRConst_FDiscards:
-         return flc::FbarDiscards(   ispp, iyr,  iunit, iseason, iarea, iter);
-   	 case FLRConst_SSB:
-         return flc::SSB(            ispp, iyr-1,iunit, iseason, iarea, iter);
-   	 case FLRConst_Biomass:
-         return flc::computeStock(   ispp, iyr,  iunit, iseason, iarea, iter);
-       case FLRConst_Catch:
-         return flc::computeCatch(   ispp, iyr,  iunit, iseason, iarea, iter);
-       case FLRConst_Landings:
-         return flc::computeLandings(ispp, iyr,  iunit, iseason, iarea, iter);
-       case FLRConst_Discards:
-         return flc::computeDiscards(ispp, iyr,  iunit, iseason, iarea, iter);
- 	    default:
-	      return 0.0;
+   switch(quantity)
+    {
+    case FLRConst_F:
+      return flc::Fbar(           ispp, iyr,  iunit, iseason, iarea, iter);
+  	case FLRConst_FLandings:
+      return flc::FbarLandings(   ispp, iyr,  iunit, iseason, iarea, iter);
+   	case FLRConst_FDiscards:
+      return flc::FbarDiscards(   ispp, iyr,  iunit, iseason, iarea, iter);
+   	case FLRConst_SSB:
+      return flc::SSB(            ispp, iyr-1,iunit, iseason, iarea, iter);
+   	case FLRConst_Biomass:
+      return flc::computeStock(   ispp, iyr,  iunit, iseason, iarea, iter);
+    case FLRConst_Catch:
+      return flc::computeCatch(   ispp, iyr,  iunit, iseason, iarea, iter);
+    case FLRConst_Landings:
+      return flc::computeLandings(ispp, iyr,  iunit, iseason, iarea, iter);
+    case FLRConst_Discards:
+      return flc::computeDiscards(ispp, iyr,  iunit, iseason, iarea, iter);
+ 	  default:
+	    return 0.0;
 	    break;
        }
 

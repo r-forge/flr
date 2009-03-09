@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 27 Nov 2007 19:20
+# Last Change: 06 Mar 2009 19:17
 # $Id$
 
 validFwdControl <- function(object){
