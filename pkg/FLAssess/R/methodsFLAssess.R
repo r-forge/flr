@@ -49,7 +49,7 @@ setMethod("merge", signature(x="FLStock", y="FLAssess"),
     dny <- dimnames(y@stock.n)
 
     # check dimensions match
-    if(!all.equal(dnx[-2], dny[-2]))
+    if(!all.equal(dnx[c(-2,-6)], dny[c(-2,-6)]))
       stop("Mismatch in dimensions: only year can differ between stock and assess")
 
     # same plusgroup
