@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 09 Mar 2009 20:00
+# Last Change: 10 Mar 2009 09:43
 # $Id:  $
 
 if (!isGeneric("project"))
@@ -120,7 +120,7 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="FLQuant",
         }
         # abundance at first age
         # TODO Bad hack to get geomean to work. Need to dispatch properly
-        if (all.equal(model(sr), rec~a))
+        if (identical(ac(model(sr)), ac(rec~a)))
           stock.n(stock)[1,i] <- predict(sr)
         else
           stock.n(stock)[1,i] <- predict(sr, ssb=ssb(stock)[,ac(as.numeric(i)-rec.age)])
