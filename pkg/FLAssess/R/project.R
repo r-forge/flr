@@ -1,10 +1,14 @@
 # project - projection code
-# project
+# FLAssess/R/project.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 10 Mar 2009 09:43
-# $Id:  $
+# Last Change: 10 Mar 2009 19:17
+# $Id$
+
+# TODO 2009.03.10 imosqueira
+# - Add option to fill one more year
+# - Separate catches on landings/discards
 
 if (!isGeneric("project"))
 	setGeneric("project", function(stock, sr, harvest, catch, ...)
@@ -179,7 +183,3 @@ setMethod('project', signature(stock='FLStock', sr='missing', harvest='missing',
     project(stock=stock, sr=sr, catch=catch, years=years, ...)
   }
 ) # }}}
-
-# TODO
-# - Add option to fill one more year
-# - Separate catches on landings/discards
