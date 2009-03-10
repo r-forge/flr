@@ -14,11 +14,11 @@ to FLSTF.  Can be used in conjunction with fwd() for validating assessments.
 }
 \section{Generic Function}{
 \describe{
-\item{Usage}{stf(object,nyrs=3,wts.nyrs=3,fbar.nyrs=NA,disc.nyrs=NA,arith.mn=TRUE, na.rm=TRUE)}
+\item{Usage}{stf(object,nyears=3,wts.nyears=3,fbar.nyears=NA,arith.mn=TRUE, na.rm=TRUE)}
 \item{Arguments:}{\ }
 \describe{
   \item{\ }{\code{object}: \code{FLStock} object the forecast is to be perfomed on.}
-  \item{\ }{\code{nyrs}: Number of years to extend the stock object by, i.e. number of
+  \item{\ }{\code{nyears}: Number of years to extend the stock object by, i.e. number of
               forecast years.}
   \item{\ }{\code{wts.nyrs}: Number of years over which to calculate mean for *.wt,
                   *.spwn, mat and m slots.}
@@ -62,7 +62,7 @@ Not yet implemented for multiple seasons or areas.}
 # load ple4
 data(ple4)
 # stf with default settings
-ple4.stf <- stf(ple4,nyrs=3, wts.nyrs=4, fbar.nyrs=3)
+ple4.stf <- stf(ple4, nyears=3, wts.nyears=4, fbar.nyears=3)
 }
 \author{
 	FLR Team
