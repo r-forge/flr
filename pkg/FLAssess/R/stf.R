@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 11 Mar 2009 16:46
+# Last Change: 11 Mar 2009 17:30
 # $Id$
 
 if (!isGeneric("stf"))
@@ -18,7 +18,9 @@ setMethod('stf', signature(object='FLStock'),
     dims <- dims(object)
 
     # check nyears and end match
-    if(dims$maxyear + nyears != end)
+    if(missing(nyears))
+      nyears <- as.numeric(end) - dims$maxyear
+    else if(dims$maxyear + nyears != end)
       stop("'nyears' and 'end' do not match: ", dims$maxyear + nyears, " vs. ", end)
 
     # years
@@ -40,21 +42,22 @@ setMethod('stf', signature(object='FLStock'),
     # *.wt, mat, m and *.spwn as average over wts.years
     for (i in c('catch.wt', 'landings.wt', 'discards.wt', 'mat', 'm',
       'harvest.spwn', 'm.spwn'))
-      slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6), fmean, na.rm=TRUE)
+      slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6),
+        fmean, na.rm=na.rm)
     
     # harvest as mean over fbar.nyears
     slot(res, 'harvest')[, years] <- apply(slot(res, 'harvest')[,fbar.years], c(1,3:6),
-      fmean, na.rm=TRUE)
+      fmean, na.rm=na.rm)
 
     # f.rescale
     if(f.rescale == TRUE)
     {
       # mean f over fbar ages and years
       fbar <- mean(apply(slot(res, 'harvest')[fbar.ages, fbar.years], c(2:6), mean,
-        na.rm=TRUE))
+        na.rm=na.rm))
       # fbar for last REAL year
       lastfbar <- apply(slot(res, 'harvest')[fbar.ages, ac(dims$maxyear)], 3:6, mean,
-        na.rm=TRUE)
+        na.rm=na.rm)
 
       # divide by fbar and multiply by lastfbar
       slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
@@ -62,6 +65,41 @@ setMethod('stf', signature(object='FLStock'),
       slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
         years], 3:6, lastfbar, '*')
     }
+    return(res)
+  }
+) # }}}
+
+## stf(FLStock) {{{
+setMethod('stf', signature(object='FLBiol'),
+  function(object, nyears=3, wts.nyears=3, arith.mean=TRUE, na.rm=TRUE,
+    end=dims(object)$maxyear + nyears)
+  {
+    dims <- dims(object)
+    
+    # check nyears and end match
+    if(missing(nyears))
+      nyears <- as.numeric(end) - dims$maxyear
+    else if(dims$maxyear + nyears != end)
+      stop("'nyears' and 'end' do not match: ", dims$maxyear + nyears, " vs. ", end)
+
+    # years
+    years <- ac((dims$maxyear+1):end)
+    wts.years <- ac(seq(dims$maxyear-wts.nyears+1, dims$maxyear))
+
+    # arith or geometric
+    if(arith.mean)
+      fmean <- mean
+    else  
+      fmean <- function(x) exp(mean(log(x)))
+
+    # window object
+    res <- window(object, end=end)
+
+    # average slots
+    # *.wt, mat, m and *.spwn as average over wts.years
+    for (i in c('wt', 'fec', 'm', 'spwn'))
+      slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6), fmean, na.rm=TRUE)
+    
     return(res)
   }
 ) # }}}
