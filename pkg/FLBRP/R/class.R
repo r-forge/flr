@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 05 Mar 2009 18:42
+# Last Change: 11 Mar 2009 16:17
 # $Id$
 
 
@@ -71,12 +71,12 @@ setClass("FLBRP",
       rec.obs        ="FLQuant",
       ssb.obs        ="FLQuant",
       profit.obs     ="FLQuant",
-      stock.n        ="FLQuant",
-      landings.n     ="FLQuant",
-      discards.n     ="FLQuant",
+#      stock.n        ="FLQuant",
+#      landings.n     ="FLQuant",
+#      discards.n     ="FLQuant",
       landings.sel   ="FLQuant",
       discards.sel   ="FLQuant",
-      harvest        ="FLQuant",
+#      harvest        ="FLQuant",
       bycatch.harvest="FLQuant",
       stock.wt       ="FLQuant",
       landings.wt    ="FLQuant",
@@ -106,12 +106,12 @@ setClass("FLBRP",
       rec.obs         =new("FLQuant"),
       ssb.obs         =new("FLQuant"),
       profit.obs      =new("FLQuant"),
-      stock.n         =new("FLQuant"),
-      landings.n      =new("FLQuant"),
-      discards.n      =new("FLQuant"),
+#      stock.n         =new("FLQuant"),
+#      landings.n      =new("FLQuant"),
+#      discards.n      =new("FLQuant"),
       landings.sel    =new("FLQuant"),
       discards.sel    =new("FLQuant"),
-      harvest         =new("FLQuant"),
+#      harvest         =new("FLQuant"),
       bycatch.harvest =new("FLQuant"),
       stock.wt        =new("FLQuant"),
       landings.wt     =new("FLQuant"),

@@ -1,9 +1,9 @@
-# refpts - «Short one line description»
+# refpts - methods for the refpts class
 # FLBRP/R/refpts.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 06 Mar 2009 11:20
+# Last Change: 10 Mar 2009 19:17
 # $Id$
 
 # constructors  {{{
