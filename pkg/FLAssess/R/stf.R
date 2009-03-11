@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 10 Mar 2009 19:13
+# Last Change: 11 Mar 2009 16:46
 # $Id$
 
 if (!isGeneric("stf"))
@@ -50,16 +50,18 @@ setMethod('stf', signature(object='FLStock'),
     if(f.rescale == TRUE)
     {
       # mean f over fbar ages and years
-      fbar <- apply(apply(slot(res, 'harvest')[, fbar.years], c(1,3:6), mean,
-        na.rm=TRUE), 2:6, mean, na.rm=TRUE)
+      fbar <- mean(apply(slot(res, 'harvest')[fbar.ages, fbar.years], c(2:6), mean,
+        na.rm=TRUE))
       # fbar for last REAL year
       lastfbar <- apply(slot(res, 'harvest')[fbar.ages, ac(dims$maxyear)], 3:6, mean,
         na.rm=TRUE)
 
-      # 
-      slot(res, 'harvest')[fbar.ages, years] <- sweep(slot(res, 'harvest')[fbar.ages,
-        fbar.years], 3:6, lastfbar/fbar, '*')
-     }
+      # divide by fbar and multiply by lastfbar
+      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
+        years], 3:6, fbar, '/')
+      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
+        years], 3:6, lastfbar, '*')
+    }
     return(res)
   }
 ) # }}}
