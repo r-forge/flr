@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 27 Nov 2007 19:20
+# Last Change: 12 Mar 2009 19:47
 # $Id$
 
 ## fwd(FLStock)
@@ -25,14 +25,15 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        stop("ctrl not valid")
         
     yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
-    
+
     ## check years
     ## years in ctrl have to be in FLStock object
     if (!all(ac(yrs) %in% ac(dims(object)$minyear:(dims(object)$maxyear))))
        stop("years in ctrl outside of those in stock object")
     ## Need year+1 in FLStock object
-    if (!all(ac(yrs) %in% ac(dims(object)$minyear:(dims(object)$maxyear-1))))
-       stop("Need to have year+1 in stock object compared to ctrl to estimate survivors")
+    if (yrs[length(yrs)] == dims(object)$maxyear)
+      object <- window(object, end=yrs[length(yrs)]+1)
+    
     ## years in ctrl have to be in order
     if (!all(yrs==sort(yrs)))
        stop("years in ctrl not in order")
@@ -78,6 +79,9 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
     catch(   x)<-computeStock(   x)
     name(    x)<-name(object)
     desc(    x)<-desc(object)
+
+    if (dims(res)$maxyear > dims(object)$maxyear)
+      res <- window(res, end=dims(object)$maxyear)
 
     return(x)
     }) 
