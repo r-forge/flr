@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 12 Mar 2009 14:50
+# Last Change: 12 Mar 2009 14:56
 # $Id$
 
 # as.FLSR {{{
@@ -11,7 +11,7 @@ setAs('FLBRP', 'FLSR',
   function(from)
 	{
 
-    FLSR(name=from@name, desc = "'rec' and 'ssb' slots obtained from a 'FLBRP' from",
+    FLSR(name=from@name, desc = "'rec' and 'ssb' slots obtained from a 'FLBRP'",
       rec=rec.obs(from), ssb=ssb.obs(from))
     
     if(validObject(sr))
@@ -71,6 +71,9 @@ setAs('FLBRP', 'FLStock',
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear',
       'maxyear')])
     
-    return(res)
+    if(validObject(res))
+      return(res)
+    else
+      stop("invalid object created. Please check input object")
   }
 ) # }}}
