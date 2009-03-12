@@ -2,15 +2,8 @@
 # FLAssess-class
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
-# Last Change: 01 Sep 2008 16:02
+# Maintainer: Finlay Scott, Cefas & Robert Scott, JRC
 # $Id$
-
-# Reference:
-# Notes:
-
-# TODO Thu 10 Jul 2008 09:28:03 AM CEST IM:
-
 
 ## FLAssess		{{{
 validFLAssess <- function(object){
@@ -53,7 +46,6 @@ setValidity("FLAssess", validFLAssess)
 remove(validFLAssess)
 #invisible(createFLAccesors(new("FLAssess")))	# }}}
 
-
 ## FLAssess.retro	{{{
 validFLAssess.retro <- function(object){
 	# If the list is empty, then it is OK
@@ -84,6 +76,7 @@ setClass("FLAssess.retro",
 
 setValidity("FLAssess.retro", validFLAssess.retro)
 remove(validFLAssess.retro)	# }}}
+
 ## FLAssess.fval	{{{
 validFLAssess.fval <- function(object){
 	# If the list is empty, then it is OK

@@ -2,8 +2,7 @@
 # FLAssess/R/project.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
-# Last Change: 10 Mar 2009 19:17
+# Maintainer: Finlay Scott, Cefas & Robert Scott, JRC
 # $Id$
 
 # TODO 2009.03.10 imosqueira

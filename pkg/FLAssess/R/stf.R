@@ -2,8 +2,7 @@
 # FLAssess/R/stf.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
-# Last Change: 11 Mar 2009 17:30
+# Maintainer: Finlay Scott, Cefas & Robert Scott, JRC
 # $Id$
 
 if (!isGeneric("stf"))
