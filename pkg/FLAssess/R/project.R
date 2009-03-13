@@ -156,9 +156,8 @@ setMethod("project", signature(stock="FLStock", sr="FLSR", harvest="FLQuant",
 # project(stock=FLStock, sr=missing, harvest=ANY, catch=ANY) {{{
 setMethod('project', signature(stock='FLStock', sr='missing', harvest='ANY', 
   catch='missing'),
-  function(stock, harvest, years, frec=exp(yearMeans(log(rec(stock)
-    [,!dimnames(catch(stock))$year %in% ac(years)]), na.rm=TRUE))
-    , ...)
+  function(stock, harvest, years,frec= exp(yearMeans(log(rec(stock)[,
+    ac(dims(stock)$minyear:(years[1]-1))]), na.rm=TRUE)), ...)
   {
     sr <- as.FLSR(stock, model=geomean)
     
@@ -171,9 +170,8 @@ setMethod('project', signature(stock='FLStock', sr='missing', harvest='ANY',
 # project(stock=FLStock, sr=missing, harvest=missing, catch=ANY) {{{
 setMethod('project', signature(stock='FLStock', sr='missing', harvest='missing', 
   catch='ANY'),
-  function(stock, catch, years,
-    frec=exp(yearMeans(log(rec(stock)[,!dimnames(catch(stock))$year %in% ac(years)]),
-    na.rm=TRUE)), ...)
+  function(stock, catch, years,frec= exp(yearMeans(log(rec(stock)[,
+    ac(dims(stock)$minyear:(years[1]-1))]), na.rm=TRUE)), ...)
   {
     sr <- as.FLSR(stock, model=geomean)
     
