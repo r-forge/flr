@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 12 Mar 2009 19:47
+# Last Change: 13 Mar 2009 16:36
 # $Id$
 
 ## fwd(FLStock)
@@ -80,8 +80,8 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
     name(    x)<-name(object)
     desc(    x)<-desc(object)
 
-    if (dims(res)$maxyear > dims(object)$maxyear)
-      res <- window(res, end=dims(object)$maxyear)
+    if (dims(x)$maxyear > dims(object)$maxyear)
+      x <- window(x, end=dims(object)$maxyear)
 
     return(x)
     }) 
