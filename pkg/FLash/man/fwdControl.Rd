@@ -58,7 +58,8 @@ fwdControl(year=1999:2000,value=.2,min=NA,max=.6)}
   Laurence Kell, Finlay Scott & Iago Mosqueira
   }
 \examples{
-\dontrun{Control<-fwdControl(list(year    =rep(1995:2000),value=c(.40,100000,5000,120000,220000,0.65),
+\dontrun{
+Control<-fwdControl(data.frame(year    =rep(1995:2000),value=c(.40,100000,5000,120000,220000,0.65),
                        quantity=c("f", "ssb","catch","ssb","ssb","f")))
 
 }}

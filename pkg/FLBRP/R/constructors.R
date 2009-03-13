@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 05 Mar 2009 18:41
+# Last Change: 13 Mar 2009 10:49
 # $Id$
 
 # FLBRP {{{
@@ -91,12 +91,15 @@ setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
 # FLBRP(object=FLStock, sr=missing)
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
-    fbar=seq(0, 4, 0.04), nyrs=3, na.rm=TRUE, mean='arithmetic', ...)
+    fbar=seq(0, 4, 0.04), biol.nyears=3, fbar.nyears=3, sel.nyears=fbar.nyears,
+    na.rm=TRUE, mean='arithmetic', ...)
   {
     # dims & dimnames
     dims <- dims(object)
     maxyear <- dims$maxyear
-    years <- ac(seq(maxyear-nyrs+1, maxyear))
+    byears <- ac(seq(maxyear-biol.nyears+1, maxyear))
+    fyears <- ac(seq(maxyear-fbar.nyears+1, maxyear))
+    syears <- ac(seq(maxyear-sel.nyears+1, maxyear))
     fages <- ac(seq(object@range['minfbar'], object@range['maxfbar']))
     snames <- dimnames(object@catch)
     dnames <- dimnames(object@catch.n)
@@ -109,8 +112,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       foo <- function(x) exp(mean(log(x), na.rm=na.rm))
 
     # scaling
-    scaling  <- sweep(object@harvest[,years], 2:6, apply(object@harvest[fages,years] ,2:6,
-      'mean', na.rm=na.rm), "/")
+    scaling  <- sweep(object@harvest[,fyears], 2:6, apply(object@harvest[fages,fyears] ,
+      2:6, 'mean', na.rm=na.rm), "/")
     scaling <- apply(scaling, c(1,3:6), foo)
 
     # NEW FLBRP
@@ -121,14 +124,15 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       # fbar
       fbar=FLQuant(fbar, units=units(object@harvest), quant=dims$quant),
 
-      # slots to be mean of nyrs (m, mat, harvest,spwn, m.spwn, discards.wt, landings.wt)
-      m = apply(object@m[,years], c(1,3:6), foo),
-      mat = apply(object@mat[,years], c(1,3:6), foo),
-      stock.wt = apply(object@stock.wt[,years], c(1,3:6), foo),
-      harvest.spwn = apply(object@harvest.spwn[,years], c(1,3:6), foo),
-      m.spwn = apply(object@m.spwn[,years], c(1, 3:6), foo),
-      discards.wt = apply(object@discards.wt[,years], c(1,3:6), foo),
-      landings.wt = apply(object@landings.wt[,years], c(1,3:6), foo),
+      # slots to be mean of byears
+      # (m, mat, harvest,spwn, m.spwn, discards.wt, landings.wt)
+      m = apply(object@m[,byears], c(1,3:6), foo),
+      mat = apply(object@mat[,byears], c(1,3:6), foo),
+      stock.wt = apply(object@stock.wt[,byears], c(1,3:6), foo),
+      harvest.spwn = apply(object@harvest.spwn[,byears], c(1,3:6), foo),
+      m.spwn = apply(object@m.spwn[,byears], c(1, 3:6), foo),
+      discards.wt = apply(object@discards.wt[,byears], c(1,3:6), foo),
+      landings.wt = apply(object@landings.wt[,byears], c(1,3:6), foo),
 
       # rec.obs
       rec.obs = object@stock.n[ac(dims$min)],
@@ -147,10 +151,10 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       profit.obs = FLQuant(dimnames=snames),
 
       # discards.sel & landings.sel
-      discards.sel = scaling * apply(object@discards.n/(object@discards.n +
-        object@landings.n), c(1,3:6), foo),
-      landings.sel = scaling * apply(object@landings.n/(object@discards.n +
-        object@landings.n), c(1,3:6), foo),
+      discards.sel = scaling * apply(object@discards.n[,syears]/
+        (object@discards.n[,syears] + object@landings.n[,syears]), c(1,3:6), foo),
+      landings.sel = scaling * apply(object@landings.n[,syears]/
+        (object@discards.n[,syears] + object@landings.n[,syears]), c(1,3:6), foo),
 
       # bycatch.wt & bycatch.harvest
       bycatch.wt = FLQuant(0, dimnames=dnames),

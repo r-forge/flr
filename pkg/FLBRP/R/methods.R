@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 06 Mar 2009 10:51
+# Last Change: 12 Mar 2009 18:41
 # $Id$
 
 # landings.n  {{{
@@ -302,6 +302,7 @@ setGeneric('computeRefpts', function(object, ...)
 setMethod('computeRefpts', signature(object='FLBRP'),
  function(object)
     {
+      # check dims, params & refpts
       #
       if (dims(object)$iter!=1 && dims(object@params)$iter ==1)
       {
