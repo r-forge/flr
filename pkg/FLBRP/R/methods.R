@@ -3,7 +3,6 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 12 Mar 2009 18:41
 # $Id$
 
 # landings.n  {{{
@@ -313,8 +312,9 @@ setMethod('computeRefpts', signature(object='FLBRP'),
         if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    res <- .Call("computeRefpts", object, refpts(object),SRchar2code(SRModelName(object@model)),
-                        FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
+    res <- .Call("computeRefpts", object, refpts(object),
+      SRchar2code(SRModelName(object@model)), FLQuant(c(params(object)),
+      dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
   }
