@@ -3,14 +3,13 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 13 Mar 2009 10:49
 # $Id$
 
-# FLBRP {{{
+# FLBRP
 setGeneric('FLBRP', function(object, sr, ...)
   standardGeneric('FLBRP'))
 
-# FLBRP(object='missing', sr='missing')
+# FLBRP(object='missing', sr='missing') {{{
 setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04)))
@@ -68,9 +67,9 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     return(res)
 
   }
-)
+) # }}}
 
-# FLBRP(object='missing', sr='FLSR')
+# FLBRP(object='missing', sr='FLSR')  # {{{
 setMethod('FLBRP', signature(object='missing', sr='FLSR'),
   function(sr, ...)
   {
@@ -107,9 +106,9 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     
     # mean
     if(mean == 'arithmetic')
-      foo <- function(x) mean(x, na.rm=na.rm)
+      foo <- function(x) ifelse(all(is.na(x)), 0, mean(x, na.rm=na.rm))
     else if (mean =='geometric')
-      foo <- function(x) exp(mean(log(x), na.rm=na.rm))
+      foo <- function(x) ifelse(all(is.na(x)), 0, exp(mean(log(x), na.rm=na.rm)))
 
     # scaling
     scaling  <- sweep(object@harvest[,fyears], 2:6, apply(object@harvest[fages,fyears] ,
