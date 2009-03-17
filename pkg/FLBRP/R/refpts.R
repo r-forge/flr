@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 10 Mar 2009 19:17
+# Last Change: 17 Mar 2009 16:31
 # $Id$
 
 # constructors  {{{
@@ -51,6 +51,15 @@ setMethod('refpts', signature(object='numeric'),
       iter=iter, ...)
   }
 )
+
+setMethod('refpts', signature(object='logical'),
+  function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
+  {
+    refpts(array(as.numeric(object), dim=c(length(refpt), 8, iter)), refpt=refpt,
+      iter=iter, ...)
+  }
+)
+
 setMethod('refpts', signature(object='refpts'),
   function(object, ...)
   {
@@ -65,10 +74,19 @@ setMethod('show', signature(object='refpts'),
   function(object)
   {
 		cat("An object of class \"refpts\":\n")
-		if(dim(object)[3] > 1)
-			cat("iters: ", dim(object)[3],"\n")
-    cat("\n")
-    show(apply(object, 1:2, median, na.rm=TRUE))
+
+       if(dim(object)[3] > 1){
+   		  v1 <- apply(object, 1:2, median, na.rm=TRUE)
+     		v2 <- apply(object, 1:2, mad,    na.rm=TRUE)
+        v3 <- paste(format(v1,digits=5),"(", format(v2, digits=3), ")", sep="")}
+      else
+        v3 <- paste(format(apply(object, 1:2, median, na.rm=TRUE),digits=5))
+
+    print(array(v3, dim=dim(object)[1:2], dimnames=dimnames(object)[1:2]), quote=FALSE)
+
+		if(dim(object)[3] != 1)
+			cat("iters: ", dim(object)[3],"\n\n")
+  
   }
 ) # }}}
 
