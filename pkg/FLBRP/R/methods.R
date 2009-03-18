@@ -443,3 +443,15 @@ setMethod('propagate', signature(object='FLBRP'),
     return(object)
   }
 ) # }}}
+
+# iter {{{
+setMethod('iter', signature(object='FLBRP'),
+  function(object, iter, ...)
+  {
+    object <- callNextMethod(object, iter, ...)
+    params(object) <- iter(params(object), iter)
+    if(dim(refpts(object))[3] > 1)
+      refpts(object) <- refpts(object)[,,iter]
+    return(object)
+  }
+) # }}}

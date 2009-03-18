@@ -89,7 +89,8 @@ exportMethods(
   "availability<-",
   "price<-",
   "vcost<-",
-  "fcost<-")
+  "fcost<-",
+  "iter")
 export("f0.1",
   "fmax",
   "spr")
