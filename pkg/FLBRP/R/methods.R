@@ -273,7 +273,8 @@ setMethod('spr', signature(object='FLBRP'),
     model( object)<-formula(rec~a)
     
     res<-.Call("spr", object, SRchar2code(SRModelName(object@model)),
-                       FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
+      FLQuant(c(params(object)),dimnames=dimnames(params(object))), 
+      PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -289,7 +290,8 @@ setMethod('ypr', signature(object='FLBRP'),
     model( object)<-formula(rec~a)
     
     res<-.Call("ypr", object, SRchar2code(SRModelName(object@model)),
-                       FLQuant(c(params(object)),dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
+      FLQuant(c(params(object)),dimnames=dimnames(params(object))),
+      PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -300,19 +302,27 @@ setGeneric('computeRefpts', function(object, ...)
 		standardGeneric('computeRefpts'))
 setMethod('computeRefpts', signature(object='FLBRP'),
  function(object)
-    {
-      # check dims, params & refpts
-      #
-      if (dims(object)$iter!=1 && dims(object@params)$iter ==1)
-      {
-        if (dims(m(object))$iter==1)
-          m(object)<-propagate(m(object),iter=dims(params(object))$iter)
-      }
-      else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
-        if (dims(object)$iter!= dims(object@params)$iter)
-          stop("Iters in params don't match")
+  {
+    # check dims in object and params
+    iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
+    # if > 1, they should be equal
+    if(all(iter > 1))
+      if(iter[1] != iter[2])
+        stop('iter in FLQuant slots and params do not match, ',
+          paste(iter, collapse=' vs. '))
 
-    res <- .Call("computeRefpts", object, refpts(object),
+    # extend refpts as needed
+    iter <- max(iter)
+    if(iter > 1)
+    {
+      refpts <- propagate(refpts(object), iter)
+    }
+    else
+    {
+      refpts <- refpts(object)
+    }
+    
+    res <- .Call("computeRefpts", object, refpts,
       SRchar2code(SRModelName(object@model)), FLQuant(c(params(object)),
       dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
@@ -325,14 +335,27 @@ setGeneric('brp', function(object, ...)
 		standardGeneric('brp'))
 setMethod('brp', signature(object='FLBRP'),
   function(object)
-    {
-    if (dims(object)$iter==1 && dims(object@params)$iter !=1)
-       m(object) <- propagate(m(object), iter=dims(params(object))$iter)
-    else if (dims(object)$iter!=1 && dims(object@params)$iter !=1)
-       if (dims(object)$iter!= dims(object@params)$iter)
-          stop("Iters in params don't match")
+  {
+    # check dims in object and params
+    iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
+    # if > 1, they should be equal
+    if(all(iter > 1))
+      if(iter[1] != iter[2])
+        stop('iter in FLQuant slots and params do not match, ',
+          paste(iter, collapse=' vs. '))
 
-    res <- .Call("brp", object, refpts(object), SRchar2code(SRModelName(object@model)),
+    # extend refpts as needed
+    iter <- max(iter)
+    if(iter > 1)
+    {
+      refpts <- propagate(refpts(object), iter)
+    }
+    else
+    {
+      refpts <- refpts(object)
+    }
+
+    res <- .Call("brp", object, refpts, SRchar2code(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
@@ -347,6 +370,7 @@ setGeneric('hcrYield', function(object, fbar, ...)
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
   {
+    # check input fbar dims
     if(!identical(dim(fbar), dim(fbar(object))))
       stop("input fbar must be the same length as fbar(object)")
 
@@ -357,9 +381,13 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
           stop("Iters in params don't match")
 
     res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
-                    FLQuant(c(params(object)),dimnames=dimnames(params(object))),
+      FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       fbar, PACKAGE = "FLBRP")
     
+    # propagate landings.wt
+    if(dims(res)$iter != dims(landings.wt(object))$iter)
+      landings.wt(object) <- propagate(landings.wt(object), dims(res)$iter)
+
     return(apply(sweep(res, c(1,3:6), landings.wt(object), "*"), 2, sum))
    }
 )
@@ -379,7 +407,8 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
     fbar(ssb) <- FLQuant(0)
     
     res <- .Call("spr", ssb, SRchar2code(SRModelName(ssb@model)),
-                  FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))), PACKAGE = "FLBRP")
+      FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))),
+      PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -387,14 +416,30 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
 
 # propagate {{{
 setMethod('propagate', signature(object='FLBRP'),
-  function(object, iter, fill.iter=TRUE)
+  function(object, iter, fill.iter=TRUE, obs=FALSE, params=FALSE)
   {
-    # FLQuant
-    res <- qapply(object, propagate, iter=iter, fill.iter=fill.iter)
+    # obs FLQuants
+    if(obs)
+    {
+      obs <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'profit.obs')
+      for(i in obs)
+        slot(object, i) <- propagate(slot(object, i), iter=iter, fill.iter=fill.iter)
+    }
+
+    # other FLQuants
+    quants <- c("fbar", "landings.sel", "discards.sel", "bycatch.harvest", "stock.wt",
+      "landings.wt", "discards.wt", "bycatch.wt", "m", "mat", "harvest.spwn", "m.spwn", 
+      "availability", "price", "vcost", "fcost")
+    for(i in quants)
+        slot(object, i) <- propagate(slot(object, i), iter=iter, fill.iter=fill.iter)
+
     # refpts
-    refpts(res) <- propagate(refpts(res), iter=iter, fill.iter=fill.iter)
+    refpts(object) <- propagate(refpts(object), iter=iter, fill.iter=fill.iter)
+
     # params
-    params(res) <- propagate(params(res), iter=iter, fill.iter=fill.iter)
-    return(res)
+    if(params)
+      params(object) <- propagate(params(object), iter=iter, fill.iter=fill.iter)
+  
+    return(object)
   }
 ) # }}}
