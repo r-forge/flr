@@ -91,4 +91,5 @@ exportMethods(
   "vcost<-",
   "fcost<-")
 export("f0.1",
-  "fmax")
+  "fmax",
+  "spr")
