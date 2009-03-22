@@ -39,7 +39,7 @@ setMethod('stf', signature(object='FLStock'),
 
     # average slots
     # *.wt, mat, m and *.spwn as average over wts.years
-    for (i in c('catch.wt', 'landings.wt', 'discards.wt', 'mat', 'm',
+    for (i in c('catch.wt', 'landings.wt', 'discards.wt', 'stock.wt', 'mat', 'm',
       'harvest.spwn', 'm.spwn'))
       slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6),
         fmean, na.rm=na.rm)
