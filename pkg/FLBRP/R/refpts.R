@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 18 Mar 2009 11:53
+# Last Change: 23 Mar 2009 17:59
 # $Id$
 
 # constructors  {{{
@@ -182,12 +182,11 @@ fmax <- function(object)
 }
 
 # spr
-spr <- function(object, spr='.30')
+sprr <- function(object, spr='.30')
 {
   refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),
     sep=''))
   computeRefpts(object)
 }
-
 
 # }}}

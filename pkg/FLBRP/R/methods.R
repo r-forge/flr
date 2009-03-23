@@ -272,7 +272,7 @@ setMethod('spr', signature(object='FLBRP'),
     params(object)<-FLPar(1)
     model( object)<-formula(rec~a)
     
-    res<-.Call("spr", object, SRchar2code(SRModelName(object@model)),
+    res <- .Call("spr", object, SRchar2code(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))), 
       PACKAGE = "FLBRP")
 

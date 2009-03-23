@@ -1484,7 +1484,7 @@ t3 = dim[2];
            //do Newton Raphson to estimate N
 
            f    = pow(D[iRef][RP_rec][iIter]-Recruits(x,iIter+1),2);
-           dgdx = -2*(D[iRef][RP_rec][iIter]-SSB(x,iIter+1))*RecGrad(x,iIter+1);
+           dgdx = -2*(D[iRef][RP_rec][iIter]-Recruits(x,iIter+1))*RecGrad(x,iIter+1);
 
            x = x - f / dgdx;
            }

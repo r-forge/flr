@@ -18,7 +18,6 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
 
     res <- do.call(new, c(list(Class='FLBRP', model=model, params=params, fbar=fbar),
       args))
-
     # resize: years
     slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
       'profit.obs')
@@ -92,9 +91,12 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=seq(0, 4, 0.04), biol.nyears=3, fbar.nyears=3, sel.nyears=fbar.nyears,
     na.rm=TRUE, mean='arithmetic', ...)
-  {
+    {
     # dims & dimnames
     dims <- dims(object)
+    if (!all(c("minfbar","maxfbar") %in% names(range(object))))
+       stop("'minfbar' and 'maxfbar' missing from range")
+    
     maxyear <- dims$maxyear
     byears <- ac(seq(maxyear-biol.nyears+1, maxyear))
     fyears <- ac(seq(maxyear-fbar.nyears+1, maxyear))
@@ -103,7 +105,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     snames <- dimnames(object@catch)
     dnames <- dimnames(object@catch.n)
     dnames[['year']] <- '1'
-    
+
     # mean
     if(mean == 'arithmetic')
       foo <- function(x) ifelse(all(is.na(x)), 0, mean(x, na.rm=na.rm))
