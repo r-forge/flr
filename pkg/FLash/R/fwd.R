@@ -15,8 +15,6 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr          =NULL,
                sr.residuals=NULL, sr.residuals.mult=TRUE)
     {
-    
-    
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
@@ -27,19 +25,21 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
 
     ## check years
-    ## years in ctrl have to be in FLStock object
-    if (!all(ac(yrs) %in% ac(dims(object)$minyear:(dims(object)$maxyear))))
-       stop("years in ctrl outside of those in stock object")
-    ## Need year+1 in FLStock object
-    if (yrs[length(yrs)] == dims(object)$maxyear)
-      object <- window(object, end=yrs[length(yrs)]+1)
-    
     ## years in ctrl have to be in order
     if (!all(yrs==sort(yrs)))
        stop("years in ctrl not in order")
     ## no gaps in years
     if (length(min(yrs):max(yrs))!=length(unique(yrs)))
        stop("years in ctrl not contiguous")
+    ## years in ctrl have to be in FLStock object
+    if (!all(ac(yrs) %in% ac(dims(object)$minyear:(dims(object)$maxyear))))
+       stop("years in ctrl outside of those in stock object")
+    ## Need year+1 in FLStock object
+    if (max(yrs) == dims(object)$maxyear){
+       endYr<-dims(object)$maxyear+1
+       object <- window(object, end=dims(object)$maxyear+1)}
+    else
+       endYr<-NULL
 
     sr<-setSR(sr=sr, object = object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
     #if (is.character(sr)) stop(sr)
@@ -53,7 +53,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
 #          dmns$iters<-1:its[2]
 #          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
-ctrl@target <- chkTargetQuantity(ctrl@target)
+     ctrl@target <- chkTargetQuantity(ctrl@target)
 
 #     if (!is(ctrl@target[,"quantity"],"factor"))
 #        ctrl@target[,"quantity"]<-factor(ctrl@target[,"quantity"],quantityNms())
@@ -64,8 +64,8 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
 #         stop("fwd(FLStock) not implemented for 'effort','costs','revenue' or 'profit'")         
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
-          
-    x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residual.mult)
+
+    x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
 
     #if (is.numeric(x)) stop(x)
     
@@ -76,12 +76,11 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
     catch(   x)<-computeCatch(   x)
     landings(x)<-computeLandings(x)
     discards(x)<-computeDiscards(x)
-    catch(   x)<-computeStock(   x)
+    catch(   x)<-computeCatch(   x)
     name(    x)<-name(object)
     desc(    x)<-desc(object)
 
-    if (dims(x)$maxyear > dims(object)$maxyear)
-      x <- window(x, end=dims(object)$maxyear)
+    if (!is.null(endYr)) x <- window(x, end=endYr-1)
 
     return(x)
     }) 

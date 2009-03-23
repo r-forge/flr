@@ -7,56 +7,56 @@
 # $Id$
 
 # target  {{{
-if (!isGeneric("fwdTarget"))
-	setGeneric("fwdTarget", function(object, ...)
-		standardGeneric("fwdTarget"))
-setMethod("fwdTarget", signature(object="list"),
-   function(object)
-   {
-     # turn into data.frame
-     if(class(object[[1]]) != 'list')
-       object <- list(object)
-     object <- lapply(object, function(x) data.frame(as.list(x)))
-     len <- sum(unlist(lapply(object, nrow)))
-     # ouput data.frame
-     res <- data.frame(year=rep(as.numeric(NA), len),
-       value=rep(as.numeric(NA), len), min=rep(as.numeric(NA), len),
-       max=rep(as.numeric(NA), len), quantity=rep(factor(0, levels=c("ssb","biomass",
-       "catch", "landings","discards","f","z","f.landings","f.discards","effort","costs",
-       "revenue", "profit")), len), rel=rep(as.numeric(NA), len),
-       spp   =rep(as.character('1'), len),
-       fleet =rep(as.character('1'), len),
-       metier=rep(as.character('1'), len),
-       stringsAsFactors=FALSE)
-     # load each target
-     elem <- c(0,unlist(lapply(object, nrow)))
-     for(i in seq(length(object)))
-       res[elem[i]+(1:nrow(object[[i]])), names(object[[i]])] <- object[[i]]
-
-     # check that first option for a year is a target
+#if (!isGeneric("fwdTarget"))
+#	setGeneric("fwdTarget", function(object, ...)
+#		standardGeneric("fwdTarget"))
+#setMethod("fwdTarget", signature(object="list"),
+#   function(object)
+#   {
+#     # turn into data.frame
+#     if(class(object[[1]]) != 'list')
+#       object <- list(object)
+#     object <- lapply(object, function(x) data.frame(as.list(x)))
+#     len <- sum(unlist(lapply(object, nrow)))
+#     # ouput data.frame
+#     res <- data.frame(year=rep(as.numeric(NA), len),
+#       value=rep(as.numeric(NA), len), min=rep(as.numeric(NA), len),
+#       max=rep(as.numeric(NA), len), quantity=rep(factor(0, levels=c("ssb","biomass",
+#       "catch", "landings","discards","f","z","f.landings","f.discards","effort","costs",
+#       "revenue", "profit")), len), rel=rep(as.numeric(NA), len),
+#      spp   =rep(as.character('1'), len),
+#      fleet =rep(as.character('1'), len),
+#       metier=rep(as.character('1'), len),
+#       stringsAsFactors=FALSE)
+#     # load each target
+#     elem <- c(0,unlist(lapply(object, nrow)))
+#     for(i in seq(length(object)))
+#       res[elem[i]+(1:nrow(object[[i]])), names(object[[i]])] <- object[[i]]
+#
+#     # check that first option for a year is a target
 #     if (!all(!is.na(res[!duplicated(res[,"year"]),"value"])))
 #        stop("Gotta specify a target for a year first")
-     # check that if max or min specified then no target & vice versa
-     if (any((!is.na(res[,"min"]) | !is.na(res[,"max"])) &
-       !is.na(res[,"value"])))
-       stop("Can't specify a target and a min or max values")
-     # check years are all given
-     if (any(is.na(res[,"year"])))
-       stop("All targets should have a year")
-
-     # delete spp/fleet/metier columns if not needed
-     if(all(res$spp == 1) && all(res$fleet == 1) && all(res$metier == 1) &&
-      !any(unlist(lapply(object, function(x) any(c('spp', 'metier', 'fleet') %in%
-      names(x))))))
-        res <- res[,!names(res) %in% c('spp', 'fleet', 'metier')]
-
-     return(res)
-   }
-)
-setMethod("fwdTarget", signature(object="missing"),
-   function(...)
-     fwdTarget(list(...))
-) # }}}
+#     # check that if max or min specified then no target & vice versa
+#     if (any((!is.na(res[,"min"]) | !is.na(res[,"max"])) &
+#       !is.na(res[,"value"])))
+#       stop("Can't specify a target and a min or max values")
+#     # check years are all given
+#     if (any(is.na(res[,"year"])))
+#       stop("All targets should have a year")
+#
+#     # delete spp/fleet/metier columns if not needed
+#     if(all(res$spp == 1) && all(res$fleet == 1) && all(res$metier == 1) &&
+#      !any(unlist(lapply(object, function(x) any(c('spp', 'metier', 'fleet') %in%
+#      names(x))))))
+#        res <- res[,!names(res) %in% c('spp', 'fleet', 'metier')]
+#
+#     return(res)
+#   }
+#)
+#setMethod("fwdTarget", signature(object="missing"),
+#   function(...)
+#     fwdTarget(list(...))
+#) # }}}
 
 
 #******* Target Functions for C interface ************
@@ -67,11 +67,11 @@ checkTarget<-function(target)
     if (any((!is.na(target[,"min"]) | !is.na(target[,"max"])) & !is.na(target[,"val"]))) {
        warning("Can't specify a target and a min or max values")
        return(FALSE)}
-              
+
     if (any((!is.na(target[,"min"]) & !is.na(target[,"max"])) & target[,"max"]<=target[,"min"])){
        warning("max less than than min value")
        return(FALSE)}
-       
+
     return(TRUE)
     }
          

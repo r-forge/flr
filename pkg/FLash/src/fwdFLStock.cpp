@@ -206,35 +206,42 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
     //Set SRR
     sr sr;
 	REAL(Err)[0]=1;
-    if (!sr.Init(1, xYrs, stk.niters)) 
-       return Err;
+    if (!sr.Init(1, xYrs, stk.niters)) {
+       UNPROTECT(1);
+       return Err;}
+
     REAL(Err)[0]=2;
-    if (!sr.Init(1, xSRModel, xSRParam, xSRResiduals, xMult)) 
-       return Err;
+    if (!sr.Init(1, xSRModel, xSRParam, xSRResiduals, xMult))  {
+       UNPROTECT(1);
+       return Err;}
     
     // check target object
     REAL(Err)[0]=3;
-    if (!isMatrix(xTrgt) || !isNumeric(xTrgt))
-      return Err;
+    if (!isMatrix(xTrgt) || !isNumeric(xTrgt)) {
+       UNPROTECT(1);
+       return Err;}
 
     // check target min/max/value object
     REAL(Err)[0]=4;
-    if (!isArray(xAry) || !isNumeric(xAry))
-      return Err;
+    if (!isArray(xAry) || !isNumeric(xAry)) {
+       UNPROTECT(1);
+       return Err;}
 
     SEXP TrgtDims = GET_DIM(xTrgt);
 
     REAL(Err)[0]=5;
-    if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 9) 
-       return Err;
+    if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 9)  {
+       UNPROTECT(1);
+       return Err;}
   
     SEXP AryDims = GET_DIM(xAry);
 
     REAL(Err)[0]=6;
     if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
                                 INTEGER(AryDims)[1] != 3                    ||
-                                INTEGER(AryDims)[2] != stk.niters) 
-       return Err;
+                                INTEGER(AryDims)[2] != stk.niters)  {
+       UNPROTECT(1);
+       return Err;}
 
     double *Trgt = NUMERIC_POINTER(xTrgt);
     double *Ary  = NUMERIC_POINTER(xAry);
@@ -326,12 +333,13 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
               int NIters=0;
 	           while (norm(r,n) > 1e-12 && norm(indep,n) < 100 && NIters++<50)
 	              {
+	              function(_Tape,n,n,indep,r);
+
 	              jac_solv(_Tape,n,indep,r,0,2);
 
 	              for (i=0; i<n; i++)
 		              indep[i] -= r[i];	   
 
-	              function(_Tape,n,n,indep,r);
                  }         
         
               project(indep, stk, sr, (int)(Trgt)[iTrgt-1 + 0*nrow], iter);
@@ -347,6 +355,8 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
     for (i=0; i<n; i++)
        delete[] jac[i];
     delete[] jac;
+
+    UNPROTECT(1);
 
     return stk.Return();
     }    
