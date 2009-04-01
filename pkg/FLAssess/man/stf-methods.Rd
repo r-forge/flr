@@ -43,8 +43,7 @@ defined number of years.
 
 The future values of the discards.n and landings.n slots are returned only as
 estimated proportions, not actual numbers.  The proportions are calculated as
-the mean proportion of the sum of the landings and discard numbers of the last
-user defined number of years.
+the mean proportion of the sum of the landings and discard numbers over wts.years.
 
 The remaining slots (stock.n, catch.n, stock, catch, discards, landings) are
 set to NA.

@@ -43,7 +43,12 @@ setMethod('stf', signature(object='FLStock'),
       'harvest.spwn', 'm.spwn'))
       slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6),
         fmean, na.rm=na.rm)
-    
+
+    # landings.n and discards.n as proportions of wts.years
+    slot(res, 'discards.n')[,years] <- apply(slot(res, 'discards.n')[, wts.years] /
+      slot(res, 'catch.n')[, wts.years], c(1,3:6), mean)
+    slot(res, 'landings.n')[,years] <- 1 - slot(res, 'discards.n')[,years]
+
     # harvest as mean over fbar.nyears
     slot(res, 'harvest')[, years] <- apply(slot(res, 'harvest')[,fbar.years], c(1,3:6),
       fmean, na.rm=na.rm)
