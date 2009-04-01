@@ -1,2 +1,1 @@
-RHOME = 'R RHOME'
-PKG_LIBS=$(RHOME)/library/FLCore/libs/FLCore.dll
+PKG_LIBS=$(R_HOME)/library/FLCore/libs/FLCore.dll
