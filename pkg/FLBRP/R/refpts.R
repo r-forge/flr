@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 23 Mar 2009 17:59
+# Last Change: 02 Apr 2009 11:08
 # $Id$
 
 # constructors  {{{
@@ -38,9 +38,12 @@ setMethod('refpts', signature(object='array'),
   }
 )
 setMethod('refpts', signature(object='missing'),
-  function(...)
+  function(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
   {
-    refpts(array(as.numeric(NA), dim=c(5,8)), ...)
+    if(length(iter) == 1 && ac(iter) == '1')
+      iter <- seq(length=as.numeric(iter))
+    refpts(array(as.numeric(NA), dim=c(length(refpt), 8, length(iter))),
+      refpt=refpt, iter=iter, ...)
   }
 )
 

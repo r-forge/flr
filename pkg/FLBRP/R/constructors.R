@@ -68,7 +68,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
   }
 ) # }}}
 
-# FLBRP(object='missing', sr='FLSR')  # {{{
+# FLBRP(object='missing', sr='FLSR')  {{{
 setMethod('FLBRP', signature(object='missing', sr='FLSR'),
   function(sr, ...)
   {
@@ -76,17 +76,17 @@ setMethod('FLBRP', signature(object='missing', sr='FLSR'),
 
     do.call('FLBRP', c(list(model=model(sr), params=params(sr)), args))
   }
-)
+) # }}}
 
-# FLBRP(object=FLStock, sr=FLSR)
+# FLBRP(object=FLStock, sr=FLSR)  {{{
 setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
   function(object, sr, ...)
   {
     FLBRP(object=object, model=sr@model, params=sr@params, ...)
   }
-)
+) # }}}
 
-# FLBRP(object=FLStock, sr=missing)
+# FLBRP(object=FLStock, sr=missing) {{{
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=seq(0, 4, 0.04), biol.nyears=3, fbar.nyears=3, sel.nyears=fbar.nyears,
@@ -179,6 +179,4 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
     return(res)
   }
-)
-
-# }}}
+) # }}}
