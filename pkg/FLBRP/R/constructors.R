@@ -113,8 +113,10 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       foo <- function(x) ifelse(all(is.na(x)), 0, exp(mean(log(x), na.rm=na.rm)))
 
     # scaling
+    # 1. harvest values are divided for that year fbar (mean harvest for fages)
     scaling  <- sweep(object@harvest[,fyears], 2:6, apply(object@harvest[fages,fyears] ,
       2:6, 'mean', na.rm=na.rm), "/")
+    # 2. mean across fyears. All years are thus given equal weight
     scaling <- apply(scaling, c(1,3:6), foo)
 
     # NEW FLBRP
