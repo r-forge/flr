@@ -1,7 +1,7 @@
 Package: FLICES
 Title: ICES FLR package
 Author: Mark Payne
-Version: 1.99-100
+Version: 0.1
 Description: Routines and methods for ICES work
 Maintainer: Mark Payne <mpa@aqua.dtu.dk>
 License: GPL 2.0
