@@ -861,7 +861,7 @@ setMethod('rec', signature(object='FLStock'),
 # mergeFLStock {{{
 mergeFLStock<-function(x, y)
     {
-    if (!all(unlist(dims(ple4))==unlist(dims(ple4)))) stop("FLStock objects to combine have dim mismatch")
+    if (!all(unlist(dims(x))==unlist(dims(y)))) stop("FLStock objects to combine have dim mismatch")
 
     res<-FLStock(stock     =stock(     x)   +stock(  y),
                  stock.n   =stock.n(   x)   +stock.n(y),
@@ -906,8 +906,11 @@ mergeFLStock<-function(x, y)
        warning("adding harvest.spwn slots, this might not be want you want")
        harvest.spwn(res)<-(harvest.spwn(x)+harvest.spwn(y))/2
        }
-        
+
     mat(res)    <-(mat(x)*stock.n(x)+mat(y)*stock.n(y))/(stock.n(x)+stock.n(y))
+
+    harvest(res)<-FLQuant(harvest(res),dimnames=dimnames(m(res)))
+
     #harvest(res)<-calcF(m(res),catch.n(res),stock.n(res))
 
     return(res)
@@ -974,6 +977,34 @@ setMethod('expand', signature(x='FLStock'),
           as.numeric(years[length(years)]))
        }
     }
+    return(x)
+  }
+) # }}}
+
+# dimnames {{{
+setMethod('dimnames<-', signature(x='FLStock', value='list'),
+  function(x, value)
+  {
+    slots <- getSlotNamesClass(x, 'FLQuant')
+    aslots <- c('catch', 'landings', 'discards', 'stock')
+    for(i in slots[!slots %in% aslots])
+      dimnames(slot(x, i)) <- value
+
+    # range
+    vnames <- names(value)
+    if('year' %in% vnames)
+      range(x, c('minyear','maxyear')) <- value[['year']][c(1, length(value[['year']]))]
+    if(dims(x)$quant %in% vnames)
+      range(x, c('min','max')) <- value[[dims(x)$quant]][c(1,
+        length(value[[dims(x)$quant]]))]
+
+    value <- value[names(value) != dims(x)$quant]
+    if(length(value) > 0)
+    {
+      for (i in aslots)
+        dimnames(slot(x, i)) <- value
+    }
+
     return(x)
   }
 ) # }}}

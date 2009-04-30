@@ -16,8 +16,10 @@
   (\code{type='all'}) or left empty (\code{type='first'}).
 
   For objects of class \code{\link{FLPar-class}}, propagate will extend the object along
-  the first dimension, \code{iter}. The newly created space will alway be empty 
-  (\code{NA}).
+  the last dimension, \code{iter}. The fill.iter argument defaults to FALSE, in
+  contrast with FLQuant. Objects do not need to have iter=1 to be extended, but only
+  if fill.iter=FALSE.
+
 }
 \section{Generic function}{
  propagate(object) 
@@ -32,6 +34,7 @@
 }
 \section{Methods}{\describe{
 \item{signature(object=FLQuant) :}{Extends object along the \code{iter} dimension}
+\item{signature(object=FLPar) :}{Extends object along the \code{iter} dimension}
 \item{signature(object=FLComp) :}{Extends all \code{\link{FLQuant-class}} slots in the
   object along the \code{iter} dimension}
 \item{signature(object=FLMetier) :}{Extends all \code{\link{FLQuant-class}} slots in the
@@ -49,5 +52,12 @@ flq <- FLQuant(rnorm(50), dim=c(5,10))
 propagate(flq, 10)
 # Look at the %NA in summary
 summary(propagate(flq, 10, fill.iter=FALSE))
+
+flp <- FLPar(1:10, params=letters[1:10])
+propagate(flp, 10)
+propagate(flp, 10, fill.iter=TRUE)
+
+flp <- FLPar(1:15, params=letters[1:5], iter=3)
+propagate(flp, 10)
 }
 \keyword{methods}

@@ -1,10 +1,12 @@
-		CHANGES IN FLCore VERSION 2.1
+		CHANGES IN FLCore VERSION 2.2
 
 NEW FEATURES
   - fbar method for FLBiol added.
   - harvest method for FLBiol has been reformulated. It now computes F based on the 
     differences between Z and N, and handles the plusgroup, assumed to be the last age.
   - catch.n method for FLBiol now available. Calculates catch from abundance and harvest.
+  - a dimnames<- method for FLStock has been added. dimnames can be modified for all
+    FLQuant slots and the behaviour of non-quant ones is respected.
 
 USER-VISIBLE CHANGES
   - nls(FLModel) does not strictly require accessor for the input FLQuant slots to be
@@ -12,6 +14,10 @@ USER-VISIBLE CHANGES
   - replacement method for FLPar '[<-', can now use a logical array for indexing.
   - propagate(FLPar) is now able to deal with all dimnames combinations.
   - default values for lower limit of parameters in 'ricker' model lowered to 1e-10.
+  - propagate(FLPar) is now defined. The fill.iter argument deafults to FALSE, in
+    contrast with FLQuant. Objects do not need to have iter=1 to be extended, but only
+    if fill.iter=FALSE.
+  - improved selection and replacement for FLPar.
 
 BUG FIXES
   - FS#2 - FLCohort breaks for a single age quant.
@@ -24,10 +30,16 @@ BUG FIXES
   - FLPar(FLPar) did not handle properly all dimnames combinations.
   - plot(FLStocks) can now handle objects without @name. key and main are now turned off
     by default. Use key=TRUE to get the standard key for groups.
+  - transform(FLComp) did not create correctly the necessary environment, so arguments
+    on parent.frame could not be found.
+  - The FLFleet example dataset, bt4, has been actualized to the new FLCatch class, where
+    the catch.* slots are now substituted by methods.
+  - FLPar(vector) did not use the whole input vector. Vector is now applied along all
+    dimensions starting by row.
 	
 UTILITIES
 
 DOCUMENTATION
-  - FS#5 - The FLR citiation is wrong! D'oh!. Fixed.
+  - FS#5 - The FLR citation is wrong! D'oh!. Fixed.
     
 DEPRECATED & DEFUNCT
