@@ -99,14 +99,13 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
 
        return(res)
        }
-
+	# Creates data.frame with desired column names (nms) and no. of rows (no. yrs)
+	# Used for creating target and effort dataframes
     df<-function(yrs,nms){
       df<-NULL
       for (i in nms)
          df<-cbind(df,rep(NA,length(yrs)))
-        
       dimnames(df)<-list(1:length(yrs),nms)
-    
       return(data.frame(df))
       }
 
@@ -128,7 +127,7 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
        stop("target not data.frame")
 
     if (!("year" %in% names(object)))
-       stop("year not specifierd in object")
+       stop("year not specified in object")
     yrs<-object[,"year"]
 
     res<-new("fwdControl")

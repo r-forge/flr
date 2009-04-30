@@ -65,12 +65,14 @@ checkTarget<-function(target)
     {
     # check that if max or min specified then no target & vice versa
     if (any((!is.na(target[,"min"]) | !is.na(target[,"max"])) & !is.na(target[,"val"]))) {
-       warning("Can't specify a target and a min or max values")
+       warning("Can't specify a val and a min or max values")
        return(FALSE)}
 
     if (any((!is.na(target[,"min"]) & !is.na(target[,"max"])) & target[,"max"]<=target[,"min"])){
        warning("max less than than min value")
        return(FALSE)}
+
+	# Should also check quantity
 
     return(TRUE)
     }

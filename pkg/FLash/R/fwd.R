@@ -15,6 +15,8 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr          =NULL,
                sr.residuals=NULL, sr.residuals.mult=TRUE)
     {
+    
+    
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
