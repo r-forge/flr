@@ -123,9 +123,17 @@ if (!isGeneric("biomass"))
 	setGeneric("biomass", function(object, ...)
     	standardGeneric("biomass"))
 setMethod('biomass', signature(object='FLSP'),
+  function(object) {
+    return(fitted(object) / as.numeric(params(object)['q',]))})
+# }}}
+
+# harvest rate {{{
+if (!isGeneric("harvest.rate"))
+	setGeneric("harvest.rate", function(object, ...)
+    	standardGeneric("harvest.rate"))
+setMethod('harvest.rate', signature(object='FLSP'),
   function(object)
-    return(fitted(object) / as.numeric(params(object)['Q',]) *
-      as.numeric(params(object)['K',])))
+    return(catch(object) / biomass(object)))
 # }}}
 
 # Schaefer {{{
@@ -233,5 +241,3 @@ setMethod('plot', signature(x='FLSP', y='missing'),
 
   }
 ) # }}}
-
-# harvest
