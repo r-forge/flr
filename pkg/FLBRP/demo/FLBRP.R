@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 18 Mar 2009 11:52
+# Last Change: 27 May 2009 17:11
 # $Id:  $
 
 # Reference:
@@ -69,6 +69,3 @@ dimnames(refpts())$refpt
 # a new refpts object
 refpts(pleBrp) <- refpts(as.numeric(NA), refpt='spr.40')
 computeRefpts(pleBrp)
-
-# or use the brp() function tah simply computes the specified srp level
-spr(pleBrp, '0.45')
