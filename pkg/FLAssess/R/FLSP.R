@@ -124,7 +124,7 @@ if (!isGeneric("biomass"))
     	standardGeneric("biomass"))
 setMethod('biomass', signature(object='FLSP'),
   function(object) {
-    return(fitted(object) / as.numeric(params(object)['q',]))})
+    return(fitted(object) / as.numeric(params(object)['Q',]))})
 # }}}
 
 # harvest rate {{{
