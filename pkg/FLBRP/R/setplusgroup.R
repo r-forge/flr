@@ -15,7 +15,8 @@ setMethod('setPlusGroup', signature(x='FLBRP'),
       
       # ages
       oldage <- dims(x)$max
-      ages <- seq(dims(x)$min, plusgroup)
+      ages   <- seq(dims(x)$min, plusgroup)
+      newages<- seq(dims(x)$max, plusgroup)
 
       slts<-c("landings.sel", "discards.sel",
         "bycatch.harvest", "stock.wt",
@@ -25,8 +26,8 @@ setMethod('setPlusGroup', signature(x='FLBRP'),
         "availability", "price")
             
       for (i in slts) {
-        slot(x, i) <- expand(slot(x, i), age=ages)
-        slot(x,i)[ac(ages),] <- slot(x,i)[ac(oldage),]
+        slot(x, i)           <-expand(slot(x, i), age=ages)
+        slot(x,i)[ac(newages),] <-slot(x,i)[ac(oldage),]
        }
 
     return(x)
