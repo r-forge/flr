@@ -75,10 +75,10 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
 
     stock.n(x)[is.na(stock.n(x))]<-0.0
 
-    catch(   x)<-computeCatch(   x)
+    catch(   x)<-computeCatch(   x, 'all')
     landings(x)<-computeLandings(x)
     discards(x)<-computeDiscards(x)
-    catch(   x)<-computeCatch(   x)
+    stock(   x)<-computeStock(   x)
     name(    x)<-name(object)
     desc(    x)<-desc(object)
 

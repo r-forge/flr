@@ -66,8 +66,8 @@ chkTargetQuantity <- function(target)
         target[,"quantity"]<-factor(target[,"quantity"],quantityNms)
     if (!all(as.character(target[,"quantity"]) %in% quantityNms))
         stop("invalid quantity in control target")
-    if (any(as.character(target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
-        stop("fwd not yet implemented for 'effort','costs','revenue' or 'profit'")
+    if (any(as.character(target[,"quantity"]) %in% c("costs","revenue","profit")))
+        stop("fwd not yet implemented for 'costs','revenue' or 'profit'")
 	return(target)
 }
 
