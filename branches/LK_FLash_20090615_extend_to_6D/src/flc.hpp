@@ -24,10 +24,10 @@ public:
    inline int minyear() {return _minyear;} 
    inline int maxyear() {return _maxyear;} 
    
-   bool   Init(int, int, int,int=1);      
-   bool   Init(int, SEXP,int=1);      
+   bool   Init(int n, SEXP xyrs);
+   bool   Init(int _nstock, int _minyr, int _maxyr);     
    bool   Init(int, SEXP, SEXP, SEXP, SEXP);
-   double recruits(int, int, double, int iter=1);
+   double recruits(int, int, double, int iter=1, int iseason=1);
 protected: 
    FLRConstSRR       **model;
    FLQuant2            residuals;
@@ -35,8 +35,8 @@ protected:
    bool               *residuals_mult;
 
    int nstock,
-       _minyear, _maxyear,
-       niter;
+	   nseason,
+      _minyear, _maxyear;
   
    void unalloc(void);
    };                  

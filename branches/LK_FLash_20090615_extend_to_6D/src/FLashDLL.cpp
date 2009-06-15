@@ -9,6 +9,46 @@
    #define SEXPDLLExport SEXP    
 #endif
 
+extern "C" SEXPDLLExport CalcF(SEXP xM, SEXP xCatch, SEXP xN)
+   {
+   FLQuant m(xM);
+   FLQuant c(xCatch);
+   FLQuant n(xN);
+   FLQuant f(m.minquant(),m.maxquant(),m.minyr(),m.maxyr(),m.nunits(),m.nseasons(),m.nareas(),m.niters(),0.0);
+
+   double _f = 0.1;
+
+   int iAge, iYear, iUnit, iSeason, iArea, iIter;
+
+   for (iIter = 1; iIter<=m.niters(); iIter++)
+	   for (iArea = 1; iArea <= m.nareas(); iArea++)
+		   for (iSeason = 1; iSeason <= m.nseasons(); iSeason++)
+    		 for (iUnit = 1; iUnit <= m.nunits(); iUnit++)
+    	 		 for (iYear = m.minyr(); iYear <= m.maxyr(); iYear++)
+		   		   for (iAge = m.minquant(); iAge <= m.maxquant(); iAge++)
+				    	 {
+               _f = 0.1;
+               int iter=0;
+               while (fabs(F_func(&_f,m(iAge,iYear,iUnit,iSeason,iArea,iIter),c(iAge,iYear,iUnit,iSeason,iArea,iIter),n(iAge,iYear,iUnit,iSeason,iArea,iIter)))>1e-12 && iter++<50)
+                 ;
+
+					     f(iAge,iYear,iUnit,iSeason,iArea,iIter)=_f;
+               }					
+   return f.Return();
+   }
+
+extern "C" SEXPDLLExport VPA_ad(SEXP xStock, SEXP xFitPlusGroup, SEXP xFratio, SEXP xFratioFlag)
+   {
+   //Input VPA Control
+   FLashVPA VPA(xStock);       
+   
+   //Run VPA
+   VPA.VPA(xFitPlusGroup,xFratio,xFratioFlag);
+                 
+   //Display Ns and Fs 
+   return VPA.Return();  
+   }                 
+
 extern "C" SEXPDLLExport SepVPA_ad(SEXP xStock, SEXP xControl, SEXP xRefHarvest)
    {
    //Input VPA Control
@@ -20,6 +60,29 @@ extern "C" SEXPDLLExport SepVPA_ad(SEXP xStock, SEXP xControl, SEXP xRefHarvest)
    //Display Ns and Fs 
    return VPA.Return();  
    }                 
+
+// Uses fwdFLStock
+extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
+   {
+   return fwd_adolc_FLStock(xFLStock,xTrgt,xAry,xYrs,xSRModel,xSRParam,xSRResiduals,xMult); 
+   }
+
+// Uses fwd
+extern "C" SEXPDLLExport __fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
+    {
+    SEXP ReturnVal = R_NilValue;
+    
+    fwd fwd(xFLStock, xYrs, xSRModel, xSRParam, xSRResiduals, xMult);
+
+    //fwd.run(xTrgt, xCtrl);
+
+    PROTECT(ReturnVal = allocVector(VECSXP,fwd.nstock()));
+
+    for (int i=0; i<fwd.nstock(); i++)
+       SET_VECTOR_ELT(ReturnVal, i, fwd.ReturnStock(i+1));
+    
+    return ReturnVal;
+    }
 
 extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult)    
     {
@@ -99,50 +162,7 @@ extern "C" SEXPDLLExport fwd_adolc_FLBiols(SEXP xBiols, SEXP xFleets, SEXP xTrgt
    return ReturnVal;
    }
 
-extern "C" SEXPDLLExport __fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
-    {
-    SEXP ReturnVal = R_NilValue;
-    
-    fwd fwd(xFLStock, xYrs, xSRModel, xSRParam, xSRResiduals, xMult);
-
-    //fwd.run(xTrgt, xCtrl);
-
-    PROTECT(ReturnVal = allocVector(VECSXP,fwd.nstock()));
-
-    for (int i=0; i<fwd.nstock(); i++)
-       SET_VECTOR_ELT(ReturnVal, i, fwd.ReturnStock(i+1));
-    
-    return ReturnVal;
-    }
-
-extern "C" SEXPDLLExport CalcF(SEXP xM, SEXP xCatch, SEXP xN)
-   {
-   FLQuant m(xM);
-   FLQuant c(xCatch);
-   FLQuant n(xN);
-   FLQuant f(m.minquant(),m.maxquant(),m.minyr(),m.maxyr(),m.nunits(),m.nseasons(),m.nareas(),m.niters(),0.0);
-
-   double _f = 0.1;
-
-   int iAge, iYear, iUnit, iSeason, iArea, iIter;
-
-   for (iIter = 1; iIter<=m.niters(); iIter++)
-	   for (iArea = 1; iArea <= m.nareas(); iArea++)
-		   for (iSeason = 1; iSeason <= m.nseasons(); iSeason++)
-    		 for (iUnit = 1; iUnit <= m.nunits(); iUnit++)
-    	 		 for (iYear = m.minyr(); iYear <= m.maxyr(); iYear++)
-		   		   for (iAge = m.minquant(); iAge <= m.maxquant(); iAge++)
-				    	 {
-               _f = 0.1;
-               int iter=0;
-               while (fabs(F_func(&_f,m(iAge,iYear,iUnit,iSeason,iArea,iIter),c(iAge,iYear,iUnit,iSeason,iArea,iIter),n(iAge,iYear,iUnit,iSeason,iArea,iIter)))>1e-12 && iter++<50)
-                 ;
-
-					     f(iAge,iYear,iUnit,iSeason,iArea,iIter)=_f;
-               }					
-   return f.Return();
-   }
-
+// Test functions for flc
 extern "C" SEXPDLLExport TestFLStock(SEXP xStock)
    {
    SEXP ReturnObject = R_NilValue;
@@ -155,11 +175,6 @@ extern "C" SEXPDLLExport TestFLStock(SEXP xStock)
 
    return ReturnObject;
    //return stock.Return();
-   }
-
-extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
-   {
-   return fwd_adolc_FLStock(xFLStock,xTrgt,xAry,xYrs,xSRModel,xSRParam,xSRResiduals,xMult); 
    }
 
 extern "C" SEXPDLLExport TestFLBiolFLFleet(SEXP xBiol, SEXP xFleet, SEXP xDim)
@@ -179,18 +194,7 @@ extern "C" SEXPDLLExport TestFLBiolFLFleet(SEXP xBiol, SEXP xFleet, SEXP xDim)
    return ReturnVal;
    }
 
-extern "C" SEXPDLLExport VPA_ad(SEXP xStock, SEXP xFitPlusGroup, SEXP xFratio, SEXP xFratioFlag)
-   {
-   //Input VPA Control
-   FLashVPA VPA(xStock);       
-   
-   //Run VPA
-   VPA.VPA(xFitPlusGroup,xFratio,xFratioFlag);
-                 
-   //Display Ns and Fs 
-   return VPA.Return();  
-   }                 
-
+// Adapt stuff
 extern "C" SEXPDLLExport AdaptFuncAD(SEXP xStock, SEXP xFitPlusGroup, SEXP xFratio, SEXP xFratioFlag, SEXP xQ, SEXP xIndex)
    {
    //Input VPA Control

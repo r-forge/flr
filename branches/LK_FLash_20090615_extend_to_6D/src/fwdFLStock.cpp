@@ -49,164 +49,182 @@ double getVal(FLRConst_Target quantity, FLStock &stk,  int iyr, int iunit, int i
 
 void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int iTrgt, int nrow, double *Ary, int iter)
    {
+   int iunit, iarea;
+
    iTrgt--;
 
-   int iyr = (int)(Trgt)[iTrgt],
-       rel = stk.minyr-1;
+   int iyr   = (int)(Trgt)[iTrgt],
+       iSn   = (int)(Trgt)[iTrgt+fwdTargetPos_season],
+       relYr = stk.minyr-1;
 
-   if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_rel*nrow]))  
-       rel = (int)(Trgt)[iTrgt+fwdTargetPos_rel*nrow];
+   if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
+       relYr = (int)(Trgt)[iTrgt+fwdTargetPos_relyear*nrow];
 
    double min = (Ary)[(iTrgt+0*nrow+3*nrow*(iter-1))];
    double val = (Ary)[(iTrgt+1*nrow+3*nrow*(iter-1))];
    double max = (Ary)[(iTrgt+2*nrow+3*nrow*(iter-1))];
-   
+
    FLRConst_Target quantity = (FLRConst_Target)(int)(Trgt)[iTrgt + fwdTargetPos_quantity*nrow];
-   
-   int iunit  =1,
-       iseason=1,
-       iarea  =1;
 
    FLQuant_adolc ad_f(stk.harvest, iyr,   iyr,   iter);
    FLQuant_adolc ad_n(stk.stock_n, iyr+1, iyr+1, iter);
-	
-   for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-      {
-      ad_f(iage,iyr,iunit,iseason,iarea,iter) = stk.harvest(iage, iyr, iunit, iseason, iarea, iter)*x[0];
-           
-      //numbers-at-age next year
-      if (iage < stk.maxquant){
-		  ad_n(iage+1,iyr+1,iunit,iseason,iarea,iter) =stk.stock_n(iage,iyr,iunit,iseason,iarea,iter)*
-                                                       exp(-ad_f(  iage,iyr,iunit,iseason,iarea,iter)-
-                                                       stk.m(      iage,iyr,iunit,iseason,iarea,iter));}
 
-      if (iage == stk.plusgrp)
-         ad_n(iage,  iyr+1,iunit,iseason,iarea,iter) += stk.stock_n(stk.maxquant,iyr,iunit,iseason,iarea,iter)*
-                                                        exp(-ad_f(  stk.maxquant,iyr,iunit,iseason,iarea,iter)-
-                                                        stk.m(      stk.maxquant,iyr,iunit,iseason,iarea,iter));
-      }
+   for (int iunit=stk.nunits; iunit<=stk.nunits; iunit++)
+     for (int iarea=stk.nareas; iarea<=stk.nareas; iarea++)
+	   {
+       ad_n(stk.minquant,iyr+1,iunit,iSn,iarea,iter) = 0.0;
+
+	   for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
+           {
+           ad_f(iage,iyr,iunit,iSn,iarea,iter) = stk.harvest(iage, iyr, iunit, iSn, iarea, iter)*x[0];
+
+           //numbers-at-age next season/year
+		       if (iSn<stk.nseasons)
+                 ad_n(iage,iyr,iunit,iSn+1,iarea,iter) = stk.stock_n(iage,iyr,iunit,iSn,iarea,iter)*
+                                                             exp(-ad_f(  iage,iyr,iunit,iSn,iarea,iter)-
+                                                             stk.m(      iage,iyr,iunit,iSn,iarea,iter));
+           else {
+			        if (iage < stk.maxquant)
+                 ad_n(iage+1,iyr+1,iunit,iSn,iarea,iter) = stk.stock_n(iage,iyr,iunit,iSn,iarea,iter)*
+                                                               exp(-ad_f(  iage,iyr,iunit,iSn,iarea,iter)-
+                                                               stk.m(      iage,iyr,iunit,iSn,iarea,iter));
+
+              if (iage == stk.plusgrp)
+                 ad_n(iage,  iyr+1,iunit,iSn,iarea,iter) += stk.stock_n(stk.maxquant,iyr,iunit,iSn,iarea,iter)*
+                                                                exp(-ad_f(  stk.maxquant,iyr,iunit,iSn,iarea,iter)-
+                                                                stk.m(      stk.maxquant,iyr,iunit,iSn,iarea,iter));
+              }
+	         }
+
+       int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
+
+       ad_n(stk.minquant,iyr+1,iunit,iSn,iarea,iter) += sr.recruits(1,iyr+1,iSn,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iter);
+	   }
+
+           //-------------------- Target Stuff ----------------------//
+           //min & max bounds should only occur if a target calculated in a previous step for that year
+           // target value relative to reference year
+           if (relYr>=stk.minyr)
+              {
+              double RelVal=getVal(quantity, stk, relYr, iunit, iSn, iarea, iter);
+
+              min=min*RelVal;
+              max=max*RelVal;
+              val=val*RelVal;
+              }
+
+           if (R_IsNA(val)) // max and min bounds
+              {
+              val=getVal(quantity, stk, iyr, iunit, iSn, iarea, iter);
+
+              if (!R_IsNA(min) && val<min) val = min;
+              if (!R_IsNA(max) && val>max) val = max;
+              }
+
+           //NLSE's
+           switch (quantity)
+             {
+             case FLRConst_F:
+                  func[0] = Fbar(            stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_Z:
+                  func[0] = Zbar(            stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_FLandings:
+                  func[0] = FbarLandings(    stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_FDiscards:
+                  func[0] = FbarDiscards(    stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_SSB:
+                  func[0] = SSB(             stk,ad_n,ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_Biomass:
+                  func[0] = computeStock(    stk,ad_n,ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_Catch:
+                  func[0] = computeCatch(    stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_Landings:
+                  func[0] = computeLandings( stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_Discards:
+                  func[0] = computeDiscards( stk,     ad_f, iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             case FLRConst_MnSz:
+                  func[0] = MnSz(            stk,ad_n,      iyr, iunit, iSn, iarea, iter) - val;
+                  break;
+             default:
+                  func[0] = 0.0;
+                  break;
+             }
    
-
-   int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
-   
-   ad_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter) = sr.recruits(1,iyr+1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iter);
-      
-   //-------------------- Target Stuff ----------------------//  
-   //min & max bounds should only occur if a target calculated in a previous step for that year 
-   // target value relative to reference year
-   if (rel>=stk.minyr)
-      { 
-      double RelVal=getVal(quantity, stk, rel, iunit, iseason, iarea, iter);
-
-      min=min*RelVal; 
-      max=max*RelVal; 
-      val=val*RelVal;
-      }
-   
-   if (R_IsNA(val)) // max and min bounds 
-      { 
-      val=getVal(quantity, stk, iyr, iunit, iseason, iarea, iter);
-
-      if (!R_IsNA(min) && val<min) val = min;
-      if (!R_IsNA(max) && val>max) val = max;
-      }
-   
-   //NLSE's
-   switch (quantity)
-       {
-   	 case FLRConst_F:
-	      func[0] = Fbar(            stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-   	 case FLRConst_Z:
-	      func[0] = Zbar(            stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-   	 case FLRConst_FLandings:
-	      func[0] = FbarLandings(    stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-   	 case FLRConst_FDiscards:
-	      func[0] = FbarDiscards(    stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-    	 case FLRConst_SSB:
-	      func[0] = SSB(             stk,ad_n,ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-   	 case FLRConst_Biomass:
-	      func[0] = computeStock(    stk,ad_n,ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-	    case FLRConst_Catch:
-	      func[0] = computeCatch(    stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-	    case FLRConst_Landings:
-	      func[0] = computeLandings( stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-	    case FLRConst_Discards:
-	      func[0] = computeDiscards( stk,     ad_f, iyr, iunit, iseason, iarea, iter) - val;
-	      break;
-	    default:
-	      func[0] = 0.0;
-	      break;
-       }
-
   double value = func[0].value();
-  } 
+  }
 
 void project(double *x, FLStock &stk, sr &sr, int iyr, int iter, bool OnlyReplaceNA, bool OnlyCalcN)
    {  
-   int iunit  =1,
-       iseason=1,
-       iarea  =1;
+   for (int iunit=stk.nunits; iunit<=stk.nunits; iunit++)
+     for (int iarea=stk.nareas; iarea<=stk.nareas; iarea++)
+       for (int iseason=stk.nseasons; iseason<=stk.nseasons; iseason++)
+          {
+          int iage;
+          for (iage=stk.minquant; iage<=stk.maxquant; iage++)
+             {
+             stk.harvest(iage,iyr,iunit,iseason,iarea,iter) = __max(0.0,stk.harvest(iage, iyr, iunit, iseason, iarea, iter)*x[0]);
+             double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
 
-   int iage;
-   for (iage=stk.minquant; iage<=stk.maxquant; iage++)
-      {
-      stk.harvest(iage,iyr,iunit,iseason,iarea,iter) = __max(0.0,stk.harvest(iage, iyr, iunit, iseason, iarea, iter)*x[0]);
-      double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
-
-      if (_fbar>10.0)
-          for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-              stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*10.0/_fbar; 
-     
-      //numbers-at-age next year
-      if (iage < stk.maxquant)
-         stk.stock_n(iage+1,iyr+1,iunit,iseason,iarea,iter)  = stk.stock_n(iage,iyr,iunit,iseason,iarea,iter)*exp(-stk.harvest(iage,iyr,iunit,iseason,iarea,iter)-stk.m(iage,iyr,iunit,iseason,iarea,iter));
-      if (iage == stk.plusgrp)
-         stk.stock_n(iage,  iyr+1,iunit,iseason,iarea,iter) += stk.stock_n( stk.maxquant,iyr,iunit,iseason,iarea,iter)*exp(-stk.harvest(stk.maxquant,iyr,iunit,iseason,iarea,iter)-stk.m(stk.maxquant,iyr,iunit,iseason,iarea,iter));
-      }
-  
-
-   int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
-      
-   if (!OnlyReplaceNA || (OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter))))    
-      stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter) = sr.recruits(1,iyr+1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iter);
-
-   if (!OnlyCalcN)
-      for (iage=stk.minquant; iage<=stk.maxquant; iage++)
-         {
-         double z    =  stk.m(         iage, iyr, iunit, iseason, iarea, iter) + stk.harvest(   iage, iyr, iunit, iseason, iarea, iter),
-                ctch =  stk.discards_n(iage, iyr, iunit, iseason, iarea, iter) + stk.landings_n(iage, iyr, iunit, iseason, iarea, iter);
-         
-         stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)=stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)/ctch;
-         stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)=stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)/ctch;
+             if (_fbar>10.0)
+                for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
+                   stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*10.0/_fbar; 
+             
+             //numbers-at-age next season/year
+			 if (iseason<stk.nseasons)
+			    stk.stock_n(iage,iyr,iunit,iseason+1,iarea,iter)  = stk.stock_n(iage,iyr,iunit,iseason,iarea,iter)*exp(-stk.harvest(iage,iyr,iunit,iseason,iarea,iter)-stk.m(iage,iyr,iunit,iseason,iarea,iter));
+			 else
+			    {
+			    if (iage < stk.maxquant)
+                   stk.stock_n(iage+1,iyr+1,iunit,iseason,iarea,iter)  = stk.stock_n(iage,iyr,iunit,iseason,iarea,iter)*exp(-stk.harvest(iage,iyr,iunit,iseason,iarea,iter)-stk.m(iage,iyr,iunit,iseason,iarea,iter));
+                if (iage == stk.plusgrp)
+                   stk.stock_n(iage,  iyr+1,iunit,iseason,iarea,iter) += stk.stock_n( stk.maxquant,iyr,iunit,iseason,iarea,iter)*exp(-stk.harvest(stk.maxquant,iyr,iunit,iseason,iarea,iter)-stk.m(stk.maxquant,iyr,iunit,iseason,iarea,iter));
+				}
+             }
           
-         stk.catch_n( iage, iyr, iunit, iseason, iarea, iter) =
-             stk.stock_n( iage, iyr, iunit, iseason, iarea, iter)*
-             stk.harvest( iage, iyr, iunit, iseason, iarea, iter)/z*(1-exp(-z));
+          int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
+             
+          if (!OnlyReplaceNA || (OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter))))    
+             stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter) = sr.recruits(1,iyr+1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iter, iseason);
 
-         stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)=stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
-         stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)=stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
-	      }
+          if (!OnlyCalcN)
+             for (iage=stk.minquant; iage<=stk.maxquant; iage++)
+                {
+                double z    =  stk.m(         iage, iyr, iunit, iseason, iarea, iter) + stk.harvest(   iage, iyr, iunit, iseason, iarea, iter),
+                       ctch =  stk.discards_n(iage, iyr, iunit, iseason, iarea, iter) + stk.landings_n(iage, iyr, iunit, iseason, iarea, iter);
+                 
+                stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)=stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)/ctch;
+                stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)=stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)/ctch;
+                  
+                stk.catch_n( iage, iyr, iunit, iseason, iarea, iter) =
+                    stk.stock_n( iage, iyr, iunit, iseason, iarea, iter)*
+                    stk.harvest( iage, iyr, iunit, iseason, iarea, iter)/z*(1-exp(-z));
+
+                stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)=stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
+                stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)=stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
+                }
+            }   
    } 
 
 SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult)    
     {
-	SEXP Err = PROTECT(NEW_NUMERIC(1)); 
+    SEXP Err = PROTECT(NEW_NUMERIC(1)); 
 
     //Set Stock 
     FLStock stk(xStk); 
 
     //Set SRR
     sr sr;
-	REAL(Err)[0]=1;
-    if (!sr.Init(1, xYrs, stk.niters)) {
+    REAL(Err)[0]=1;
+    if (!sr.Init(1, xYrs)) {
        UNPROTECT(1);
        return Err;}
 
@@ -230,7 +248,7 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
     SEXP TrgtDims = GET_DIM(xTrgt);
 
     REAL(Err)[0]=5;
-    if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 9)  {
+    if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 15)  {
        UNPROTECT(1);
        return Err;}
   
@@ -288,9 +306,9 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
               double val  = (Ary)[(iTrgt+fwdTargetPos_val*nrow+3*nrow*(iter-1))];
               double max_ = (Ary)[(iTrgt+fwdTargetPos_max*nrow+3*nrow*(iter-1))];
 
-              if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_rel*nrow]))  
+              if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))  
                  {
-                 int    rel   = (int)(Trgt)[iTrgt+fwdTargetPos_rel*nrow];
+                 int    rel   = (int)(Trgt)[iTrgt+fwdTargetPos_relyear*nrow];
                  double RelVal=getVal(quantity, stk, rel, 1, 1, 1, iter);
 
                  min_ *= RelVal;
@@ -331,16 +349,15 @@ SEXP fwd_adolc_FLStock(SEXP xStk, SEXP xTrgt, SEXP xAry, SEXP xYrs, SEXP xSRMode
               r[0]=1.0;
               function(_Tape,n,n,indep,r);
               int NIters=0;
-	           while (norm(r,n) > 1e-12 && norm(indep,n) < 100 && NIters++<50)
-	              {
-	              function(_Tape,n,n,indep,r);
+               while (norm(r,n) > 1e-12 && norm(indep,n) < 100 && NIters++<50)
+                  {
+                  function(_Tape,n,n,indep,r);
 
-	              jac_solv(_Tape,n,indep,r,0,2);
+                  jac_solv(_Tape,n,indep,r,0,2);
 
-	              for (i=0; i<n; i++)
-		              indep[i] -= r[i];	   
-
-                 }         
+                  for (i=0; i<n; i++)
+                      indep[i] -= r[i];	   
+                  }         
         
               project(indep, stk, sr, (int)(Trgt)[iTrgt-1 + 0*nrow], iter);
               }
@@ -456,7 +473,7 @@ adouble computeDiscards(FLStock &stk, FLQuant_adolc &f, int iyr, int iunit, int 
       adouble z = stk.m(iage, iyr, iunit, iseason, iarea, iter) + f(iage, iyr, iunit, iseason, iarea, iter);
 
       val += stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)/
-   		   (stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)+
+           (stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)+
              stk.discards_n( iage, iyr, iunit, iseason, iarea, iter))* 
              stk.stock_n(    iage, iyr, iunit, iseason, iarea, iter)*
              f(              iage, iyr, iunit, iseason, iarea, iter)/z*(1-exp(-z))*
@@ -476,7 +493,7 @@ adouble computeLandings(FLStock &stk, FLQuant_adolc &f, int iyr, int iunit, int 
       adouble z = stk.m(iage, iyr, iunit, iseason, iarea, iter) + f(iage, iyr, iunit, iseason, iarea, iter);
 
       val += stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)/
-   		   (stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)+
+           (stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)+
              stk.discards_n( iage, iyr, iunit, iseason, iarea, iter))* 
              stk.stock_n(    iage, iyr, iunit, iseason, iarea, iter)*
              f(              iage, iyr, iunit, iseason, iarea, iter)/z*(1-exp(-z))*
@@ -574,3 +591,20 @@ double SSB(FLStock &stk, int iyr, int iunit, int iseason, int iarea, int iter)
    return ssb;
    }  
 
+adouble MnSz(FLStock &stk, FLQuant_adolc &n, int iyr, int iunit, int iseason, int iarea, int iter) 
+   {
+   adouble val = 0.0, mnsz = 0.0, sumN=0.0;
+
+   for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
+      {
+      val = n(iage,iyr+1,iunit,iseason,iarea,iter)*stk.stock_wt(iage,iyr+1,iunit,iseason,iarea,iter);
+
+	  if (val>0.0) {
+		  sumN +=n(iage,iyr+1,iunit,iseason,iarea,iter);
+		  mnsz +=val;
+	      }
+      }
+
+
+   return mnsz/sumN;
+   }  

@@ -85,7 +85,7 @@ sr::sr(int _nstock)
 	nstock = _nstock;
 	}
 
-bool sr::Init(int n, SEXP xyrs, int _niters)      
+bool sr::Init(int n, SEXP xyrs)      
 	{
    if (!isNumeric(xyrs)) 
       return false;
@@ -100,21 +100,20 @@ bool sr::Init(int n, SEXP xyrs, int _niters)
    residuals.alloc_n7(n);      
    param.alloc_n7(    n);      
 
-   return Init(n, _minyr, _maxyr, _niters);
+   return Init(n, _minyr, _maxyr);
    }
 
-bool sr::Init(int _nstock, int _minyr, int _maxyr,int _niter)      
+bool sr::Init(int _nstock, int _minyr, int _maxyr)      
 	{
-	if (_nstock<1 ||  _niter<1) 
+	if (_nstock<1) 
 		return false;
 
-	if (nstock>0 || niter>0) 
+	if (nstock>0) 
 		unalloc();
 
-	nstock   = _nstock;
+	nstock  = _nstock;
    _minyear = _minyr;
    _maxyear = _maxyr;
-   niter    = _niter;
    
    residuals.alloc_n7(nstock);
    
@@ -208,13 +207,12 @@ void sr::unalloc(void)
    delete [] (residuals_mult+1);
    }	      
 
-
-double sr::recruits(int istock, int iyr, double ssb, int iter)
+double sr::recruits(int istock, int iyr, double ssb, int iter, int iseason)
    {
    double returnval=0.0,
           residual =0.0;
  
-   int iunit=1, iseason=1, iarea=1;
+   int iunit=1, iarea=1;
 
    int _yr = __max(__min(iyr, _maxyear),_minyear);
 
@@ -266,7 +264,6 @@ void flc::CalcF(int istock)
       return;
 
    int iAge, iYear, iUnit, iSeason, iArea, iIter;
-
 
    for (iIter = 1; iIter<=niters(istock); iIter++)
 	   for (iArea = 1; iArea <= nareas(istock); iArea++)
@@ -441,7 +438,7 @@ void flc::InitStock(int ifleet, int imetier, int istock, SEXP x)
 
 bool flc::InitSR(int nstock, SEXP yrs) 
    {
-   return _sr.Init(nstock, yrs, fls_niters);
+   return _sr.Init(nstock, yrs);
    }
 
 bool flc::InitSR(int istock, SEXP xmodel, SEXP  xparam, SEXP  xresiduals, SEXP xmult) 
