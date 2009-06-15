@@ -5,6 +5,10 @@
 # Last Change: 06 Mar 2009 19:17
 # $Id$
 
+trgtNms    <-function() return(c("year","min","val","max","quantity","season","area","unit","spp","fleet","metier","rel.year","rel.season","rel.area","rel.unit"))
+effNms     <-function() return(c("year","min","val","max","fleet","metier","rel.year","rel.fleet","rel.metier","rel.bound"))
+quantityNms<-function() return(c("ssb","biomass","catch","landings","discards","f","z","f.landings","f.discards","effort","costs","revenue","profit","mnsz"))
+
 validFwdControl <- function(object){
 	return(TRUE)
 
@@ -15,21 +19,21 @@ validFwdControl <- function(object){
   if (any(object@target[,"quantity"] %in% names(quantity))){
      warning("quantity not recognised")
      return(FALSE)}
-     
+
   if (length(slot(object, 'effort'))>0){
      if (dim(object@effort)[1]!=dim(object@effArray)[1]){
         warning("rows in effort & effArray don't match")
         return(FALSE)}
-      
+
      if (dim(object@target)[1]!=dim(object@effort)[1]){
         warning("rows in target & effort don't match")
-        return(FALSE)}   
- 
+        return(FALSE)}
+
      if (dim(object@trgtArray)[3]!=dim(object@effArray)[3]){
         warning("iters in trgtArray & effArray don't match")
-        return(FALSE)}   
+        return(FALSE)}
      }
-     
+
 	# Everything is fine
 	return(TRUE)
   }
@@ -39,34 +43,33 @@ setClass("fwdControl",
 		target   ="data.frame",
 		effort   ="data.frame",
     trgtArray="array",
-		effArray ="array"),
+		effArray ="array",
+		block    ="numeric"), ## specifies if mulitple rows are done together
 	prototype=prototype(
 		target   =data.frame(NULL),
 		effort   =data.frame(NULL),
     trgtArray=array(),
-		effArray =array()),
+		effArray =array(),
+		block    =numeric()),
 	validity=validFwdControl
   )
-           
+
 if (!isGeneric("fwdControl")) {
 	setGeneric("fwdControl", function(object, ...){
 		value  <-  standardGeneric("fwdControl")
 		value
-	})}  
+	})}
 
 setMethod("fwdControl", signature(object="data.frame"),
 fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
 
     ##### Internal Functions ###################################################
-    trgtNms<-c("year","quantity","min","val","max","spp","fleet","metier","rel")  
-    effNms <-c("year","min","val","max","fleet","metier","rel.year","rel.fleet","rel.metier","rel.bound")  
-
-    setArray<-function(x,nrws,nits=NULL,type="trgtArray"){   
+    setArray<-function(x,nrws,nits=NULL,type="trgtArray"){
        if (is(x,"list") & any(names(x) %in% c("min","val","max"))){
          if (!all(lapply(x,class) %in% c("array","matrix","numeric")))
             stop(paste(type,": elements of list neither 'array', 'matrix' or 'numeric'"))
 
-         if (is.null(nits)) 
+         if (is.null(nits))
             if      (is(x[[1]],"numeric"))                     nits<-length(x[[1]])
             else if (is(x[[1]],"array") | is(x[[1]],"matrix")) nits<-dim(x[[1]])[length(dim(x[[1]]))]
             else stop("")
@@ -88,13 +91,13 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
                res[,"max",]<-x$max}
             }
        else if (is(x,"array") & (length(dim(x))==3)){
-          if (is.null(nits)) 
+          if (is.null(nits))
              nits<-dim(x)[3]
-            
-          res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iters=1:nits))     
-    
+
+          res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iters=1:nits))
+
           res[dimnames(x)[[1]],dimnames(x)[[2]],]<-x
-          } 
+          }
        else stop("Has to be either a 3D array or list with 'min', 'max' or 'val' vectors")
 
        return(res)
@@ -131,15 +134,15 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
     yrs<-object[,"year"]
 
     res<-new("fwdControl")
-   
+
     ##Targets ##################################################################
-    ## Create complete target data frame        
-    res@target<-df(yrs,trgtNms)
+    ## Create complete target data frame
+    res@target<-df(yrs,trgtNms())
     res@target[,dimnames(object)[[2]]]<-object[,dimnames(object)[[2]]]
     if (!checkTarget(res@target))
        stop("target not valid")
 
-    if (!is.null(trgtArray)){ 
+    if (!is.null(trgtArray)){
        res@trgtArray<-setArray(trgtArray,length(yrs),type="trgtArray")
        if (length(dim(res@trgtArray[,1,]))==2){
           res@target[,"min"]<-apply(res@trgtArray[,"min",],1,median)
@@ -153,24 +156,24 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
        res@trgtArray<-array(as.numeric(NA),dim=c(length(res@target[,1]),3,1),dimnames=list(1:length(res@target[,1]),c("min","val","max"),iters=1))}
 
     res@target[,"quantity"]<-factor(res@target[,"quantity"],levels=c("ssb","biomass","catch","landings","discards","f","z","f.landings","f.discards","effort","costs","revenue","profit","mnsz"))
-    
+
     for (i in 1:length(res@target[,1])){
        if (any(is.na(res@trgtArray[i,"min",]))) res@trgtArray[i,"min",]<-res@target[i,"min"]
        if (any(is.na(res@trgtArray[i,"val",]))) res@trgtArray[i,"val",]<-res@target[i,"val"]
        if (any(is.na(res@trgtArray[i,"max",]))) res@trgtArray[i,"max",]<-res@target[i,"max"]}
-     
-    if (!checkMinMax(res@target)) { 
+
+    if (!checkMinMax(res@target)) {
        cat(" in target\n")
        stop()}
-       
+
     ##Effort ###################################################################
     if (!is.null(effort)){
-      res@effort<-df(yrs,effNms)
+      res@effort<-df(yrs,effNms())
       res@effort[ ,dimnames(effort)[[2]]]<-effort[,dimnames(effort)[[2]]]
-      if (!is.null(effArray)) 
+      if (!is.null(effArray))
          res@effArray<-setArray(effArray,length(yrs),type="effArray")
 
-      if (!is.null(effArray)){ 
+      if (!is.null(effArray)){
          res@effArray<-setArray(effArray,length(yrs),type="effArray")
          if (length(dim(res@effArray[,1,]))==2){
             res@effort[,"min"]<-apply(res@effArray[,"min",],1,median)
@@ -182,52 +185,146 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
             res@effort[,"val"]<-median(res@effArray[,"val",])}}
       else
          res@effArray<-array(as.numeric(NA),dim=c(length(res@effort[,1]),3,1),dimnames=list(1:length(res@effort[,1]),c("min","val","max"),iters=1))
-          
+
     for (i in 1:length(res@effort[,1])){
        if (any(is.na(res@effArray[i,"min",]))) res@effArray[i,"min",]<-res@effort[i,"min"]
        if (any(is.na(res@effArray[i,"val",]))) res@effArray[i,"val",]<-res@effort[i,"val"]
        if (any(is.na(res@effArray[i,"max",]))) res@effArray[i,"max",]<-res@effort[i,"max"]}
-     
-    if (!checkMinMax(res@effort)){ 
+
+    if (!checkMinMax(res@effort)){
        cat(" in effort\n")
        stop()}}
 
    return(res)
    })
 
-  showArray<-function(object){
+showArray<-function(object){
     if(dim(object)[3] > 1){
 		  v1 <- apply(object, 1:2, median, na.rm=TRUE)
-  		v2 <- apply(object, 1:2, mad,    na.rm=TRUE)	 
+  		v2 <- apply(object, 1:2, mad,    na.rm=TRUE)
       v3 <- paste(format(v1,digits=5),"(", format(v2, digits=3), ")", sep="")}
     else
       v3 <- paste(format(apply(object, 1:2, median, na.rm=TRUE),digits=5))
-		
+
     print(array(v3, dim=dim(object)[1:2], dimnames=dimnames(object)[1:2]), quote=FALSE)
 
 		if(dim(object)[3] != 1)
 			cat("iters: ", dim(object)[3],"\n\n")}
 
-setMethod('show', signature(object='fwdControl'), 
+setMethod('show', signature(object='fwdControl'),
   function(object){
-    
+
+  showDFTarget<-function(object){
+
+      nm      <-names(object@target)
+      optional<-c("season","area","unit","rel.year","rel.season","rel.area","rel.unit")
+      flag    <-apply(as.matrix(!is.na(object@target[,optional])),2,any)
+      
+      print(object@target[,c("year","quantity","min","val","max",names(flag[flag]))])
+
+      cat("\n")}
+
+  showDFEffort<-function(object){
+
+      nm      <-names(object@effort)
+      optional<-c("fleet","metier","rel.year","rel.fleet","rel.metier","rel.bound")
+      flag    <-apply(as.matrix(!is.na(object@target[,optional])),2,any)
+
+      print(object@effort[,c("year","min","val","max",names(flag[flag]))])
+
+      cat("\n")}
+
   cat("\nTarget\n")
-  print(slot(object, 'target'))
-  showArray(object@trgtArray)
-     
+  showDFTarget(object)
+  if (any(!is.na(object@trgtArray)))
+     showArray(object@trgtArray)
+
   if (length(slot(object, 'effort'))>0){
      cat("\n\nEffort\n")
-     print(slot(object, 'effort'))
-     showArray(object@effArray)}
+     showDFEffort(object)
+     if (any(!is.na(object@effArray)))
+        showArray(object@effArray)}
   })
 
 chkFwdControl<-function(ctrl,sr,x,y=NULL){
    if (is(x,"FLStock")){
-      
+
       return(ctrl)
       }
    else if (is(x,"FLBiol")){
       return(ctrl)
       }
-      
    }
+
+checkTarget<-function(target)
+    {
+    # check that if max or min specified then no target & vice versa
+    if (any((!is.na(target[,"min"]) | !is.na(target[,"max"])) & !is.na(target[,"val"]))) {
+       warning("Can't specify a val and a min or max values")
+       return(FALSE)}
+
+    if (any((!is.na(target[,"min"]) & !is.na(target[,"max"])) & target[,"max"]<=target[,"min"])){
+       warning("max less than than min value")
+       return(FALSE)}
+
+	# Should also check quantity
+
+    return(TRUE)
+    }
+
+matrixTarget <- function(target)
+    {
+    #reorder columns for C code (???)
+    target <- target[,trgtNms()]
+    for(i in names(target))
+        target[,i] <- as.double(target[,i])
+
+    return(matrix(unlist(target),dim(target)))
+    }
+
+checkTarget<-function(target)
+    {
+    # check that if max or min specified then no target & vice versa
+    if (any((!is.na(target[,"min"]) | !is.na(target[,"max"])) & !is.na(target[,"val"]))) {
+       warning("Can't specify a val and a min or max values")
+       return(FALSE)}
+
+    if (any((!is.na(target[,"min"]) & !is.na(target[,"max"])) & target[,"max"]<=target[,"min"])){
+       warning("max less than than min value")
+       return(FALSE)}
+
+	  # Should also check quantity
+
+    return(TRUE)
+    }
+
+matrixEffort <- function(effort)
+    matrix(apply(effort,2,as.double),dim(effort))
+
+
+chkTrgtArrayIters <- function(object,trgtArray,sr)
+{
+    if (is(object,'FLlst')) object <- object[[1]]
+    # get iterations from trgtArray, stock, SR parameters and SR residuals
+    its<-sort(unique(c(length(dimnames(trgtArray)$iters), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
+    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n")
+    if (length(its)==2 & length(dimnames(trgtArray)$iter == 1)){
+        dmns<-dimnames(trgtArray)
+        dmns$iters<-1:its[2]
+        trgtArray<-array(trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
+
+    return(trgtArray)
+}
+
+# check target quantity is factor and that it is currently implemented
+chkTargetQuantity <- function(target)
+{
+    if (!is(target[,"quantity"],"factor"))
+        target[,"quantity"]<-factor(target[,"quantity"],quantityNms())
+    if (!all(as.character(target[,"quantity"]) %in% quantityNms()))
+        stop("invalid quantity in control target")
+    if (any(as.character(target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
+        stop("fwd not yet implemented for 'effort','costs','revenue' or 'profit'")
+        
+	return(target)
+}
