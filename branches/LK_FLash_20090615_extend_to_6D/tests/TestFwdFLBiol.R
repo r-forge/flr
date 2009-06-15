@@ -12,7 +12,7 @@ landings.n( ple4)      <-0.75*catch.n(ple4)
 discards.n( ple4)      <-0.25*catch.n(ple4)
 discards.wt(ple4)      <-landings.wt(ple4)
 
-ple4.stf<-stf(ple4,2)
+ple4.stf<-stf(ple4,nyrs=2)
 biol <-as(ple4.stf,"FLBiol")
 fleet<-as(ple4.stf,"FLFleet")
 
@@ -49,6 +49,6 @@ sum((res$landings.n*landings.wt(ple4))[,"2002"],na.rm=T)
 effort<-data.frame(year=2002, fleet=1, metier=1, val=NA, min=.01, max=.75)
 target<-data.frame( year=2002, val=15000, quantity="discards", fleet=1, metier=1, spp=1)
 ctrl  <-fwdControl(target,effort)
-res   <-fwd(biol, fleet, ctrl=ctrl,sr=list(model=srModel,params=srParams),sr.residuals=srDeviates)
+res   <-fwdb.(biol, fleet, ctrl=ctrl,sr=list(model=srModel,params=srParams),sr.residuals=srDeviates)
 sum((res$discards.n*discards.wt(ple4))[,"2002"],na.rm=T)
 
