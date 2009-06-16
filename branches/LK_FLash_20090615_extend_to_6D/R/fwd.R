@@ -45,17 +45,18 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        endYr<-NULL
 
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)
-print(1)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
     ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
-print(2)
 
-    ctrl@target <- chkTargetQuantity(ctrl@target)
-print(3)
+    if (any(is.na(ctrl@target$season)) & dims(object)$season==1)
+       ctrl@target$season<-1
+    else if (any(is.na(ctrl@target$season)) & dims(object)$season>1)
+       stop("need to specific season in target")
+    
+    ctrl@target    <- chkTargetQuantity(ctrl@target)
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
-print(4)
 
     x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
 

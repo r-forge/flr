@@ -54,10 +54,10 @@ catch(ple4)      <-computeCatch(   ple4,"all")
         if (mult) recs<-sweep(rec(stk)[,ac(yrs)],1:2,rsd[,ac(yrs)],"/")
         else      recs<-sweep(rec(stk)[,ac(yrs)],1:2,rsd[,ac(yrs)],"-")
 
-     return(sweep(recs,1:2,fitted(srr)[,ac(yrs-dims(stk)$min)]*1000,"-"))
+     return(sweep(recs,1:2,predict(srr,ssb=ssb(stk)[,ac(yrs-dims(stk)$min)]),"-"))
      }
 
-ctrl <-fwdControl(data.frame(year=yrs,val=0.45,quantity="f",season=1))
+ctrl <-fwdControl(data.frame(year=yrs,val=0.45,quantity="f")) #,season=1))
 
 ##### FLSR object
 res  <-fwd(ple4,ctrl=ctrl,sr=ple4SR)
@@ -71,34 +71,34 @@ chkSR(res,ple4SR,yrs)
 #### list
 ##Character
 res<-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=params(ple4SR)[c("a","b"),1]))
-chk(res,ple4SR,yrs)
+chkSR(res,ple4SR,yrs)
 
 res<-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=FLPar(params(ple4SR)[c("a","b"),1,drop=T])))
-chk(res,ple4SR,yrs)
+chkSR(res,ple4SR,yrs)
 
 #### Formula
 res<-fwd(ple4, ctrl=ctrl, sr=list(model=formula(rec ~ a * ssb * exp(-b * ssb)), params=FLPar(params(ple4SR)[c("a","b"),1,drop=T])))
-chk(res,ple4SR,yrs)
+chkSR(res,ple4SR,yrs)
 
 #### FLPar by year
 srPar<-FLPar(array(params(ple4SR)[c("a","b"),1,drop=T],dim=c(2,4,1),dimnames=list(params=c("a","b"),year=yrs,iter=1)))
 res <-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=srPar))
-chk(res,ple4SR,yrs)
+chkSR(res,ple4SR,yrs)
 
 #### Residuals
-srRes<-FLQuant(array(c(1,1.25,1.5),dim=c(1,3,1),dimnames=list(age=1,year=1997:1999,iter=1)))
+srRes<-FLQuant(array(c(1,1.25,1.5),dim=c(1,4,1),dimnames=list(age=1,year=yrs,iter=1)))
 
 res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
-chk(res,ple4SR,yrs,rsd=srRes)
+chkSR(res,ple4SR,yrs,rsd=srRes)
 
 res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes*1000, sr.residuals.mult=FALSE)
-chk(res,ple4SR,yrs,rsd=srRes*1000,mult=FALSE)
+chkSR(res,ple4SR,yrs,rsd=srRes*1000,mult=FALSE)
 
 
 
 #### Test all targets, absolute ################################################
 #### landings
-ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings"))
+ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings",season=1))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeLandings(res)[,ac(yrs)]
 
@@ -144,7 +144,6 @@ res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 apply((harvest(res)*discards.n(ple4)/catch.n(ple4))[fbarRng,ac(yrs)],2,"mean")
 
 #### mnsz
-#### doesn´t work
 ctrl<-fwdControl(data.frame(year=yrs,val=.25,quantity="mnsz"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum)
@@ -205,11 +204,10 @@ res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 c(apply((harvest(res)*discards.n(ple4)/catch.n(ple4))[fbarRng,ac(1997)],2,"mean"))
 
 #### mnsz
-#### doesn´t work
-ctrl<-fwdControl(data.frame(year=yrs,val=1,quantity="mnsz",rel.year=1997:2000))
+ctrl<-fwdControl(data.frame(year=yrs,val=1,quantity="mnsz",rel.year=1997))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
-  (apply(stock.n(ple4)*stock.wt(ple4),2,sum)/apply(stock.n(ple4),2,sum))[,ac( yrs)]/
-c((apply(stock.n(ple4)*stock.wt(ple4),2,sum)/apply(stock.n(ple4),2,sum))[,ac(1997)])
+  (apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum))[,ac( yrs)]/
+c((apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum))[,ac(1997)])
 
 #ctrl<-fwdControl(data.frame(year=yrs,val=1,rel.year=1996,quantity="effort"))
 #ctrl<-fwdControl(data.frame(year=yrs,val=1,rel.year=1996,quantity="costs"))
@@ -221,14 +219,34 @@ ple4<-propagate(ple4,iter=10)
 ctrl<-fwdControl(data.frame(year=yrs,val=c(ssb(ple4)[,ac(yrs+1),,,,1]),quantity="ssb"))
 srRes<-FLQuant(seq(1,2,length.out=10),dimnames=list(age=1,year=1997:1999,iter=1:10))
 res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
-chk(res,ple4SR,yrs,rsd=srRes)
+chkSR(res,ple4SR,yrs,rsd=srRes)
 
 ##Seasons
+dmns<-dimnames(m(res))
+dmns$unit<-c("spawn","feed")
+
+#### f
+
+ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
+res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+fbar(res)[,ac(yrs)]
 
 
 ##Units
+dmns<-dimnames(m(res))
+dmns$unit<-c("north","south")
+
+ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
+res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+fbar(res)[,ac(yrs)]
 
 
 ##Areas
+dmns<-dimnames(m(res))
+dmns$unit<-c("90mm","120mm")
+
+ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
+res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+fbar(res)[,ac(yrs)]
 
 

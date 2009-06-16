@@ -25,7 +25,7 @@ setGeneric('validSRPar', function(object, ...)
         yrs<-ac(dims(object)$minyear:dims(object)$maxyear)
 
      if ("year" %in% names(sr)){
-        if (!all(yrs %in% dimnames(sr)$year))
+        if (!all(yrs[-length(yrs)] %in% dimnames(sr)$year)) ## cos of extra year needed in C++
            stop("yrs exceed years in sr")}
      else{
          dmns  <-dimnames(sr)

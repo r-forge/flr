@@ -54,7 +54,7 @@ void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int 
    iTrgt--;
 
    int iyr   = (int)(Trgt)[iTrgt],
-       iSn   = __max((int)(Trgt)[iTrgt+fwdTargetPos_season],1),
+       iSn   = __max((int)(Trgt)[iTrgt+fwdTargetPos_season*nrow],1),
        relYr = stk.minyr-1;
 
    if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
@@ -69,8 +69,8 @@ void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int 
    FLQuant_adolc ad_f(stk.harvest, iyr,   iyr,   iter);
    FLQuant_adolc ad_n(stk.stock_n, iyr+1, iyr+1, iter);
 
-   for (int iunit=stk.nunits; iunit<=stk.nunits; iunit++)
-     for (int iarea=stk.nareas; iarea<=stk.nareas; iarea++)
+   for (int iunit=1; iunit<=stk.nunits; iunit++)
+     for (int iarea=1; iarea<=stk.nareas; iarea++)
 	   {
        ad_n(stk.minquant,iyr+1,iunit,iSn,iarea,iter) = 0.0;
 
