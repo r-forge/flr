@@ -13,20 +13,20 @@
 #=====================================================================
 
 library(FLash)
-#source("C:/stuff/FLR/pkgs/FLash/R/fwdControl.R")
-#source("C:/stuff/FLR/pkgs/FLash/R/fwd.R")
-#source("C:/stuff/FLR/pkgs/FLash/R/fwdSetSRs.R")
-#source("C:/stuff/FLR/pkgs/FLash/R/FLCoreVarCon.R")
+source("C:/stuff/FLR/Branch/R/fwdControl.R")
+source("C:/stuff/FLR/Branch/R/fwd.R")
+source("C:/stuff/FLR/Branch/R/setSRs.R")
+source("C:/stuff/FLR/Branch/R/FLCoreVarCon.R")
+source("C:/Stuff/FLR/Branch/R/validityFLSR.r")
 
 data(ple4)
 
-## fit FLSR
+#### fit FLSR
 ple4SR       <-as.FLSR(ple4)
 model(ple4SR)<-ricker()
 ple4SR       <-transform(ple4SR,ssb=ssb/1000,rec=rec/1000)
 ple4SR       <-fmle(ple4SR)
 params(ple4SR)["b",1]<-params(ple4SR)["b",1]/1000
-
 
 ple4<-ple4[,ac(1996:2001)]
 yrs <-1998:2001
@@ -57,12 +57,18 @@ catch(ple4)      <-computeCatch(   ple4,"all")
      return(sweep(recs,1:2,fitted(srr)[,ac(yrs-dims(stk)$min)]*1000,"-"))
      }
 
-ctrl<-fwdControl(data.frame(year=yrs,val=c(ssb(iter(ple4,1))[,ac(yrs-1)]),quantity="ssb"))
-stock.n(ple4)[1,ac(yrs)]<-NA
-res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+ctrl <-fwdControl(data.frame(year=yrs,val=0.45,quantity="f",season=1))
+
+##### FLSR object
+res  <-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 chkSR(res,ple4SR,yrs)
 
-## list
+##### FLSR object
+stock.n(ple4)[1,ac(yrs)]<-NA
+res  <-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+chkSR(res,ple4SR,yrs)
+
+#### list
 ##Character
 res<-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=params(ple4SR)[c("a","b"),1]))
 chk(res,ple4SR,yrs)
@@ -70,16 +76,16 @@ chk(res,ple4SR,yrs)
 res<-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=FLPar(params(ple4SR)[c("a","b"),1,drop=T])))
 chk(res,ple4SR,yrs)
 
-##Formula
+#### Formula
 res<-fwd(ple4, ctrl=ctrl, sr=list(model=formula(rec ~ a * ssb * exp(-b * ssb)), params=FLPar(params(ple4SR)[c("a","b"),1,drop=T])))
 chk(res,ple4SR,yrs)
 
-##FLPar by year
+#### FLPar by year
 srPar<-FLPar(array(params(ple4SR)[c("a","b"),1,drop=T],dim=c(2,4,1),dimnames=list(params=c("a","b"),year=yrs,iter=1)))
 res <-fwd(ple4, ctrl=ctrl, sr=list(model="ricker", params=srPar))
 chk(res,ple4SR,yrs)
 
-##Residuals
+#### Residuals
 srRes<-FLQuant(array(c(1,1.25,1.5),dim=c(1,3,1),dimnames=list(age=1,year=1997:1999,iter=1)))
 
 res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
@@ -87,6 +93,7 @@ chk(res,ple4SR,yrs,rsd=srRes)
 
 res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes*1000, sr.residuals.mult=FALSE)
 chk(res,ple4SR,yrs,rsd=srRes*1000,mult=FALSE)
+
 
 
 #### Test all targets, absolute ################################################
@@ -147,7 +154,7 @@ apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum)
 #ctrl<-fwdControl(data.frame(year=yrs,val=c(ssb(ple4)[,ac(yrs+1)]),quantity="revenue"))
 #ctrl<-fwdControl(data.frame(year=yrs,val=c(ssb(ple4)[,ac(yrs+1)]),quantity="profit"))
 
-#### Test all targets, relative
+#### Test all targets, relative ################################################
 #### landings
 ctrl<-fwdControl(data.frame(year=yrs,val=1.1,quantity="landings",rel.year=1997:2000))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)

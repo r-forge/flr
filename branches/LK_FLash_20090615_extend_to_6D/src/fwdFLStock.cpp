@@ -54,7 +54,7 @@ void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int 
    iTrgt--;
 
    int iyr   = (int)(Trgt)[iTrgt],
-       iSn   = (int)(Trgt)[iTrgt+fwdTargetPos_season],
+       iSn   = __max((int)(Trgt)[iTrgt+fwdTargetPos_season],1),
        relYr = stk.minyr-1;
 
    if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
@@ -98,8 +98,7 @@ void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int 
 
        int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
 
-       ad_n(stk.minquant,iyr+1,iunit,iSn,iarea,iter) += sr.recruits(1,iyr+1,iSn,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iter);
-	   }
+       ad_n(stk.minquant,iyr+1,iunit,iSn,iarea,iter) += sr.recruits(1,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iyr+1,iunit,iSn,iarea,iter);
 
            //-------------------- Target Stuff ----------------------//
            //min & max bounds should only occur if a target calculated in a previous step for that year
@@ -158,6 +157,7 @@ void project(adouble *x, adouble *func, FLStock &stk, sr &sr, double *Trgt, int 
                   func[0] = 0.0;
                   break;
              }
+	   }
    
   double value = func[0].value();
   }
@@ -193,7 +193,7 @@ void project(double *x, FLStock &stk, sr &sr, int iyr, int iter, bool OnlyReplac
           int SSB_yr = __min(__max(iyr-stk.minquant+1,stk.minyr),stk.maxyr);
              
           if (!OnlyReplaceNA || (OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter))))    
-             stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter) = sr.recruits(1,iyr+1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iter, iseason);
+             stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter) = sr.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr+1,iunit,iseason,iarea,iter);
 
           if (!OnlyCalcN)
              for (iage=stk.minquant; iage<=stk.maxquant; iage++)

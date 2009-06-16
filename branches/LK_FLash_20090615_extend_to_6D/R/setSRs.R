@@ -20,7 +20,7 @@ setMethod('setSR', signature(sr='FLSR'),
 )
 
 setMethod('setSR', signature(sr='list'),
-    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE)
+    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE,availability=NULL)
 {
 
 # ****** Check arguments are all present and of correct type *******
@@ -89,7 +89,9 @@ setMethod('setSR', signature(sr='list'),
 # for (i in names(dimnames(params)))
 #       dmns[[i]]<-dimnames(params)[[i]] 
  
-    params<-FLQuant(array(params,dim=unlist(lapply(dmns,length)),dimnames=dmns))     
+    params<-validSRPar(object, sr=params, yrs=yrs, availability=availability)
+
+    params<-FLQuant(params)
 
 #****** Cobble together into output format **********
     # At the moment each element is only length 1.  Eventually, multiple SRs will be possible.

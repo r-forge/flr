@@ -1,6 +1,6 @@
-/** $Id: FLCoreClasses_pointer.hpp 134 2009-03-03 14:25:24Z imosqueira $ **/
-#ifndef _INC_FLCoreClasses_pointer
-#define _INC_FLCoreClasses_pointer
+/** $Id: flquant_pointer.hpp 134 2009-03-03 14:25:24Z imosqueira $ **/
+#ifndef _INC_flquant_pointer
+#define _INC_flquant_pointer
 
 #include "FLCoreClasses.hpp"
 
@@ -44,3 +44,4 @@ protected:
    double *data;   
    };                  
 
+#endif /* _INC_flquant_pointer */

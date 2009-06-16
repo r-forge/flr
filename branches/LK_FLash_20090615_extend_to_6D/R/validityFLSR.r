@@ -24,15 +24,21 @@ setGeneric('validSRPar', function(object, ...)
      }else
         yrs<-ac(dims(object)$minyear:dims(object)$maxyear)
 
+     if ("year" %in% names(sr)){
+        if (!all(yrs %in% dimnames(sr)$year))
+           stop("yrs exceed years in sr")}
+     else{
+         dmns  <-dimnames(sr)
+
+         params<-list(params=dmns$params,year=yrs,dmns[[-1]])
+         names(params)[-(1:2)]<-names(dmns[-1])
+         #### CHECK RECYCLING
+         sr<-FLPar(c(sr),dimnames=params)
+         }
+
      #### create FLQuant compatible FLPar
      sr <-FLPar(as.FLQuant(as.data.frame(sr)))
 
-     #### ASSUMES THAT SR OBJECT HAS ALREADY GOT THE RIGHT YEARS!
-     #### setSR SHOULD HAVE DONE THIS
-     if (!all(yrs %in% dimnames(sr)$year))
-           stop("yrs exceed years in sr")
-
-     sr <-sr[,yrs]
      #### Check availability
      #### Needed to distribute recruits if SR$area==1
      if (dims(object)$area>1 & dims(as.FLQuant(sr))$area==1){
@@ -96,11 +102,11 @@ setMethod('validSRPar', signature(object='FLBiol'),
      return(.validSRPar(object,sr,yrs,availability))
      })
 
-setMethod('validSRPar', signature(object='FLBRP'),
-  function(object, sr, yrs)
-     {
-     return(.validSRPar(object,sr,yrs,availability(object)))
-     })
+#setMethod('validSRPar', signature(object='FLBRP'),
+#  function(object, sr, yrs)
+#     {
+#     return(.validSRPar(object,sr,yrs,availability(object)))
+#     })
 
 validSRRes<-function(object,sr,res){
    if (dims(res)$iter   != dims(object)$iter) stop("iters in residuals and object don´t match")

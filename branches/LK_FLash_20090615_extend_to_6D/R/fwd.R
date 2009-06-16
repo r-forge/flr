@@ -15,7 +15,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
                mix=NULL)
     {
-    if (dims(ple4)$area>1 | dims(ple4)$units>1)
+    if (dims(object)$area>1 | dims(object)$unit>1)
        stop("Not valid for areas>1 or units>1")
 
     object<-CheckNor1(object)
@@ -44,14 +44,18 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     else
        endYr<-NULL
 
-    sr<-setSR(sr=sr, object = object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
+    sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)
+print(1)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
     ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
+print(2)
 
     ctrl@target <- chkTargetQuantity(ctrl@target)
+print(3)
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
+print(4)
 
     x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
 

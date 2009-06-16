@@ -27,7 +27,8 @@ public:
    bool   Init(int _nstock, SEXP xyrs);
    bool   Init(int _nstock, int _minyr, int _maxyr);     
    bool   Init(int istock, SEXP xmodel, SEXP xparam, SEXP xresiduals, SEXP xmult);
-   double recruits(int istock, double ssb, int iyr, int iter=1, int iseason=1, int iunit=1, int iarea=1)
+   double recruits(int istock, double ssb, int iyr, int iunit=1, int iseason=1, int iarea=1, int iter=1);
+
 protected: 
    FLRConstSRR       **model;
    FLQuant2            residuals;

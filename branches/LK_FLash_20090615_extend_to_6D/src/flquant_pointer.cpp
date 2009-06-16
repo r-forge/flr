@@ -1,5 +1,5 @@
-/** $Id: FLCoreClasses_pointer.cpp 134 2009-03-03 14:25:24Z imosqueira $ **/
-#include "FLCoreClasses_pointer.hpp"
+/** $Id: flquant_pointer.cpp 134 2009-03-03 14:25:24Z imosqueira $ **/
+#include "flquant_pointer.hpp"
 
 FLQuant_pointer::FLQuant_pointer(void)      
     {
@@ -227,3 +227,4 @@ SEXP FLQuant_pointer::Return(void)
     
     return Quant;
     }
+

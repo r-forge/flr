@@ -10,7 +10,7 @@ endif
 
 MkInclude = $(PKG_HOME)/scripts/Win.mk
 
-SOURCES_C = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp FLCoreClasses_pointer.cpp fwd.cpp fwdFLStock.cpp
+SOURCES_C = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
 
 OBJECTS = $(SOURCES_C:.cpp=.o)
 DEPS = $(SOURCES_C:.cpp=.d)

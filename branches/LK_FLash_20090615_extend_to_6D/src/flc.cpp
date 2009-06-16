@@ -194,7 +194,7 @@ void sr::unalloc(void)
    delete [] (residuals_mult+1);
    }	      
 
-double sr::recruits(int istock, double ssb, int iyr, int iter, int iseason, int iunit, int iarea)
+double sr::recruits(int istock, double ssb, int iyr, int iunit, int iseason, int iarea, int iter)
    {
    double returnval=0.0,
           residual =0.0;
@@ -236,7 +236,7 @@ double sr::recruits(int istock, double ssb, int iyr, int iter, int iseason, int 
       returnval = returnval+residual;
       }
 
-   return(R_IsNA(returnval,0,returnval))
+   return(R_IsNA(returnval) ? 0 : returnval);
    } 
 
 void flc::CalcF(void)
