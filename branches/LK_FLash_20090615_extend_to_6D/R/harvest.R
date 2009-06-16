@@ -22,66 +22,64 @@ calcF<-function(m,catch,n)
 
 setGeneric('computeHarvest', function(object, ...)
 		standardGeneric('computeHarvest'))
+
 setMethod('computeHarvest', signature(object='FLStock'),
   function(object, catch)
      {
+     if (names(dims(m(object)))[1]!="age") warning("quant dim not age, harvest only valid for age")
+     
      res <-calcF(m(object),catch.n(object),stock.n(object))
 
      return(res)
      })     
      
-setMethod('harvest', signature(object='FLBiol', catch='FLCatch'),
-  function(object, catch)
-     {
-     res <-calcF(m(object),catch.n(catch),n(object))
-
-     return(res)
-     })
-
-setMethod('harvest', signature(object='FLBiol', catch='FLCatches'),
-  function(object, catch)
-     {
-     res <-calcF(m(object),catch.n(catch),n(object))
-
-     return(res)
-     })
-
 setMethod('harvest', signature(object='FLBiol', catch='FLQuant'),
   function(object, catch)
      {
+     if (names(dims(catch)[1])!="age") warning("quant dim not age, harvest only valid for age")
+
+     res <-calcF(m(object),catch, n(object))
+
+     return(res)
+     })
+
+setMethod('harvest', signature(object='FLBiol', catch='FLCatch'),
+  function(object, catch)
+     {
+     if (names(dims(m(object)))[1]!="age") warning("quant dim not age, harvest only valid for age")
+
      res <-calcF(m(object),catch.n(catch),n(object))
 
      return(res)
      })
 
 setMethod('harvest', signature(object='FLBiol', catch='FLMetier'),
-  function(object, catch)
+  function(object, catch, spp)
      {
-     res <-calcF(m(object),catch.n(catch),n(object))
+     if (names(dims(m(object)))[1]!="age") warning("quant dim not age, harvest only valid for age")
+
+     res <-calcF(m(object),catch.n(catch)[[spp]],n(object))
 
      return(res)
      })
 
 setMethod('harvest', signature(object='FLBiol', catch='FLMetiers'),
-  function(object, catch)
+  function(object,catch,spp)
      {
-     res <-calcF(m(object),catch.n(catch),n(object))
+     if (names(dims(m(object)))[1]!="age") warning("quant dim not age, harvest only valid for age")
+
+     res <-calcF(m(object),catch.n(catch,spp),n(object))
 
      return(res)
      })
 
 setMethod('harvest', signature(object='FLBiol', catch='FLFleet'),
-  function(object, catch)
+  function(object, catch, spp, mtr)
      {
-     res <-calcF(m(object),catch.n(catch),n(object))
+     if (names(dims(m(object)))[1]!="age") warning("quant dim not age, harvest only valid for age")
+
+     res <-calcF(m(object),catch.n(catch, mtr, spp),n(object))
 
      return(res)
      })
 
-setMethod('harvest', signature(object='FLBiol', catch='FLFleets'),
-  function(object, catch)
-     {
-     res <-calcF(m(object),catch.n(catch),n(object))
-
-     return(res)
-     })

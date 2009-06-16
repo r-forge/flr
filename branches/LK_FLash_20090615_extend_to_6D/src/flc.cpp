@@ -85,7 +85,7 @@ sr::sr(int _nstock)
 	nstock = _nstock;
 	}
 
-bool sr::Init(int n, SEXP xyrs)      
+bool sr::Init(int _nstock, SEXP xyrs)      
 	{
    if (!isNumeric(xyrs)) 
       return false;
@@ -97,10 +97,10 @@ bool sr::Init(int n, SEXP xyrs)
       if (_minyr>REAL(xyrs)[i]) _minyr=(int)REAL(xyrs)[i];
       if (_maxyr<REAL(xyrs)[i]) _maxyr=(int)REAL(xyrs)[i];}
 
-   residuals.alloc_n7(n);      
-   param.alloc_n7(    n);      
+   residuals.alloc_n7(_nstock);      
+   param.alloc_n7(    _nstock);      
 
-   return Init(n, _minyr, _maxyr);
+   return Init(_nstock, _minyr, _maxyr);
    }
 
 bool sr::Init(int _nstock, int _minyr, int _maxyr)      
@@ -130,68 +130,55 @@ bool sr::Init(int _nstock, int _minyr, int _maxyr)
    }
 	      
 bool sr::Init(int istock, SEXP xmodel, SEXP xparam, SEXP xresiduals, SEXP xmult)  
-	{
-   if (nstock<1 || istock<0 || istock>nstock) 
-		return false;
+   {
+   if (nstock<1 || istock>nstock || istock<0) 
+     return false;
 
-   //const char *s1 = CHAR(STRING_ELT(GET_CLASS(xresiduals), 0));
-
-   residuals.Init(istock, PROTECT(VECTOR_ELT(xresiduals, istock-1)));
-
-   if (residuals.minyr(istock) > _minyear || residuals.maxyr(istock) < _maxyear)
-      {
-      UNPROTECT(1); 
-      return false;
-      }
-
+   //parameters
+   param.Init(istock, PROTECT(VECTOR_ELT(xparam, istock-1)));
+   
    // model
    SEXP vmodel, t;
    int  nmodel;
    
    t= PROTECT(VECTOR_ELT(xmodel, istock-1));
 
-   if (!isNumeric(t))
-      {
+   if (!isNumeric(t)){
       UNPROTECT(2);
-      return false;
-      } 
+      return false;} 
    
    PROTECT(vmodel = AS_NUMERIC(t));
    nmodel         = LENGTH(vmodel);
    
-   if (nmodel<(_maxyear-_minyear+1))
-      {
+   if (nmodel<(_maxyear-_minyear+1)){
       UNPROTECT(3);
-      return false;
-      } 
+      return false;} 
    
    double *dmodel = NUMERIC_POINTER(vmodel); 
    
    int i=0;
    for (int iyr=_minyear; iyr<=_maxyear; iyr++)
       model[istock][iyr]=(FLRConstSRR)((int)dmodel[i++]);
-   
-   //parameters
-   param.Init(istock, PROTECT(VECTOR_ELT(xparam, istock-1)));
-   
-   //multipicative residuals
-   SEXP vmult;
+      
 
-//   const char *s = CHAR(STRING_ELT(GET_CLASS(xmult), 0));
+   // residuals
+   residuals.Init(istock, PROTECT(VECTOR_ELT(xresiduals, istock-1)));
 
-//   if (!isVector(xmult) || !isLogical(xmult)) 
-//      return false;
-   
+   if (residuals.minyr(istock) > _minyear || residuals.maxyr(istock) < _maxyear){
+      UNPROTECT(1); 
+      return false;}
+
+   //multipicative residuals?
+   SEXP vmult;   
    PROTECT(vmult = AS_LOGICAL(xmult));
    
    int *dmult = LOGICAL_POINTER(vmult);
    residuals_mult[istock] = (dmult[0]==1 ? true : false);
-   
  	
    UNPROTECT(5); 
    
    return true;
-	}
+   }
 	      
 sr::~sr(void)     
 	{
@@ -207,13 +194,11 @@ void sr::unalloc(void)
    delete [] (residuals_mult+1);
    }	      
 
-double sr::recruits(int istock, int iyr, double ssb, int iter, int iseason)
+double sr::recruits(int istock, double ssb, int iyr, int iter, int iseason, int iunit, int iarea)
    {
    double returnval=0.0,
           residual =0.0;
  
-   int iunit=1, iarea=1;
-
    int _yr = __max(__min(iyr, _maxyear),_minyear);
 
    //SSB as a function of SPR
@@ -243,13 +228,15 @@ double sr::recruits(int istock, int iyr, double ssb, int iter, int iseason)
    if (residuals_mult[istock])
       {
       residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,1,1,1,iter) : 1.0);
-      return returnval*residual;
+      returnval = returnval*residual;
       }
    else
       {
       residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,1,1,1,iter) : 0.0);
-      return returnval+residual;
+      returnval = returnval+residual;
       }
+
+   return(R_IsNA(returnval,0,returnval))
    } 
 
 void flc::CalcF(void)
