@@ -67,6 +67,16 @@ extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,S
    return fwd_adolc_FLStock(xFLStock,xTrgt,xAry,xYrs,xSRModel,xSRParam,xSRResiduals,xMult); 
    }
 
+// Uses fwdFLStock
+extern "C" SEXPDLLExport ____fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 
+    {
+	fwdStk fwd;
+
+    fwd.Init(xStk, xYrs, xSRModel, xSRParam, xSRResiduals, xMult, xAvail);    
+    
+	return fwd.run(xTrgt, xAry);   
+    }
+
 // Uses fwd
 extern "C" SEXPDLLExport __fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
     {

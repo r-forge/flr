@@ -41,21 +41,21 @@ discards         <-computeDiscards(ple4)
 catch(ple4)      <-computeCatch(   ple4,"all")
 
 #### Test the different ways of passing SRRs ###################################
-  chkSR<-function(stk,srr,yrs,rsd=NULL,mult=TRUE){
-     recYrs<-(1+dims(stk)$min):dims(stk)$year
-     ssbYrs<-1:(dims(stk)$year-dims(stk)$min)
+chkSR<-function(stk,srr,yrs,rsd=NULL,mult=TRUE){
+   recYrs<-(1+dims(stk)$min):dims(stk)$year
+   ssbYrs<-1:(dims(stk)$year-dims(stk)$min)
 
-     plot(  ssb(srr)*1000,     rec(srr)*1000,      xlab="SSB", ylab="Recruits")
-     points(ssb(srr)*1000,     fitted(srr)*1000,   pch=19)
-     points(ssb(stk)[,ac(yrs-dims(stk)$min)],rec(stk)[,ac(yrs)], pch=19,col="red")
+   plot(  ssb(srr)*1000,     rec(srr)*1000,      xlab="SSB", ylab="Recruits")
+   points(ssb(srr)*1000,     fitted(srr)*1000,   pch=19)
+   points(ssb(stk)[,ac(yrs-dims(stk)$min)],rec(stk)[,ac(yrs)], pch=19,col="red")
 
-     if (is.null(rsd)) recs<-rec(stk)[,ac(yrs)]
-     else
-        if (mult) recs<-sweep(rec(stk)[,ac(yrs)],1:2,rsd[,ac(yrs)],"/")
-        else      recs<-sweep(rec(stk)[,ac(yrs)],1:2,rsd[,ac(yrs)],"-")
+   if (is.null(rsd)) recs<-rec(stk)[,ac(yrs)]
+   else
+      if (mult) recs<-sweep(rec(stk)[,ac(yrs)],c(1:2,6),rsd[,ac(yrs)],"/")
+      else      recs<-sweep(rec(stk)[,ac(yrs)],c(1:2,6),rsd[,ac(yrs)],"-")
 
-     return(sweep(recs,1:2,predict(srr,ssb=ssb(stk)[,ac(yrs-dims(stk)$min)]),"-"))
-     }
+   return(sweep(recs,c(1:2,6),predict(srr,ssb=ssb(stk)[,ac(yrs-dims(stk)$min)]),"-"))
+   }
 
 ctrl <-fwdControl(data.frame(year=yrs,val=0.45,quantity="f")) #,season=1))
 
@@ -139,7 +139,7 @@ res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 apply((harvest(res)*landings.n(ple4)/catch.n(ple4))[fbarRng,ac(yrs)],2,"mean")
 
 #### f.discards
-ctrl<-fwdControl(data.frame(year=yrs,val=0.4,quantity="f.discards"))
+ctrl<-fwdControl(data.frame(year=yrs,val=0.2,quantity="f.discards"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 apply((harvest(res)*discards.n(ple4)/catch.n(ple4))[fbarRng,ac(yrs)],2,"mean")
 
@@ -172,12 +172,13 @@ res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeDiscards(res)[,   ac(yrs)]/c(computeDiscards(res)[,ac(1997)])
 
 #### ssb
-ctrl<-fwdControl(data.frame(year=yrs,val=1.1,quantity="ssb",rel.year=1997:2000))
+ctrl<-fwdControl(data.frame(year=yrs,val=1.0,quantity="ssb",rel.year=rep(1997,4)))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 ssb(res)[,ac(yrs)]/c(ssb(res)[,ac(1997)])
 
 #### biomass
-ctrl<-fwdControl(data.frame(year=yrs,val=1.1,quantity="biomass",rel.year=1997:2000))
+#### NEED TO CHECK
+ctrl<-fwdControl(data.frame(year=yrs,val=1.0,quantity="biomass",rel.year=rep(1996,4)))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeStock(res)[,ac(yrs)]/c(computeStock(res)[,ac(1997)])
 
@@ -215,38 +216,8 @@ c((apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum))[,ac(1997)]
 #ctrl<-fwdControl(data.frame(year=yrs,val=1,rel.year=1996,quantity="profit"))
 
 ##Iters
-ple4<-propagate(ple4,iter=10)
-ctrl<-fwdControl(data.frame(year=yrs,val=c(ssb(ple4)[,ac(yrs+1),,,,1]),quantity="ssb"))
-srRes<-FLQuant(seq(1,2,length.out=10),dimnames=list(age=1,year=1997:1999,iter=1:10))
-res<-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
+res  <-propagate(res,iter=10)
+ctrl <-fwdControl(data.frame(year=yrs,val=c(200000,220000,240000,260000),quantity="ssb"))
+srRes<-FLQuant(rep(seq(1,2,length.out=10),each=4),dimnames=list(age=1,year=yrs,iter=1:10))
+res  <-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
 chkSR(res,ple4SR,yrs,rsd=srRes)
-
-##Seasons
-dmns<-dimnames(m(res))
-dmns$unit<-c("spawn","feed")
-
-#### f
-
-ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
-res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
-fbar(res)[,ac(yrs)]
-
-
-##Units
-dmns<-dimnames(m(res))
-dmns$unit<-c("north","south")
-
-ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
-res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
-fbar(res)[,ac(yrs)]
-
-
-##Areas
-dmns<-dimnames(m(res))
-dmns$unit<-c("90mm","120mm")
-
-ctrl<-fwdControl(data.frame(year=yrs,val=.45,quantity="f"))
-res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
-fbar(res)[,ac(yrs)]
-
-

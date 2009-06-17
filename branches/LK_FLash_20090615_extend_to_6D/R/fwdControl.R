@@ -317,14 +317,25 @@ chkTrgtArrayIters <- function(object,trgtArray,sr)
 }
 
 # check target quantity is factor and that it is currently implemented
-chkTargetQuantity <- function(target)
-{
+chkTargetQuantity <- function(target,object)
+    {
+    ordDmn<-function(dmn,val){
+      tmp       <-1:length(dmn)
+      names(tmp)<-dmn
+
+      return(tmp[ac(val)])
+      }
+
     if (!is(target[,"quantity"],"factor"))
         target[,"quantity"]<-factor(target[,"quantity"],quantityNms())
     if (!all(as.character(target[,"quantity"]) %in% quantityNms()))
         stop("invalid quantity in control target")
     if (any(as.character(target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
         stop("fwd not yet implemented for 'effort','costs','revenue' or 'profit'")
-        
-	return(target)
-}
+
+    if (!is.numeric(target[,"season"])) target[,"season"]<-ordDmn(dimnames(m(object))$season,target[,"season"])
+    if (!is.numeric(target[,"unit"]  )) target[,"unit"]  <-ordDmn(dimnames(m(object))$unit,  target[,"unit"])
+    if (!is.numeric(target[,"area"]  )) target[,"area"]  <-ordDmn(dimnames(m(object))$area,  target[,"area"])
+
+	  return(target)
+    }

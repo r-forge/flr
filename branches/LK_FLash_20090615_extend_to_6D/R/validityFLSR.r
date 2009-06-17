@@ -30,24 +30,28 @@ setGeneric('validSRPar', function(object, ...)
      else{
          dmns  <-dimnames(sr)
 
-         params<-list(params=dmns$params,year=yrs,dmns[[-1]])
-         names(params)[-(1:2)]<-names(dmns[-1])
+         params<-list(params=dmns$params,year=yrs)
+         if ("unit"   %in% names(dmns)) params[["unit"]]  <-dmns$unit
+         if ("area"   %in% names(dmns)) params[["area"]]  <-dmns$area
+         if ("season" %in% names(dmns)) params[["season"]]<-dmns$season
+
          #### CHECK RECYCLING
          sr<-FLPar(c(sr),dimnames=params)
          }
+
 
      #### create FLQuant compatible FLPar
      sr <-FLPar(as.FLQuant(as.data.frame(sr)))
 
      #### Check availability
      #### Needed to distribute recruits if SR$area==1
-     if (dims(object)$area>1 & dims(as.FLQuant(sr))$area==1){
+     if (dims(object)$area>1){
         if (is.null(availability))
-           stop("availability needs to be provided if multiple areas not in SR")
+           stop("availability needs to be provided if multiple areas")
 
-        if (!all(yrs %in% ac(dims(availability)$minyear:dims(availability)$maxyear)))
+        if (!all(yrs %in% dimnames(availability)$year))
            stop("years in availability mismatch")
-       }
+        }
 
      #### Check iters
      niter<-unique(c(dims(object)$iter,1))

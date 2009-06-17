@@ -13,11 +13,8 @@ if (!isGeneric("fwd"))
 setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     function(object, ctrl,
                sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
-               mix=NULL)
+               availability=NULL)
     {
-    if (dims(object)$area>1 | dims(object)$unit>1)
-       stop("Not valid for areas>1 or units>1")
-
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
@@ -44,21 +41,47 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     else
        endYr<-NULL
 
-    sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)
+    if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
+
+    sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
     ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
 
+    ## Season
     if (any(is.na(ctrl@target$season)) & dims(object)$season==1)
        ctrl@target$season<-1
     else if (any(is.na(ctrl@target$season)) & dims(object)$season>1)
        stop("need to specific season in target")
     
-    ctrl@target    <- chkTargetQuantity(ctrl@target)
+    ## Unit
+    if (any(is.na(ctrl@target$unit)) & dims(object)$unit==1)
+       ctrl@target$unit<-1
+    else if (any(is.na(ctrl@target$unit)) & dims(object)$unit>1)
+       stop("need to specific unit in target")
+
+    ## Area
+    if (any(is.na(ctrl@target$area)) & dims(object)$area==1)
+       ctrl@target$area<-1
+    else if (any(is.na(ctrl@target$area)) & dims(object)$area>1)
+       stop("need to specific area in target")
+
+    ctrl@target    <- chkTargetQuantity(ctrl@target,object)
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
 
-    x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
+    ## Availability check
+    if (dims(object)$area>1){
+       if (is.null(availability)) stop("need to specify availability as areas>1")
+       if (any(unlist(dims(availability))[c("age","min","max","unit","season","area","iter")]!=
+               unlist(dims(m(object)))[   c("age","min","max","unit","season","area","iter")]))
+          stop("dims mismatch in availability")
+       if (!all(dimnames(availability)$year %in% (dimnames(m(object))$year)))
+          stop("dim year mismatch in availability")
+       }
+
+    ##x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
+    x<-.Call("____fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]], availability)
 
     if (is.numeric(x)) stop(x)
 
