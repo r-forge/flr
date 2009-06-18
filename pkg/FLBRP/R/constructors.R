@@ -89,7 +89,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
 # FLBRP(object=FLStock, sr=missing) {{{
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
-    fbar=seq(0, 4, 0.04), biol.nyears=3, fbar.nyears=3, sel.nyears=fbar.nyears,
+    fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears, sel.nyears=fbar.nyears,
     na.rm=TRUE, mean='arithmetic', ...)
     {
     # dims & dimnames
@@ -152,7 +152,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
       # profit.obs
       profit.obs = FLQuant(dimnames=snames),
-
+      
       # discards.sel & landings.sel
       discards.sel = scaling * apply(object@discards.n[,syears]/
         (object@discards.n[,syears] + object@landings.n[,syears]), c(1,3:6), foo),
