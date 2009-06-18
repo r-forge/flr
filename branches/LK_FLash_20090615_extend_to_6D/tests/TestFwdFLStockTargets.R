@@ -63,9 +63,18 @@ ctrl<-fwdControl(data.frame(year=yrs,val=200000,quantity="ssb"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 ssb(res)[,ac(yrs)]
 
+#### SOMETHING WRONG WITH RECRUITS
+res<-fwd(ple4,ctrl=ctrl,sr=list(model="mean",params=FLPar(100000)))
+ssb(res)[,ac(yrs)]
+
+#### SOMETHING WRONG WITH RECRUITS
 #### biomass
-ctrl<-fwdControl(data.frame(year=yrs,val=200000,quantity="biomass"))
+ctrl<-fwdControl(data.frame(year=yrs,val=300000,quantity="biomass"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+computeStock(res)[,ac(yrs)]
+
+stock.wt(res)[1,]<-0
+res<-fwd(res,ctrl=ctrl,sr=ple4SR)
 computeStock(res)[,ac(yrs)]
 
 #### f
