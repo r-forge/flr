@@ -61,11 +61,6 @@ extern "C" SEXPDLLExport SepVPA_ad(SEXP xStock, SEXP xControl, SEXP xRefHarvest)
    return VPA.Return();  
    }                 
 
-// Uses fwdFLStock
-extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
-   {
-   return fwd_adolc_FLStock(xFLStock,xTrgt,xAry,xYrs,xSRModel,xSRParam,xSRResiduals,xMult); 
-   }
 
 // Uses fwdFLStock
 extern "C" SEXPDLLExport ____fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 

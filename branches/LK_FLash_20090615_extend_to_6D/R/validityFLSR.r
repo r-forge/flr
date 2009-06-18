@@ -35,8 +35,11 @@ setGeneric('validSRPar', function(object, ...)
          if ("area"   %in% names(dmns)) params[["area"]]  <-dmns$area
          if ("season" %in% names(dmns)) params[["season"]]<-dmns$season
 
-         #### CHECK RECYCLING
-         sr<-FLPar(c(sr),dimnames=params)
+         res <-FLQuant(as.numeric(NA),dimnames=params)
+
+         res<-FLQuant(0,dimnames=params)
+
+         sr <-sweep(res,(1:6)[c("params","year","unit","season","area","iter") %in% names(dimnames(sr))],sr,"+")
          }
 
 

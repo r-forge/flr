@@ -92,7 +92,6 @@ setMethod('setSR', signature(sr='list'),
       stop("Dims for sr.params illegal")
 
     params<-validSRPar(object, sr=params, yrs=yrs, availability=availability)
-
     params<-FLQuant(params)
 
 #****** Cobble together into output format **********

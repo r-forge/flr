@@ -227,12 +227,12 @@ double sr::recruits(int istock, double ssb, int iyr, int iunit, int iseason, int
 
    if (residuals_mult[istock])
       {
-      residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,1,1,1,iter) : 1.0);
+      residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,iunit,iseason,iarea,iter) : 1.0);
       returnval = returnval*residual;
       }
    else
       {
-      residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,1,1,1,iter) : 0.0);
+      residual=(iyr<=_maxyear && iyr>=_minyear ? residuals(istock,residuals.minquant(istock),iyr,iunit,iseason,iarea,iter) : 0.0);
       returnval = returnval+residual;
       }
 
