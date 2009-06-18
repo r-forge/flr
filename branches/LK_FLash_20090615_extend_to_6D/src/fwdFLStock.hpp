@@ -40,7 +40,7 @@ protected:
 	FLStock stk;
 	FLQuant avail;
 
-	sr sr;
+	sr SR;
     };
 
 #endif /* _INC_fwdFLStock */
