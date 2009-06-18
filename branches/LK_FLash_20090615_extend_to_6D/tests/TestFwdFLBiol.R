@@ -1,3 +1,17 @@
+#===============================================================================
+## Date: 19/01/2009
+# Version: 0.1-0
+# Authors: Laurence Kell
+#
+# Short description: tests of fwd(FLBiol)
+#
+# ToDo:
+#
+# References (bibtex):
+#
+#!Notes:
+#===============================================================================
+
 library(FLash)
 library(FLAssess)
 #library(debug)
