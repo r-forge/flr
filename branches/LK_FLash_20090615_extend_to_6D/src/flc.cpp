@@ -1939,3 +1939,50 @@ void flc::InitFleets(SEXP xFleet)
       }
 	}
 
+bool flc::InitBiolsFleets(SEXP xBiols, SEXP xFleets, SEXP xDims)
+   {
+   if (!isFLBiols(xBiol) && !isFLFleets(xFleet)) 
+     return false;
+   
+   nstock() = NElemList(xBiols);
+   nfleet() = NElemList(xFleets);
+   nmetier()= NElemList(metiers);
+ 
+   SEXP fleet   = PROTECT(VECTOR_ELT(xFleet, 0));
+   SEXP metiers = PROTECT(GET_SLOT(fleet, install("metiers")));
+
+   if (nfleet() < 1 || nmetier() < 1 || nstock() < 1)
+      {
+      UNPROTECT(2);
+
+      return false;
+      }
+
+   SEXP dim;
+   PROTECT(dim = AS_NUMERIC(xDim));
+   if (LENGTH(dim)<6)
+      {
+      UNPROTECT(3);
+
+      return false;
+      }
+        
+   minyr()    = (int)REAL(dim)[0];
+   maxyr()    = (int)REAL(dim)[1];
+   nunits()   = (int)REAL(dim)[2];
+   nseasons() = (int)REAL(dim)[3];
+   nareas()   = (int)REAL(dim)[4];
+   niters()   = (int)REAL(dim)[5];
+   int flag   = (int)REAL(dim)[6];
+  
+   alloc_dims_range();
+
+   InitBiols(xBiol); 
+   InitFleets(xFleet);
+
+   CalcF(1);
+
+   UNPROTECT(3);
+
+   return true;
+   }

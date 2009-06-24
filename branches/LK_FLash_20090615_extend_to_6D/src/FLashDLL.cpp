@@ -63,7 +63,7 @@ extern "C" SEXPDLLExport SepVPA_ad(SEXP xStock, SEXP xControl, SEXP xRefHarvest)
 
 
 // Uses fwdFLStock
-extern "C" SEXPDLLExport ____fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 
+extern "C" SEXPDLLExport fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 
     {
 	fwdStk fwd;
 
@@ -72,24 +72,7 @@ extern "C" SEXPDLLExport ____fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SE
 	return fwd.run(xTrgt, xAry);   
     }
 
-// Uses fwd
-extern "C" SEXPDLLExport __fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult) 
-    {
-    SEXP ReturnVal = R_NilValue;
-    
-    fwd fwd(xFLStock, xYrs, xSRModel, xSRParam, xSRResiduals, xMult);
-
-    //fwd.run(xTrgt, xCtrl);
-
-    PROTECT(ReturnVal = allocVector(VECSXP,fwd.nstock()));
-
-    for (int i=0; i<fwd.nstock(); i++)
-       SET_VECTOR_ELT(ReturnVal, i, fwd.ReturnStock(i+1));
-    
-    return ReturnVal;
-    }
-
-extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult)    
+extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMultt,SEXP xAvail)    
     {
     SEXP ReturnVal = R_NilValue;
     
@@ -119,6 +102,24 @@ extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt,
     
     UNPROTECT(2);
 
+    return ReturnVal;
+    }
+
+
+// Uses fwd
+extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMultt,SEXP xAvail) 
+    {
+    SEXP ReturnVal = R_NilValue;
+    
+    fwd fwd(xFLStock, xYrs, xSRModel, xSRParam, xSRResiduals, xMult);
+
+    //fwd.run(xTrgt, xCtrl);
+
+    PROTECT(ReturnVal = allocVector(VECSXP,fwd.nstock()));
+
+    for (int i=0; i<fwd.nstock(); i++)
+       SET_VECTOR_ELT(ReturnVal, i, fwd.ReturnStock(i+1));
+    
     return ReturnVal;
     }
 
