@@ -40,11 +40,10 @@ params(ple4SR)["b",1]<-params(ple4SR)["b",1]/1000
 #### Tests
 ple4<-ple4[,ac(1996:2001)]
 yrs <-1998:2001
-ctrl<-fwdControl(data.frame(year=yrs,val=0.45,quantity="f")) #,season=1))
 
 #### Test all targets, absolute ################################################
 #### landings
-ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings",season=1))
+ctrl<-fwdControl(data.frame(year=2001,val=25000,quantity="landings"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeLandings(res)[,ac(yrs)]
 

@@ -1939,16 +1939,16 @@ void flc::InitFleets(SEXP xFleet)
       }
 	}
 
-bool flc::InitBiolsFleets(SEXP xBiols, SEXP xFleets, SEXP xDims)
+bool flc::InitBiolsFleets(SEXP xBiols, SEXP xFleets, SEXP xDim)
    {
-   if (!isFLBiols(xBiol) && !isFLFleets(xFleet)) 
+   if (!isFLBiols(xBiols) && !isFLFleets(xFleets)) 
      return false;
    
    nstock() = NElemList(xBiols);
    nfleet() = NElemList(xFleets);
-   nmetier()= NElemList(metiers);
+//   nmetier()= NElemList(metiers);
  
-   SEXP fleet   = PROTECT(VECTOR_ELT(xFleet, 0));
+   SEXP fleet   = PROTECT(VECTOR_ELT(xFleets, 0));
    SEXP metiers = PROTECT(GET_SLOT(fleet, install("metiers")));
 
    if (nfleet() < 1 || nmetier() < 1 || nstock() < 1)
@@ -1977,8 +1977,8 @@ bool flc::InitBiolsFleets(SEXP xBiols, SEXP xFleets, SEXP xDims)
   
    alloc_dims_range();
 
-   InitBiols(xBiol); 
-   InitFleets(xFleet);
+   InitBiols(xBiols); 
+   InitFleets(xFleets);
 
    CalcF(1);
 

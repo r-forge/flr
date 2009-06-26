@@ -72,7 +72,7 @@ extern "C" SEXPDLLExport fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP x
 	return fwd.run(xTrgt, xAry);   
     }
 
-extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMultt,SEXP xAvail)    
+extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail)    
     {
     SEXP ReturnVal = R_NilValue;
     
@@ -107,7 +107,7 @@ extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt,
 
 
 // Uses fwd
-extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMultt,SEXP xAvail) 
+extern "C" SEXPDLLExport _fwd_adolc_FLStock(SEXP xFLStock,SEXP xTrgt,SEXP xAry,SEXP xCtrl,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 
     {
     SEXP ReturnVal = R_NilValue;
     
@@ -169,7 +169,7 @@ extern "C" SEXPDLLExport fwd_adolc_FLBiols(SEXP xBiols, SEXP xFleets, SEXP xTrgt
    }
 
 // Test functions for flc
-extern "C" SEXPDLLExport TestFLStock(SEXP xStock)
+extern "C" SEXPDLLExport flc_FLStock(SEXP xStock)
    {
    SEXP ReturnObject = R_NilValue;
   
