@@ -179,7 +179,7 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
          func[0] = computeStock(    ad_n,ad_f, iyr, iunit, iSn, iarea, iter) - val;
          break;
       case FLRConst_Catch:
-         func[0] = computeCatch(    ad_f, iyr, iunit, iSn, iarea, iter) - val;
+         func[0] = computeCatch(    ad_f,      iyr, iunit, iSn, iarea, iter) - val;
          break;
       case FLRConst_Landings:
          func[0] = computeLandings( ad_f, iyr, iunit, iSn, iarea, iter) - val;
@@ -626,90 +626,45 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
           {
           FLRConst_Target quantity = (FLRConst_Target)(int)(Trgt)[iTrgt-1 + fwdTargetPos_quantity*nrow];
           
-          if (quantity==999) //FLRConst_F)
+          _Tape = 0; //iTrgt % ++iTape + 1;
+      
+          for (i=0; i<n; i++)
+             indep[i]=1.0;
+
+           // Taping the computation of the jacobian 
+           trace_on(_Tape);
+
+           // marking independent variables 
+           for (i=0; i<n; i++)
+              indep_ad[i] <<= indep[i];
+
+          project(indep_ad,depen_ad,Trgt,iTrgt,nrow,Ary,iter);
+
+          // marking dependent variables 
+          for (i=0; i<n; i++)
+             depen_ad[i] >>= depen[i];
+
+          trace_off(_Tape);
+
+          //jacobian(tag,n,n,indep,jac);
+          r[0]=1.0;
+          function(_Tape,n,n,indep,r);
+          int NIters=0;
+          while (norm(r,n) > 1e-12 && norm(indep,n) < 100 && NIters++<50)
               {
-              int    iYr  =(int)(Trgt)[iTrgt-1 + 0*nrow];
-              double _fbar=stk.Fbar(iYr,1,1,1,iter);
-
-              double min_ = (Ary)[(iTrgt+fwdTargetPos_min*nrow+3*nrow*(iter-1))];
-              double val  = (Ary)[(iTrgt+fwdTargetPos_val*nrow+3*nrow*(iter-1))];
-              double max_ = (Ary)[(iTrgt+fwdTargetPos_max*nrow+3*nrow*(iter-1))];
-
-              if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))  
-                 {
-                 int iyr   = (int)(Trgt)[iTrgt],
-				     iSn   = __max((int)(Trgt)[iTrgt+fwdTargetPos_season*nrow],1),
-				     iunt  = __max((int)(Trgt)[iTrgt+fwdTargetPos_unit*nrow],  1),
-				     iarea = __max((int)(Trgt)[iTrgt+fwdTargetPos_area*nrow],  1);
-
-				 if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
-				   iYr = (int)(Trgt)[iTrgt+fwdTargetPos_relyear*nrow];
-				 if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
-				   iSn = (int)(Trgt)[iTrgt+fwdTargetPos_relseason*nrow];
-				 if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
-				   iarea = (int)(Trgt)[iTrgt+fwdTargetPos_relarea*nrow];
-				 if (!R_IsNA((Trgt)[iTrgt+fwdTargetPos_relyear*nrow]))
-				   iunt = (int)(Trgt)[iTrgt+fwdTargetPos_relunit*nrow];
-				
-				 double RelVal=getVal(quantity, iYr, iSn, iunt, iarea, iter);
-
-                 min_ *= RelVal;
-                 val  *= RelVal;
-                 max_ *= RelVal;
-                 }
-
-              if (!R_IsNA(max_) && _fbar>max_) val=max_; else
-              if (!R_IsNA(min_) && _fbar<min_) val=min_;
-
-              val/=_fbar;
-
-              project(&val, (int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
-                            (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
-                            (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
-                            (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);
-              }
-          else
-              {
-              _Tape = 0; //iTrgt % ++iTape + 1;
-          
-              for (i=0; i<n; i++)
-                 indep[i]=1.0;
-    
-               // Taping the computation of the jacobian 
-               trace_on(_Tape);
-
-               // marking independent variables 
-               for (i=0; i<n; i++)
-                  indep_ad[i] <<= indep[i];
-
-              project(indep_ad,depen_ad,Trgt,iTrgt,nrow,Ary,iter);
-
-              // marking dependent variables 
-              for (i=0; i<n; i++)
-                 depen_ad[i] >>= depen[i];
-
-              trace_off(_Tape);
-
-              //jacobian(tag,n,n,indep,jac);
-              r[0]=1.0;
               function(_Tape,n,n,indep,r);
-              int NIters=0;
-               while (norm(r,n) > 1e-12 && norm(indep,n) < 100 && NIters++<50)
-                  {
-                  function(_Tape,n,n,indep,r);
 
-                  jac_solv(_Tape,n,indep,r,0,2);
+              jac_solv(_Tape,n,indep,r,0,2);
 
-                  for (i=0; i<n; i++)
-                      indep[i] -= r[i];	   
-                  }         
-        
-              project(indep, (int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
-                             (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
-                             (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
-                             (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);
-              }
-           }
+              for (i=0; i<n; i++)
+                  indep[i] -= r[i];	   
+              }         
+    
+          project(indep, (int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
+                         (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
+                         (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
+                         (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);
+          }
 
     delete[] depen;
     delete[] indep;
