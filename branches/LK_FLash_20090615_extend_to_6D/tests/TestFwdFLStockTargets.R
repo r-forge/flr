@@ -43,7 +43,7 @@ yrs <-1998:2001
 
 #### Test all targets, absolute ################################################
 #### landings
-ctrl<-fwdControl(data.frame(year=2001,val=25000,quantity="landings"))
+ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeLandings(res)[,ac(yrs)]
 

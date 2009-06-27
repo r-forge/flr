@@ -14,11 +14,11 @@
 
 
 library(FLash)
-#source("C:/stuff/FLR/Branch/R/fwdControl.R")
-#source("C:/stuff/FLR/Branch/R/fwd.R")
-#source("C:/stuff/FLR/Branch/R/setSRs.R")
-#source("C:/stuff/FLR/Branch/R/FLCoreVarCon.R")
-#source("C:/Stuff/FLR/Branch/R/validityFLSR.r")
+source("C:/stuff/FLR/Branch/R/fwdControl.R")
+source("C:/stuff/FLR/Branch/R/fwd.R")
+source("C:/stuff/FLR/Branch/R/setSRs.R")
+source("C:/stuff/FLR/Branch/R/FLCoreVarCon.R")
+source("C:/Stuff/FLR/Branch/R/validityFLSR.r")
 
 data(ple4)
 
