@@ -115,6 +115,7 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
       }
 
     // Redistribute between areas
+if (stk.nareas>1){
     for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
        adouble sum=0.0;
        for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
@@ -129,6 +130,7 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
           else
              ad_n(iage,iyr+1,iunit,1,jarea,iter)=avail(iage,iyr+1,iunit,1,jarea,iter)*sum;
        }
+}
 
    //-------------------- Target Stuff ----------------------//
    //min & max bounds should only occur if a target calculated in a previous step for that year
@@ -344,7 +346,7 @@ adouble fwdStk::computeCatch(FLQuant_adolc &f, int iyr, int iunit, int iseason, 
    adouble RtnVal = 0.0, 
            val    = 0.0;
 
-double t1, t2;
+   double t1, t2;
 
    for (int iage= stk.minquant; iage<= stk.maxquant; iage++)
       {
@@ -354,8 +356,8 @@ double t1, t2;
             f(           iage, iyr, iunit, iseason, iarea, iter)/z*(1-exp(-z))*
             stk.catch_wt(iage, iyr, iunit, iseason, iarea, iter);
 
-t1=val.value();
-t2=RtnVal.value();
+t1 =val.value();
+t2 =RtnVal.value();
 
       RtnVal += val;
       }
