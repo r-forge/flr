@@ -180,6 +180,8 @@ void FLBRP::Init(SEXP x)
    nseasons = 
    nareas   = 0;
 
+   plusgrp = R_NaReal;
+
    for (int i=0; i<n; i++)
       {
       const char *s = CHAR(STRING_ELT(RangeNames, i));
