@@ -42,15 +42,15 @@ ple4<-ple4[,ac(1996:2001)]
 yrs <-1998:2001
 
 #### Test all targets, absolute ################################################
-#### landings
-ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings"))
-res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
-computeLandings(res)[,ac(yrs)]
-
 #### catch
 ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="catch"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
 computeCatch(res)[,   ac(yrs)]
+
+#### landings
+ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="landings"))
+res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+computeLandings(res)[,ac(yrs)]
 
 #### discards
 ctrl<-fwdControl(data.frame(year=yrs,val=25000,quantity="discards"))
@@ -70,6 +70,7 @@ ssb(res)[,ac(yrs)]
 #### biomass
 ctrl<-fwdControl(data.frame(year=yrs,val=300000,quantity="biomass"))
 res<-fwd(ple4,ctrl=ctrl,sr=ple4SR)
+res<-fwd(ple4,ctrl=ctrl,sr=list(model="mean",params=FLPar(500000)))
 computeStock(res)[,ac(yrs)]
 
 stock.wt(res)[1,]<-0

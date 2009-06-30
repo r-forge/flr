@@ -114,24 +114,31 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
          }
       }
 
-    // Redistribute between areas
-if (stk.nareas>1){
-    for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
-       adouble sum=0.0;
-       for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
-          if (iSn<stk.nseasons)
-             sum+=ad_n(iage,iyr,iunit,iSn+1,jarea,iter);
-          else
-             sum+=ad_n(iage,iyr+1,iunit,1,jarea,iter);
-         
-       for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
-          if (iSn<stk.nseasons)
-             ad_n(iage,iyr,iunit,iSn+1,jarea,iter)=avail(iage,iyr,iunit,iSn+1,jarea,iter)*sum;
-          else
-             ad_n(iage,iyr+1,iunit,1,jarea,iter)=avail(iage,iyr+1,iunit,1,jarea,iter)*sum;
-       }
-}
+    // Redistribute between areas if more than 1 area
+    if (stk.nareas>1){
+       if (iSn<stk.nseasons){        //within year
+          for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
+             adouble sum=0.0;
+             for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                sum+=ad_n(iage,iyr,iunit,iSn+1,jarea,iter);
+          
+		     for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                ad_n(iage,iyr,iunit,iSn+1,jarea,iter)=sum*avail(iage,iyr,iunit,iSn+1,jarea,iter);
+             }	      
+	      }
+	   else if (avail.maxyr()>iyr) { //next year only if avial provided
+          for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
+             adouble sum=0.0;
+             for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                sum+=ad_n(iage,iyr+1,iunit,1,jarea,iter);
+          
+		     for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                ad_n(iage,iyr+1,iunit,1,jarea,iter)=sum*avail(iage,iyr+1,iunit,1,jarea,iter);
+             }	      	      
+	      }
+	   }
 
+	   
    //-------------------- Target Stuff ----------------------//
    //min & max bounds should only occur if a target calculated in a previous step for that year
    // target value relative to reference year
@@ -237,24 +244,32 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
             stk.stock_n(iage,  iyr+1,iunit,1,iarea,iter) += stk.stock_n(              stk.maxquant,iyr,iunit,iseason,iarea,iter)
 			                                                        *exp(-stk.harvest(stk.maxquant,iyr,iunit,iseason,iarea,iter)
 																	     -stk.m(      stk.maxquant,iyr,iunit,iseason,iarea,iter));
-         }
-      }
+         }          
+	  }
+
+    // Redistribute between areas if more than 1 area
+    if (stk.nareas>1){
+       if (iseason<stk.nseasons){        //within year
+          for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
+             double sum=0.0;
+             for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                sum+=stk.stock_n(iage,iyr,iunit,iseason+1,jarea,iter);
           
-   // redistribute
-   for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
-      double sum=0.0;
-      for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
-      if (iseason<stk.nseasons)
-         sum+=stk.stock_n(iage,iyr,iunit,iseason+1,jarea,iter);
-      else
-         sum+=stk.stock_n(iage,iyr+1,iunit,iseason,jarea,iter);
-            
-      for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++){
-         if (iseason<stk.nseasons)
-            stk.stock_n(iage,iyr,iunit,iseason+1,jarea,iter)=avail(iage,iyr,iunit,iseason+1,jarea,iter)*sum;
-         else
-            stk.stock_n(iage,iyr+1,iunit,iseason,jarea,iter)=avail(iage,iyr+1,iunit,iseason,jarea,iter)*sum;
-      }
+		     for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                stk.stock_n(iage,iyr,iunit,iseason+1,jarea,iter)=sum*avail(iage,iyr,iunit,iseason+1,jarea,iter);
+             }	      
+	      }
+	   else if (avail.maxyr()>iyr) { //next year only if avial provided
+          for (int iage=stk.minquant; iage<=stk.maxquant; iage++){
+             double sum=0.0;
+             for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                sum+=stk.stock_n(iage,iyr+1,iunit,1,jarea,iter);
+          
+		     for (int jarea=stk.nareas; jarea<=stk.nareas; jarea++)
+                stk.stock_n(iage,iyr+1,iunit,1,jarea,iter)=sum*avail(iage,iyr+1,iunit,1,jarea,iter);
+             }	      	      
+	      }
+
 
       if (!OnlyReplaceNA || (OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter))))    
          if (SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr+1,iunit,iseason,iarea,iter)>0) 
