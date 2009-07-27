@@ -39,10 +39,11 @@ setMethod('stf', signature(object='FLStock'),
 
     # average slots
     # *.wt, mat, m and *.spwn as average over wts.years
-    for (i in c('catch.wt', 'landings.wt', 'discards.wt', 'stock.wt', 'mat', 'm',
-      'harvest.spwn', 'm.spwn'))
-      slot(res, i)[,years] <- apply(slot(res, i)[,wts.years], c(1,3:6),
-        fmean, na.rm=na.rm)
+    for (i in c('catch.wt', 'landings.wt', 'discards.wt', 'stock.wt', 'mat', 'm', 'harvest.spwn', 'm.spwn')){
+      flq<- apply(slot(res, i)[,wts.years], c(1,3:6),fmean, na.rm=na.rm)
+      for (j in years)
+         slot(res, i)[,j] <-flq
+      }
 
     # landings.n and discards.n as proportions of wts.years
     slot(res, 'discards.n')[,years] <- apply(slot(res, 'discards.n')[, wts.years] /
@@ -50,8 +51,9 @@ setMethod('stf', signature(object='FLStock'),
     slot(res, 'landings.n')[,years] <- 1 - slot(res, 'discards.n')[,years]
 
     # harvest as mean over fbar.nyears
-    slot(res, 'harvest')[, years] <- apply(slot(res, 'harvest')[,fbar.years], c(1,3:6),
-      fmean, na.rm=na.rm)
+    f <-apply(slot(res, 'harvest')[,fbar.years], c(1,3:6), fmean, na.rm=na.rm)
+    for (i in years)
+       slot(res, 'harvest')[,i] <-f
 
     # f.rescale
     if(f.rescale == TRUE)
