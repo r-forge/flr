@@ -1,0 +1,11 @@
+useDynLib("FLash")
+import("FLCore")
+export("summary",
+       "show")
+exportClasses("FLPellaT")
+exportMethods("fitted",
+              "predict",
+              "residuals",
+              "msy",
+              "fit",
+              "plot")

@@ -1,0 +1,9 @@
+Package: FLPellaT
+Title: Measurement and Process error
+Version: 0.1.1
+Author: Laurence Kell
+Description: Fits a Pella Tomlinson to ctach & CPUE
+Depends: methods, R(>= 2.7.1), FLCore(>= 2.0)
+LinkingTo: FLCore
+Maintainer: Laurence Kell <l.kell@cefas.co.uk>
+License: GPL 2 or above
