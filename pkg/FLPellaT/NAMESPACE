@@ -1,9 +1,9 @@
-useDynLib("FLash")
 import("FLCore")
 export("summary",
        "show")
 exportClasses("FLPellaT")
-exportMethods("fitted",
+exportMethods("FLPellaT",
+              "fitted",
               "predict",
               "residuals",
               "msy",

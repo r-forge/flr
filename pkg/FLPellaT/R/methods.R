@@ -82,29 +82,29 @@ setMethod('fit', signature(object='FLPellaT'),
          catch.<-c(catch(object)@.Data[1,,,,,i,drop=T])
          index.<-c(index(object)@.Data[1,,,,,i,drop=T])
 
-         if (is.na(param(object)["K",   i])) param(object)["K",   i]   <-mean(catch.)*10
-         if (is.na(param(object)["r",   i])) param(object)["r",   i]   <-0.3
-         if (is.na(param(object)["b0",  i])) param(object)["b0",  i]  <-1.0
-         if (is.na(param(object)["mpar",i])) param(object)["mpar",i]<-2.0
+         if (is.na(object@param["K",   i])) object@param["K",   i]   <-mean(catch.)*10
+         if (is.na(object@param["r",   i])) object@param["r",   i]   <-0.3
+         if (is.na(object@param["b0",  i])) object@param["b0",  i]  <-1.0
+         if (is.na(object@param["mpar",i])) object@param["mpar",i]<-2.0
 
-         b0   <-c(param(object)["b0",  i])
-         mpar <-c(param(object)["mpar",i])
+         b0   <-c(object@param["b0",  i])
+         mpar <-c(object@param["mpar",i])
 
-         res<-nls.lm(c(param(object)[c("r","K"),i]),residuals,b0=b0,mpar=mpar,catch=catch.,index=index.,error=object@distribution)
+         res<-nls.lm(c(object@param[c("r","K"),i]),residuals,b0=b0,mpar=mpar,catch=catch.,index=index.,error=object@distribution)
 
-         param(object)["r",i]<-res$par[1]
-         param(object)["K",i]<-res$par[2]
+         object@param["r",i]<-res$par[1]
+         object@param["K",i]<-res$par[2]
 
-         r     <-c(param(object)["r",   i])
-         K     <-c(param(object)["K",   i])
-         stock.<-proj(catch.,c(param(object)["r",i]),c(param(object)["K",i]),c(param(object)["b0",i]),c(param(object)["mpar",i]))
+         r     <-c(object@param["r",   i])
+         K     <-c(object@param["K",   i])
+         stock.<-proj(catch.,c(object@param["r",i]),c(object@param["K",i]),c(object@param["b0",i]),c(object@param["mpar",i]))
 
          object@hessian[,,i]<-res$hessian
          object@stock       <-FLQuant(stock.)
          indexHat.          <-indexHat(catch.,index.,r,K,b0,mpar,error="log")
 
-         param(object)["sigma",i]<-sigma(index.,indexHat.,error="log")
-         param(object)["q",    i]<-calcQ(mnBio(stock.),index.,error="log")
+         object@param["sigma",i]<-sigma(index.,indexHat.,error="log")
+         object@param["q",    i]<-calcQ(mnBio(stock.),index.,error="log")
          LL(object)              <-LL(catch.,index.,c(r,K),b0,mpar,error="log")
          }
           
@@ -132,10 +132,10 @@ setMethod('fitted', signature(object='FLPellaT'),
   
    catch.<-catch(object)
    index.<-index(object)
-   r     <-param(object)["r",]
-   K     <-param(object)["K",]
-   b0    <-param(object)["b0",]
-   mpar  <-param(object)["mpar",]
+   r     <-object@param["r",]
+   K     <-object@param["K",]
+   b0    <-object@param["b0",]
+   mpar  <-object@param["mpar",]
    
    res<-FLQuant(indexHat(c(catch.),c(index.),r,K,b0,mpar,error=object@distribution),dimnames=dimnames(index(object)))
 
@@ -163,7 +163,7 @@ setMethod('residuals', signature(object='numeric'),
 setMethod('residuals', signature(object='FLPellaT'),
    function(object)
      {
-     if (x@distribution=="log")
+     if (object@distribution=="log")
         return(log(object@index)-log(fitted(object)))
      else
         return(object@index-fitted(object))
@@ -193,3 +193,14 @@ setMethod('msy', signature(object='FLPellaT'),
      
      return(res)
      })
+
+#### catchHat
+setGeneric('computeCatch', function(object,...)
+		standardGeneric('computeCatch'))
+
+setMethod('computeCatch', signature(object='FLPellaT'),
+catchHat<-function(object,stock){
+   res<-object@param["r",]*stock*(1-stock^(object@param["mpar",]-1)/object@param["K",])
+
+   return(res)
+   })

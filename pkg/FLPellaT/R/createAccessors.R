@@ -60,4 +60,3 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 }	# }}}
 
 invisible(createFLAccesors("FLPellaT", exclude=c("range","name","desc","distribution")))
-

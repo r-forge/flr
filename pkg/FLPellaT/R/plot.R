@@ -5,15 +5,16 @@
 # Last Change: 26 Feb 2009 16:11
 
 setMethod("plot", signature(x="FLPellaT", y="missing"),
-p.<-  function(x, y, type=c("all", "index","equil","ts"),...){
+p.<-  function(x, y, type=c("all","index","equil","ts","diag"),...){
 
       switch(as.character(type[1]),
              "equil"  =plot.e(x),
              "stock"  =plot.s(x),
              "harvest"=plot.h(x),
              "catch"  =plot.c(x),
+             "diag"   =plot.d(x),
              "all"    =plot.a(x),
-             stop("type must be ´all´, ´index´,´equil´,´ts´!"))
+             stop("type must be ´all´, ´index´,´equil´,´ts´,´diag´!"))
 
       invisible()
 		})
@@ -48,7 +49,7 @@ plot.e<-function(x){
    K   <-x@param["K",   1]
    mpar<-x@param["mpar",1]
 
-   plot(catchHat(seq(0,K,length.out=100),r,K,mpar)~seq(0,K,length.out=100),type="l",xlab="Stock",ylab="Yield",ylim=c(0,200),lwd=2,col="navy")
+   plot(computeCatch(x,seq(0,K,length.out=100))~seq(0,K,length.out=100),type="l",xlab="Stock",ylab="Yield",ylim=c(0,200),lwd=2,col="navy")
    points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)
    points(msy(x)["catch",1]~msy(x)["stock",1],type="p",cex=3,col="blue", pch=16)
    points(msy(x)["catch",1]~msy(x)["stock",1],type="p",cex=2,col="white",pch=16)
@@ -65,12 +66,12 @@ plot.a<-function(x){
     
 plot.d<-function(x){
 # 		yrs    <-range(x,"minyear"):(range(x,"maxyear"))
-    indVar <-stock(x)[,-dim(stock(x))[2]]
+    indVar <-x@stock[,-dim(x@stock)[2]]
     indVar.<-FLQuant(seq(0, max(indVar), length=dim(indVar)[2]),dimnames=dimnames(indVar))
     obs    <-x@index #[,     ac(yrs)]
     resid  <-residuals(x) #[,ac(yrs)]
 
-    mnBio.<-mnBio(c(stock(x)))
+    mnBio.<-mnBio(c(x@stock))
     catchability<-calcQ(mnBio.,c(obs[,-dim(obs)[2]]),x@distribution)
 
     hat    <-FLQuant(catchability*mnBio.,dimnames=dimnames(obs))

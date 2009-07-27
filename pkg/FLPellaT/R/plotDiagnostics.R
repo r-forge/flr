@@ -26,7 +26,7 @@ diagResidPlot<-function(yrs,hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",m
     print(xyplot(formula(paste("hat~indVar", cond)), ylab=yttl, xlab=xttl,
 			model.frame(FLQuants(obs=obs, indVar=indVar., hat=prd)),
       col='red', main=mttl,
-      xlim=c(0, max(ssb, na.rm=TRUE)), ylim=c(0, max(obs, na.rm=TRUE)+
+      xlim=c(0, max(indVar, na.rm=TRUE)), ylim=c(0, max(obs, na.rm=TRUE)+
       (max(obs,na.rm=TRUE)/10)), groups=iter, type='l'), split=c(1,1,2,3), more=TRUE)
 
 		# Add model line
@@ -49,8 +49,8 @@ diagResidPlot<-function(yrs,hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",m
 		  panel=respanel, main='AR(1) Residuals'), split=c(1,2,2,3), more=TRUE)
 
 		# 4. Residuals plotted against independent variable
-		print(xyplot(formula(paste("resid~ssb", cond)), ylab='Residuals', xlab='SSB',
-			model.frame(FLQuants(resid=resid, ssb=indVar)),
+		print(xyplot(formula(paste("resid~indVar", cond)), ylab='Residuals', xlab='SSB',
+			model.frame(FLQuants(resid=resid, indVar=indVar)),
 			panel=srpanel, main='Residuals by SSB'), split=c(2,2,2,3), more=TRUE)
 
 		# 5. Residuals plotted against observed

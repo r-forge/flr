@@ -3,7 +3,10 @@ Title: Measurement and Process error
 Version: 0.1.1
 Author: Laurence Kell
 Description: Fits a Pella Tomlinson to ctach & CPUE
-Depends: methods, R(>= 2.7.1), FLCore(>= 2.0)
+Depends: methods, R(>= 2.7.1), FLCore(>= 2.0), minpack.lm
 LinkingTo: FLCore
 Maintainer: Laurence Kell <l.kell@cefas.co.uk>
 License: GPL 2 or above
+Collate:  class.R coerce.R constructors.R createAccessors.R methods.R plot.R plotDiagnostics.R
+LazyLoad: Yes
+LazyData: Yes
