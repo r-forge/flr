@@ -100,7 +100,6 @@ Stock Assessment methods:
 
 \author{Laurence Kell}
 \seealso{
-    \code{\link{is.FLAssess}},
     \code{FLIndices-class},
     \code{FLStock-class}
 }

@@ -64,7 +64,7 @@ pellatomC <- function()
 # assess  {{{
 setMethod("assess", signature(control="FLSP"),
    function(control, ...)
-   mle(control)
+   fmle(control)
 ) # }}}
 
 # merge {{{
@@ -101,22 +101,22 @@ setMethod("merge", signature(x="FLStock", y="FLSP"),
 )   # }}}
 
 # "+"      {{{
-setMethod("+", signature(e1="FLStock", e2="FLAssess"),
-	function(e1, e2) {
-    if(validObject(e1) & validObject(e2))
-      return(merge(e1, e2))
-    else
-      stop("Input objects are not valid: validObject == FALSE")
-    }
-)
-setMethod("+", signature(e1="FLAssess", e2="FLStock"),
-	function(e1, e2) {
-    if(validObject(e1) & validObject(e2))
-      return(merge(e2, e1))
-    else
-      stop("Input objects are not valid: validObject == FALSE")
-    }
-)   # }}}
+#setMethod("+", signature(e1="FLStock", e2="FLAssess"),
+#	function(e1, e2) {
+#    if(validObject(e1) & validObject(e2))
+#      return(merge(e1, e2))
+#    else
+#      stop("Input objects are not valid: validObject == FALSE")
+#    }
+#)
+#setMethod("+", signature(e1="FLAssess", e2="FLStock"),
+#	function(e1, e2) {
+#    if(validObject(e1) & validObject(e2))
+#      return(merge(e2, e1))
+#    else
+#      stop("Input objects are not valid: validObject == FALSE")
+#    }
+#)   # }}}
 
 # biomass {{{
 if (!isGeneric("biomass"))

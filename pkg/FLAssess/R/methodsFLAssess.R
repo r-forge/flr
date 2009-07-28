@@ -100,19 +100,3 @@ if (!isGeneric("assess"))
 # diagnostics {{{
 # }}}
 
-# harvest(FLBiol)	{{{
-setMethod('harvest', signature(object='FLBiol'),
-	function(object, catch)
-	{
-	n <- object@n
-	m <- object@m
-	# 
-    if (!all(unlist(dims(m))==unlist(dims(catch)))) stop("m & catch.n dims don't match")
-    if (!all(unlist(dims(m))==unlist(dims(n))))     stop("m & stock.n dims don't match")
-    res <- .Call("FLRCalcF", m, catch, n)
-
-    units(res)<-"f"
-    
-    return(res)
-    }
-)	# }}}

@@ -36,17 +36,16 @@ data(ple4)
 ple4.test <- ple4
 # Remove 0s and set as 1s
 catch.n(ple4.test)[catch.n(ple4.test)==0] <- 1
-# Catch is odd in 1982 in pg; it's huge compared to biomass.
-# This causes VPA to fail so need to reduce
-catch.n(ple4.test)[,"1982"] <- 1400
 # Remove harvest and stock.n values
 stock.n(ple4.test)[] <- NA
 harvest(ple4.test)[] <- NA
 # Set Fs in final year and final ages
-harvest(ple4.test)[,"2001"] <- harvest(ple4)[,"2001"]
-harvest(ple4.test)[15,] <- harvest(ple4)[15,]
+harvest(ple4.test)[,"2008"] <- harvest(ple4)[,"2008"]
+harvest(ple4.test)[10,] <- harvest(ple4)[10,]
 # Run the VPA
 ple4.vpa <- VPA(ple4.test)
+# Take a look at the harvest
+plot(harvest(ple4.vpa))
 }
 \keyword{methods}
 \keyword{models}

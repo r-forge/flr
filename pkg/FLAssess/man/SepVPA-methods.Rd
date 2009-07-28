@@ -21,9 +21,8 @@ Performs Separable Virtual Population Analysis. Methods for function
 \examples{
 # Example based on ple4 dataset
 data(ple4)
-my.stock<-FLStock(FLQuant(dim=c(15,45,1,1,1),
-  dimnames = list (age=as.character(1:15),
-  year = as.character(c(1957:2001)))))
+# Set up stock with correct dimensions
+my.stock <- FLStock(catch.n(ple4))
 my.stock@range["plusgroup"] <- 15
 #load catch data and mortality
 my.stock@catch.n <- ple4@catch.n
@@ -31,7 +30,7 @@ my.stock@catch.n[my.stock@catch.n==0] <- 1
 my.stock@m <- ple4@m
 my.control <- FLSepVPA.control(sep.age = 5)
 # Set up in final year
-my.stock@stock.n[,45,,,] <- ple4@stock.n[,45,,,]
+my.stock@stock.n[,52] <- ple4@stock.n[,52]
 # Run SepVPA
 my.stock.SepVPA <- SepVPA(my.stock, my.control, fit.plusgroup=TRUE)
 }

@@ -7,7 +7,13 @@
 \alias{as.data.frame,FLAssess.retro,ANY,ANY-method}
 
 \title{Class FLAssess.retro}
-\description{A class for results of a retrospective analysis}
+\description{
+
+WARNING: This method has now been deprecated and is no longer maintained.
+Users are encouraged to perform retrospective analysis using tapply.
+See below for an example.
+
+A class for results of a retrospective analysis}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("FLAssess.retro", ...)}, but they are usually created by a call to the \code{\link{retro}} function.
 }
