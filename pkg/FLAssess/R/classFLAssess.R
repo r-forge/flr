@@ -77,36 +77,3 @@ setClass("FLAssess.retro",
 setValidity("FLAssess.retro", validFLAssess.retro)
 remove(validFLAssess.retro)	# }}}
 
-## FLAssess.fval	{{{
-validFLAssess.fval <- function(object){
-	# If the list is empty, then it is OK
-	if (length(object) == 0)
-		return(TRUE)
-	# Make sure the list contains only numeric items
-	for (i in 1:length(object))
-		if (!inherits(object[[i]], "numeric"))
-			return("Items must be numeric objects!")
-	# Everything is fine
-	return(TRUE)
-}
-
-setClass("FLAssess.fval",
-	representation(
-		desc    ="character",
- 	  ssb     ="FLQuants",
-    catch   ="FLQuants",
-		landings="FLQuants",
-		discards="FLQuants",
-		recruits="FLQuants",
-		harvest ="FLQuants"),
-	prototype=prototype(
-		desc    =character(0),
-		ssb     =new('FLQuants'),
-		catch   =new('FLQuants'),
-		landings=new('FLQuants'),
-		discards=new('FLQuants'),
-		recruits=new('FLQuants'),
-		harvest =new('FLQuants')
-    ),
-	validity=validFLAssess.fval
-)
