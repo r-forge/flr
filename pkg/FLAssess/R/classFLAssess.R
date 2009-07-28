@@ -46,34 +46,3 @@ setValidity("FLAssess", validFLAssess)
 remove(validFLAssess)
 #invisible(createFLAccesors(new("FLAssess")))	# }}}
 
-## FLAssess.retro	{{{
-validFLAssess.retro <- function(object){
-	# If the list is empty, then it is OK
-	if (length(object) == 0)
-		return(TRUE)
-	# Make sure the list contains only numeric items
-	for (i in 1:length(object))
-		if (!inherits(object[[i]], "numeric"))
-			return("Items must be numeric objects!")
-	# Everything is fine
-	return(TRUE)
-}
-
-setClass("FLAssess.retro",
-	representation(
-		desc    ="character",
-    ssb     ="FLQuants",
-		recruits="FLQuants",
-		harvest ="FLQuants"),
-	prototype=prototype(
-		desc    =character(0),
-		ssb     =new('FLQuants'),
-		recruits=new('FLQuants'),
-		harvest =new('FLQuants')
-    ),
-	validity=validFLAssess.retro
-)
-
-setValidity("FLAssess.retro", validFLAssess.retro)
-remove(validFLAssess.retro)	# }}}
-

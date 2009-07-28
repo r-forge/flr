@@ -91,55 +91,6 @@ setMethod("+", signature(e1="FLAssess", e2="FLStock"),
     }
 )   # }}}
 
-# retro   {{{
-if (!isGeneric("retro"))
-	setGeneric("retro", function(stock, indices, control, retro, ...)
-    	standardGeneric("retro"))
-
-setMethod('retro', signature(stock='FLStock', indices='FLIndex', control='ANY', 
-  retro='numeric'),
-  function(stock, indices, control, retro=1, ...)
-    retro(stock=stock, indices=FLIndices(one=indices), control=control, retro=retro, ...))
-
-setMethod('retro', signature(stock='FLStock', indices='FLIndices', control='ANY', 
-  retro='numeric'),
-  function(stock, indices, control, retro=1, year.range="missing")
-  {
-    minyear <- dims(stock)$minyear
-    maxyear <- dims(stock)$maxyear
-
-    # check usable years range
-    if(missing(year.range))
-      year.range <- (maxyear-retro):maxyear
-    if(min(year.range) < minyear || max(year.range) > maxyear)
-      stop("Year range outside stock object range")
-
-    # Run that retrospective!
-    cat("I am very pleased to run this retrospective for you...\n")
-  
-    tempindices <- indices
-    res <- new("FLStocks")
-    counter <- 0
-    for (i in year.range)
-    {
-      counter <- counter + 1
-      tempstock <- trim(stock, year=minyear:i)
-      for (j in 1:length(tempindices))
-      {
-        min.yr <- min(as.numeric(dimnames(indices[[j]]@index)$year))
-        max.yr <- max(as.numeric(dimnames(indices[[j]]@index)$year))
-        if (i < min.yr) stop("year.range is outside indices year range")
-          tempindices[[j]] <- trim(indices[[j]],year=min.yr:(min(max.yr,i)))
-      }
-    assess <- assess(control, tempstock, tempindices)
-    tempstock <- tempstock + assess
-    tempstock@name <- paste(tempstock@name, " Retrospective analysis for ", i, sep="")
-    res[[as.character(i)]] <- tempstock
-    }
-    res@desc   <-paste("Retrospective analysis from object", stock@desc)
-    return(res)
-  }
-) # }}}
 
 # assess  {{{
 if (!isGeneric("assess"))
