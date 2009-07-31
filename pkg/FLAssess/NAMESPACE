@@ -11,9 +11,8 @@ export("assess",
   "FLSepVPA.control",
   "pellatom",
   "PellaTom",
-  "pellatomC",
-  "schaefer",
-  "Schaefer",
+  "pellatom_calcQ",
+  "PellaTom_calcQ",
   "retro")
 exportMethods(
   "+",
@@ -37,4 +36,5 @@ exportMethods(
   "stf",
   "summary",
   "VPA",
-  "FLSP")
+  "FLSP",
+    "FLAssess")

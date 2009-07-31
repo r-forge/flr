@@ -109,7 +109,7 @@ pellatom_calcQ <- function()
   logl <- function(r, K, sigma2, mpar, delta, catch, index)
   {
   # Need to lose final year of index due to q calc 
-    sum(dnorm(log(index[,-ac(dims(index)$maxyear)]), window(log(PellaTom_calcQ(catch, index, r, K, mpar, delta)),
+    sum(dnorm(log(index[,-dim(index)[2]]), window(log(PellaTom_calcQ(catch, index, r, K, mpar, delta)),
       start=dims(index)$minyear,end=dims(index)$maxyear-1), sqrt(sigma2), TRUE), na.rm=TRUE)
   }
   initial <- structure(function(catch) return(TRUE),
