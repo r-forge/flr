@@ -22,7 +22,7 @@ setMethod('FLPellaT', signature(object='FLQuant'),
     range(res)<-unlist(list(minyear=dims$minyear, maxyear=dims$maxyear))
 
     KGuess<-mean(catch(res),na.rm=T)*10.0
-    param(res)<-FLPar(c(.5,KGuess,2,1,NA,NA),dimnames=list(params=c("r","K","mpar","b0","q","sigma"),iter=1))
+    res@params<-FLPar(c(.5,KGuess,2,1,NA,NA),dimnames=list(params=c("r","K","mpar","b0","q","sigma"),iter=1))
 
     # Load given slots
   	for(i in names(args))

@@ -17,6 +17,9 @@ validFLPellaT <- function(object)
   dims <-dims(object)
   range<-as.list(object@range)
 
+  if (!any(dimnames(index(pt))$year %in% dimnames(catch(pt))$year))
+      return("index has to cover some years of catches")
+  
   #if(range$minyear < dims$minyear | range$maxyear > dims$maxyear)
   #  return("mismatch between range and object dimensions")
 
@@ -29,7 +32,7 @@ setClass('FLPellaT',
     catch       ='FLQuant',
     index       ='FLQuant',
     stock       ='FLQuant',
-    param       ='FLPar',
+    params      ='FLPar',
     hessian     ='array',
     LL          ='numeric',
     distribution="character"),
@@ -39,5 +42,5 @@ setClass('FLPellaT',
     index       =FLQuant(),
     stock       =FLQuant(),
     distribution="log",
-    param       =FLPar(c(.5,NA,2,1,NA,NA),,dimnames=list(params=c("r","K","mpar","b0","q","sigma"),iter=1))),
+    params      =FLPar(c(.5,NA,2,1,NA,NA),,dimnames=list(paramss=c("r","K","mpar","b0","q","sigma"),iter=1))),
 	validity=validFLPellaT)

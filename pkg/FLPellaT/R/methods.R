@@ -7,13 +7,13 @@
 
 ####  project stock for pop parameters and catch
 proj<-function(catch,r,K,b0=1,mpar=2){
-    stock <- c(rep(K*b0, length(catch)+1))
-    catch <- c(catch)
+    stock <- rep(K*b0, length(catch)+1)
+    names(stock) <- c(as.integer(names(catch)),max(as.integer(names(catch)))+1)
 
     for(y in seq(2, length(stock)))
          stock[y] <- stock[y-1] + r*stock[y-1]*(1-stock[y-1]^(mpar-1)/K) - catch[y-1]
 
-    stock[stock < 0] <- 1e-10
+    stock[stock < 0] <- 1e-8
 
     return(stock)
     }
@@ -27,9 +27,9 @@ mnBio<-function(stock){
 calcQ<-function(mnBio,index,error="log"){
 
    if (error=="log")
-      q <- sum(mnBio*index)/sum(mnBio*mnBio)
+      q <- sum(mnBio*index, na.rm=T)/sum(mnBio*mnBio, na.rm=T)
    else
-      q <- exp(sum(log(index)-log(mnBio))/(length(index)))
+      q <- exp(sum(log(index)-log(mnBio), na.rm=T)/(sum(ifelse(is.na(c(index)),1,0))))
 
    return(q)
    }
@@ -42,83 +42,111 @@ catchHat<-function(stock,r,K,mpar=2){
    }
 
 sigma<-function(index,index_hat,error="log"){
-   yrs<-dimnames(index)$year[dimnames(index)$year %in%  dimnames(index)$year]
 
-   if (error=="log")
-      SS   <-sum((log(index[yrs])-log(index_hat))^2)
-   else
-      SS   <-sum((index[yrs]-index_hat)^2)
+   if (error=="log"){
+      SS   <-sum((log(index)-log(index_hat))^2,na.rm=T)}
+   else{
+      SS   <-sum((index-index_hat)^2,na.rm=T)}
 
    return((SS/length(index_hat))^.5)
    }
 
-
 #### calc LL for Schaefer by default
-LL <- function(catch,index,params,b0=1.0,mpar=2,error="log")
+LL <- function(stock,index,params,b0=1.0,mpar=2,error="log",type=1)
    {
+   logl<-function(sigma2,obs,hat)
+      {
+      SS<-sum((obs-hat)^2)
+      
+      n   <-length(obs)
+      res <-(log(1/(2*pi))-n*log(sigma2)-SS/(2*sigma2))/2
+
+      return(res)
+      }
+
    r <- params[1]
    K <- params[2]
 
-   index_hat<-indexHat(catch,index,r,K,b0,mpar,error)
+   index_hat<-indexHat(stock[names(index)],index,r,K,b0,mpar,error)
 
-   if (error=="log")
-      index=log(index)
+   if (error=="log"){
+      index    =log(index)
+      index_hat=log(index_hat)}
+      
 
-   -sum(dnorm(index, index_hat, sigma(index,index_hat,error=error),
-                log=(error=="log")), na.rm=TRUE)
+   se<-sigma(index,index_hat,error=error)
+
+   if (type==1) return(logl(se,index,index_hat)) else
+   if (type==2) return(-sum(dnorm(index, index_hat, se, log=(error=="log")), na.rm=TRUE)) else
+   if (type==3) return(sum((index-index_hat)^2))
    }
-   
+
 setGeneric('fit', function(object,...)
 		standardGeneric('fit'))
 
 setMethod('fit', signature(object='FLPellaT'),
-  function(object){
+  function(object,fix=NULL,start=NULL){
 
      niters<-dim(index(object))[6]
-     object@hessian<-array(NA,c(2,2,niters),list(c("r","K"),c("r","K"),       iter=1:niters))
+     object@hessian<-array(NA,c(2,2,niters),list(c("r","K"),c("r","K"),iter=1:niters))
 
      for (i in 1:niters){
-
          catch.<-c(catch(object)@.Data[1,,,,,i,drop=T])
          index.<-c(index(object)@.Data[1,,,,,i,drop=T])
+#         index.[dimnames(catch(object))$year %in% dimnames(index(object))$year]<-c(index(object)@.Data[1,dimnames(index(object))$year %in% dimnames(catch(object))$year,,,,i,drop=T])
 
-         if (is.na(object@param["K",   i])) object@param["K",   i]   <-mean(catch.)*10
-         if (is.na(object@param["r",   i])) object@param["r",   i]   <-0.3
-         if (is.na(object@param["b0",  i])) object@param["b0",  i]  <-1.0
-         if (is.na(object@param["mpar",i])) object@param["mpar",i]<-2.0
+      object@params["r",   i]<-0.3
+      object@params["K",   i]<-mean(catch.)*1000
+      object@params["b0",  i]<-1
+      object@params["mpar",i]<-2
 
-         b0   <-c(object@param["b0",  i])
-         mpar <-c(object@param["mpar",i])
+      if (!is.null(start))
+         object@params[names(start), i]<-start
 
-         res<-nls.lm(c(object@param[c("r","K"),i]),residuals,b0=b0,mpar=mpar,catch=catch.,index=index.,error=object@distribution)
+         par<-c(object@params[c("r","K"),i])
+         names(par)<-c("r","K")
+         par<-par[!(c("r","K") %in% names(fix))]
+         fix<-fix[names(fix) %in% c("r","K")]
 
-         object@param["r",i]<-res$par[1]
-         object@param["K",i]<-res$par[2]
+         b0  <-c(object@params["b0",  i])
+         mpar<-c(object@params["mpar",i])
+         res<-nls.lm(par,residuals,fix=fix,b0=b0,mpar=mpar,catch=catch.,index=index.,error=object@distribution)
 
-         r     <-c(object@param["r",   i])
-         K     <-c(object@param["K",   i])
-         stock.<-proj(catch.,c(object@param["r",i]),c(object@param["K",i]),c(object@param["b0",i]),c(object@param["mpar",i]))
+         for (j in 1:length(res$par))
+            object@params[names(par)[j],i]<-res$par[j]
 
-         object@hessian[,,i]<-res$hessian
-         object@stock       <-FLQuant(stock.)
-         indexHat.          <-indexHat(catch.,index.,r,K,b0,mpar,error="log")
+         if (!is.null(fix))
+            for (j in 1:length(fix))
+               object@params[names(fix)[j],i]<-fix[j]
 
-         object@param["sigma",i]<-sigma(index.,indexHat.,error="log")
-         object@param["q",    i]<-calcQ(mnBio(stock.),index.,error="log")
-         LL(object)              <-LL(catch.,index.,c(r,K),b0,mpar,error="log")
+         r           <-c(object@params["r",i])
+         K           <-c(object@params["K",i])
+         stock.      <-proj(catch.,r,K,b0,mpar)
+         object@stock<-FLQuant(stock.[-length(stock.)], dimnames=dimnames(object@catch))
+         indexHat.   <-indexHat(stock.,index.,r,K,b0,mpar,error="log")
+
+         object@params["sigma",i]<-sigma(index.,indexHat.,error="log")
+         object@params["q",    i]<-calcQ(mnBio(stock.),index.,error="log")
+
+         object@LL["deviance"]<- res$deviance #LL(catch.,index.,c(r,K),b0,mpar,error="log")
+         object@LL["LL1"]<- LL(stock.,index.,c(r,K),b0,mpar,error="log")
+         object@LL["LL2"]<- LL(stock.,index.,c(r,K),b0,mpar,error="log",type=2)
+         object@LL["LL3"]<- LL(stock.,index.,c(r,K),b0,mpar,error="log",type=3)
+
+         object@hessian[names(par),names(par),i] <-res$hessian
          }
           
      return(object)
      })
      
 ### Calculate index hat
-indexHat<-function(object,index,r,K,b0=1,mpar=2,error="log")
+indexHat<-function(object,index.,r,K,b0=1,mpar=2,error="log")
    {
-   stock <- proj(object,r,K,b0,mpar)
-
    ## calculate q
-   bio  <-mnBio(stock)
-   q    <-calcQ(bio,index,error=error)
+   bio  <-mnBio(object)
+   yrs<-names(index.[!is.na(index.)])
+
+   q    <-calcQ(bio[yrs],index.[yrs],error=error)
 
    return(q*bio)
    }
@@ -129,14 +157,18 @@ setGeneric('fitted', function(object,...)
 
 setMethod('fitted', signature(object='FLPellaT'),
   function(object){
-  
-   catch.<-catch(object)
-   index.<-index(object)
-   r     <-object@param["r",]
-   K     <-object@param["K",]
-   b0    <-object@param["b0",]
-   mpar  <-object@param["mpar",]
-   
+
+   r     <-object@params["r",]
+   K     <-object@params["K",]
+   b0    <-object@params["b0",]
+   mpar  <-object@params["mpar",]
+
+   catch.<-catch(object)[1,,,,,,drop=T]
+   index.<-index(object)[1,,,,,,drop=T]
+
+   stock. <- proj(catch.,r,K,b0,mpar)
+   index_hat<-indexHat(stock.[names(index.)],index.,r,K,b0,mpar,object@distribution)
+
    res<-FLQuant(indexHat(c(catch.),c(index.),r,K,b0,mpar,error=object@distribution),dimnames=dimnames(index(object)))
 
    return(res)
@@ -147,26 +179,33 @@ setGeneric('residuals', function(object,...)
 		standardGeneric('residuals'))
 
 setMethod('residuals', signature(object='numeric'),
-   function(object,b0=1.0,mpar=2.0,error="LOG",catch=catch,index=index)
+   function(object,fix,b0=1,mpar=2.0,error="log",catch=catch,index=index)
    {
-   r <- object[1]
-   K <- object[2]
+   if ("r" %in% names(object)) r<-object["r"] else r<-fix["r"]
+   if ("K" %in% names(object)) K<-object["K"] else K<-fix["K"]
 
-   index_hat<-indexHat(catch,index,r,K,b0,mpar,error)
+   stock <- proj(catch,r,K,b0,mpar)
+   index_hat<-indexHat(stock,index,r,K,b0,mpar,error)
 
-   if (error=="LOG")
-      return(c(log(index)-log(index_hat)))
-   else
-      return(c(index-index_hat))
+   if (error=="log"){
+      res<-(c(log(index)-log(index_hat)))}
+   else{
+      res<-(c(index-index_hat))}
+
+   res[is.na(res)]<-10e6
+
+   return(res)
    })
 
 setMethod('residuals', signature(object='FLPellaT'),
    function(object)
      {
      if (object@distribution=="log")
-        return(log(object@index)-log(fitted(object)))
+        res<-(log(object@index)-log(fitted(object)))
      else
-        return(object@index-fitted(object))
+        res<-(object@index-fitted(object))
+        
+     return(res)
      })
 
 #### residuals
@@ -187,9 +226,9 @@ setMethod('msy', signature(object='FLPellaT'),
          msy(r,K,mpar)/bmsy(K,mpar)}
 
      res<-array(NA,c(3,dims(object)$iter),list(c("harvest","stock","catch")))
-     res["harvest",]<-fmsy(object@param["r",],object@param["K",],object@param["mpar",])
-     res["stock",]  <-bmsy(                   object@param["K",],object@param["mpar",])
-     res["catch",]  <-msy( object@param["r",],object@param["K",],object@param["mpar",])
+     res["harvest",]<-fmsy(object@params["r",],object@params["K",],object@params["mpar",])
+     res["stock",]  <-bmsy(                   object@params["K",],object@params["mpar",])
+     res["catch",]  <-msy( object@params["r",],object@params["K",],object@params["mpar",])
      
      return(res)
      })
@@ -200,7 +239,7 @@ setGeneric('computeCatch', function(object,...)
 
 setMethod('computeCatch', signature(object='FLPellaT'),
 catchHat<-function(object,stock){
-   res<-object@param["r",]*stock*(1-stock^(object@param["mpar",]-1)/object@param["K",])
+   res<-object@params["r",]*stock*(1-stock^(object@params["mpar",]-1)/object@params["K",])
 
    return(res)
    })

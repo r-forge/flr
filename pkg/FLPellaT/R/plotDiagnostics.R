@@ -1,4 +1,4 @@
-diagResidPlot<-function(yrs,hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",mttl="")
+diagResidPlot<-function(hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",mttl="")
   	{
     # initial device settings
     trellis.device(new=FALSE)
@@ -18,7 +18,8 @@ diagResidPlot<-function(yrs,hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",m
       panel.lmline(x, y, ..., col='red')
 			panel.abline(a=0, b=0, lty=2, col='blue')
 		  }
-		# get dimensions to condition on (skip quant)
+
+  	# get dimensions to condition on (skip quant)
 		condnames <- names(hat)[c(3:5)][dim(hat)[c(3:5)]!=1]
 		cond <- paste(condnames, collapse="+")
 		if(cond != "") cond <- paste("|", cond)
