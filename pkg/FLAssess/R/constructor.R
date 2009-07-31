@@ -48,4 +48,3 @@ setMethod('FLAssess', signature(object='missing'),
   }
 ) # }}}
 
-FLAssess(index=cpue)
