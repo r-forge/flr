@@ -38,7 +38,7 @@ diagResidPlot<-function(hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",mttl=
 		trellis.unfocus()
 
 		# 2. Residuals plotted against year
-		print(xyplot(formula(paste("resid~year", cond)), ylab='Residuals', xlab='',
+		print(xyplot(formula(paste("resid~year", cond)), ylab='Residuals', xlab='Year',
 			data=model.frame(FLQuants(resid=resid)),
 			panel=srpanel, main='Residuals by year'), split=c(2,1,2,3), more=TRUE)
 
@@ -50,15 +50,9 @@ diagResidPlot<-function(hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",mttl=
 		  panel=respanel, main='AR(1) Residuals'), split=c(1,2,2,3), more=TRUE)
 
 		# 4. Residuals plotted against independent variable
-		print(xyplot(formula(paste("resid~indVar", cond)), ylab='Residuals', xlab='SSB',
+		print(xyplot(formula(paste("resid~indVar", cond)), ylab='Residuals', xlab=xttl,
 			model.frame(FLQuants(resid=resid, indVar=indVar)),
 			panel=srpanel, main='Residuals by SSB'), split=c(2,2,2,3), more=TRUE)
-
-		# 5. Residuals plotted against observed
-		print(xyplot(formula(paste("resid~fitted", cond)), ylab='Residuals', xlab='R hat',
-			model.frame(FLQuants(resid=resid, fitted=hat)),
-			panel=srpanel, main='Residuals by Estimated Recruits'), split=c(1,3,2,3),
-			more=TRUE)
 
 		# 6. qqplot of residuals
 		print(qqmath(formula(paste("~resid", cond)), ylab='Residuals',
@@ -66,7 +60,14 @@ diagResidPlot<-function(hat,indVar,indVar.,prd,obs,resid,xttl="X",yttl="Y",mttl=
       panel = function(x, ...) {
           panel.qqmath(x, ..., , col='gray40', cex=0.8)
           panel.qqmathline(x, ..., col='red')
-       }, main='Normal Q-Q Plot'), split=c(2,3,2,3), more=FALSE)
+       }, main='Normal Q-Q Plot'), split=c(1,3,2,3), more=TRUE)
+
+		# 5. Residuals plotted against observed
+		print(xyplot(formula(paste("resid~fitted", cond)), ylab='Residuals', xlab=paste(yttl,'hat'),
+			model.frame(FLQuants(resid=resid, fitted=hat)),
+			panel=srpanel, main='Residuals by Estimated Recruits'), split=c(2,3,2,3),
+			more=FALSE)
+
 		invisible()
 	  }
 	

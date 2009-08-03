@@ -59,4 +59,4 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 	return(defined)
 }	# }}}
 
-invisible(createFLAccesors("FLPellaT", exclude=c("range","name","desc","distribution","param","hessian","LL")))
+invisible(createFLAccesors("FLPellaT", exclude=c("range","name","desc","distribution","hessian","LL"))) #,"params","hessian","LL")))

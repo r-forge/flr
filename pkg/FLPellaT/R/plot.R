@@ -66,15 +66,12 @@ plot.a<-function(x){
     
 plot.d<-function(x){
     yrs    <-ac(dimnames(x@index)$year)
-    obs    <-x@index
+    
+    obs    <-x@index[,yrs]
+    resid  <-residuals(x)[,yrs]
     indVar <-x@stock[,yrs]
     indVar.<-FLQuant(seq(0, max(indVar), length=dim(indVar)[2]),dimnames=dimnames(indVar))
-    resid  <-residuals(x)[,yrs]
-
-    mnBio.<-mnBio(c(x@stock[,yrs]))
-    catchability<-calcQ(mnBio.,c(obs[,-dim(obs)[2]]),x@distribution)
-
-    hat    <-FLQuant(catchability*mnBio.,dimnames=dimnames(obs))
+    hat    <-sweep(x@stock[,yrs],6, FLQuant(x@params["q",]), "*")
     prd    <-sweep(indVar.,6, FLQuant(x@params["q",]), "*")
 
     diagResidPlot(hat,indVar,indVar.,prd,obs,resid,xttl="Stock",yttl="CPUE",mttl="Index of abundance")
