@@ -1,11 +1,11 @@
 Package: FLAssess
 Title: Generic classes and methods for stock assessment models
 Version: 1.99-102
-Author: Laurie T. Kell <l.t.kell@cefas.co.uk>
+Author: Laurie T. Kell <laurie.kell@iccat.int>
 Description: A generic set of classes for stock assessment models
 			 are provided here. Individual assessment packages should
 			 extend the basic classes.
-Collate: classFLAssess.R accessors.R methodsFLAssess.R FLSP.R project.R stf.R SepVPA.R VPA.R zzz.R deprecated.R
+Collate: classFLAssess.R accessors.R methodsFLAssess.R FLSP.R project.R stf.R SepVPA.R VPA.R constructor.R zzz.R deprecated.R
 Depends: FLCore(>= 1.99.100), methods
 LinkingTo: FLCore
 Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
