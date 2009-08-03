@@ -4,16 +4,16 @@
 
 library(minpack.lm)
 library(FLCore)
-#library(FLAssess)
-#library(FLPellaT)
+library(FLAssess)
+library(FLPellaT)
 
-source("C:/Stuff/FLR/pkg/FLPellaT/R/class.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/constructors.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/coerce.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/methods.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/plot.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/plotDiagnostics.R")
-source("C:/Stuff/FLR/pkg/FLPellaT/R/createAccessors.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/class.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/constructors.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/coerce.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/methods.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/plot.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/plotDiagnostics.R")
+#source("C:/Stuff/FLR/pkg/FLPellaT/R/createAccessors.R")
 
 #### Get data, and make catch & index globally availably in session #############
 test   <-read.csv("C:\\Stuff\\FLR\\WorkInProgress\\FLSP\\test.csv")
@@ -38,8 +38,8 @@ plot(flpt,type="diag")
 plot(flpt,type="equil")
 
 ##### Double check by profiling liklihood
-r.  <-seq(0.001, .6, length.out=100)
-logl<-tapply(r.,1:100,function(x) {fit(pt,fix=c(r=x),start=c(K=900))@LL[1]})
+r.  <-seq(0.01, .6, length.out=100)
+logl<-tapply(r.,1:100,function(x) {fit(flpt,fix=c(r=x),start=c(K=1e8))@resDev})
 plot(logl~r.,type="l")
 
 points(c(flpt@params["r",]),min(logl),pch=16,col="red",cex=2)
@@ -51,7 +51,7 @@ flpt.<-fit(flpt.)
 
 
 ##### Fit FLSP on test data
-sp       <-FLSP(catch=catch(pt),index=index(pt))
+sp       <-FLSP(catch=catch(flpt),index=index(flpt))
 model(sp)<-pellatom()
 sp@mpar  <- 2 # Schaeffer?
 
