@@ -22,10 +22,8 @@ setMethod('setSR', signature(sr='FLSR'),
 setMethod('setSR', signature(sr='list'),
     function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE,availability=NULL)
 {
-
 # ****** Check arguments are all present and of correct type *******
-
-    if(!(is(sr,"list") & all(c("model","params") %in% names(sr))))  
+    if(!(is(sr,"list") & all(c("model","params") %in% names(sr))))
         stop("sr has to be a list with items 'model' & 'params'")
     model <- sr$model
     params <- sr$params
@@ -104,8 +102,6 @@ setMethod('setSR', signature(sr='list'),
     return(res)
     }
 )
-
-
 
 SRchar2code<-function(strCode){
    res<-as.integer(switch(strCode, "mean"            = 1,

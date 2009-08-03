@@ -42,7 +42,6 @@ setGeneric('validSRPar', function(object, ...)
          sr <-sweep(res,(1:6)[c("params","year","unit","season","area","iter") %in% names(dimnames(sr))],sr,"+")
          }
 
-
      #### create FLQuant compatible FLPar
      sr <-FLPar(as.FLQuant(as.data.frame(sr)))
 
@@ -92,8 +91,12 @@ setGeneric('validSRPar', function(object, ...)
 
      res<-FLQuant(as.numeric(NA),dimnames=dmns)
 
-     res[,dimnames(sr)$year,dimnames(sr)$unit,dimnames(sr)$season,dimnames(sr)$area,]<-as.FLQuant(sr)
-     
+     dm<-list(unit=dimnames(sr)$unit,season=dimnames(sr)$season,area=dimnames(sr)$area)
+     if (dim(res)[3]==1 & dm$unit  =="unique") dm$unit  <-dimnames(res)$unit
+     if (dim(res)[4]==1 & dm$season=="all")    dm$season<-dimnames(res)$season
+     if (dim(res)[5]==1 & dm$area  =="unique") dm$area  <-dimnames(res)$area
+     res[,dimnames(sr)$year,dm$unit,dm$season,dm$area,]<-as.FLQuant(sr)
+
      return(FLPar(res))
      }
 

@@ -171,8 +171,8 @@ c((apply(stock.n(res)*stock.wt(res),2,sum)/apply(stock.n(res),2,sum))[,ac(1997)]
 #ctrl<-fwdControl(data.frame(year=yrs,val=1,rel.year=1996,quantity="profit"))
 
 ##Iters
-res  <-propagate(res,iter=10)
+res  <-propagate(ple4,iter=100)
 ctrl <-fwdControl(data.frame(year=yrs,val=c(200000,220000,240000,260000),quantity="ssb"))
 srRes<-FLQuant(rep(seq(1,2,length.out=10),each=4),dimnames=list(age=1,year=yrs,iter=1:10))
-res  <-fwd(ple4, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
+res  <-fwd(res, ctrl=ctrl, sr=ple4SR, sr.residuals=srRes)
 chkSR(res,ple4SR,yrs,rsd=srRes)

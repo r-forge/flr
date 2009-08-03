@@ -89,7 +89,7 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
 
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
-   if      (iSn==1)     stk.stock_n(stk.minquant,iyr,iunit,iSn,    iarea,iter) = SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,    iSn,iarea,iter),iyr,iunit,iSn,      iarea,iter);
+   if      (iSn==1) stk.stock_n(stk.minquant,iyr,iunit,iSn,iarea,iter) = SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,    iSn,iarea,iter),iyr,iunit,iSn,      iarea,iter);
    else if (iSn >1) stk.stock_n(stk.minquant,iyr,iunit,iSn,iarea,iter) = stk.stock_n(stk.minquant,iyr,iunit,iSn-1,iarea,iter)*exp(-stk.harvest(stk.minquant,iyr,iunit,iSn-1,iarea,iter)-stk.m(stk.minquant,iyr,iunit,iSn-1,iarea,iter))+
 	                                                                     SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iyr,iunit,iSn,  iarea,iter);
 
@@ -269,7 +269,7 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
                 stk.stock_n(iage,iyr+1,iunit,1,jarea,iter)=sum*avail(iage,iyr+1,iunit,1,jarea,iter);
              }	      	      
 	      }
-
+	   }
 
       if (!OnlyReplaceNA || (OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr+1,iunit,iseason,iarea,iter))))    
          if (SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr+1,iunit,iseason,iarea,iter)>0) 
@@ -291,7 +291,6 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
              stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)=stk.discards_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
              stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)=stk.landings_n( iage, iyr, iunit, iseason, iarea, iter)*stk.catch_n( iage, iyr, iunit, iseason, iarea, iter);
              }
-      }   
    } 
 
 adouble fwdStk::computeStock(FLQuant_adolc &n, FLQuant_adolc &f, int iyr, int iunit, int iseason, int iarea, int iter)      
@@ -632,8 +631,8 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
 
     //get N at start of year
     for (iter=1; iter<=stk.niters; iter++)
-      for (int iunit=stk.nunits; iunit<=stk.nunits; iunit++)
-        for (int iarea=stk.nareas; iarea<=stk.nareas; iarea++)
+      for (int iunit=1; iunit<=stk.nunits; iunit++)
+        for (int iarea=1; iarea<=stk.nareas; iarea++)
           for (int iseason=stk.nseasons; iseason<=stk.nseasons; iseason++)
               project(indep, SR.minyear()-1, iunit, iseason, iarea, iter, TRUE, TRUE);
     
