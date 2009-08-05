@@ -19,6 +19,7 @@ exportMethods(
   "assess",
   "biomass",
 	"harvest",
+	"fitted",
   "harvest.rate",
 	"index.hat",
 	"index.hat<-",
