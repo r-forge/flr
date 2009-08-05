@@ -243,6 +243,49 @@ setMethod("merge", signature(x="FLStock", y="FLSP"),
     return(x)
   }
 )   # }}}
+
+# Overload fmle for FLSP.  Includes autoscaling routine.  Not sure it helps a lot
+setMethod('fmle',
+  signature(object='FLSP', start='ANY'),
+  function(object, start, autosc = FALSE, method='L-BFGS-B', fixed=list(),
+    control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
+    upper=rep(Inf, dim(params(object))[2]), ...)
+  {
+	# Scale parameters so that a unit change in param results in a unit change of objective function
+	# So get crude estimate of diffs at the inital values and use that for the scaling
+	# This means that the scaling is dependent on the inital values.
+    if (autosc == TRUE)
+    {
+	    #browser()
+	    LLpars <- start
+	    LLpars[["mpar"]] <- object@mpar
+	    LLpars[["delta"]] <- object@delta
+	    LLpars[["catch"]] <- object@catch
+	    LLpars[["index"]] <- object@index
+	    MyLogL <- logl(object)
+		LLinit <- do.call("MyLogL",LLpars)
+		LLs <- unlist(start)
+		tiny_number <- 1 + 1e-10
+		for (i in 1:length(start))
+		{
+			LLpars_temp <- LLpars
+			LLpars_temp[[i]] <- LLpars_temp[[i]] * tiny_number
+			LLs[i] <- do.call("MyLogL",LLpars_temp)
+		}
+		dLLs <- (LLs - LLinit) / (unlist(start) * (tiny_number-1))
+		scaling <- abs(1/dLLs)
+		#print(scaling)
+		# Pretty sure I don't need to sort the order as they are named
+		control[["parscale"]] <- scaling
+	}
+	# Call fmle for FLModel
+	callNextMethod(object, start, method, fixed, control, lower, upper, ...)
+	}
+)
+
+
+
+
 #
 ## "+"      {{{
 ##setMethod("+", signature(e1="FLStock", e2="FLAssess"),
