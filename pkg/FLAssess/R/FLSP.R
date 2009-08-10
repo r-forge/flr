@@ -118,6 +118,29 @@ pellatom_calcQ <- function()
     initial=initial))
 } # }}}
 
+
+#*************************************************************************
+# Alternative likelihood from Polacheck, Hilborn and Punt 1993
+# Fitting with observation error
+# Calculates sigma2 and estimates Q
+
+PTobs <- function()
+{
+  logl <- function(Q, r, K, mpar, delta, catch, index)
+  {
+	Ihat <- PellaTom(catch, r, K, Q, mpar, delta)
+	v <- log(index / Ihat)
+	sigma2 <- sum(v^2) / length(index)
+	LL <- log(prod(exp(-(v^2) / (2*sigma2)) / (sqrt(2*pi*sigma2))))
+	return(LL)
+  }
+  initial <- structure(function(catch) return(TRUE),
+    lower=rep(1e-6, 4), upper=rep(Inf, 4))
+  return(list(model=index~PellaTom(catch, r, K, Q, mpar, delta), logl=logl,
+    initial=initial))
+} # }}}
+
+
 #***************** Methods **********************************
 
 # biomass {{{
