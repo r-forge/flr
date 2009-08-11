@@ -1,5 +1,102 @@
 #### BMSY functions ############################################################
-#deriv(~r*bio*(1-log(bio)/log(K)),"bio")
+setGeneric('refpts', function(object,...)
+		standardGeneric('refpts'))
+
+#### Reference points
+setGeneric('refptsSE', function(object,...)
+		standardGeneric('refptsSE'))
+
+setGeneric('msy', function(object,...)
+		standardGeneric('msy'))
+
+setGeneric('bmsy', function(object,...)
+		standardGeneric('bmsy'))
+
+setGeneric('fmsy', function(object,...)
+		standardGeneric('fmsy'))
+
+setMethod('msy', signature(object='character'),
+  function(object,r=0.5,K=0,m=0,p=2,msy=0){
+    res<-switch(object,,
+           fox     =msyFox(     r=r,K=K),
+           schaefer=msySchaefer(r=r,K=K),
+           gulland =msyGulland( r=r,K=K),
+           fletcher=msyFletcher(    msy=msy),
+           pellat  =msyPellaT(  r=r,K=K,p=p),
+           shepherd=msyShepherd(r=r,K=K,m=m))
+
+    return(res)
+    })
+
+setMethod('bmsy', signature(object='character'),
+  function(object,r=0,K=0,m=0,p=2){
+    res<-switch(object,
+           fox     =bmsyFox(     r=r,K=K),
+           schaefer=bmsySchaefer(r=r,K=K),
+           gulland =bmsyGulland( r=r,K=K),
+           fletcher=bmsyFletcher(    K=K,p=p),
+           pellat  =bmsyPellaT(      K=K,p=p),
+           shepherd=bmsyShepherd(r=r,K=K,m=m))
+
+    return(res)
+    })
+
+setMethod('fmsy', signature(object='character'),
+   function(object,r=0,K=0,m=0,p=2,msy=0){
+    res<-switch(object,
+           fox     =fmsyFox(     r=r,K=K),
+           schaefer=fmsySchaefer(r=r,K=K),
+           gulland =fmsyGulland( r=r,K=K),
+           fletcher=fmsyFletcher(    K=K,msy=msy,p=p),
+           pellat  =fmsyPellaT(  r=r,K=K,p=p),
+           shepherd=fmsyShepherd(r=r,K=K,m=m))
+
+    return(res)
+    })
+
+setMethod('msy', signature(object='FLBioDym'),
+  function(object){
+    nms<-names(params(object))
+    if ("r"   %in% nms) r  =params(object)["r",]   else r=  NULL
+    if ("K"   %in% nms) r  =params(object)["K",]   else K=  NULL
+    if ("m"   %in% nms) r  =params(object)["m",]   else m=  NULL
+    if ("p"   %in% nms) r  =params(object)["p",]   else p=  NULL
+    if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
+
+    res<-msy(model(object),r=r,K=K,m=m,p=p,msy=msy)
+
+    return(res)
+    })
+
+setMethod('bmsy', signature(object='FLBioDym'),
+   function(object){
+
+    nms<-names(params(object))
+    if ("r" %in% nms) r=params(object)["r",] else r=NULL
+    if ("K" %in% nms) r=params(object)["K",] else K=NULL
+    if ("m" %in% nms) r=params(object)["m",] else m=NULL
+    if ("p" %in% nms) r=params(object)["p",] else p=NULL
+
+    res<-bmsy(model(object),r=r,K=K,m=m,p=p)
+    
+    return(res)
+    })
+
+setMethod('fmsy', signature(object='FLBioDym'),
+   function(object){
+
+    nms<-names(params(object))
+    if ("r" %in% nms) r=params(object)["r",] else r=NULL
+    if ("K" %in% nms) r=params(object)["K",] else K=NULL
+    if ("m" %in% nms) r=params(object)["m",] else m=NULL
+    if ("p" %in% nms) r=params(object)["p",] else p=NULL
+
+    res<-fmsy(model(object),r=r,K=K,m=m,p=p)
+
+    return(res)
+    })
+
+#BMSY functions
 bmsyFox     <-function(r,K){
     K*exp(-1)
     }
@@ -30,35 +127,6 @@ bmsyFletcher <-function(K,p=2){
     K*(1/p)^(1/(p-1))
     }
 
-setGeneric('bmsy', function(object,...)
-		standardGeneric('bmsy'))
-
-setMethod('bmsy', signature(object='character'),
-  function(object,r=0,K=0,m=0,p=2){
-    res<-switch(object,
-           fox     =bmsyFox(     r=r,K=K),
-           schaefer=bmsySchaefer(r=r,K=K),
-           gulland =bmsyGulland( r=r,K=K),
-           fletcher=bmsyFletcher(    K=K,p=p),
-           pellat  =bmsyPellaT(      K=K,p=p),
-           shepherd=bmsyShepherd(r=r,K=K,m=m))
-
-    return(res)
-    })
-
-setMethod('bmsy', signature(object='FLBioDym'),
-   function(object){
-
-    nms<-names(params(object))
-    if ("r" %in% nms) r=params(object)["r",] else r=NULL
-    if ("K" %in% nms) r=params(object)["K",] else K=NULL
-    if ("m" %in% nms) r=params(object)["m",] else m=NULL
-    if ("p" %in% nms) r=params(object)["p",] else p=NULL
-
-    res<-bmsy(model(object),r=r,K=K,m=m,p=p)
-    
-    return(res)
-    })
 
 #### MSY functions
 msyFox     <-function(r,K){
@@ -89,32 +157,6 @@ msyFletcher <-function(msy){
     msy
     }
 
-setMethod('msy', signature(object='character'),
-  function(object,r=0.5,K=0,m=0,p=2,msy=0){
-    res<-switch(object,,
-           fox     =msyFox(     r=r,K=K),
-           schaefer=msySchaefer(r=r,K=K),
-           gulland =msyGulland( r=r,K=K),
-           fletcher=msyFletcher(    msy=msy),
-           pellat  =msyPellaT(  r=r,K=K,p=p),
-           shepherd=msyShepherd(r=r,K=K,m=m))
-
-    return(res)
-    })
-
-setMethod('msy', signature(object='FLBioDym'),
-  function(object){
-    nms<-names(params(object))
-    if ("r" %in% nms) r=params(object)["r",] else r=NULL
-    if ("K" %in% nms) r=params(object)["K",] else K=NULL
-    if ("m" %in% nms) r=params(object)["m",] else m=NULL
-    if ("p" %in% nms) r=params(object)["p",] else p=NULL
-
-    res<-msy(model(object),r=r,K=K,m=m,p=p)
-
-    return(res)
-    })
-
 #### FMSY functions
 .fmsyFox     <-function(r,K){
     .bmsy<-K*exp(-1)
@@ -144,41 +186,7 @@ fmsyFletcher <-function(K,msy,p){
     msyFletcher(msy)/bmsyFletcher(K,p)
     }
 
-setGeneric('fmsy', function(object,...)
-		standardGeneric('fmsy'))
-		
-setMethod('fmsy', signature(object='character'),
-   function(object,r=0,K=0,m=0,p=2,msy=0){
-    res<-switch(object,
-           fox     =fmsyFox(     r=r,K=K),
-           schaefer=fmsySchaefer(r=r,K=K),
-           gulland =fmsyGulland( r=r,K=K),
-           fletcher=fmsyFletcher(    K=K,msy=msy,p=p),
-           pellat  =fmsyPellaT(  r=r,K=K,p=p),
-           shepherd=fmsyShepherd(r=r,K=K,m=m))
-
-    return(res)
-    })
-
-setMethod('fmsy', signature(object='FLBioDym'),
-   function(object){
-
-    nms<-names(params(object))
-    if ("r" %in% nms) r=params(object)["r",] else r=NULL
-    if ("K" %in% nms) r=params(object)["K",] else K=NULL
-    if ("m" %in% nms) r=params(object)["m",] else m=NULL
-    if ("p" %in% nms) r=params(object)["p",] else p=NULL
-
-    res<-fmsy(model(object),r=r,K=K,m=m,p=p)
-
-    return(res)
-    })
-
-
 #### ref pts
-setGeneric('refpts', function(object,...)
-		standardGeneric('refpts'))
-
 setMethod('refpts', signature(object='FLBioDym'),
    function(object)
      {
@@ -189,10 +197,6 @@ setMethod('refpts', signature(object='FLBioDym'),
 
      return(res)
      })
-
-#### Reference points
-setGeneric('refptsSE', function(object,...)
-		standardGeneric('refptsSE'))
 
 setMethod('refptsSE', signature(object='FLBioDym'),
    function(object)
@@ -259,3 +263,30 @@ setMethod('refptsSE', signature(object='FLBioDym'),
      return(res)
      })
 
+setMethod('r', signature(object='FLBioDym'),
+  function(object){
+    res<-switch(object,,
+           fox     =return(),
+           schaefer=return(),
+           gulland =return(),
+           fletcher=return(),
+           pellat  =return(),
+           shepherd=return(),
+           return(NULL))
+           
+    return(res)
+    })
+
+setMethod('vb', signature(object='FLBioDym'),
+  function(object){
+    res<-switch(object,,
+           fox     =return(params(object)["K",]),
+           schaefer=return(params(object)["K",]),
+           gulland =return(params(object)["K",]),
+           fletcher=return(params(object)["K",]),
+           pellat  =return(params(object)["K",]^1/((params(object)["p",]-1))),
+           shepherd=return(),
+           return(NULL))
+
+    return(res)
+    })

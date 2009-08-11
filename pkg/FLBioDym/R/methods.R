@@ -5,9 +5,29 @@
 # Maintainers: Laurence Kell
 # $Id: methods.R 202 2009-03-23 19:16:51Z imosqueira $
 
+if (!isGeneric("vb")) {
+	setGeneric("vb", function(object, ...){
+		value  <-  standardGeneric("vb")
+		value
+	})}
+
+setGeneric('vb', function(object,...)
+		standardGeneric('vb'))
+
 ####  Biomass mid year
 mnBio<-function(x) (x[,-dim(x)[2],,,,,drop=FALSE]+x[,-1,,,,,drop=FALSE])/2
 
+setParams<-function(model="pellat"){
+      res<-switch(model,
+           fox     =return(FLPar(NA,dimnames=list(params=c("r",  "K"    ,"b0","q","sigma"),iter=1))),
+           schaefer=return(FLPar(NA,dimnames=list(params=c("r",  "K","p","b0","q","sigma"),iter=1))),
+           gulland =return(FLPar(NA,dimnames=list(params=c("r",  "K"    ,"b0","q","sigma"),iter=1))),
+           fletcher=return(FLPar(NA,dimnames=list(params=c("msy","K","p","b0","q","sigma"),iter=1))),
+           pellat  =return(FLPar(NA,dimnames=list(params=c("r",  "K","p","b0","q","sigma"),iter=1))),
+           shepherd=return(FLPar(NA,dimnames=list(params=c("r",  "K","m","b0","q","sigma"),iter=1))),
+           return(NULL))
+   }
+   
 #### Calculate Q for use in constricted likelihoods etc
 calcQ<-function(bio,idx,error="log"){
    ####  Biomass mid year
@@ -70,9 +90,15 @@ f.<-  function(object,fix=c(p=2.0,b0=1.0),start=NULL,minimiser="nls.lm"){
      ## parameters
      niters<-dim(index(object))[6]
      parNms<-c("r","K","p","b0","q","sigma")
-     object@params                    <-FLPar(c(.3,NA,2,1,NA,NA),dimnames=list(paramss=parNms,iter=1:niters))
-     object@params@.Data["K",]        <-mean(catch(object))*100
-     object@params@.Data[names(fix),niters]<-fix[names(fix)]
+     object@params                         <-FLPar(c(.3,NA,2,1,NA,NA),dimnames=list(paramss=parNms,iter=1:niters))
+     object@params@.Data["r",]             <-0.3
+     object@params@.Data["K",]             <-mean(catch(object))*20
+     if (!is.null(start))
+        object@params@.Data[names(start),niters]<-start[names(start)]
+     object@params@.Data[names(fix),  niters]<-fix[  names(fix)  ]
+
+print(start)
+print(object@params)
 
      ## pocket protector stuff
      object@vcov    <-array(NA,c(length(parNms),length(parNms),niters),dimnames=list(paramss=parNms,paramss=parNms,iter=1:niters))
@@ -83,6 +109,7 @@ f.<-  function(object,fix=c(p=2.0,b0=1.0),start=NULL,minimiser="nls.lm"){
      object@stats   <-array(NA,c(length(parNms),3,niters),dimnames=list(paramss=parNms,stats=c("Std. Error","t value","Pr(>|t|)"),iter=1:niters))
      object@stopmess<-vector(niters,mode="character")
      object@stock   <-object@catch
+
      if (dims(object@catch)$iter!=niters)
          object@stock   <-propagate(object@stock,niters)
 
@@ -105,7 +132,6 @@ f.<-  function(object,fix=c(p=2.0,b0=1.0),start=NULL,minimiser="nls.lm"){
 
             #### Estimate parameters
             if (is.null(fix) || !all(c("r","K") %in% names(fix))){
-
                  if (minimiser=="optim"){
                     ctrl=list(trace=10,parscale=c(r=.5,K=mean(catch(object))*10))
                     nls.out<-optim(par=par,fn=LL,fix=fix,b0=b0,p=p,stock=stock.,catch=catch.,index=index.,error=object@distribution,
@@ -114,14 +140,13 @@ f.<-  function(object,fix=c(p=2.0,b0=1.0),start=NULL,minimiser="nls.lm"){
                  else {
                     nls.out<-nls.lm(par=par,fn=rsdl,fix=fix,b0=b0,p=p,stock=stock.,catch=catch.,index=index.,error=object@distribution,control=list(nprint=2))
                     object <-getNLS(object,catch.,index.,nls.out,i)}
-                    
                  }
             #### All Parameters fixed
             else {
                  object@params@.Data[names(fix),i]<-fix
 
                  stock.[]<-b0*fix["K"]
-                 stock.                    <-fwd(object=stock.,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
+                 stock.                    <-fwdArray(object=stock.,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
                  object@stock              <-FLQuant(stock.[-length(stock.)], dimnames=dimnames(object@catch))
                  object@params@.Data["q",i]<-calcQ(stock.,index.,error=object@distribution)
                  rsdl.                     <-rsdl(object=par,fix=fix,b0=b0,p=p,stock=stock.,catch=catch.,index=index.,error=object@distribution)
@@ -171,7 +196,8 @@ rsdl<-function(object,fix,model="pellat",b0=1,p=2.0,error="log",stock=NULL,catch
    if ("K" %in% names(object)) K<-object["K"] else K<-fix["K"]
 
    stock[]<-b0*K
-   stock <-fwd(stock,model=model,catch=catch,r=r,K=K,p=p)
+   stock <-fwdArray(stock,model=model,catch=catch,r=r,K=K,p=p)
+
    yrs<-dimnames(index)$year[dimnames(index)$year %in% dimnames(stock)$year]
 
    q     <-calcQ(stock[,yrs,,,,,drop=FALSE],index[,yrs,,,,,drop=FALSE],error=error)
@@ -198,7 +224,7 @@ rsdl2<-function(object,fix,flbd)
    if ("K" %in% names(object)) K<-object["K"] else K<-fix["K"]
 
    stock(flbd)@.Data[]<-b0*K
-   stock(flbd)@.Data  <-fwd(stock(flbd)@.Data,model=model(flbd),catch=catch(flbd)@.Data,r=r,K=K,p=p)
+   stock(flbd)@.Data  <-fwdArray(stock(flbd)@.Data,model=model(flbd),catch=catch(flbd)@.Data,r=r,K=K,p=p)
    yrs<-dimnames(index(flbd)@.Data)$year[dimnames(index(flbd))$year %in% dimnames(stock(flbd))$year]
 
    q     <-calcQ(stock(flbd)@.Data[,yrs,,,,,drop=FALSE],index[,yrs,,,,,drop=FALSE],error=error)
@@ -242,7 +268,7 @@ getNLS<-function(object,catch.,index.,nls.out,i){
     object@vcov[parNms,parNms, i] <-(summary(nls.out)$cov.unscaled*summary(nls.out)$sigma^2)
     iter(object@stock,i)[]        <-c(object@params["K",i])*c(object@params["b0",i])
 
-    stock.                        <-fwd(object=iter(object@stock,i)@.Data,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
+    stock.                        <-fwdArray(object=iter(object@stock,i)@.Data,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
     iter(object@stock,i)          <-FLQuant(stock.[-length(stock.)], dimnames=dimnames(object@catch))
     object@params@.Data["q",i]    <-calcQ(stock.,index.,error=object@distribution)
     object@params@.Data["sigma",i]<-summary(nls.out)$sigma
@@ -266,7 +292,7 @@ getOptim<-function(object,catch.,index.,nls.out,i){
     object@vcov[parNms,parNms, i] <--ginv(nls.out$hessian[parNms,parNms])
 #    iter(object@stock,i)[]        <-c(object@params["K",i])*c(object@params["b0",i])
 
-    stock.                        <-fwd(object=iter(object@stock,i)@.Data,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
+    stock.                        <-fwdArray(object=iter(object@stock,i)@.Data,model="pellat",catch=catch.,r=c(object@params["r",i]),K=c(object@params["K",i]),p=c(object@params["p",i]))
     iter(object@stock,i)          <-FLQuant(stock.[-length(stock.)], dimnames=dimnames(object@catch))
     object@params@.Data["q",i]    <-calcQ(stock.,index.,error=object@distribution)
     object@params@.Data["sigma",i]<-calcSigma(residuals(object))
@@ -279,6 +305,13 @@ getOptim<-function(object,catch.,index.,nls.out,i){
     return(object)
 	  }
 
+setMethod('vb', signature(object='FLBioDym'),
+   function(object)
+      {
+
+      return(object)
+      })
+
 
 #Get the hessian then calculate the eigen values e.g.
 #
@@ -289,4 +322,5 @@ getOptim<-function(object,catch.,index.,nls.out,i){
 #   that the smallest eigenvector is very poorly estimated.
 # Rounding these off to 1 significant digit will suggest which parameter you can
 # fix and drop from the model.
+
 

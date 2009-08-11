@@ -8,7 +8,7 @@ setGeneric('FLBioDym', function(object, ...)
 		standardGeneric('FLBioDym'))
 
 setMethod('FLBioDym', signature(object='FLQuant'),
-  function(object, ...)
+  function(object,model="pellat",...)
     {
     args <- list(...)
 
@@ -21,8 +21,11 @@ setMethod('FLBioDym', signature(object='FLQuant'),
     index(res)<-object
     range(res)<-unlist(list(minyear=dims$minyear, maxyear=dims$maxyear))
 
-    KGuess<-mean(catch(res),na.rm=T)*100.0
-    res@params<-FLPar(c(.5,KGuess,2,1,NA,NA),dimnames=list(params=c("r","K","mpar","b0","q","sigma"),iter=1))
+    res@model <-model
+    res@params<-setParams(model)
+
+    if ("p" %in% dimnames(params(albSP))$params) if (is.na(res@params["p",])) res@params["p",]<-2
+    if (is.na(res@params["b0",])) res@params["b0",]<-1
 
     # Load given slots
   	for(i in names(args))

@@ -47,10 +47,11 @@ plot.h<-function(x){
 plot.e<-function(x){
    r   <-x@params["r",   1]
    K   <-x@params["K",   1]
-   mpar<-x@params["mpar",1]
-   .ylim=c(0,max(msy(x)["catch",1],catch(x)))*1.1
-
-computeCatch(x,seq(0,K,length.out=100))
+   mpar<-x@params["p",1]
+   .ylim=c(0,max(msy(x)[1],catch(x)))*1.1
+print(5)
+   computeCatch(x,seq(0,K,length.out=100))
+print(6)
 
    plot(computeCatch(x,seq(0,K,length.out=100))~seq(0,K,length.out=100),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
    points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)

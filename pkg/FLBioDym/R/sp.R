@@ -1,5 +1,9 @@
 #### Production functions ######################################################
-prodFunc<-function(model,bio,r=.5,K=10,m=0.25,p=2,msy=0){
+setGeneric('sp', function(object,...)
+		standardGeneric('sp'))
+		
+setMethod('sp', signature(object='character'),
+  function(object,bio,r=.5,K=10,m=0.25,p=2,msy=0){
     fox<-function(bio,r,K){
         r*bio*(1-log(bio)/log(K))}
 
@@ -21,7 +25,7 @@ prodFunc<-function(model,bio,r=.5,K=10,m=0.25,p=2,msy=0){
         lambda*msy*(bio/K)-lambda*msy*(bio/K)^p
         }
 
-    res<-switch(model,
+    res<-switch(object,
            fox     =fox(     bio,r,K),
            schaefer=schaefer(bio,r,K),
            gulland =gulland( bio,r,K),
@@ -30,5 +34,20 @@ prodFunc<-function(model,bio,r=.5,K=10,m=0.25,p=2,msy=0){
            shepherd=shepherd(bio,r,K,m))
 
     return(res)
-    }
+    })
+    
+setMethod('sp', signature(object='FLBioDym'),
+  function(object,bio=NULL){
+  
+   if (is.null(bio)) bio<-stock(object)
+   
+    if ("r"   %in% nms) r  =params(object)["r",]   else r=  NULL
+    if ("K"   %in% nms) r  =params(object)["K",]   else K=  NULL
+    if ("m"   %in% nms) r  =params(object)["m",]   else m=  NULL
+    if ("p"   %in% nms) r  =params(object)["p",]   else p=  NULL
+    if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
 
+   return(sp(model(object),bio,r=r,K=K,m=m,p=p,msy=msy))
+   })
+  
+  
