@@ -22,7 +22,7 @@ load(paste(myDir,"Data\\namhke.RData", sep="\\"))
 
 albSP<-FLBioDym(catch=FLQuant(alb[,"catch"],dimnames=list(year=alb[,"year"])),
                 index=FLQuant(alb[,"index"],dimnames=list(year=alb[,"year"])))
-albSP<-fwd(albSP,catch=catch(albSP),par=albPar)
+albSP<-fwd(albSP,catch=catch(albSP))
 
 lobSP<-FLBioDym(stock=FLQuant(lobPar["K"],      dimnames=list(year=rocklob[,"year"])),
                 catch=FLQuant(rocklob[,"catch"],dimnames=list(year=rocklob[,"year"])),
@@ -58,3 +58,20 @@ sum(residuals(hkeSP)^2)
 plot(albSP);params(albSP)
 plot(lobSP);params(lobSP)
 plot(hkeSP);params(hkeSP)
+
+msy(  albSP)
+msy(  lobSP)
+msy(  hkeSP)
+msySE(albSP)
+msySE(lobSP)
+msySE(hkeSP)
+
+index(albSP)<-jacknife(index(albSP))
+albSP<-fit(albSP,start=params(albSP)[c("r","K"),1,drop=T])
+plot(albSP)
+index(lobSP)<-jacknife(index(lobSP))
+lobSP<-fit(lobSP,start=params(lobSP)[c("r","K"),1,drop=T])
+plot(lobSP)
+index(hkeSP)<-jacknife(index(hkeSP))
+hkeSP<-fit(hkeSP,start=params(hkeSP)[c("r","K"),1,drop=T])
+plot(hkeSP)

@@ -11,7 +11,8 @@ setMethod('sp', signature(object='character'),
         r*bio*(1-bio/K)}
 
     pellat<-function(bio,r,K,p=2){
-        r*bio-r*(bio^p)/K}
+#        sweep(bio,6,r,"*")-sweep(sweep(bio,6,p,"^"),6,r/K,"*")}
+         bio*r-(bio)^p*r/K}
 
     shepherd<-function(bio,r,K,m){
         r*bio/(1+bio/K)-m*bio}
@@ -40,12 +41,14 @@ setMethod('sp', signature(object='FLBioDym'),
   function(object,bio=NULL){
   
    if (is.null(bio)) bio<-stock(object)
+
+   nms <-dimnames(params(object))$params
    
-    if ("r"   %in% nms) r  =params(object)["r",]   else r=  NULL
-    if ("K"   %in% nms) r  =params(object)["K",]   else K=  NULL
-    if ("m"   %in% nms) r  =params(object)["m",]   else m=  NULL
-    if ("p"   %in% nms) r  =params(object)["p",]   else p=  NULL
-    if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
+   if ("r"   %in% nms) r  =params(object)["r",]   else r=  NULL
+   if ("K"   %in% nms) K  =params(object)["K",]   else K=  NULL
+   if ("m"   %in% nms) m  =params(object)["m",]   else m=  NULL
+   if ("p"   %in% nms) p  =params(object)["p",]   else p=  NULL
+   if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
 
    return(sp(model(object),bio,r=r,K=K,m=m,p=p,msy=msy))
    })

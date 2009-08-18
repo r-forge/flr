@@ -1,14 +1,42 @@
-setGeneric('fwd', function(object,...)
-		standardGeneric('fwd'))
+## fwd(FLStock)
+if (!isGeneric("fwd"))
+  setGeneric("fwd", function(object, fleets, ...)
+	  standardGeneric("fwd"))
 
 ####  fwdect stock for catch
-setMethod('fwd', signature(object="FLQuant"),
-   function(object,model="pellat",catch=NULL,harvest=NULL,par=list(r=NULL,K=NULL,msy=NULL,m=0.5,p=2,b0=1)){
+setMethod('fwd', signature(object="FLQuant", fleets = "missing"),
+   function(object,model="pellat",catch=NULL,harvest=NULL,r=NULL,K=NULL,msy=NULL,m=0.5,p=2,b0=1){
 
-      return(FLQuant(fwdArray(object,model=model,catch=catch,harvest=harvest,par)))
+      return(FLQuant(fwdArray(object,model=model,catch=catch,harvest=harvest,r=r,K=K,msy=msy,m=m,p=p,b0=b0)))
       })
 
-fwdArray<-function(object,model="pellat",catch=NULL,harvest=NULL,r=NULL,K=NULL,msy=NULL,m=NULL,p=2,b0=1){
+setMethod('fwd', signature(object='FLBioDym', fleets = "missing"),
+   function(object,catch=NULL,harvest=NULL,model=NULL,par=NULL){
+
+    if (is(par,"FLPar")){
+       nms<-dimnames(par)$params[dimnames(par)$params %in% dimnames(params(object))$params]
+       params(object)[nms,]<-par[nms,]}
+
+   if (!is.null(model))
+      model(object)<-model
+
+    stock(object)<-FLQuant(fwdArray(stock(object)@.Data,model=model(object),catch=catch(object)@.Data,harvest=harvest@.Data,
+                                            r  =getPar(params(object),"r"  ),
+                                            K  =getPar(params(object),"K"  ),
+                                            msy=getPar(params(object),"msy"),
+                                            p  =getPar(params(object),"p"  ),
+                                            m  =getPar(params(object),"m"  ),
+                                            b0 =getPar(params(object),"b0" )))
+
+    if (!is.null(catch))
+       catch(object)[,dimnames(catch)$year]<-catch
+    else if (!is.null(harvest))
+       catch(object)[,dimnames(harvest)$year]<-stock(object)[,dimnames(harvest)$year]*stock(object)[,dimnames(harvest)$year]
+
+    return(object)
+    })
+
+fwdArray<-function(object,catch=NULL,harvest=NULL,model="pellat",r=NULL,K=NULL,p=NULL,msy=NULL,m=NULL,b0=NULL){
       if(is.null(catch) & is.null(harvest)) stop("need to specify catch or harvest as a target")
 
       setStock<-function(object,x,K,b0){
@@ -25,7 +53,7 @@ fwdArray<-function(object,model="pellat",catch=NULL,harvest=NULL,r=NULL,K=NULL,m
          yrs  <-c(as.integer(dimnames(catch)$year),max(as.integer(dimnames(catch)$year))+1)
          stock<-setStock(object,catch,K,b0)
          for(y in yrs[-length(yrs)]) {
-            stock[,ac(y+1),,,,]<-stock[,ac(y),,,,]-catch[,ac(y),,,,] + sp(model,stock[,ac(y),,,,],r=r,K=K,m=m,p=p,msy=msy)}
+            stock[,ac(y+1),,,,]<-stock[,ac(y),,,,]-catch[,ac(y),,,,] + sp(model,stock[,ac(y),,,,],r=r,K=K,p=p,msy=msy,m=m)}
          }
       else {
          if (class(object)!=class(harvest)) stop("object and harvest have to be of same class")
@@ -41,42 +69,21 @@ fwdArray<-function(object,model="pellat",catch=NULL,harvest=NULL,r=NULL,K=NULL,m
       return(stock)
       }
 
-setMethod('fwd', signature(object='FLBioDym'),
-   function(object,catch=NULL,harvest=NULL,par=list(r=NULL,K=NULL,msy=NULL,m=0.5,p=2,b0=1)){
-
-      params(object)["b0",] <-1
-
-      if (is.numeric(par)) par<-as.list(par)
-      if ("r"   %in% names(par)  && "r"   %in% dimnames(params(object))$params) params(object)["r",]  <-par$r
-      if ("K"   %in% names(par)  && "K"   %in% dimnames(params(object))$params) params(object)["K",]  <-par$K
-      if ("msy" %in% names(par)  && "msy" %in% dimnames(params(object))$params) params(object)["msy",]<-par$msy
-      if ("m"   %in% names(par)  && "m"   %in% dimnames(params(object))$params) params(object)["m",]  <-par$m
-      if ("p"   %in% names(par)  && "p"   %in% dimnames(params(object))$params) params(object)["p",]  <-par$p
-      if ("b0"  %in% names(par)  && "b0"  %in% dimnames(params(object))$params) params(object)["b0",] <-par$b0
-
-      if ("r"   %in% dimnames(object@params)$params) r  =params(object)["r",]   else r  =NULL
-      if ("K"   %in% dimnames(object@params)$params) K  =params(object)["K",]   else K  =NULL
-      if ("m"   %in% dimnames(object@params)$params) m  =params(object)["m",]   else m  =0.5
-      if ("p"   %in% dimnames(object@params)$params) p  =params(object)["p",]   else p  =2
-      if ("may" %in% dimnames(object@params)$params) msy=params(object)["msy",] else msy=NULL
-      if ("b0"  %in% dimnames(object@params)$params) b0 =params(object)["b0",]  else b0 =1
-
-    stock(object)<-FLQuant(fwdArray(stock(object)@.Data,model=model(object),catch=catch@.Data,harvest=harvest,r=r,K=K,m=m,p=p,msy=msy,b0=b0))
-    if (!is.null(catch))
-       catch(object)[,dimnames(catch)$year]<-catch
-    else if (!is.null(harvest))
-       catch(object)[,dimnames(harvest)$year]<-stock(object)[,dimnames(harvest)$year]*stock(object)[,dimnames(harvest)$year]
-
-    return(object)
-    })
-
 #### catchHat
 setMethod('computeCatch', signature(object='FLBioDym'),
-catchHat<-function(object){
+catchHat<-function(object,stock=NULL){
+   if ("r"   %in% dimnames(object@params)$params) r  =params(object)["r",]   else r  =NULL
+   if ("K"   %in% dimnames(object@params)$params) K  =params(object)["K",]   else K  =NULL
+   if ("m"   %in% dimnames(object@params)$params) m  =params(object)["m",]   else m  =0.5
+   if ("p"   %in% dimnames(object@params)$params) p  =params(object)["p",]   else p  =2
+   if ("may" %in% dimnames(object@params)$params) msy=params(object)["msy",] else msy=NULL
+   if ("b0"  %in% dimnames(object@params)$params) b0 =params(object)["b0",]  else b0 =1
 
-   yrs<-dimnames(object@stock)$year
+   if (is.null(stock)) stock<-object@stock
 
-   res<-object@stock[,yrs[-max(length(yrs))]]-stock[,yrs[-1]]+sp(model,stock[,yrs[-1]],r=r,K=K,m=m,p=p,msy=msy)
+   yrs<-dimnames(stock)$year
+
+   res<-stock[,yrs[-max(length(yrs))],,,,]-stock[,yrs[-1],,,,]+sp(object@model,stock[,yrs[-1],,,,],r=c(r),K=c(K),m=c(m),p=c(p),msy=c(msy))
 
    return(res)
    })

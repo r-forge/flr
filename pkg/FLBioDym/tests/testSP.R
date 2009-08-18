@@ -43,7 +43,7 @@ bullseye("schaefer",r=r.,K=K)
 plot( sp("pellat",  bio,r.,K,p=1.95)~bio, type="l",xlab="Biomass",ylab="Surplus Production",main="Pella Tomlinson")
 bullseye("pellat",r.,K,p=1.95)
 lines(sp("pellat",  bio,r.,K,p=2.00)~bio, col="red")
-bullseye("pellat",r.,K,p=2.00)
+bullseye("pellat",r.,K,p=2.0)
 lines(sp("pellat",  bio,r.,K,p=2.05)~bio, col="blue")
 bullseye("pellat",r.,K,p=2.05)
 
@@ -63,8 +63,7 @@ bullseye("gulland",      r.,K)
 plot( sp("fletcher", bio,K=K,msy=K/4,p=2)~bio, type="l",xlab="Biomass",ylab="Surplus Production",main="Fletcher")
 bullseye("fletcher",K=K,msy=K/4,p=2)
 
-#### Calcs
-maximime suprplus production (i.e. MSY) and find BMSY
+#### Calcs maximime suprplus production (i.e. MSY) and find BMSY
 
 #### Fox
 f    <-function (x,r,K) sp("fox",x,r.,K)

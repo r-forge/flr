@@ -49,19 +49,18 @@ plot.e<-function(x){
    K   <-x@params["K",   1]
    mpar<-x@params["p",1]
    .ylim=c(0,max(msy(x)[1],catch(x)))*1.1
-print(5)
-   computeCatch(x,seq(0,K,length.out=100))
-print(6)
+   
+   stk<-FLQuant(seq(0,K,length.out=100))@.Data
+   ctch<-computeCatch(x,stk)
 
-   plot(computeCatch(x,seq(0,K,length.out=100))~seq(0,K,length.out=100),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
+   plot(ctch~c(stk[,names(ctch),,,,]),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
    points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)
-   points(msy(x)["catch",1]~msy(x)["stock",1],type="p",cex=3,col="blue", pch=16)
-   points(msy(x)["catch",1]~msy(x)["stock",1],type="p",cex=2,col="white",pch=16)
-   points(msy(x)["catch",1]~msy(x)["stock",1],type="p",cex=1,col="red",  pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=3,col="blue", pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=2,col="white",pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=1,col="red",  pch=16)
    }
    
 plot.a<-function(x){
-
     print(plot.c(x),split=c(1,3,1,3),more=T)
     print(plot.h(x),split=c(1,2,1,3),more=T)
     print(plot.s(x),split=c(1,1,1,3),more=F)
