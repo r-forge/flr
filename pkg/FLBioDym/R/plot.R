@@ -5,29 +5,28 @@
 # Last Change: 26 Feb 2009 16:11
 
 setMethod("plot", signature(x="FLBioDym", y="missing"),
-p.<-  function(x, y, type=c("all","index","equil","ts","diag"),...){
+p.<-  function(x, y, type=c("equil","stock","harvest","index","catch","diag","all"),...){
 
       switch(as.character(type[1]),
              "equil"  =plot.e(x),
              "stock"  =plot.s(x),
              "harvest"=plot.h(x),
+             "index"  =plot.u(x),
              "catch"  =plot.c(x),
              "diag"   =plot.d(x),
              "all"    =plot.a(x),
-             stop("type must be ´all´, ´index´,´equil´,´ts´,´diag´!"))
+             stop("type must be ´equil´,´stock´,´harvest´,´index´,´catch´,´diag´,´all!"))
 
       invisible()
 		})
 
 plot.u<-function(x){
 
-   mnBio.      <-mnBio(c(stock(x)))
-   index.      <-c(index(x))
-   catchability<-calcQ(mnBio.,index.,error="LOG")
-   indexHat.   <-catchability*mnBio.
+   catchability<-calcQ(stock(x),index(x),error=x@distribution)
+   indexHat.   <-catchability*mnBio(stock(x))
 
-   plot( c(index),xlab="Year",ylab="CPUE Index")
-   lines(c(indexHat.))
+   plot( c(index(x)) ~dimnames(index(x))$year,xlab="Year",ylab="CPUE Index")
+   lines(c(indexHat.)~dimnames(indexHat.)$year)
    }
    
 plot.s<-function(x){
@@ -51,9 +50,10 @@ plot.e<-function(x){
    .ylim=c(0,max(msy(x)[1],catch(x)))*1.1
    
    stk<-FLQuant(seq(0,K,length.out=100))@.Data
-   ctch<-computeCatch(x,stk)
 
-   plot(ctch~c(stk[,names(ctch),,,,]),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
+   ctch<-sp(x,stock=stk)
+   
+   plot(c(ctch)~c(stk[,dimnames(ctch)$year,,,,]),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
    points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)
    points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=3,col="blue", pch=16)
    points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=2,col="white",pch=16)
@@ -77,3 +77,4 @@ plot.d<-function(x){
 
     diagResidPlot(hat,indVar,indVar.,prd,obs,resid,xttl="Stock",yttl="CPUE",mttl="Index of abundance")
     }
+    

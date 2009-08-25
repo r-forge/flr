@@ -56,9 +56,9 @@ msyDeriv[["pellat"]][["fmsy"]]<-list("r","K","p")
 
 #### Bmsy
 #deriv(~(K/p)^(1/(p-1)),"r")
-msyDeriv[["pellat"]][["bmsy"]][["r"]]<-function(r,K,p) return(0)
+msyDeriv[["pellat"]][["bmsy"]][["r"]]<-function(r,K,p=2) return(0)
 #deriv(~(K/p)^(1/(p-1)),"K")
-msyDeriv[["pellat"]][["bmsy"]][["K"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["bmsy"]][["K"]]<-function(r,K,p=2){
     .expr1 <- K/p
     .expr3 <- 1/(p - 1)
     .value <- .expr1^.expr3
@@ -69,7 +69,7 @@ msyDeriv[["pellat"]][["bmsy"]][["K"]]<-function(r,K,p){
     }
 
 #deriv(~(K/p)^(1/(p-1)),"p")
-msyDeriv[["pellat"]][["bmsy"]][["p"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["bmsy"]][["p"]]<-function(r,K,p=2){
     .expr1 <- K/p
     .expr2 <- p - 1
     .expr3 <- 1/.expr2
@@ -86,7 +86,7 @@ msyDeriv[["pellat"]][["bmsy"]][["p"]]<-function(r,K,p){
 #deriv(~r-r/K*(K/p),"r")
 #deriv(~r-r/K*(K/p),"K")
 #deriv(~r-r/K*(K/p),"p")
-msyDeriv[["pellat"]][["fmsy"]][["r"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["fmsy"]][["r"]]<-function(r,K,p=2){
     .expr2 <- K/p
 
     .grad <- 1 - 1/K * .expr2
@@ -94,7 +94,7 @@ msyDeriv[["pellat"]][["fmsy"]][["r"]]<-function(r,K,p){
      return(.grad)
      }
 
-msyDeriv[["pellat"]][["fmsy"]][["K"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["fmsy"]][["K"]]<-function(r,K,p=2){
     .expr1 <- r/K
     .expr2 <- K/p
     .value <- r - .expr1 * .expr2
@@ -104,7 +104,7 @@ msyDeriv[["pellat"]][["fmsy"]][["K"]]<-function(r,K,p){
     return(.grad)
     }
 
-msyDeriv[["pellat"]][["fmsy"]][["p"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["fmsy"]][["p"]]<-function(r,K,p=2){
     .expr1 <- r/K
     .value <- r - .expr1 * (K/p)
 
@@ -115,7 +115,7 @@ msyDeriv[["pellat"]][["fmsy"]][["p"]]<-function(r,K,p){
 
 #### msy
 #deriv(~r*((K/p)^(1/(p-1)))-r/K*((K/p)^(p/(p-1))),"r")
-msyDeriv[["pellat"]][["msy"]][["r"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["msy"]][["r"]]<-function(r,K,p=2){
     .expr1 <- K/p
     .expr2 <- p - 1
     .expr4 <- .expr1^(1/.expr2)
@@ -127,7 +127,7 @@ msyDeriv[["pellat"]][["msy"]][["r"]]<-function(r,K,p){
      }
 
 #deriv(~r*(K/p)^(1/(p-1))-r/K*(K/p)^(p/(p-1)),"K")
-msyDeriv[["pellat"]][["msy"]][["K"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["msy"]][["K"]]<-function(r,K,p=2){
 
     .expr1 <- K/p
     .expr2 <- p - 1
@@ -144,7 +144,7 @@ msyDeriv[["pellat"]][["msy"]][["K"]]<-function(r,K,p){
     return(.grad)
     }
 #deriv(~r*((K/p)^(1/(p-1)))-r/K*((K/p)^(p/(p-1))),"p")
-msyDeriv[["pellat"]][["msy"]][["p"]]<-function(r,K,p){
+msyDeriv[["pellat"]][["msy"]][["p"]]<-function(r,K,p=2){
     .expr1 <- K/p
     .expr2 <- p - 1
     .expr3 <- 1/.expr2

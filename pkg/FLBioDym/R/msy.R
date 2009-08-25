@@ -72,10 +72,11 @@ setMethod('msy', signature(object='FLBioDym'),
 setMethod('bmsy', signature(object='FLBioDym'),
    function(object){
     nms<-dimnames(params(object))$params
-    if ("r" %in% nms) r=params(object)["r",] else r=NULL
-    if ("K" %in% nms) K=params(object)["K",] else K=NULL
-    if ("m" %in% nms) m=params(object)["m",] else m=NULL
-    if ("p" %in% nms) p=params(object)["p",] else p=NULL
+    if ("r"   %in% nms) r=params(object)["r",]     else r=NULL
+    if ("K"   %in% nms) K=params(object)["K",]     else K=NULL
+    if ("m"   %in% nms) m=params(object)["m",]     else m=NULL
+    if ("p"   %in% nms) p=params(object)["p",]     else p=NULL
+    if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
     res<-bmsy(model(object),r=r,K=K,m=m,p=p)
     
     dms<-dimnames(res)
@@ -86,12 +87,15 @@ setMethod('bmsy', signature(object='FLBioDym'),
 
 setMethod('fmsy', signature(object='FLBioDym'),
    function(object){
+   
     nms<-dimnames(params(object))$params
-    if ("r" %in% nms) r=params(object)["r",] else r=NULL
-    if ("K" %in% nms) K=params(object)["K",] else K=NULL
-    if ("m" %in% nms) m=params(object)["m",] else m=NULL
-    if ("p" %in% nms) p=params(object)["p",] else p=NULL
-    res<-fmsy(model(object),r=r,K=K,m=m,p=p)
+
+    if ("r"   %in% nms) r=params(object)["r",]     else r=NULL
+    if ("K"   %in% nms) K=params(object)["K",]     else K=NULL
+    if ("m"   %in% nms) m=params(object)["m",]     else m=NULL
+    if ("p"   %in% nms) p=params(object)["p",]     else p=2
+    if ("msy" %in% nms) msy=params(object)["msy",] else msy=NULL
+    res<-fmsy(model(object),r=r,K=K,m=m,msy=msy,p=p)
 
     dms<-dimnames(res)
     dimnames(res)<-list(refpt="fmsy",dms$iter)
@@ -155,7 +159,7 @@ msyShepherd<-function(r,K,m){
 msyGulland <-function(r,K){
     (r*K^2)/4}
 
-msyFletcher <-function(msy){
+msyFletcher <-function(msy,p=2){
     msy
     }
 
@@ -187,9 +191,8 @@ fmsyShepherd<-function(r,K,m){
 fmsyGulland <-function(r,K){
     (r*K)/2}
 
-fmsyFletcher <-function(K,msy,p){
-    msyFletcher(msy)/bmsyFletcher(K,p)
-    }
+fmsyFletcher <-function(K,msy,p=2){
+    msyFletcher(msy,p)/bmsyFletcher(K,p)}
 
 #### ref pts
 setMethod('refpts', signature(object='FLBioDym'),
@@ -241,20 +244,21 @@ setMethod('refptSE', signature(object='FLBioDym'),
       #trngl<-expand.grid(rfpt1=rfpts,rfpt2=rfpts,par1=parLst[[model]],par2=parLst[[model]])
       #trngl<-trngl[trngl[,"rfpt1"]!=trngl[,"rfpt2"],]
 
-      cvr            <-vcov(object)[unlist(parLst[model]),unlist(parLst[model]),1]
+      nms<-unlist(parLst[model])[unlist(parLst[model]) %in% dimnames(vcov(object))[[1]]]
+      cvr            <-vcov(object)[nms,nms,1]
       cvr[is.na(cvr)]<-0
-      pars           <-params(object)[unlist(parLst[model]),1]
+      pars           <-params(object)[nms,1]
 
       nits<-1
       t.<-array(0,c(3,3,nits),dimnames=list(refpts=rfpts,refpts=rfpts,iter=1:nits))
-      args=list(r=c(pars["r",]),K=c(pars["K",]),p=c(pars["p",]))
-      for (it in 1:nits)
+      for (it in 1:nits){
+        args=as.list(params(object)[nms,,drop=T])
         for (i in rfpts)
           for (j in rfpts)
-            for (k in  unlist(parLst[model]))
-              for (l in  unlist(parLst[model]))
+            for (k in  nms)
+              for (l in  nms)
                  t.[i,j,it] = t.[i,j,it] + do.call(msyDeriv[[model]][[i]][[k]],args)*
                                            do.call(msyDeriv[[model]][[j]][[l]],args)*
-                                           cvr[k,l]
+                                           cvr[k,l]}
 
       return(t.)})

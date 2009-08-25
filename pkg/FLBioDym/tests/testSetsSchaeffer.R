@@ -27,12 +27,12 @@ cf<-function(x){
   return(res)
   }
 
-albBD <-fit(albBD, fix  =albPar[c("r","K")])
-lobBD <-fit(lobBD, fix  =lobPar[c("r","K")])
-hkeBD <-fit(hkeBD, fix  =hkePar[c("r","K")])
-albBD2<-fit(albBD, start=albPar[c("r","K")])
-lobBD2<-fit(lobBD, start=lobPar[c("r","K")])
-hkeBD2<-fit(hkeBD, start=hkePar[c("r","K")])
+albBD <-fit(albBD, fix  =albPar[c("r","K")], model="schaefer")
+lobBD <-fit(lobBD, fix  =lobPar[c("r","K")], model="schaefer")
+hkeBD <-fit(hkeBD, fix  =hkePar[c("r","K")], model="schaefer")
+albBD2<-fit(albBD, start=albPar[c("r","K")], model="schaefer")
+lobBD2<-fit(lobBD, start=lobPar[c("r","K")], model="schaefer")
+hkeBD2<-fit(hkeBD, start=hkePar[c("r","K")], model="schaefer")
 
 rbind(albPar,cf(albBD),cf(albBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]
 rbind(lobPar,cf(lobBD),cf(lobBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]

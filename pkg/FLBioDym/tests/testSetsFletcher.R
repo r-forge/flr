@@ -15,8 +15,7 @@ names(lobPar)<-c("r","q","K","b0","msy","bnow","bnowK","emsy","sigma")
 names(hkePar)<-c("r","q","K","b0","msy","bnow","bnowK","emsy","sigma")
 
 cf<-function(x){
-   res<-c(params(x)[c("r","q","K","b0"),1,drop=T],
-          msy(x)[1,1,drop=T],
+   res<-c(NA,params(x)[c("q","K","b0","msy"),1,drop=T],
           stock(x)[,dims(x)$year,drop=T],
           stock(x)[,dims(x)$year,drop=T]/params(x)["K",1,drop=T],
           fmsy(x)[1,1,drop=T],
@@ -27,12 +26,12 @@ cf<-function(x){
   return(res)
   }
 
-albBD <-fit(albBD, fix  =albPar[c("r","K")])
-lobBD <-fit(lobBD, fix  =lobPar[c("r","K")])
-hkeBD <-fit(hkeBD, fix  =hkePar[c("r","K")])
-albBD2<-fit(albBD, start=albPar[c("r","K")])
-lobBD2<-fit(lobBD, start=lobPar[c("r","K")])
-hkeBD2<-fit(hkeBD, start=hkePar[c("r","K")])
+albBD <-fit(albBD, fix  =albPar[c("K","msy")], model="fletcher")
+lobBD <-fit(lobBD, fix  =lobPar[c("K","msy")], model="fletcher")
+hkeBD <-fit(hkeBD, fix  =hkePar[c("K","msy")], model="fletcher")
+albBD2<-fit(albBD, start=albPar[c("K","msy")], model="fletcher")
+lobBD2<-fit(lobBD, start=lobPar[c("K","msy")], model="fletcher")
+hkeBD2<-fit(hkeBD, start=hkePar[c("K","msy")], model="fletcher")
 
 rbind(albPar,cf(albBD),cf(albBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]
 rbind(lobPar,cf(lobBD),cf(lobBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]

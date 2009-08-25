@@ -4,7 +4,7 @@ msy.<-seq( 9, 11, length.out=100)
 p.  <-seq(1.8,2.2,length.out=100)
 
 K  <-mean(K.)
-args<-list(K=K,msy=10,p=p)
+args<-list(K=K,msy=10,p=2)
 
 ######### Check derivatives ####################################################
 #### r
@@ -21,7 +21,7 @@ y <-bmsy("fletcher",K=K,p=p);gr<-do.call(msyDeriv[["fletcher"]][["bmsy"]][["msy"
 lines(c(x-dx,x,x+dx),c(y-dx*gr,y,y+dx*gr),col="red",lwd=2)
 
 #### p
-x <-p
+x <-2
 dx<-x*0.05
 plot(p.,    fmsy("fletcher",msy=10,K=K, p=p.),             xlab="p",ylab="Fmsy",type="l")
 y <-fmsy("fletcher",msy=10,K=K,p=p);gr<-do.call(msyDeriv[["fletcher"]][["fmsy"]][["p"]],args)

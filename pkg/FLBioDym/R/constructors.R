@@ -24,9 +24,6 @@ setMethod('FLBioDym', signature(object='FLQuant'),
     res@model <-model
     res@params<-setParams(model)
 
-    if ("p" %in% dimnames(params(albSP))$params) if (is.na(res@params["p",])) res@params["p",]<-2
-    if (is.na(res@params["b0",])) res@params["b0",]<-1
-
     # Load given slots
   	for(i in names(args))
 			slot(res, i) <- args[[i]]

@@ -71,19 +71,17 @@ fwdArray<-function(object,catch=NULL,harvest=NULL,model="pellat",r=NULL,K=NULL,p
 
 #### catchHat
 setMethod('computeCatch', signature(object='FLBioDym'),
-catchHat<-function(object,stock=NULL){
-   if ("r"   %in% dimnames(object@params)$params) r  =params(object)["r",]   else r  =NULL
-   if ("K"   %in% dimnames(object@params)$params) K  =params(object)["K",]   else K  =NULL
-   if ("m"   %in% dimnames(object@params)$params) m  =params(object)["m",]   else m  =0.5
-   if ("p"   %in% dimnames(object@params)$params) p  =params(object)["p",]   else p  =2
-   if ("may" %in% dimnames(object@params)$params) msy=params(object)["msy",] else msy=NULL
-   if ("b0"  %in% dimnames(object@params)$params) b0 =params(object)["b0",]  else b0 =1
-
+  function(object,stock=NULL){
    if (is.null(stock)) stock<-object@stock
 
    yrs<-dimnames(stock)$year
-
-   res<-stock[,yrs[-max(length(yrs))],,,,]-stock[,yrs[-1],,,,]+sp(object@model,stock[,yrs[-1],,,,],r=c(r),K=c(K),m=c(m),p=c(p),msy=c(msy))
+   
+   res<-stock[,yrs[-max(length(yrs))],,,,]-stock[,yrs[-1],,,,]+sp(object@model,stock[,yrs[-max(length(yrs))],,,,],
+                      r  =getPar(params(object),"r"),
+                      K  =getPar(params(object),"K"),
+                      m  =getPar(params(object),"m"),
+                      p  =getPar(params(object),"p"),
+                      msy=getPar(params(object),"msy"))
 
    return(res)
    })
