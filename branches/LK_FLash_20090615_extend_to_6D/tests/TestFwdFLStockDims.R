@@ -62,7 +62,7 @@ ssn<-FLStock(catch.wt    =FLQuant(c(catch.wt(    ple4)),dimnames=dmns),
 
 dmns           <-list(params=c("a","b"),season=c("spawn","feed"),iter=1)
 srPar          <-FLPar(c(params(ple4SR)[c("a","b"),]),dimnames=dmns)
-srPar[,"feed",]<-NA
+srPar@.Data[,"feed",]<-NA
 ctrl           <-fwdControl(data.frame(year=rep(yrs,each=2),val=.45,quantity="f",season=c("spawn","feed")))
 res            <-fwd(ssn,ctrl=ctrl,sr=list(model="ricker",params=srPar))
 fbar(res)[,ac(yrs)]

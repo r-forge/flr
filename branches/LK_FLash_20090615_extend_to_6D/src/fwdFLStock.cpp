@@ -89,9 +89,9 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
 
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
-   if      (iSn==1) stk.stock_n(stk.minquant,iyr,iunit,iSn,iarea,iter) = SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,    iSn,iarea,iter),iyr,iunit,iSn,      iarea,iter);
+   if      (iSn==1) stk.stock_n(stk.minquant,iyr,iunit,iSn,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,    iSn,iarea,iter),iyr,iunit,iSn,      iarea,iter);
    else if (iSn >1) stk.stock_n(stk.minquant,iyr,iunit,iSn,iarea,iter) = stk.stock_n(stk.minquant,iyr,iunit,iSn-1,iarea,iter)*exp(-stk.harvest(stk.minquant,iyr,iunit,iSn-1,iarea,iter)-stk.m(stk.minquant,iyr,iunit,iSn-1,iarea,iter))+
-	                                                                     SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iyr,iunit,iSn,  iarea,iter);
+	                                                                     SR.recruits(1,stk.SSB(SSB_yr,iunit,iSn,iarea,iter),iyr,iunit,iSn,  iarea,iter);
 
    //Project
    for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
@@ -222,9 +222,9 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
 
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
-   if      (iseason==1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
+   if      (iseason==1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
    else if (iseason >1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = stk.stock_n(stk.minquant,iyr,iunit,iseason-1,iarea,iter) * exp(stk.harvest(stk.minquant,iyr,iunit,iseason-1,iarea,iter)-stk.m(stk.minquant,iyr,iunit,iseason-1,iarea,iter))+
-	                                                                             SR.recruits(stk.minquant,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
+	                                                                             SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
    
    // Projection
    for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
