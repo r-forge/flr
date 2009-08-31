@@ -27,9 +27,9 @@ cf<-function(x){
   return(res)
   }
 
-albBD <-fit(albBD, fix  =albPar[c("r","K")])
-lobBD <-fit(lobBD, fix  =lobPar[c("r","K")])
-hkeBD <-fit(hkeBD, fix  =hkePar[c("r","K")])
+albBD <-fit(albBD, fixed=albPar[c("r","K")])
+lobBD <-fit(lobBD, fixed=lobPar[c("r","K")])
+hkeBD <-fit(hkeBD, fixed=hkePar[c("r","K")])
 albBD2<-fit(albBD, start=albPar[c("r","K")])
 lobBD2<-fit(lobBD, start=lobPar[c("r","K")])
 hkeBD2<-fit(hkeBD, start=hkePar[c("r","K")])

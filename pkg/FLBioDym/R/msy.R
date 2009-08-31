@@ -244,21 +244,28 @@ setMethod('refptSE', signature(object='FLBioDym'),
       #trngl<-expand.grid(rfpt1=rfpts,rfpt2=rfpts,par1=parLst[[model]],par2=parLst[[model]])
       #trngl<-trngl[trngl[,"rfpt1"]!=trngl[,"rfpt2"],]
 
-      nms<-unlist(parLst[model])[unlist(parLst[model]) %in% dimnames(vcov(object))[[1]]]
+      nms <-unlist(parLst[model])[unlist(parLst[model]) %in% dimnames(vcov(object))[[1]]]
+
       cvr            <-vcov(object)[nms,nms,1]
       cvr[is.na(cvr)]<-0
       pars           <-params(object)[nms,1]
-
       nits<-1
+      
+      anma<-nms
+      if ("p" %in% unlist(parLst[model])) anma<-c(anma,"p")
+      if ("m" %in% unlist(parLst[model])) anma<-c(anma,"m")
+
       t.<-array(0,c(3,3,nits),dimnames=list(refpts=rfpts,refpts=rfpts,iter=1:nits))
       for (it in 1:nits){
-        args=as.list(params(object)[nms,,drop=T])
+        args=as.list(params(object)[anma,it,drop=T])
+        print(args)
         for (i in rfpts)
           for (j in rfpts)
             for (k in  nms)
-              for (l in  nms)
+              for (l in  nms){
+
                  t.[i,j,it] = t.[i,j,it] + do.call(msyDeriv[[model]][[i]][[k]],args)*
                                            do.call(msyDeriv[[model]][[j]][[l]],args)*
-                                           cvr[k,l]}
-
+                                           cvr[k,l]}}
+                                           
       return(t.)})

@@ -186,7 +186,8 @@ msyDeriv[["fletcher"]][[ "msy"]][["p"]]  <-function(K,msy,p) return(0*K)
 
 ### Bmsy
 #deriv(~K^(p-1)*(1/p)^(1/(p-1)),"K")
-msyDeriv[["fletcher"]][["bmsy"]][["K"]]  <-function(K,msy,p){
+msyDeriv[["fletcher"]][["bmsy"]][["K"]]  <-function(K,msy,p=2){
+
     .expr1 <- p - 1
     .expr5 <- (1/p)^(1/.expr1)
 
@@ -194,7 +195,7 @@ msyDeriv[["fletcher"]][["bmsy"]][["K"]]  <-function(K,msy,p){
 
     return(.grad)
     }
-msyDeriv[["fletcher"]][[ "bmsy"]][["msy"]]<-function(K,msy,p) return(0*K)
+msyDeriv[["fletcher"]][[ "bmsy"]][["msy"]]<-function(K,msy,p=2) return(0*K)
 
 #deriv(~K*(1/p)^(1/(p-1)),"p")
 msyDeriv[["fletcher"]][["bmsy"]][["p"]]  <-function(K,msy,p){
@@ -211,7 +212,7 @@ msyDeriv[["fletcher"]][["bmsy"]][["p"]]  <-function(K,msy,p){
     }
 ### Fmsy
 #deriv(~msy/(K^(p-1)*(1/p)^(1/(p-1))),"K")
-msyDeriv[["fletcher"]][["fmsy"]][["K"]]  <-function(K,msy,p){
+msyDeriv[["fletcher"]][["fmsy"]][["K"]]  <-function(K,msy,p=2){
     .expr1 <- p - 1
     .expr5 <- (1/p)^(1/.expr1)
     .expr6 <- K^.expr1 * .expr5
@@ -222,7 +223,7 @@ msyDeriv[["fletcher"]][["fmsy"]][["K"]]  <-function(K,msy,p){
     }
 
 #deriv(~msy/(K^(p-1)*(1/p)^(1/(p-1))),"msy")
-msyDeriv[["fletcher"]][["fmsy"]][["msy"]]  <-function(K,msy,p){
+msyDeriv[["fletcher"]][["fmsy"]][["msy"]]  <-function(K,msy,p=2){
     .expr1 <- p - 1
     .expr6 <- K^.expr1 * (1/p)^(1/.expr1)
 
@@ -232,7 +233,7 @@ msyDeriv[["fletcher"]][["fmsy"]][["msy"]]  <-function(K,msy,p){
     }
 
 #deriv(~msy/(K*(1/p)^(1/(p-1))),"p")
-msyDeriv[["fletcher"]][["fmsy"]][["p"]]  <-function(K,msy,p){
+msyDeriv[["fletcher"]][["fmsy"]][["p"]]  <-function(K,msy,p=2){
     .expr1 <- 1/p
     .expr2 <- p - 1
     .expr3 <- 1/.expr2

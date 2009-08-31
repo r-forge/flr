@@ -26,11 +26,11 @@ cf<-function(x){
   return(res)
   }
 
-albBD <-fit(albBD, fix  =albPar[c("K","msy")], model="fletcher")
-lobBD <-fit(lobBD, fix  =lobPar[c("K","msy")], model="fletcher")
-hkeBD <-fit(hkeBD, fix  =hkePar[c("K","msy")], model="fletcher")
+albBD <-fit(albBD, fixed=albPar[c("K","msy")], model="fletcher")
+lobBD <-fit(lobBD, fixed=lobPar[c("K","msy")], model="fletcher")
+hkeBD <-fit(hkeBD, fixed=hkePar[c("K","msy")], model="fletcher")
 albBD2<-fit(albBD, start=albPar[c("K","msy")], model="fletcher")
-lobBD2<-fit(lobBD, start=lobPar[c("K","msy")], model="fletcher")
+lobBD2<-fit(lobBD, star=lobPar[c("K","msy")], model="fletcher")
 hkeBD2<-fit(hkeBD, start=hkePar[c("K","msy")], model="fletcher")
 
 rbind(albPar,cf(albBD),cf(albBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]

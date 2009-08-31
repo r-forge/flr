@@ -43,19 +43,19 @@ plot(bdTest)
 plot(bdTest,type="diag")
 plot(bdTest,type="equil")
 
-bd2<-fit(bdTest,fix=c(r=0.4,K=1000))
+bd2<-fit(bdTest,fixed=c(r=0.4,K=1000))
 stock(bd2)
 
 ##### Double check by profiling liklihood
 r.  <-seq(0.01, .6, length.out=100)
-logl<-tapply(r.,1:100,function(x) {fit(bdTest,fix=c(r=x),start=c(K=1e8))@LL})
+logl<-tapply(r.,1:100,function(x) {fit(bdTest,fixed=c(r=x),start=c(K=1e8))@LL})
 plot(logl~r.,type="l")
 points(c(bdTest@params["r",]),max(logl),pch=16,col="red",cex=2)
 
 ##### Surface
 pars<-expand.grid(params(bdTest)["r",]*seq(0.75,1.25,length.out=10),
                   params(bdTest)["K",]*seq(0.75,1.25,length.out=10))
-logl<-tapply(1:100,1:100, function(x) {fit(bdTest,fix=c(r=pars[x,"r"],K=pars[x,"K"]))}@LL)
+logl<-tapply(1:100,1:100, function(x) {fit(bdTest,fixed=c(r=pars[x,"r"],K=pars[x,"K"]))}@LL)
 
 image(  interp(pars[,1], pars[,2],logl))
 contour(interp(pars[,1], pars[,2],logl),add=T)
@@ -69,7 +69,7 @@ bdTest.<-fit(bdTest.)
 ##### Jacknife
 bdTestJK<-bdTest
 index(bdTestJK)<-jacknife(index(bdTestJK))
-bdTestJK<-fit(bdTestJK,fix=c(r=0.4,K=1000))
+bdTestJK<-fit(bdTestJK,fixed=c(r=0.4,K=1000))
 x     <-bdTestJK
 
 

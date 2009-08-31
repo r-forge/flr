@@ -27,12 +27,12 @@ cf<-function(x){
   return(res)
   }
 
-albBD <-fit(albBD, fix  =albPar[c("r","K")], model="shepherd")
-lobBD <-fit(lobBD, fix  =lobPar[c("r","K")], model="shepherd")
-hkeBD <-fit(hkeBD, fix  =hkePar[c("r","K")], model="shepherd")
-albBD2<-fit(albBD, start=c("r"=0.25,"K"= 20000), fix=c(m=.25),model="shepherd")
-lobBD2<-fit(lobBD, start=c("r"=0.75,"K"=100000), fix=c(m=.25),model="shepherd")
-hkeBD2<-fit(hkeBD, start=c("r"=0.25,"K"= 20000), fix=c(m=.25),model="shepherd")
+albBD <-fit(albBD, fixed=albPar[c("r","K")], model="shepherd")
+lobBD <-fit(lobBD, fixed=lobPar[c("r","K")], model="shepherd")
+hkeBD <-fit(hkeBD, fixed=hkePar[c("r","K")], model="shepherd")
+albBD2<-fit(albBD, start=c("r"=0.25,"K"= 20000), fixed=(m=.25),model="shepherd")
+lobBD2<-fit(lobBD, start=c("r"=0.75,"K"=100000), fixed=c(m=.25),model="shepherd")
+hkeBD2<-fit(hkeBD, start=c("r"=0.25,"K"= 20000), fixed=c(m=.25),model="shepherd")
 
 rbind(albPar,cf(albBD),cf(albBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]
 rbind(lobPar,cf(lobBD),cf(lobBD2))[,c("r","K","b0","msy","emsy","bnow","bnowK","q","sigma")]

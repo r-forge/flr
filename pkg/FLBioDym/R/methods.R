@@ -87,7 +87,7 @@ setGeneric('fit', function(object,...)
 		standardGeneric('fit'))
 
 setMethod('fit', signature(object='FLBioDym'),
-f.<-  function(object,fix=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",model=NULL,nlsControl=nls.lm.control(),nyrB0=NULL){
+f.<-  function(object,fixed=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",model=NULL,nlsControl=nls.lm.control(),nyrB0=NULL){
      if (!is.null(model) & is.character(model))
         model(object)<-model
         
@@ -96,18 +96,18 @@ f.<-  function(object,fix=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",mo
      object@params<-defaultPar(object)
 
      startNms<-names(start)[names(start) %in% dimnames(object@params)$params]
-     fixNms  <-names(fix  )[names(fix)   %in% dimnames(object@params)$params]
+     fixNms  <-names(fixed)[names(fixed) %in% dimnames(object@params)$params]
+
      if (!is.null(start))
         object@params@.Data[startNms,]<-start[startNms]
-     if (!is.null(fix))
-        object@params@.Data[fixNms,  ]<-fix[  fixNms]
+     if (!is.null(fixed))
+        object@params@.Data[fixNms,  ]<-fixed[fixNms]
         
      parNms<-c(parLst[[model(object)]][1:2],startNms)
      parNms<-unique(parNms[!(parNms %in% fixNms)])
 
      niters<-dims(object)$iter
      ## pocket protector stuff
-     parNms<-unlist(parLst[model(object)])[1:2]
      object@vcov    <-array(NA,c(length(parNms),length(parNms),niters),dimnames=list(params=parNms,params=parNms,iter=1:niters))
      object@hessian <-object@vcov
      object@logLik  <-numeric(niters)
@@ -125,21 +125,21 @@ f.<-  function(object,fix=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",mo
          indx<-iter(index(object),i)@.Data
 
          #### Estimate parameters
-         if (is.null(fix) || !(parLst[[model(object)]] %in% names(fix))){
+         if (is.null(fixed) || !(parLst[[model(object)]] %in% names(fixed))){
             if (minimiser=="optim"){
                  ctrl=list(trace=10,parscale=c(r=.5,K=mean(catch(object))*10))
                  nls.out<-optim(fn=LL,par=params(object)[parNms,i,drop=T],params=params(object)[,i],model=model(object),catch=ctch,index=indx,error=object@distribution,
                                  method = "BFGS",control=ctrl,hessian=TRUE)
                  object <-getOptim(object,ctch,indx,nls.out,i)}
             else {
-                 ctrl=list(maxiter=100)
-                 nls.out<-nls.lm(fn=rsdl,par=params(object)[parNms,i,drop=T],params=params(object)[,i],model=model(object),catch=ctch,index=indx,error=object@distribution,nyrB0=nyrB0,control=nlsControl)
+                 nls.out<-nls.lm(fn=rsdl,par=array(params(object)[parNms,i,drop=T],length(parNms),dimnames=list(parNms)),
+                                        params=params(object)[,i],model=model(object),catch=ctch,index=indx,error=object@distribution,nyrB0=nyrB0,control=nlsControl)
                  object <-getNLS(object,ctch,indx,nls.out,i,nyrB0=nyrB0)
                  }
             }
          #### All Parameters fixed
          else {
-              object@params@.Data[names(fix),i]<-fix
+              object@params@.Data[names(fixed),i]<-fixed
               object@stock[]<-getPar(params(object),"b0")*getPar(params(object),"K")
 
               stk           <-fwdArray(object=stock(object)@.Data,catch=catch(object)@.Data,model=model(object),
@@ -156,7 +156,7 @@ f.<-  function(object,fix=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",mo
 #              rsdl(params(object)[parNms,i,drop=T],params=params(object)[,i],model=model(object),stock=stck,catch=ctch,index=indx,error=object@distribution,control=list(nprint=2))
               
               object@vcov[parNms,parNms,  i]<-NA
-#              object@logLik[              i]<-calcLogLik(rsdl.,error=object@distribution)
+              object@logLik[              i]<-calcLogLik(rsdl.,error=object@distribution)
 #              object@params@.Data["sigma",i]<-calcSigma(rsdl.)
 #              object@rsdlVar[             i]<-sum(rsdl.^2)
 #              object@dof[,                i]<-c(0,length(rsdl))
@@ -196,13 +196,15 @@ setGeneric('residuals', function(object,...)
 setMethod('residuals', signature(object='array'),
 rsdl<-function(object,params,model="pellat",error="log",catch=NULL,index=NULL,nyrB0=3)
    {
-   if (!is.null(object)) params[names(object),]<-object
-   stock<-catch
-
    params@.Data["b0",]<-calcB0(index,params,nyrB0)
+
+   if (!is.null(object)) params[names(object),]<-object
+
+   stock<-catch
 
    stock[]<-getPar(params,"b0")*getPar(params,"K")
    stock <-fwdArray(stock,model=model,catch=catch,r=getPar(params,"r"),K=getPar(params,"K"),p=getPar(params,"p"),m=getPar(params,"m"),msy=getPar(params,"msy"),b0=getPar(params,"b0"))
+
    yrs<-dimnames(index)$year[dimnames(index)$year %in% dimnames(stock)$year]
 
    #### Needed in case of jacknife
@@ -222,7 +224,7 @@ rsdl<-function(object,params,model="pellat",error="log",catch=NULL,index=NULL,ny
       res<-(c(index-index_hat))}
 
    res[is.na(res)]<-1e6
-   
+
    yrs<-!is.na(index[1,,1,1,1,1])
 
    return(res)

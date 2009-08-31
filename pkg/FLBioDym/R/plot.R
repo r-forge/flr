@@ -5,7 +5,7 @@
 # Last Change: 26 Feb 2009 16:11
 
 setMethod("plot", signature(x="FLBioDym", y="missing"),
-p.<-  function(x, y, type=c("equil","stock","harvest","index","catch","diag","all"),...){
+p.<-  function(x, y, type=c("all","equil","stock","harvest","index","catch","diag"),...){
 
       switch(as.character(type[1]),
              "equil"  =plot.e(x),
@@ -44,15 +44,11 @@ plot.h<-function(x){
    }
 
 plot.e<-function(x){
-   r   <-x@params["r",   1]
-   K   <-x@params["K",   1]
-   mpar<-x@params["p",1]
    .ylim=c(0,max(msy(x)[1],catch(x)))*1.1
    
-   stk<-FLQuant(seq(0,K,length.out=100))@.Data
-
+   stk<-FLQuant(seq(0,getPar(params(x),"K"),length.out=100))@.Data
    ctch<-sp(x,stock=stk)
-   
+
    plot(c(ctch)~c(stk[,dimnames(ctch)$year,,,,]),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
    points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)
    points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=3,col="blue", pch=16)
