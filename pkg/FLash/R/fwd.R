@@ -12,11 +12,9 @@ if (!isGeneric("fwd"))
 
 setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     function(object, ctrl,
-               sr          =NULL,
-               sr.residuals=NULL, sr.residuals.mult=TRUE)
+               sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
+               availability=NULL)
     {
-    
-    
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
@@ -43,39 +41,55 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     else
        endYr<-NULL
 
-    sr<-setSR(sr=sr, object = object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
-    #if (is.character(sr)) stop(sr)
+    if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
+
+    sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
     ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
-#    its<-sort(unique(c(length(dimnames(ctrl@trgtArray)$iter), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
-#    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n") 
-#    if (length(its)==2 & dimnames(ctrl@trgtArray)$iter == 1){
-#          dmns<-dimnames(ctrl@trgtArray)
-#          dmns$iters<-1:its[2]
-#          ctrl@trgtArray<-array(ctrl@trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
-     ctrl@target <- chkTargetQuantity(ctrl@target)
+    ## Season
+    if (any(is.na(ctrl@target$season)) & dims(object)$season==1)
+       ctrl@target$season<-1
+    else if (any(is.na(ctrl@target$season)) & dims(object)$season>1)
+       stop("need to specific season in target")
+    
+    ## Unit
+    if (any(is.na(ctrl@target$unit)) & dims(object)$unit==1)
+       ctrl@target$unit<-1
+    else if (any(is.na(ctrl@target$unit)) & dims(object)$unit>1)
+       stop("need to specific unit in target")
 
-#     if (!is(ctrl@target[,"quantity"],"factor"))
-#        ctrl@target[,"quantity"]<-factor(ctrl@target[,"quantity"],quantityNms())
-#     if (!all(as.character(ctrl@target[,"quantity"]) %in% quantityNms()))
-#         stop("invalid quantity in control target")
-         
-#     if (any(as.character(ctrl@target[,"quantity"]) %in% c("effort","costs","revenue","profit")))
-#         stop("fwd(FLStock) not implemented for 'effort','costs','revenue' or 'profit'")         
+    ## Area
+    if (any(is.na(ctrl@target$area)) & dims(object)$area==1)
+       ctrl@target$area<-1
+    else if (any(is.na(ctrl@target$area)) & dims(object)$area>1)
+       stop("need to specific area in target")
+
+    ctrl@target    <- chkTargetQuantity(ctrl@target,object)
 
     stock.n(object)[1,ac(min(ctrl@target[,"year"]))]<-NA
 
-    x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
+    ## Availability check
+    if (dims(object)$area>1){
+       if (is.null(availability)) stop("need to specify availability as areas>1")
+       if (any(unlist(dims(availability))[c("age","min","max","unit","season","area","iter")]!=
+               unlist(dims(m(object)))[   c("age","min","max","unit","season","area","iter")]))
+          stop("dims mismatch in availability")
+       if (!all(dimnames(availability)$year %in% (dimnames(m(object))$year)))
+          stop("dim year mismatch in availability")
+       }
 
-    #if (is.numeric(x)) stop(x)
-    
+    ##x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
+    x<-.Call("fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]], availability)
+
+    if (is.numeric(x)) stop(x)
+
     units(x@harvest)<-"f"
 
     stock.n(x)[is.na(stock.n(x))]<-0.0
 
-    catch(   x)<-computeCatch(   x, 'all')
+    catch(   x)<-computeCatch(   x)
     landings(x)<-computeLandings(x)
     discards(x)<-computeDiscards(x)
     stock(   x)<-computeStock(   x)
@@ -199,8 +213,6 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
        stop("ctrl not a valid 'fwdControl' object")
 
 
-
-
    ##check dims of fleet and biol
    dms<-chkDms(biol[[1]],fleets[[1]],yrs)
    #if (class(dms)=="character") 
@@ -251,7 +263,6 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
                                    matrixTarget(ctrl@target), ctrl@trgtArray,
                                    matrixEffort(ctrl@effort), ctrl@effArray,
                                    yrs, dms, sr)
-
 
    names(res)<-c("landings.n","discards.n","effort","n","f","catch.n")
 

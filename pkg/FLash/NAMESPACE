@@ -1,10 +1,10 @@
 useDynLib("FLash")
 import("FLCore")
-export("calcF",
-       "expandAgeFLStock",
-       "SRchar2code")
+export("SRchar2code")
 exportClasses("fwdControl")
-exportMethods("fwd",
+exportMethods("harvest",
+              "computeHarvest",
+              "fwd",
               "fwdControl",
               "+",
               "show",

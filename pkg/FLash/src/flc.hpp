@@ -24,10 +24,13 @@ public:
    inline int minyear() {return _minyear;} 
    inline int maxyear() {return _maxyear;} 
    
-   bool   Init(int, int, int,int=1);      
-   bool   Init(int, SEXP,int=1);      
-   bool   Init(int, SEXP, SEXP, SEXP, SEXP);
-   double recruits(int, int, double, int iter=1);
+   bool   Init(int _nstock, SEXP xyrs);
+   bool   Init(int _nstock, int _minyr, int _maxyr);     
+   bool   Init(int istock, SEXP xmodel, SEXP xparam, SEXP xresiduals, SEXP xmult);
+   bool   InitBiolsFleets(SEXP, SEXP, SEXP);
+   
+   double recruits(int istock, double ssb, int iyr, int iunit=1, int iseason=1, int iarea=1, int iter=1);
+
 protected: 
    FLRConstSRR       **model;
    FLQuant2            residuals;
@@ -35,8 +38,7 @@ protected:
    bool               *residuals_mult;
 
    int nstock,
-       _minyear, _maxyear,
-       niter;
+	  _minyear, _maxyear;
   
    void unalloc(void);
    };                  
@@ -55,7 +57,8 @@ public:
    void InitFleet( SEXP);      
    void InitFleets(SEXP);    
   
-   bool InitBiolFleet(SEXP, SEXP, SEXP);
+   bool InitBiolFleet(  SEXP, SEXP, SEXP);
+   bool InitBiolsFleets(SEXP, SEXP, SEXP);
 
    void InitStock(int, int, int, SEXP);      
    void InitBiol( int, int, int, SEXP);      

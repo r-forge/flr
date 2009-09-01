@@ -12,20 +12,18 @@ if(!isGeneric('setSR'))
     setGeneric('setSR', function(sr, ...) standardGeneric('setSR'))
 
 setMethod('setSR', signature(sr='FLSR'),
-    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE) {
+    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE,availability=NULL) {
 
     # Strip out sr model and params then call that method
-    setSR(list(model = model(sr), params = params(sr)), object = object, yrs = yrs, sr.residuals = sr.residuals, sr.residuals.mult = sr.residuals.mult)
+    setSR(list(model = model(sr), params = params(sr)), object = object, yrs = yrs, sr.residuals = sr.residuals, sr.residuals.mult = sr.residuals.mult, availability=availability)
     }
 )
 
 setMethod('setSR', signature(sr='list'),
-    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE)
+    function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE,availability=NULL)
 {
-
 # ****** Check arguments are all present and of correct type *******
-
-    if(!(is(sr,"list") & all(c("model","params") %in% names(sr))))  
+    if(!(is(sr,"list") & all(c("model","params") %in% names(sr))))
         stop("sr has to be a list with items 'model' & 'params'")
     model <- sr$model
     params <- sr$params
@@ -72,8 +70,13 @@ setMethod('setSR', signature(sr='list'),
 
 #****** Check and force parameters for all years ********
     # Turn the FLPar or Quant into a Quant of right dimensions
-    dmns <-list(params=SRParams(SRcode2char(model[1])),year=yrs,unit="unique",season="all",area="unique", iter=dimnames(params)$iter)
-    dmns.<-dmns 
+    dmns <-list(params=SRParams(SRcode2char(model[1])),
+                year  =yrs,
+                unit  =dimnames(m(object))$unit,
+                season=dimnames(m(object))$season,
+                area  =dimnames(m(object))$area,
+                iter  =dimnames(params)$iter)
+    dmns.<-dmns
     dmns.[[2]]<-dmns[[2]][-length(dmns[[2]])]# dmns of original years
 
     # Trim off extra params if coming from FLSR (e.g. Ricker has extra param sigma)
@@ -83,13 +86,11 @@ setMethod('setSR', signature(sr='list'),
       if (all(dimnames(sr)$params[1:2]==c("b","a")))
         params<-params[c("a","b")]
 
-    if (!all(dimnames(params) %in% dmns.))
-       stop("Dims for sr.params illegal")
-    
-# for (i in names(dimnames(params)))
-#       dmns[[i]]<-dimnames(params)[[i]] 
- 
-    params<-FLQuant(array(params,dim=unlist(lapply(dmns,length)),dimnames=dmns))     
+    if (!any(dimnames(params) %in% dmns.))
+      stop("Dims for sr.params illegal")
+
+    params<-validSRPar(object, sr=params, yrs=yrs, availability=availability)
+    params<-FLQuant(params)
 
 #****** Cobble together into output format **********
     # At the moment each element is only length 1.  Eventually, multiple SRs will be possible.
@@ -97,11 +98,10 @@ setMethod('setSR', signature(sr='list'),
         params=FLQuants(params),
         residuals=FLQuants(residuals),
         residuals.mult=list(sr.residuals.mult))
-        return(res)
+
+    return(res)
     }
 )
-
-
 
 SRchar2code<-function(strCode){
    res<-as.integer(switch(strCode, "mean"            = 1,

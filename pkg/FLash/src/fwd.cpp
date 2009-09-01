@@ -415,7 +415,7 @@ double fwd::getVal(FLRConst_Target quantity, int ispp,  int iyr, int iunit, int 
 void fwd::project(double *x, int iyr, int iter, bool OnlyReplaceNA, bool OnlyCalcN)
    {
    int iunit  =1,
-       iseason=1,
+	   iseason=1,
        iarea  =1;
 
     for (int ispp=1; ispp<=NBiol(); ispp++)
@@ -839,7 +839,7 @@ bool target::Init(SEXP xTrgt, SEXP xAry, int niters)
        data[iYr][in[iYr]][fwdTargetPos_val]      = Trgt[i+fwdTargetPos_val      *(int)INTEGER(TrgtDims)[0]];
        data[iYr][in[iYr]][fwdTargetPos_max]      = Trgt[i+fwdTargetPos_max      *(int)INTEGER(TrgtDims)[0]];
 
-       data[iYr][in[iYr]][fwdTargetPos_rel]      = Trgt[i+fwdTargetPos_rel      *(int)INTEGER(TrgtDims)[0]];
+       data[iYr][in[iYr]][fwdTargetPos_relyear]  = Trgt[i+fwdTargetPos_relyear  *(int)INTEGER(TrgtDims)[0]];
        data[iYr][in[iYr]][fwdTargetPos_spp]      = Trgt[i+fwdTargetPos_spp      *(int)INTEGER(TrgtDims)[0]];
        data[iYr][in[iYr]][fwdTargetPos_fleet]    = Trgt[i+fwdTargetPos_fleet    *(int)INTEGER(TrgtDims)[0]];
        data[iYr][in[iYr]][fwdTargetPos_metier]   = Trgt[i+fwdTargetPos_metier   *(int)INTEGER(TrgtDims)[0]];
@@ -1038,7 +1038,7 @@ double target::rel(int year, int i)
    if (year>_maxyear || year<_minyear || i<1 || i>_n[year])
       return R_NaN;
    else
-      return data[year][i][fwdTargetPos_rel];
+      return data[year][i][fwdTargetPos_relyear];
    }
 
 bool control::fix(int year, int fleet, int metier)

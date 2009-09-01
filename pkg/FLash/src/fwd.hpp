@@ -6,34 +6,47 @@
 
 double norm(double *, int);
 
-typedef enum tag_fwdControlPos 
+//trgtNms    <-function() return(c("year","min","val","max","quantity","season","area","unit","spp","fleet","metier","rel.year","rel.season","rel.area","rel.unit"))
+//effNms     <-function() return(c("year","min","val","max","fleet","metier","rel.year","rel.fleet","rel.metier","rel.bound"))
+//quantityNms<-function() return(c("ssb","biomass","catch","landings","discards","f","z","f.landings","f.discards","effort","costs","revenue","profit","mnsz"))
+
+typedef enum tag_fwdControlPos
 	{
-   fwdControlPos_year      = 0, 
-   fwdControlPos_min       = 1,
-   fwdControlPos_val       = 2,
-   fwdControlPos_max       = 3, 
-   fwdControlPos_fleet     = 4,
-   fwdControlPos_metier    = 5,
-   fwdControlPos_relyear   = 6,
-   fwdControlPos_relfleet  = 7, 
-   fwdControlPos_relmetier = 8,
-   fwdControlPos_relbound  = 9
+    fwdControlPos_year      = 0, 
+    fwdControlPos_min       = 1,
+    fwdControlPos_val       = 2,
+    fwdControlPos_max       = 3, 
+    fwdControlPos_season    = 4,
+    fwdControlPos_area      = 5,
+    fwdControlPos_fleet     = 6,
+    fwdControlPos_metier    = 7,
+    fwdControlPos_relyear   = 8,
+    fwdControlPos_relseason = 9,
+    fwdControlPos_relarea   = 10,
+    fwdControlPos_relfleet  = 11, 
+    fwdControlPos_relmetier = 12,
+    fwdControlPos_relbound  = 13
 	} fwdControlPos;
 
 typedef enum tag_fwdTargetPos
 	{
-   fwdTargetPos_year     = 0,
-   fwdTargetPos_min      = 1,
-   fwdTargetPos_val      = 2,
-   fwdTargetPos_max      = 3,
-   fwdTargetPos_quantity = 4,
-   fwdTargetPos_spp      = 5,
-   fwdTargetPos_fleet    = 6,
-   fwdTargetPos_metier   = 7,
-   fwdTargetPos_rel      = 8
+    fwdTargetPos_year     = 0,
+    fwdTargetPos_min      = 1,
+    fwdTargetPos_val      = 2,
+    fwdTargetPos_max      = 3,
+    fwdTargetPos_quantity = 4,
+    fwdTargetPos_season   = 5,
+    fwdTargetPos_area     = 6,
+    fwdTargetPos_unit     = 7,
+    fwdTargetPos_spp      = 8,
+    fwdTargetPos_fleet    = 9,
+    fwdTargetPos_metier   = 10,
+    fwdTargetPos_relyear  = 11,
+    fwdTargetPos_relseason= 12,
+    fwdTargetPos_relarea  = 13,
+    fwdTargetPos_relunit  = 14
 	} fwdTargetPos;
 
-//year fleet metier  value rel.year rel.fleet rel.metier min max rel.bound
 class control
 {
 public:        
@@ -128,8 +141,8 @@ public:
       control Ctrl;
       target  Trgt;
 
-      double  getVal(FLRConst_Target quantity, int ispp, int iyr, int iunit, int iseason, int iarea, int iter);
-     
+      double getVal(FLRConst_Target quantity, int ispp, int iyr, int iunit, int iseason, int iarea, int iter);
+
       void    project(adouble *x, adouble *func, int iYr, int iter);
       void    project(double *x, int iYr, int iter, bool OnlyReplaceNA=FALSE, bool OnlyCalcN=FALSE);
 
