@@ -120,19 +120,17 @@ pellatom_calcQ <- function()
 
 
 #*************************************************************************
-# Alternative likelihood from Polacheck, Hilborn and Punt 1993
-# Fitting with observation error
-# Calculates sigma2 and estimates Q
+# Calculate approximate sigma2 istead of estimating it#
+# From Polacheck, Hilborn and Punt 1993
 
-PTobs <- function()
+pellatom_calcSigma <- function()
 {
   logl <- function(Q, r, K, mpar, delta, catch, index)
   {
-	Ihat <- PellaTom(catch, r, K, Q, mpar, delta)
+	indexhat <- window((PellaTom(catch, r, K, Q, mpar, delta)),start=dims(index)$minyear,end=dims(index)$maxyear)
 	v <- log(index / Ihat)
 	sigma2 <- sum(v^2) / length(index)
-	LL <- log(prod(exp(-(v^2) / (2*sigma2)) / (sqrt(2*pi*sigma2))))
-	return(LL)
+	sum(dnorm(log(index),index(indexhat) , sqrt(sigma2), TRUE), na.rm=TRUE)
   }
   initial <- structure(function(catch) return(TRUE),
     lower=rep(1e-6, 4), upper=rep(Inf, 4))
