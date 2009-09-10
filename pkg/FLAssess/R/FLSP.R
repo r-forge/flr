@@ -128,12 +128,13 @@ pellatom_calcSigma <- function()
   logl <- function(Q, r, K, mpar, delta, catch, index)
   {
 	indexhat <- window((PellaTom(catch, r, K, Q, mpar, delta)),start=dims(index)$minyear,end=dims(index)$maxyear)
-	v <- log(index / Ihat)
+	v <- log(index / indexhat)
 	sigma2 <- sum(v^2) / length(index)
-	sum(dnorm(log(index),index(indexhat) , sqrt(sigma2), TRUE), na.rm=TRUE)
+	sum(dnorm(log(index),log(indexhat) , sqrt(sigma2), TRUE), na.rm=TRUE)
+
   }
   initial <- structure(function(catch) return(TRUE),
-    lower=rep(1e-6, 4), upper=rep(Inf, 4))
+    lower=rep(1e-6, 3), upper=rep(Inf, 3))
   return(list(model=index~PellaTom(catch, r, K, Q, mpar, delta), logl=logl,
     initial=initial))
 } # }}}

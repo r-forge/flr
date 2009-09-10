@@ -13,7 +13,7 @@ export("assess",
   "PellaTom",
   "pellatom_calcQ",
   "PellaTom_calcQ",
-  "pellatom_calcSigma"
+  "pellatom_calcSigma",
   "retro")
 exportMethods(
   "+",
