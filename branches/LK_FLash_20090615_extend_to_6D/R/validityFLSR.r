@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 13 Mar 2009 16:36
+# Last Change: 01 Sep 2009 09:25
 # $Id: fwd.R 232 2009-04-30 15:44:58Z fscott $
 
 
@@ -59,11 +59,11 @@ setGeneric('validSRPar', function(object, ...)
      niter<-unique(c(dims(object)$iter,1))
 
      if (!(dims(sr)$iter %in% niter))
-        stop("Iters in sr don´t match those in object")
+        stop("Iters in sr do not match those in object")
 
      if (!is.null(availability))
         if (!(dims(availability)$iter %in% niter))
-           stop("Iters in availability don´t match those in object")
+           stop("Iters in availability do not match those in object")
 
      dmns<-list(params=dimnames(sr)$params,
                 year  =yrs,
@@ -78,15 +78,15 @@ setGeneric('validSRPar', function(object, ...)
 
         #### check units
         if (!all(dimnames(sr)$unit %in% dimnames(m(object))$unit))
-           stop("unit in sr and object don´t match")
+           stop("unit in sr and object do not match")
 
         #### check season
         if (!all(dimnames(sr)$season %in% dimnames(m(object))$season))
-           stop("season in sr and object don´t match")
+           stop("season in sr and object do not match")
 
         #### check area
         if (!all(dimnames(sr)$area %in% dimnames(m(object))$area))
-           stop("area in sr and object don´t match")
+           stop("area in sr and object do not match")
         }
 
      res<-FLQuant(as.numeric(NA),dimnames=dmns)
@@ -119,11 +119,11 @@ setMethod('validSRPar', signature(object='FLBiol'),
 #     })
 
 validSRRes<-function(object,sr,res){
-   if (dims(res)$iter   != dims(object)$iter) stop("iters in residuals and object don´t match")
-   if (dims(res)$year   != dims(sr)$year)     stop("years in residuals and sr don´t match")
+   if (dims(res)$iter   != dims(object)$iter) stop("iters in residuals and object do not match")
+   if (dims(res)$year   != dims(sr)$year)     stop("years in residuals and sr do not match")
    
-   if (dims(res)$unit   != dims(sr)$units)    stop("unit in residuals and sr don´t match")
-   if (dims(res)$area   != dims(sr)$area)     stop("area in residuals and sr don´t match")
-   if (dims(res)$season != dims(sr)$season)   stop("season in residuals and sr don´t match")
+   if (dims(res)$unit   != dims(sr)$units)    stop("unit in residuals and sr do not match")
+   if (dims(res)$area   != dims(sr)$area)     stop("area in residuals and sr do not match")
+   if (dims(res)$season != dims(sr)$season)   stop("season in residuals and sr do not match")
    }
     

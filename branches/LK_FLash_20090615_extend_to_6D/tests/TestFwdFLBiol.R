@@ -26,7 +26,7 @@ landings.n( ple4)      <-0.75*catch.n(ple4)
 discards.n( ple4)      <-0.25*catch.n(ple4)
 discards.wt(ple4)      <-landings.wt(ple4)
 
-ple4.stf<-stf(ple4,nyrs=2)
+ple4.stf<-stf(ple4, 2)
 biol <-as(ple4.stf,"FLBiol")
 fleet<-as(ple4.stf,"FLFleet")
 
@@ -46,7 +46,7 @@ effort<-data.frame(year=2002, fleet=1, metier=1, val=NA, min=.01, max=.75)
 target<-data.frame(year=2002, val=15000, quantity="catch", fleet=1, metier=1, spp=1)
 ctrl  <-fwdControl(target,effort)
 
-res   <-fwd(sr=ple4SR,object=biol, fleets=fleet, ctrl=ctrl)
+res   <-fwd(object=biol, fleets=fleet, ctrl=ctrl, sr=ple4SR)
 
 effort<-data.frame(year=c(2002,2003), fleet=1, metier=1, val=NA, min=.01, max=.75)
 target<-data.frame(year=c(2002,2003), val=15000, quantity="catch", fleet=1, metier=1, spp=1)
