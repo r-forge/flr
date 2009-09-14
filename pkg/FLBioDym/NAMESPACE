@@ -1,0 +1,18 @@
+import("FLCore")
+export("summary",
+       "show")
+exportClasses("FLBioDym")
+exportMethods("FLBioDym",
+              "fit",
+              "fitted",
+              "fwd",
+              "residuals",
+              "refpts",
+              "refptSE",
+              "r",
+              "vb",
+              "sp",
+              "msy",
+              "bmsy",
+              "fmsy",
+              "plot")
