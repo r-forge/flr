@@ -14,10 +14,11 @@ data(albSP)
 
 # Summarise and inspect the object
 summary(albSP)
-plot(   albSP)
 
 # fit
 albSP<-fit(albSP,start=c(r=0.3,K=mean(catch(albSP))*10))
+plot(   albSP)
+
 # look at goodness of fit
 plot(albSP,type="diag")
 
