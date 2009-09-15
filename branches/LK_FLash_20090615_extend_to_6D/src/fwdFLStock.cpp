@@ -215,14 +215,18 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
       stk.harvest(iage,iyr,iunit,iseason,iarea,iter) = __max(0.0,stk.harvest(iage, iyr, iunit, iseason, iarea, iter)*x[0]);
       double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
 
-      if (_fbar>10.0)
+      if (_fbar>MaxFBar)
          for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-	        stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*10.0/_fbar; 
+	        stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*MaxFBar/_fbar;
       }
 
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
-   if      (iseason==1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
+   if (iseason==1) 
+       {
+       if ((OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter))) || !OnlyReplaceNA)
+	      stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,iarea,iter);
+       }
    else if (iseason >1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = stk.stock_n(stk.minquant,iyr,iunit,iseason-1,iarea,iter) * exp(stk.harvest(stk.minquant,iyr,iunit,iseason-1,iarea,iter)-stk.m(stk.minquant,iyr,iunit,iseason-1,iarea,iter))+
 	                                                                             SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
    
