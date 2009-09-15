@@ -273,17 +273,6 @@ plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
          invisible()
 	      }
 
-setMethod("plot", signature(x="FLBRP", y="FLStock"),
-    function(x,y,type="tapas",title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,year,axs=TRUE,start=NULL){
-
-    if (type=="tapas")
-       plotTapasFLBRPFLStock(x,y,title,biCol,xlab,ylab,maxX,maxY,axs)
-    else if (type=="rasta")
-       plotRastaFLBRPFLStock(x,y,start)
-    else stop("type has to be ´rasta´or ´tapas´")
-    })
-
-
 ## Bivariate CI
 bivariateOrder<-function(dt)
     {
@@ -344,34 +333,6 @@ plotTapasFLBRPFLStock<-function(x,y,title="",biCol=c("grey50","grey75"),xlab=exp
     plotTapas2(ssbTrk,fbrTrk,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,year,axs)
     }
 
-plotTapas2<-function(ssbTrk,fbrTrk,ssbPts,fbrPts,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,year,axs=TRUE)
-    {
-    fish.pg<-function(maxX,maxY)
-        {
-        polygon(x=c(-0.5,1,1,-0.5),            y=c(1.0,1.0,maxY+.5,maxY+.5),    col="red2")
-        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(-0.5,-0.5,1.0,1.0),          col="lightgreen")
-        polygon(x=c(-0.5,1,1,-0.5),            y=c(-0.5,-0.5,1.0,1.0),          col="lightgoldenrod1")
-        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(1.0,1.0,maxY+.5,maxY+.5),    col="lightgoldenrod1")
-        }
-
-    maxX.<-max(ssbTrk,ssbPts,na.rm=T)
-    if (is.null(maxX))
-       maxX<-maxX.
-
-    maxY.<-max(fbrTrk,fbrPts,na.rm=T)
-    if (is.null(maxY))
-       maxY<-maxX.
-
-    plot(fbrTrk~ssbTrk, col="cyan", type="l", xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
-    fish.pg(maxX,maxY)
-    abline(h=1.0,v=1,col="grey")
-
-    t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
-    col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
-    points(c(fbrPts)[t.]~c(ssbPts)[t.], col=col.,pch=19,cex=0.75)
-    lines( fbrTrk~ssbTrk, col="grey50",lwd=2)
-    }
-
 plotRastaFLBRPFLStock<-function(x,y,start=NULL,title=""){
     x<-refpts(x)["msy",,]
 
@@ -380,7 +341,7 @@ plotRastaFLBRPFLStock<-function(x,y,start=NULL,title=""){
     ssbTrk<-ssb( y)/c(x[,"ssb",    ])
     fbrTrk<-fbar(y)/c(x[,"harvest",])
 
-    plotRasta2(ssbTrk,fbrTrk,title)
+    plotRasta2(ssbTrk,fbrTrk,title=title,lwd=lwd)
     }
 
 plotRasta2<-function(ssbTrk,fbrTrk,title){
@@ -392,6 +353,75 @@ plotRasta2<-function(ssbTrk,fbrTrk,title){
     green[ ssbTrk>=1 & fbrTrk<=1]<-1
     yellow[red   ==0 & green ==0]<-1
 
-    print(xyplot(data~year,groups=qname,data=lapply(FLQuants(green=green,red=red,yellow=yellow),function(x) apply(x,2,mean)),
-               col=c("green","red","yellow"),lwd=3,type="l",xlab="Year",ylab="Probability of being in the Zone"))
+    xyplot(data~year,groups=qname,data=lapply(FLQuants(green=green,red=red,yellow=yellow),function(x) apply(x,2,mean)),
+              col=c("green","red","yellow"),lwd=4,type="l",xlab="Year",ylab="Probability")
+    }
+
+setMethod("plot", signature(x="FLBRP", y="FLStock"),
+    function(x,y,type="tapas",title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
+
+    if (type=="tapas")
+       plotTapasFLBRPFLStock(x,y,title,biCol,xlab,ylab,maxX,maxY,axs)
+    else if (type=="rasta")
+       plotRastaFLBRPFLStock(x,y,start,lwd=lwd)
+    else stop("type has to be ´rasta´or ´tapas´")
+    })
+
+setMethod("plot", signature(x="FLQuant", y="FLQuant"),
+    function(x,y,ssbPts=NULL,fbrPts=NULL,type="tapas",title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
+
+    if (type=="tapas")
+       plotTapas2(x,y,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,axs,start)
+    else if (type=="rasta")
+       plotRasta2(x,y,start)
+    else stop("type has to be ´rasta´or ´tapas´")
+    })
+
+setMethod("plot", signature(x="FLQuants", y="FLQuants"),
+    function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
+
+    plotTapas2(x,y,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,axs)
+    })
+
+plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,year,axs=TRUE,start=NULL)
+    {
+    fish.pg<-function(maxX,maxY)
+        {
+        polygon(x=c(-0.5,1,1,-0.5),            y=c(1.0,1.0,maxY+.5,maxY+.5),    col="red2")
+        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(-0.5,-0.5,1.0,1.0),          col="lightgreen")
+        polygon(x=c(-0.5,1,1,-0.5),            y=c(-0.5,-0.5,1.0,1.0),          col="lightgoldenrod1")
+        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(1.0,1.0,maxY+.5,maxY+.5),    col="lightgoldenrod1")
+        }
+
+    if (  class(x)!=class(y))                     stop("x and y must be of same type")
+    if (!(class(x) %in% c("FLQuants","FLQuant"))) stop("x and y must be of either ´FLQuant´or ´FLQuants´ type")
+    if (  class(x) =="FLQuant") x<-FLQuants(x)
+    if (  class(y) =="FLQuant") y<-FLQuants(y)
+
+    if (!is.null(start)){
+        x<-lapply(x,window,start=start)
+        x<-lapply(y,window,start=start)}
+         
+    maxX.<-max(unlist(lapply(x,max)),ssbPts,na.rm=T)
+    if (is.null(maxX))
+       maxX<-maxX.
+
+    maxY.<-max(unlist(lapply(y,max)),fbrPts,na.rm=T)
+    if (is.null(maxY))
+       maxY<-maxY.
+
+    cols<-gray(0:length(x) / length(x))
+    plot(y[[1]]~x[[1]], col=cols, type="l", lwd=2, xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
+    fish.pg(maxX,maxY)
+    abline(h=1.0,v=1,col="grey")
+
+    if (!is.null(ssbPts) & !is.null(fbrPts)){
+       t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
+       col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
+       points(c(fbrPts)[t.]~c(ssbPts)[t.], col=col.,pch=19,cex=0.75)
+       lines(y[[1]]~x[[1]], col=cols,lwd=2)
+       }
+
+    for (i in 2:length(y))
+       lines(x[[i]],y[[i]],col=cols[i],lwd=2)
     }
