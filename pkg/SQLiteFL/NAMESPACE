@@ -1,9 +1,9 @@
 useDynLib("SQLiteFL")
 import("FLCore")
 exportClasses("sqliteFL",
-"sqliteFLQuant",
-"sqliteFLComp",
-"sqluteFLlst")
+  "sqliteFLQuant",
+  "sqliteFLComp",
+  "sqliteFLlst")
 exportMethods("sql",
   "catch",
   "catch<-",
