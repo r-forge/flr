@@ -10,6 +10,17 @@ setGeneric('sql', function(object, ...)
   standardGeneric('sql'))
 # }}}
 
+# unsql {{{
+setGeneric('unsql', function(object, ...)
+  standardGeneric('unsql'))
+
+setMethod('unsql', signature(object='sqliteFLComp'),
+  function(object) {
+    .Call('selectFLComp', object@db, object@name)
+  }
+)
+# }}}
+
 # summary {{{
 setMethod('summary', signature(object='sqliteFLComp'),
   function(object)
