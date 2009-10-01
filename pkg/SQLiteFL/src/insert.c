@@ -249,7 +249,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
  
   /* DROP TABLES */
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_meta;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_meta\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can meta table be dropped? */
   if(rc != SQLITE_OK) {
