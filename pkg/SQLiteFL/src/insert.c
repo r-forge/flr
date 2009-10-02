@@ -103,7 +103,6 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   /* quant */
   sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
   sqlite3_exec(db, sql, 0, 0, 0);
-  Rprintf("%s", sql);
   /* Can quant in meta be inserted? */
   if(rc) {
     sqlite3_exec(db, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
@@ -250,8 +249,6 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
  
   /* DROP TABLES */
   sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_meta\";", CHAR(STRING_ELT(Rname, 0)));
-  Rprintf(sql);
-  Rprintf("\n");
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can meta table be dropped? */
   if(rc != SQLITE_OK) {
