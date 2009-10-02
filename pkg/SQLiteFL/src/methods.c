@@ -47,7 +47,7 @@ SEXP summaryFLComp(SEXP Rdbname, SEXP Rname)
   }
 
   /* GET class of object */
-  sql = sqlite3_mprintf("SELECT value FROM %q_meta WHERE field = 'class';", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("SELECT value FROM \"%q_meta\" WHERE field = 'class';", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -97,7 +97,7 @@ SEXP summaryFLComp(SEXP Rdbname, SEXP Rname)
   Rprintf("Quant: %s\n\n", CHAR(STRING_ELT(getMetaFLComp(db, CHAR(STRING_ELT(Rname, 0)), "quant"), 0)));
   
   /* GET slot names */
-  sql = sqlite3_mprintf("SELECT * FROM %q_slots;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("SELECT * FROM \"%q_slots\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -199,7 +199,7 @@ SEXP dimsFLComp(SEXP Rdbname, SEXP Rname)
   SET_STRING_ELT(NamesR, 6, mkChar("maxyear"));
 
   /* GET  year, unit, season, area, iter */
-  sql = sqlite3_mprintf("SELECT year, unit, season, area, iter FROM %q_slots;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("SELECT year, unit, season, area, iter FROM \"%q_slots\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {

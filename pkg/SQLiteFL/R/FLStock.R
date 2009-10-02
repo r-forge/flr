@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 01 Oct 2009 23:28
+# Last Change: 01 Oct 2009 23:31
 # $Id$
 
 # Reference:
@@ -16,7 +16,6 @@ setMethod('sql', signature(object='FLStock'),
     name=as.list((match.call(call=sys.call(1))))$object)
   {
     # deal with name if [ or () was used
-    # '[' = '_', ',' = '.', '()' = _
     if(is(name, 'call'))
       name <- format(name)
 

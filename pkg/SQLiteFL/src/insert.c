@@ -42,7 +42,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   rc = sqlite3_exec(db, "PRAGMA synchronous=OFF;", NULL, NULL, NULL);
 
   /* DROP TABLES */
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_meta;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_meta\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can meta table be dropped? */
   if(rc != SQLITE_OK) {
@@ -54,7 +54,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   }
   sqlite3_free(sql);
 
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_data;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_data\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can data table be dropped? */
   if(rc != SQLITE_OK) {
@@ -67,7 +67,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   sqlite3_free(sql);
 
   /* CREATE meta TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_meta ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' CHAR DEFAULT 'quant');", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_meta\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' CHAR DEFAULT 'quant');", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can meta table be created? */
   if( rc ) {
@@ -80,7 +80,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   sqlite3_free(sql);
 
   /* CREATE data TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_data ('rowId' INTEGER NOT NULL PRIMARY KEY, 'quant' CHAR DEFAULT 'all', 'year' INTEGER DEFAULT '1' CHECK (year > 0), 'unit' CHAR DEFAULT 'unique', 'season' CHAR DEFAULT 'all', 'area' CHAR DEFAULT 'unique', 'iter' INTEGER DEFAULT '1' CHECK (iter > 0), 'data' DOUBLE DEFAULT '0.0', UNIQUE (quant, year, unit, season, area, iter));", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_data\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'quant' CHAR DEFAULT 'all', 'year' INTEGER DEFAULT '1' CHECK (year > 0), 'unit' CHAR DEFAULT 'unique', 'season' CHAR DEFAULT 'all', 'area' CHAR DEFAULT 'unique', 'iter' INTEGER DEFAULT '1' CHECK (iter > 0), 'data' DOUBLE DEFAULT '0.0', UNIQUE (quant, year, unit, season, area, iter));", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can data table be created? */
   if( rc ) {
@@ -101,7 +101,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   
   /* INSERT meta */
   /* quant */
-  sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
   sqlite3_exec(db, sql, 0, 0, 0);
   Rprintf("%s", sql);
   /* Can quant in meta be inserted? */
@@ -114,7 +114,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   }
   sqlite3_free(sql);
   /* units */
-  sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('units', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(units, 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('units', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(units, 0)));
   sqlite3_exec(db, sql, 0, 0, 0);
   if(rc) {
     sqlite3_exec(db, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);
@@ -126,7 +126,7 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
   sqlite3_free(sql);
 
   /* data ESTATEMENT */
-  sql = sqlite3_mprintf("INSERT INTO %q_data (quant, year, unit, season, area, iter, data) VALUES (?,?,?,?,?,?,?);", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_data\" (quant, year, unit, season, area, iter, data) VALUES (?,?,?,?,?,?,?);", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql), &stmt, &tail);
   if(rc != SQLITE_OK) {
     Rprintf("PREPARE %i\n", rc);
@@ -250,6 +250,8 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
  
   /* DROP TABLES */
   sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_meta\";", CHAR(STRING_ELT(Rname, 0)));
+  Rprintf(sql);
+  Rprintf("\n");
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can meta table be dropped? */
   if(rc != SQLITE_OK) {
@@ -260,7 +262,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
  
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_slots;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_slots\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can slots table be dropped? */
   if(rc != SQLITE_OK) {
@@ -271,7 +273,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
  
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_data;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_data\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can data table be dropped? */
   if(rc != SQLITE_OK) {
@@ -282,7 +284,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
  
-  sql = sqlite3_mprintf("DROP TABLE IF EXISTS %q_range;", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("DROP TABLE IF EXISTS \"%q_range\";", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can range table be dropped? */
   if(rc != SQLITE_OK) {
@@ -294,7 +296,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* CREATE meta TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_meta ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' CHAR DEFAULT 'quant');", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_meta\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' CHAR DEFAULT 'quant');", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can meta table be created? */
   if(rc != SQLITE_OK) {
@@ -306,7 +308,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* CREATE slots TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_slots ('rowId' INTEGER NOT NULL PRIMARY KEY, 'slot' CHAR, 'units' CHAR DEFAULT 'NA', 'quant' INTEGER DEFAULT '1', 'year' INTEGER DEFAULT '1', 'unit' INTEGER DEFAULT '1', 'season' INTEGER DEFAULT '1', 'area' INTEGER DEFAULT '1', 'iter' INTEGER DEFAULT '1', UNIQUE (slot));", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_slots\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'slot' CHAR, 'units' CHAR DEFAULT 'NA', 'quant' INTEGER DEFAULT '1', 'year' INTEGER DEFAULT '1', 'unit' INTEGER DEFAULT '1', 'season' INTEGER DEFAULT '1', 'area' INTEGER DEFAULT '1', 'iter' INTEGER DEFAULT '1', UNIQUE (slot));", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can slots table be created? */
   if(rc != SQLITE_OK) {
@@ -318,7 +320,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* CREATE data TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_data ('rowId' INTEGER NOT NULL PRIMARY KEY, 'slot' CHAR, 'quant' CHAR DEFAULT 'all', 'year' CHAR DEFAULT '1' CHECK (year > 0), 'unit' CHAR DEFAULT 'unique', 'season' CHAR DEFAULT 'all', 'area' CHAR DEFAULT 'unique', 'iter' INTEGER DEFAULT '1' CHECK (iter > 0), 'data' DOUBLE DEFAULT '0.0', UNIQUE (slot, quant, year, unit, season, area, iter));", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_data\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'slot' CHAR, 'quant' CHAR DEFAULT 'all', 'year' CHAR DEFAULT '1' CHECK (year > 0), 'unit' CHAR DEFAULT 'unique', 'season' CHAR DEFAULT 'all', 'area' CHAR DEFAULT 'unique', 'iter' INTEGER DEFAULT '1' CHECK (iter > 0), 'data' DOUBLE DEFAULT '0.0', UNIQUE (slot, quant, year, unit, season, area, iter));", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can data table be created? */
   if(rc != SQLITE_OK) {
@@ -330,7 +332,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* CREATE range TABLE */
-  sql = sqlite3_mprintf("CREATE TABLE %q_range ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' INTEGER DEFAULT '0');", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("CREATE TABLE \"%q_range\" ('rowId' INTEGER NOT NULL PRIMARY KEY, 'field' CHAR DEFAULT 'quant', 'value' INTEGER DEFAULT '0');", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_exec(db, sql, 0, 0, 0);
   /* Can range table be created? */
   if(rc != SQLITE_OK) {
@@ -342,7 +344,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* name and desc */
-  sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('name', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_SLOT(Rflc, install("name")), 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('name', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_SLOT(Rflc, install("name")), 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can name in meta be inserted? */
   if(rc != SQLITE_OK) {
@@ -353,7 +355,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
  
-  sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('desc', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_SLOT(Rflc, install("desc")), 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('desc', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_SLOT(Rflc, install("desc")), 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can desc in meta be inserted? */
   if(rc != SQLITE_OK) {
@@ -364,7 +366,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
   
-  sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('class', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_CLASS(Rflc), 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('class', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_CLASS(Rflc), 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
   /* Can desc in meta be inserted? */
   if(rc != SQLITE_OK) {
@@ -376,7 +378,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   sqlite3_free(sql);
  
   /* range */
-  sql = sqlite3_mprintf("INSERT INTO %q_range (field, value) VALUES (?,?);", CHAR(STRING_ELT(Rname, 0)));
+  sql = sqlite3_mprintf("INSERT INTO \"%q_range\" (field, value) VALUES (?,?);", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql), &stmt, &tail);
   /* Can INSERT@range statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -436,7 +438,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
     if (s==0)
     {
       /* quant */
-      sql = sqlite3_mprintf("INSERT INTO %q_meta (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
+      sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
       rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
       /* Can quant in meta be inserted? */
       if(rc != SQLITE_OK) {
@@ -449,7 +451,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
     }
   
     /* slots */
-    sql = sqlite3_mprintf("INSERT INTO %q_slots (slot, units, quant, year, unit, season, area, iter) VALUES ('%q', '%q', '%i', '%i', '%i', '%i', '%i', '%i');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(Rsnames, s)), CHAR(VECTOR_ELT(units, 0)), INTEGER(dims)[0], INTEGER(dims)[1], INTEGER(dims)[2], INTEGER(dims)[3], INTEGER(dims)[4], INTEGER(dims)[5]);
+    sql = sqlite3_mprintf("INSERT INTO \"%q_slots\" (slot, units, quant, year, unit, season, area, iter) VALUES ('%q', '%q', '%i', '%i', '%i', '%i', '%i', '%i');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(Rsnames, s)), CHAR(VECTOR_ELT(units, 0)), INTEGER(dims)[0], INTEGER(dims)[1], INTEGER(dims)[2], INTEGER(dims)[3], INTEGER(dims)[4], INTEGER(dims)[5]);
     rc = sqlite3_exec(db, sql, 0, 0, 0);
     /* Can slots be inserted? */
     if(rc != SQLITE_OK) {
@@ -461,7 +463,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
     sqlite3_free(sql);
   
     /* data ESTATEMENT */
-    sql = sqlite3_mprintf("INSERT INTO %q_data (slot, quant, year, unit, season, area, iter, data) VALUES (?,?,?,?,?,?,?,?);", CHAR(STRING_ELT(Rname, 0)));
+    sql = sqlite3_mprintf("INSERT INTO \"%q_data\" (slot, quant, year, unit, season, area, iter, data) VALUES (?,?,?,?,?,?,?,?);", CHAR(STRING_ELT(Rname, 0)));
     rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql), &stmt, &tail);
     if(rc != SQLITE_OK) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
