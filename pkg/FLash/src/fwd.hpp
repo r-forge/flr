@@ -4,6 +4,8 @@
 #include "flc_adolc.hpp"
 #include "flc.hpp"
 
+#define MaxFBar 2.0
+
 double norm(double *, int);
 
 //trgtNms    <-function() return(c("year","min","val","max","quantity","season","area","unit","spp","fleet","metier","rel.year","rel.season","rel.area","rel.unit"))

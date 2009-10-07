@@ -9,7 +9,7 @@
 
 fwdStk::fwdStk(void)
    {
-   ;
+   indepLastYr=true;
    }      
 
 fwdStk::~fwdStk(void)
@@ -211,21 +211,23 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
    {
    // set F
    for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-      {
       stk.harvest(iage,iyr,iunit,iseason,iarea,iter) = __max(0.0,stk.harvest(iage, iyr, iunit, iseason, iarea, iter)*x[0]);
-      double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
 
-      if (_fbar>10.0)
-         for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-	        stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*10.0/_fbar; 
-      }
-
+   double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
+   
+   if (_fbar>MaxFBar)
+  	  for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
+   	     stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*MaxFBar/_fbar;
+	  
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
-   if      (iseason==1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
+   if (iseason==1) 
+       {
+       if ((OnlyReplaceNA && R_IsNA(stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter))) || !OnlyReplaceNA)
+	      stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,iarea,iter);
+       }
    else if (iseason >1) stk.stock_n(stk.minquant,iyr,iunit,iseason,iarea,iter) = stk.stock_n(stk.minquant,iyr,iunit,iseason-1,iarea,iter) * exp(stk.harvest(stk.minquant,iyr,iunit,iseason-1,iarea,iter)-stk.m(stk.minquant,iyr,iunit,iseason-1,iarea,iter))+
 	                                                                             SR.recruits(1,stk.SSB(SSB_yr,iunit,iseason,iarea,iter),iyr,iunit,iseason,  iarea,iter);
-   
    // Projection
    for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
       {       
@@ -430,6 +432,16 @@ adouble fwdStk::Fbar(FLQuant_adolc &f, int iyr, int iunit, int iseason, int iare
    return val/(stk.maxfbar-stk.minfbar+1);
    }                               
 
+double fwdStk::Fbar(int iyr, int iunit, int iseason, int iarea, int iter)      
+   {
+   double val = 0.0;
+
+   for (int iage=stk.minfbar; iage<=stk.maxfbar; iage++)
+      val += stk.harvest(iage, iyr, iunit, iseason, iarea, iter);
+
+   return val/(stk.maxfbar-stk.minfbar+1);
+   }                               
+
 adouble fwdStk::Zbar(FLQuant_adolc &f, int iyr, int iunit, int iseason, int iarea, int iter)      
    {
    adouble val = 0.0;
@@ -619,15 +631,15 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     depen_ad = new  adouble[n];
     indep_ad = new  adouble[n];
     
-    for (i=0; i<n; i++)
-       {
+	for (i=0; i<n; i++){
        jac[i]   = new double[n];
-       indep[i] = 1.0;
-       }    
+	   indep[i] = 1.0;
+	   }
 
     int iTrgt = 0, 
         iter  = 0,
         nrow  = (int)INTEGER(TrgtDims)[0];
+
 
     //get N at start of year
     for (iter=1; iter<=stk.niters; iter++)
@@ -635,7 +647,7 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
         for (int iarea=1; iarea<=stk.nareas; iarea++)
           for (int iseason=stk.nseasons; iseason<=stk.nseasons; iseason++)
               project(indep, SR.minyear()-1, iunit, iseason, iarea, iter, TRUE, TRUE);
-    
+
     int iTape = 1, _Tape;
     for (iTrgt=1; iTrgt<=(int)(INTEGER(TrgtDims)[0]); iTrgt++)
        for (iter=1; iter<=stk.niters; iter++)
@@ -645,7 +657,13 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
           _Tape = 0; //iTrgt % ++iTape + 1;
       
           for (i=0; i<n; i++)
-             indep[i]=1.0;
+			  if (indepLastYr)
+                indep[i]=0.01/Fbar((int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
+                                   (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
+                                   (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
+                                   (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);
+			 else
+                indep[i]=0.1;
 
            // Taping the computation of the jacobian 
            trace_on(_Tape);
@@ -675,8 +693,8 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
               for (i=0; i<n; i++)
                   indep[i] -= r[i];	   
               }         
-    
-          project(indep, (int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
+
+		  project(indep, (int)(Trgt)[iTrgt-1+fwdTargetPos_year  *nrow], 
                          (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
                          (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
                          (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);

@@ -34,11 +34,14 @@ public:
 	adouble MnSz(           FLQuant_adolc &n,                   int iyr, int iunit, int iseason, int iarea, int iter);
 
 	double SSB(                                                 int iyr, int iunit, int iseason, int iarea, int iter);
+	double Fbar(                                                int iyr, int iunit, int iseason, int iarea, int iter);
 
     SEXP run(SEXP xTrgt, SEXP xAry) ;   
 protected:        
 	FLStock stk;
 	FLQuant avail;
+
+	bool indepLastYr;
 
 	sr SR;
     };
