@@ -125,15 +125,17 @@ f.<-  function(object,fixed=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",
          indx<-iter(index(object),i)@.Data
 
          #### Estimate parameters
-         if (is.null(fixed) || !(parLst[[model(object)]] %in% names(fixed))){
+         if (is.null(fixed) || !all(parLst[[model(object)]] %in% names(fixed))){
             if (minimiser=="optim"){
                  ctrl=list(trace=10,parscale=c(r=.5,K=mean(catch(object))*10))
                  nls.out<-optim(fn=LL,par=params(object)[parNms,i,drop=T],params=params(object)[,i],model=model(object),catch=ctch,index=indx,error=object@distribution,
                                  method = "BFGS",control=ctrl,hessian=TRUE)
+
                  object <-getOptim(object,ctch,indx,nls.out,i)}
             else {
                  nls.out<-nls.lm(fn=rsdl,par=array(params(object)[parNms,i,drop=T],length(parNms),dimnames=list(parNms)),
                                         params=params(object)[,i],model=model(object),catch=ctch,index=indx,error=object@distribution,nyrB0=nyrB0,control=nlsControl)
+
                  object <-getNLS(object,ctch,indx,nls.out,i,nyrB0=nyrB0)
                  }
             }
@@ -161,7 +163,7 @@ f.<-  function(object,fixed=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",
 #              object@rsdlVar[             i]<-sum(rsdl.^2)
 #              object@dof[,                i]<-c(0,length(rsdl))
               object@stats[parNms,,       i]<-NA
-              object@stopmess[            i]<-"didn´t run, all parameters fixed"
+              object@stopmess[            i]<-"didn't run, all parameters fixed"
              }
          }
 
@@ -226,7 +228,7 @@ rsdl<-function(object,params,model="pellat",error="log",catch=NULL,index=NULL,ny
    res[is.na(res)]<-1e6
 
    yrs<-!is.na(index[1,,1,1,1,1])
-
+print(res)
    return(res)
    })
 
@@ -250,14 +252,15 @@ setMethod('residuals', signature(object='FLBioDym'),
 
 getNLS<-function(object,catch.,index.,nls.out,i,nyrB0=NULL){
     parNms                        <-dimnames(summary(nls.out)$coefficients)[[1]]
-    object@params@.Data[parNms, i]<- summary(nls.out)$coefficients[,"Estimate"]
-    object@vcov[parNms,parNms, i] <-(summary(nls.out)$cov.unscaled*summary(nls.out)$sigma^2)
+    object@params@.Data[parNms, i]<-summary(nls.out)$coefficients[,"Estimate"]
     object@params@.Data["b0",]    <-calcB0(index.,object@params,nyrB0)
     iter(object@stock,i)[]        <-c(object@params["K",i])*c(object@params["b0",i])
 
     object                        <-fwd(object)
     object@params@.Data["sigma",i]<-calcSigma(nls.out$fvec)
+
     yrs<-dimnames(index)$year[dimnames(index)$year %in% dimnames(object@stock)$year]
+
     object@params@.Data["q",i]    <-calcQ(object@stock@.Data,index.,error=object@distribution)
 
     object@logLik[              i]<-calcLogLik(nls.out$fvec,rep(0,length(nls.out$fvec)),error=object@distribution)
@@ -265,13 +268,14 @@ getNLS<-function(object,catch.,index.,nls.out,i,nyrB0=NULL){
     object@dof[,                i]<-summary(nls.out)$df
     object@stats[parNms,,       i]<-summary(nls.out)$coefficients[,c("Std. Error","t value","Pr(>|t|)")]
     object@stopmess[            i]<-nls.out$message
+    object@vcov[parNms,parNms, i] <-(summary(nls.out)$cov.unscaled*summary(nls.out)$sigma^2)
 
     return(object)
 	  }
 
 getOptim<-function(object,catch.,index.,nls.out,i){
     parNms                        <-names(nls.out$par)
-    object@params@.Data[parNms,   i]<-nls.out$par
+    object@params@.Data[parNms, i]<-nls.out$par
     #object@stopmess[              i]<-as.character(nls.out$message)
 #    object@hessian[parNms,parNms, i]<-nls.out$hessian[parNms,parNms]
 

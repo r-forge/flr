@@ -2,7 +2,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell
-# Last Change: 26 Feb 2009 16:11
+# Last Change: 16 Sep 2009 11:24
 
 setMethod("plot", signature(x="FLBioDym", y="missing"),
 p.<-  function(x, y, type=c("all","equil","stock","harvest","index","catch","diag"),...){
@@ -15,7 +15,7 @@ p.<-  function(x, y, type=c("all","equil","stock","harvest","index","catch","dia
              "catch"  =plot.c(x),
              "diag"   =plot.d(x),
              "all"    =plot.a(x),
-             stop("type must be ´equil´,´stock´,´harvest´,´index´,´catch´,´diag´,´all!"))
+             stop("type must be 'equil','stock','harvest','index','catch','diag','all'!"))
 
       invisible()
 		})

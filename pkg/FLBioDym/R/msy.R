@@ -194,10 +194,17 @@ fmsyGulland <-function(r,K){
 fmsyFletcher <-function(K,msy,p=2){
     msyFletcher(msy,p)/bmsyFletcher(K,p)}
 
+if (!isGeneric("computeRefpts"))
+	setGeneric("computeRefpts", function(object, ...)
+		standardGeneric("computeRefpts"))
+
 #### ref pts
-setMethod('refpts', signature(object='FLBioDym'),
-   function(object)
+setMethod('computeRefpts', signature(object='FLBioDym'),
+   function(object,SE=F)
      {
+     if (SE)
+        return(refptsSE(object))
+     
      res<-array(NA,c(3,dims(object)$iter),list(msy=c("catch","stock","harvest"),iter=1:dims(object)$iter))
      res["harvest",]<-fmsy(object)
      res["stock",]  <-bmsy(object)
