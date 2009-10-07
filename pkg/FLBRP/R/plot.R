@@ -59,10 +59,10 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
                main="Equilibrium profit v F")
 
          if (refpts)
-            {
-            points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[1],cex=1.5)
-     		    points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[3],cex=1.2)
-     		    }
+           {
+           points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[1],cex=1.5)
+     		   points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[3],cex=1.2)
+     		   }
 
          if (obs)
 	         {
@@ -135,9 +135,9 @@ plot.p.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 			invisible()
       }
 
-      plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
-         {
-         par.mfrow<-par()$mfrow
+plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
+     {
+     par.mfrow<-par()$mfrow
 
 		 if (all(is.na(profit.hat(x)))){
 			 par(mfrow=c(2,2))
@@ -146,7 +146,7 @@ plot.p.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 			 plot.y.h(x,lim.y,lim.h,cols,refpts,obs,ts)
 			 plot.y.s(x,lim.y,lim.s,cols,refpts,obs,ts)
 			 }
-         else {
+     else {
 			 par(mfrow=c(3,2))
 			 plot.s.h(x,lim.s,lim.h,cols,refpts,obs,ts)
 			 plot.r.s(x,lim.r,lim.s,cols,refpts,obs,ts)
@@ -316,7 +316,7 @@ plotBeer=function(v){
       }
     }
 
-plotTapasFLBRPFLStock<-function(x,y,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,year,axs=TRUE)
+plotTapasFLBRPFLStock<-function(x,y,yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
     {
     x     <-refpts(x)["msy",,]
     y     <-window(y,start=range(y,"minyear"),end=range(y,"maxyear"))
@@ -324,66 +324,63 @@ plotTapasFLBRPFLStock<-function(x,y,title="",biCol=c("grey50","grey75"),xlab=exp
     ssbPts<-ssb( y)/c(x[,"ssb",    ])
     fbrPts<-fbar(y)/c(x[,"harvest",])
 
-    ssbTrk<-quantile(ssbPts,0.5)
-    fbrTrk<-quantile(fbrPts,0.5)
+    ssbTrk<-quantile(ssbPts,probs=0.5)
+    fbrTrk<-quantile(fbrPts,probs=0.5)
+
+    if (!is.null(yr)){
+       ssbTrk<-FLQuants(window(ssbTrk,end  =yr),
+                        window(ssbTrk,start=yr))
+
+       fbrTrk<-FLQuants(window(fbrTrk,end  =yr),
+                        window(fbrTrk,start=yr))
+       }
+    else{
+       ssbTrk<-FLQuants(ssbTrk)
+       fbrTrk<-FLQuants(fbrTrk)
+       }
 
     ssbPts<-ssbPts[,ac(range(y,"maxyear"))]
     fbrPts<-fbrPts[,ac(range(y,"maxyear"))]
 
-    plotTapas2(ssbTrk,fbrTrk,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,year,axs)
+    plotTapas2(ssbTrk,fbrTrk,ssbPts=ssbPts,fbrPts=fbrPts,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     }
 
-plotRastaFLBRPFLStock<-function(x,y,start=NULL,title=""){
+plotRastaFLBRPFLStock<-function(x,y,title=""){
     x<-refpts(x)["msy",,]
-
-    if (!is.null(start))  y<-window(y,start=start)
 
     ssbTrk<-ssb( y)/c(x[,"ssb",    ])
     fbrTrk<-fbar(y)/c(x[,"harvest",])
 
-    plotRasta2(ssbTrk,fbrTrk,title=title,lwd=lwd)
+    plotRasta2(ssbTrk,fbrTrk,title=title)
     }
 
 plotRasta2<-function(ssbTrk,fbrTrk,title){
-    red   <-FLQuant(0,dimnames=dimnames(ssbTrk))
-    green <-red
-    yellow<-red
+    red<-FLQuant(0,dimnames=dimnames(ssbTrk))
+    grn<-red
+    ylw<-red
 
-    red[   ssbTrk< 1 & fbrTrk> 1]<-1
-    green[ ssbTrk>=1 & fbrTrk<=1]<-1
-    yellow[red   ==0 & green ==0]<-1
+    red[ssbTrk< 1 & fbrTrk> 1]<-1
+    grn[ssbTrk>=1 & fbrTrk<=1]<-1
+    ylw[red   ==0 & grn   ==0]<-1
 
-    xyplot(data~year,groups=qname,data=lapply(FLQuants(green=green,red=red,yellow=yellow),function(x) apply(x,2,mean)),
-              col=c("green","red","yellow"),lwd=4,type="l",xlab="Year",ylab="Probability")
+#    xyplot(data~year,groups=qname,data=lapply(FLQuants(green=green,red=red,yellow=yellow),function(x) apply(x,2,mean)),
+#              col=c("green","red","yellow"),lwd=4,type="l",xlab="Year",ylab="Probability")
+    plot( apply(red,2,mean)[,,drop=T]~dimnames(red)$year,col="red",   lwd=4,type="l",xlab="Year",ylab="Probability",ylim=c(0,1))
+    lines(apply(grn,2,mean)[,,drop=T]~dimnames(grn)$year,col="green", lwd=4)
+    lines(apply(ylw,2,mean)[,,drop=T]~dimnames(ylw)$year,col="yellow",lwd=4)
     }
 
 setMethod("plot", signature(x="FLBRP", y="FLStock"),
-    function(x,y,type="tapas",title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
+    function(x,y,type="tapas",yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE){
 
     if (type=="tapas")
-       plotTapasFLBRPFLStock(x,y,title,biCol,xlab,ylab,maxX,maxY,axs)
+       plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     else if (type=="rasta")
-       plotRastaFLBRPFLStock(x,y,start,lwd=lwd)
+       plotRastaFLBRPFLStock(x,y)
     else stop("type has to be ´rasta´or ´tapas´")
     })
 
-setMethod("plot", signature(x="FLQuant", y="FLQuant"),
-    function(x,y,ssbPts=NULL,fbrPts=NULL,type="tapas",title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
-
-    if (type=="tapas")
-       plotTapas2(x,y,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,axs,start)
-    else if (type=="rasta")
-       plotRasta2(x,y,start)
-    else stop("type has to be ´rasta´or ´tapas´")
-    })
-
-setMethod("plot", signature(x="FLQuants", y="FLQuants"),
-    function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,start=NULL){
-
-    plotTapas2(x,y,ssbPts,fbrPts,title,biCol,xlab,ylab,maxX,maxY,axs)
-    })
-
-plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey75"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,year,axs=TRUE,start=NULL)
+plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
     {
     fish.pg<-function(maxX,maxY)
         {
@@ -393,15 +390,6 @@ plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey
         polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(1.0,1.0,maxY+.5,maxY+.5),    col="lightgoldenrod1")
         }
 
-    if (  class(x)!=class(y))                     stop("x and y must be of same type")
-    if (!(class(x) %in% c("FLQuants","FLQuant"))) stop("x and y must be of either ´FLQuant´or ´FLQuants´ type")
-    if (  class(x) =="FLQuant") x<-FLQuants(x)
-    if (  class(y) =="FLQuant") y<-FLQuants(y)
-
-    if (!is.null(start)){
-        x<-lapply(x,window,start=start)
-        x<-lapply(y,window,start=start)}
-         
     maxX.<-max(unlist(lapply(x,max)),ssbPts,na.rm=T)
     if (is.null(maxX))
        maxX<-maxX.
@@ -411,6 +399,7 @@ plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey
        maxY<-maxY.
 
     cols<-gray(0:length(x) / length(x))
+    
     plot(y[[1]]~x[[1]], col=cols, type="l", lwd=2, xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
     fish.pg(maxX,maxY)
     abline(h=1.0,v=1,col="grey")
@@ -418,10 +407,13 @@ plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("grey50","grey
     if (!is.null(ssbPts) & !is.null(fbrPts)){
        t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
        col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
-       points(c(fbrPts)[t.]~c(ssbPts)[t.], col=col.,pch=19,cex=0.75)
+       points(c(fbrPts[,,,,,t.])~c(ssbPts[,,,,,t.]), col=col.,pch=19,cex=0.75)
        lines(y[[1]]~x[[1]], col=cols,lwd=2)
        }
 
+    if (length(x)==length(y) & length(y)>1)
     for (i in 2:length(y))
        lines(x[[i]],y[[i]],col=cols[i],lwd=2)
     }
+
+
