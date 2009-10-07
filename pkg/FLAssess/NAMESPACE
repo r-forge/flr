@@ -39,5 +39,4 @@ exportMethods(
   "summary",
   "VPA",
   "FLSP",
-    "FLAssess",
-	"fmle")
+  "FLAssess")
