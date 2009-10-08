@@ -58,7 +58,7 @@ setGeneric('validSRPar', function(object, ...)
      #### Check iters
      niter<-unique(c(dims(object)$iter,1))
 
-     if (!(dims(sr)$iter %in% niter))
+     if (any(!(dims(sr)$iter %in% niter)))
         stop("Iters in sr don't match those in object")
 
      if (!is.null(availability))
