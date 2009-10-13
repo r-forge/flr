@@ -12,7 +12,8 @@ setGeneric('validSRPar', function(object, ...)
 
 .validSRPar<-function(object, sr, yrs=NULL, availability=NULL)
      {
-     #### check that sr has dims in FLQuant
+	 
+	 #### check that sr has dims in FLQuant
      if (!all(names(sr) %in% c("params","year","unit","season","area","iter")))
         stop("dims in sr not recognised")
 
@@ -54,15 +55,18 @@ setGeneric('validSRPar', function(object, ...)
         if (!all(yrs %in% dimnames(availability)$year))
            stop("years in availability mismatch")
         }
-
      #### Check iters
-     niter<-unique(c(dims(object)$iter,1))
+	#browser()
 
-     if (any(!(dims(sr)$iter %in% niter)))
+	#if (any(!(dims(sr)$iter %in% niter)))
+	# Next line a bit odd because dims(FLPar) does something
+	# different to other FLR objects
+	if(dims(object)$iter != length(dims(sr)$iter))
         stop("Iters in sr don't match those in object")
 
+    #niter<-unique(c(dims(object)$iter,1))
      if (!is.null(availability))
-        if (!(dims(availability)$iter %in% niter))
+        if (dims(availability)$iter != dims(object)$iter)
            stop("Iters in availability don't match those in object")
 
      dmns<-list(params=dimnames(sr)$params,
