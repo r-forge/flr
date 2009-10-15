@@ -316,6 +316,36 @@ plotBeer=function(v){
       }
     }
 
+##### Tapas is the Kobe plot and Rasta is the time series summary of the p() of being in a kobe quadrant
+##### Kobematrix is a set of overlaoded methods to produce Kode plots and variants by a range of differeing objects
+
+## Exported method
+#setMethod("plot", signature(x="FLBRP", y="FLStock"),
+
+## Internal function that calls Tapas2 to make Kobe plot
+#plotTapasFLBRPFLStock<-function(x,y,yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
+
+## Internal function that makes the Kobe plot
+#plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
+
+## Internal function that calls Rasta2
+#plotRastaFLBRPFLStock<-function(x,y,title=""){
+
+## Internal function that makes the Kobe summary of P() of eing in a Kobe quadrant over time
+#plotRasta2<-function(ssbTrk,fbrTrk,title){
+
+
+setMethod("plot", signature(x="FLBRP", y="FLStock"),
+    function(x,y,type="tapas",yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE){
+
+    if (type=="tapas")
+       plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
+    else if (type=="rasta")
+       plotRastaFLBRPFLStock(x,y)
+    else stop("type has to be ´rasta´or ´tapas´")
+    })
+
+
 plotTapasFLBRPFLStock<-function(x,y,yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
     {
     x     <-refpts(x)["msy",,]
@@ -369,16 +399,6 @@ plotRasta2<-function(ssbTrk,fbrTrk,title){
     lines(apply(grn,2,mean)[,,drop=T]~dimnames(grn)$year,col="green", lwd=4)
     lines(apply(ylw,2,mean)[,,drop=T]~dimnames(ylw)$year,col="yellow",lwd=4)
     }
-
-setMethod("plot", signature(x="FLBRP", y="FLStock"),
-    function(x,y,type="tapas",yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE){
-
-    if (type=="tapas")
-       plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
-    else if (type=="rasta")
-       plotRastaFLBRPFLStock(x,y)
-    else stop("type has to be ´rasta´or ´tapas´")
-    })
 
 plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
     {
