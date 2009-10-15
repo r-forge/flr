@@ -93,4 +93,5 @@ exportMethods(
   "fcost<-",
   "iter")
 export("f0.1",
+  "msy",
   "fmax")
