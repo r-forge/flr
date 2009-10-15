@@ -25,13 +25,16 @@ setMethod('refpts', signature(object='array'),
     if(is.null(dimnames(object)))
     {  
       # default dnames
-      dimnames(object) <- list(
-        refpt=refpt[1:dim(object)[1]],
+      dmns <- list(
+        refpt=refpt,
         quantity=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost',
           'profit')[1:dim(object)[2]],
         iter=1:dim(object)[3])
-    }
-     
+        
+      dimnames(object) <- dmns
+      }
+
+
      return(
      new('refpts', object)
      )
@@ -65,10 +68,9 @@ setMethod('refpts', signature(object='logical'),
 
 setMethod('refpts', signature(object='refpts'),
   function(object, ...)
-  {
-    refpts(object@.Data, ...)
-  }
-)
+    {
+    refpts(object@.Data, refpt=dimnames(object)$refpt,...)
+    })
 
 # }}}
 
@@ -96,7 +98,7 @@ setMethod('show', signature(object='refpts'),
 # propagate {{{
 setMethod('propagate', signature(object='refpts'),
   function(object, iter, fill.iter=TRUE)
-  {
+    {
     res <- refpts(object, iter=iter)
     if(fill.iter== FALSE)
       res[,,2:iter] <- as.numeric(NA)
@@ -170,26 +172,32 @@ setMethod('refpts', signature(object='FLBRP'),
 
 # recalculations  {{{
 
+# MSY
+msy <- function(object)
+  {
+  refpts(object) <- refpts(as.numeric(NA), refpt='msy', iter=as.numeric(dimnames(object)$iter))
+  computeRefpts(object)
+  }
+
 # f0.1
 f0.1 <- function(object)
-{
-  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1')
+  {
+  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object)$iter))
   computeRefpts(object)
-}
+  }
 
 # fmax
 fmax <- function(object)
-{
-  refpts(object) <- refpts(as.numeric(NA), refpt='fmax')
+  {
+  refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object)$iter))
   computeRefpts(object)
-}
+  }
 
 # spr
 sprr <- function(object, spr='.30')
-{
-  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),
-    sep=''))
+  {
+  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object)$iter))
   computeRefpts(object)
-}
+  }
 
 # }}}
