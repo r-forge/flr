@@ -305,6 +305,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
   {
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
+    
     # if > 1, they should be equal
     if(all(iter > 1))
       if(iter[1] != iter[2])
@@ -313,18 +314,21 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 
     # extend refpts as needed
     iter <- max(iter)
-    if(iter > 1)
-    {
-      refpts <- propagate(refpts(object), iter)
-    }
-    else
-    {
-      refpts <- refpts(object)
-    }
+    if(iter > 1){
+      refpts <- propagate(refpts(object), iter, fill.iter=F)
+      }
+    else{
+      refpts <- refpts(object)}
+    
+
+    if ("virgin" %in% dimnames(refpts)$refpt){
+       refpts["virgin",,]<-NA
+       refpts["virgin","harvest",]<-0
+       }
     
     res <- .Call("computeRefpts", object, refpts,
-      SRchar2code(SRModelName(object@model)), FLQuant(c(params(object)),
-      dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
+      SRchar2code(SRModelName(object@model)),
+                  FLQuant(c(params(object)), dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
   }
@@ -346,14 +350,14 @@ setMethod('brp', signature(object='FLBRP'),
 
     # extend refpts as needed
     iter <- max(iter)
-    if(iter > 1)
-    {
-      refpts <- propagate(refpts(object), iter)
-    }
-    else
-    {
-      refpts <- refpts(object)
-    }
+    if(iter > 1){
+      refpts <- propagate(refpts(object), iter)}
+    else{
+      refpts <- refpts(object)}
+
+   if ("virgin" %in% dimnames(refpts)$refpt){
+       refpts@.Data["virgin",,         ]<-as.numeric(NA)
+       refpts@.Data["virgin","harvest",]<-0}
 
     res <- .Call("brp", object, refpts, SRchar2code(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
