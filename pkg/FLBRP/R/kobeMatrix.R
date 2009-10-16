@@ -35,7 +35,6 @@ setMethod("kobe", signature(b="FLQuant", f="FLQuant"),
        plotRasta2(b,f,title)
     })
 
-
 setMethod("kobe", signature(b="FLQuants", f="missing"),
   function(b,f,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab="Option",bmsy=NULL,fmsy=NULL,xo=500,yo=xo,maxX=NULL,maxY=NULL,axs=TRUE,type="tapas",...){
        if (type=="matrix")
