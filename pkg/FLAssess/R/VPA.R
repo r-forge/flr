@@ -55,10 +55,20 @@ VPA.<-function(stock, fratio="missing", fit.plusgroup=TRUE, desc="",...) {
 
     stock@m <- stock@m[as.character(minage:maxage), , , ,]
 
+    #### need to have n its in harvest & stock.n
+    if (dims(m(      stock))$iter>1 | dims(stock.n(stock))$iter>1 |
+        dims(harvest(stock))$iter>1 | dims(catch.n(stock))$iter>1){
+        if (dims(stock.n(stock))$iter==1)
+          stock.n(stock)<-propagate(stock.n(stock),dims(stock)$iter)
+        if (dims(harvest(stock))$iter==1)
+          harvest(stock)<-propagate(harvest(stock),dims(stock)$iter)
+        }
+        
+
     if (all(is.na(stock@catch.n)))
         stop("catch.n is not available")
 
-    stock@stock.n <- FLQuant(as.numeric(NA),dimnames=dimnames(stock@m))      
+    stock@stock.n[]<-NA
     
     ##fratio
     fratio.flag       <-rep(as.logical(FALSE),stock@range["maxyear"]-stock@range["minyear"]+1)
