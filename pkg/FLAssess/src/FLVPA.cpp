@@ -65,9 +65,14 @@ extern "C" SEXPDLLExport FLRCalcF(SEXP xM, SEXP xCatch, SEXP xN)
 
    double _f = 0.1;
 
-   int iAge, iYear, iUnit, iSeason, iArea, iIter;
+   int iAge, iYear, iUnit, iSeason, iArea, iIter, nits=1;
+   
+   nits = nits>=m.niters() ? nits : m.niters();
+   nits = nits>=c.niters() ? nits : c.niters();
+   nits = nits>=n.niters() ? nits : n.niters();
+   nits = nits>=f.niters() ? nits : f.niters();
 
-   for (iIter = 1; iIter<=m.niters(); iIter++)
+   for (iIter = 1; iIter<=nits; iIter++)
 	   for (iArea = 1; iArea <= m.nareas(); iArea++)
 		  for (iSeason = 1; iSeason <= m.nseasons(); iSeason++)
     		 for (iUnit = 1; iUnit <= m.nunits(); iUnit++)
@@ -172,7 +177,10 @@ void FLVPA::Init(SEXP x)
    F.Init(    GET_SLOT(x, install("harvest")));               
    N.Init(    GET_SLOT(x, install("stock.n")));               
    
-   niters = M.niters();
+   niters = niters>=M.niters()     ? niters : M.niters();
+   niters = niters>=Catch.niters() ? niters : Catch.niters();
+   niters = niters>=N.niters()     ? niters : N.niters();
+   niters = niters>=F.niters()     ? niters : F.niters();
    }
 
 FLVPA::~FLVPA(void)      
