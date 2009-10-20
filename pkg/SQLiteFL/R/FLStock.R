@@ -1,9 +1,9 @@
 # FLStock - «Short one line description»
-# FLStock
+# SQLiteFL/R/FLStock.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 01 Oct 2009 23:31
+# Last Change: 09 Oct 2009 23:46
 # $Id$
 
 # Reference:
@@ -21,7 +21,8 @@ setMethod('sql', signature(object='FLStock'),
 
     # call .insert
     .Call('insertFLComp', db, as.character(name), object,
-      names(getSlots(class(object)))[getSlots(class(object)) == 'FLQuant'])
+      names(getSlots(class(object)))[getSlots(class(object)) == 'FLQuant'],
+      PACKAGE='SQLiteFL')
 
     # return handler
     return(new('sqliteFLStock', db=db, name=as.character(name), flrclass=class(object)))
@@ -38,7 +39,7 @@ setMethod('catch', signature(object='sqliteFLStock'),
   }
 ) # }}}
 
-# catch<-(sqliteFLStock, numeric) {{{
+# catch<-(sqliteFLStock, numeric/FLQuant) {{{
 setMethod('catch<-', signature(object='sqliteFLStock', value='numeric'),
   function(object, ..., value)
   {
@@ -53,8 +54,8 @@ setMethod('catch<-', signature(object='sqliteFLStock', value='FLQuant'),
     args <- list(...)
     if(length(args) == 0)
       args <- dimnames(value)
-    do.call('updateFLComp', c(list(object=object, slot='catch', value=as.vector(value)),
-      args))
+    do.call('updateFLComp', c(list(object=object, slot='catch',
+      value=as.vector(value)), args))
     return(object)
   }
 ) # }}}
@@ -111,8 +112,8 @@ setMethod('catch.wt<-', signature(object='sqliteFLStock', value='FLQuant'),
     args <- list(...)
     if(length(args) == 0)
       args <- dimnames(value)
-    do.call('updateFLComp', c(list(object=object, slot='catch.wt', value=as.vector(value)),
-      args))
+    do.call('updateFLComp', c(list(object=object, slot='catch.wt',
+      value=as.vector(value)), args))
     return(object)
   }
 ) # }}}
@@ -378,3 +379,173 @@ setMethod('stock.wt<-', signature(object='sqliteFLStock', value='FLQuant'),
   }
 ) # }}}
 
+# harvest {{{
+setMethod('harvest', signature(object='sqliteFLStock', catch='missing'),
+  function(object, ...)
+  {
+    selectFromFLComp(object, 'harvest', ...)
+  }
+) # }}}
+
+# harvest<-(sqliteFLharvest, numeric) {{{
+setMethod('harvest<-', signature(object='sqliteFLStock', value='numeric'),
+  function(object, ..., value)
+  {
+    updateFLComp(object, 'harvest', value, ...)
+    return(object)
+  }
+)
+# harvest<-(sqliteFLharvest, FLQuant)
+setMethod('harvest<-', signature(object='sqliteFLStock', value='FLQuant'),
+  function(object, ..., value)
+  {
+    args <- list(...)
+    if(length(args) == 0)
+      args <- dimnames(value)
+    do.call('updateFLComp', c(list(object=object, slot='harvest', value=as.vector(value)),
+      args))
+    return(object)
+  }
+) # }}}
+
+# harvest.spwn {{{
+setMethod('harvest.spwn', signature(object='sqliteFLStock'),
+  function(object, ...)
+  {
+    selectFromFLComp(object, 'harvest.spwn', ...)
+  }
+) # }}}
+
+# harvest.spwn<-(sqliteFLharvest.spwn, numeric) {{{
+setMethod('harvest.spwn<-', signature(object='sqliteFLStock', value='numeric'),
+  function(object, value)
+  {
+    updateFLComp(object, 'harvest.spwn', value, ...)
+    return(object)
+  }
+)
+# harvest.spwn<-(sqliteFLharvest.spwn, FLQuant)
+setMethod('harvest.spwn<-', signature(object='sqliteFLStock', value='FLQuant'),
+  function(object, value)
+  {
+    args <- list(...)
+    if(length(args) == 0)
+      args <- dimnames(value)
+    do.call('updateFLComp', c(list(object=object, slot='harvest.spwn', value=as.vector(value)),
+      args))
+    return(object)
+  }
+) # }}}
+
+# m.spwn {{{
+setMethod('m.spwn', signature(object='sqliteFLStock'),
+  function(object, ...)
+  {
+    selectFromFLComp(object, 'm.spwn', ...)
+  }
+) # }}}
+
+# m.spwn<-(sqliteFLm.spwn, numeric) {{{
+setMethod('m.spwn<-', signature(object='sqliteFLStock', value='numeric'),
+  function(object, value)
+  {
+    updateFLComp(object, 'm.spwn', value, ...)
+    return(object)
+  }
+)
+# m.spwn<-(sqliteFLm.spwn, FLQuant)
+setMethod('m.spwn<-', signature(object='sqliteFLStock', value='FLQuant'),
+  function(object, value)
+  {
+    args <- list(...)
+    if(length(args) == 0)
+      args <- dimnames(value)
+    do.call('updateFLComp', c(list(object=object, slot='m.spwn', value=as.vector(value)),
+      args))
+    return(object)
+  }
+) # }}}
+
+# m {{{
+setMethod('m', signature(object='sqliteFLStock'),
+  function(object, ...)
+  {
+    selectFromFLComp(object, 'm', ...)
+  }
+) # }}}
+
+# m<-(sqliteFLm, numeric) {{{
+setMethod('m<-', signature(object='sqliteFLStock', value='numeric'),
+  function(object, value)
+  {
+    updateFLComp(object, 'm', value, ...)
+    return(object)
+  }
+)
+# m<-(sqliteFLm, FLQuant)
+setMethod('m<-', signature(object='sqliteFLStock', value='FLQuant'),
+  function(object, value)
+  {
+    args <- list(...)
+    if(length(args) == 0)
+      args <- dimnames(value)
+    do.call('updateFLComp', c(list(object=object, slot='m', value=as.vector(value)),
+      args))
+    return(object)
+  }
+) # }}}
+
+# mat {{{
+setMethod('mat', signature(object='sqliteFLStock'),
+  function(object, ...)
+  {
+    selectFromFLComp(object, 'mat', ...)
+  }
+) # }}}
+
+# mat<-(sqliteFLmat, numeric) {{{
+setMethod('mat<-', signature(object='sqliteFLStock', value='numeric'),
+  function(object, value)
+  {
+    updateFLComp(object, 'mat', value, ...)
+    return(object)
+  }
+)
+# mat<-(sqliteFLmat, FLQuant)
+setMethod('mat<-', signature(object='sqliteFLStock', value='FLQuant'),
+  function(object, value)
+  {
+    args <- list(...)
+    if(length(args) == 0)
+      args <- dimnames(value)
+    do.call('updateFLComp', c(list(object=object, slot='mat', value=as.vector(value)),
+      args))
+    return(object)
+  }
+) # }}}
+
+
+# METHODS
+
+# ssb {{{
+setMethod('ssb', signature(object='sqliteFLStock'),
+  function(object, ...)
+  {
+    if(units(harvest(object)) == 'f')
+	{
+		res <- colSums(stock.n(object) * exp(-harvest(object) * harvest.spwn(object) -
+      m(object) * m.spwn(object)) * stock.wt(object) * mat(object), na.rm=FALSE)
+		dim(res) <- c(1, dim(res))
+		dmns<-dimnames(stock(object))
+		dmns$iter<-dimnames(res)$iter
+		return(FLQuant(res, dimnames=dmns))
+	} else if(units(harvest(object)) == 'hr')
+  {
+		res <- colSums(object@stock.n * (1 - object@harvest * object@harvest.spwn) *
+      exp(-object@m * object@m.spwn) * object@harvest.spwn * object@mat * object@stock.wt)
+		dim(res) <- c(1, dim(res))
+		return(FLQuant(res, dimnames=dimnames(object@stock)))
+  } else
+		stop("Correct units (f or hr) not specified in the harvest slot")
+	}
+) # }}}

@@ -1,7 +1,7 @@
 Package: SQLiteFL
 Title: Storing FLR objects in SQLite.
-Version: 0.1
-Date: 2008
+Version: 0.2
+Date: 2009
 Author: Iago Mosqueira & Finlay Scott
 Description: SQLite for FLR
 Depends: methods, FLCore

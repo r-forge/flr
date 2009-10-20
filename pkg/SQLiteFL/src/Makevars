@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 #  $Id$
-PKG_CFLAGS=-Wunused -pedantic
+# PKG_CFLAGS=-Wunused -pedantic
 PKG_LIBS = $(SUBLIBS)
 
 MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf

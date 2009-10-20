@@ -14,6 +14,8 @@ DESIGN of SQLIteFL
 
 - sql to insert an FLR object into sqlite. Returns an 'sqliteFL' handler
 
+- unsql to return the whole object
+
 - show(): SELECT FROM data/meta object[,,1,1,1,1] and create FLQuant.
 
 - '[': SELECT FROM data object[i,j,k,l,m,n] and create FLQuant.

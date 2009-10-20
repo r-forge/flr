@@ -16,7 +16,7 @@ setGeneric('unsql', function(object, ...)
 
 setMethod('unsql', signature(object='sqliteFLComp'),
   function(object) {
-    .Call('selectFLComp', object@db, object@name)
+    .Call('selectFLComp', object@db, object@name, PACKAGE='SQLiteFL')
   }
 )
 # }}}
@@ -25,7 +25,7 @@ setMethod('unsql', signature(object='sqliteFLComp'),
 setMethod('summary', signature(object='sqliteFLComp'),
   function(object)
   {
-    rc <- .Call('summaryFLComp', object@db, object@name)
+    rc <- .Call('summaryFLComp', object@db, object@name, PACKAGE='SQLiteFL')
   }
 ) # }}}
 
@@ -33,13 +33,14 @@ setMethod('summary', signature(object='sqliteFLComp'),
 setMethod('dims', signature(obj='sqliteFLComp'),
   function(obj)
   {
-    .Call('dimsFLComp', obj@db, obj@name)
+    .Call('dimsFLComp', obj@db, obj@name, PACKAGE='SQLiteFL')
   }
 ) # }}}
 
 # show
 
-# iter
+# iter  {{{
+# }}}
 
 # iter<-
 
@@ -79,24 +80,24 @@ updateFLComp <- function(object, slot, value, ...)
   # resize value if appropriate
   # TODO what if args = list()?
   len <- prod(unlist(lapply(update[idx], length)))
-  if(len %% length(value) != 0)
+  if(len %% length(value) != 0 && length(args) != 0)
     stop('number of items to replace is not a multiple of replacement length')
   else if(length(value) < len)
-    value <- rep(value, each=len/length(value))
+    value <- rep(value, len/length(value))
 
   # create stmt
   table <- paste(object@name, 'data', sep='_')
-  stmt <- paste('UPDATE', table, 'SET data = ? WHERE slot = ', paste('\"', slot,
-    '\"',sep=''))
+  stmt <- paste('UPDATE', paste('\"', table, '\"', sep=''), 'SET data = ? WHERE slot = ',
+    paste('\"', slot, '\"',sep=''))
   # add AND statements if needed
   if(length(args) > 0)
     stmt <- paste(stmt, paste('AND', names(update[idx]), '= ?', collapse=' '), ';')
   else
     stmt <- paste(stmt, ';')
-  
+ 
   invisible(.Call('updateFLComp', object@db, object@name, stmt, as.double(value),
     as.integer(dims), update[['quant']], update[['year']], update[['unit']], 
-    update[['season']], update[['area']], update[['iter']]))
+    update[['season']], update[['area']], update[['iter']], PACKAGE='SQLiteFL'))
 } # }}}
 
 # selectFromFLComp {{{
@@ -105,7 +106,7 @@ selectFromFLComp <- function(object, slot, ...)
     quant  <- character(1)
     args <- list(...)
     if(length(args) == 0)
-      return(.Call('selectSlotFLComp', object@db, object@name, slot))
+      return(.Call('selectSlotFLComp', object@db, object@name, slot, PACKAGE='SQLiteFL'))
     # Standard dimension names
     qnames <- c('quant', 'year', 'unit', 'season', 'area', 'iter')
     # Find names not in standard list, assume they refer to quant
@@ -130,5 +131,5 @@ selectFromFLComp <- function(object, slot, ...)
     select <- paste(unlist(select[dims>0]), collapse=' ')
 
     return(.Call('selectFromSlotFLComp', object@db, object@name, slot, select,
-      as.integer(dims), quant))
+      as.integer(dims), quant, PACKAGE='SQLiteFL'))
 } # }}}

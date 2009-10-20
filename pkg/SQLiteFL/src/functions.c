@@ -62,7 +62,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   INTEGER(Rval)[0] = 1;
   
   /* SELECT dims */
-  sql = sqlite3_mprintf("SELECT quant, year, unit, season, area, iter FROM %q_slots WHERE slot = '%q';", name, slot);
+  sql = sqlite3_mprintf("SELECT quant, year, unit, season, area, iter FROM \"%q_slots\" WHERE slot = '%q';", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -93,7 +93,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   PROTECT(d6 = allocVector(STRSXP, INTEGER(dim)[5]));
   
   /* quant */
-  sql = sqlite3_mprintf("SELECT DISTINCT quant FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT quant FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -129,7 +129,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   sqlite3_free(sql);
 
   /* year */
-  sql = sqlite3_mprintf("SELECT DISTINCT year FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT year FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -165,7 +165,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   sqlite3_free(sql);
 
   /* unit */
-  sql = sqlite3_mprintf("SELECT DISTINCT unit FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT unit FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -201,7 +201,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   sqlite3_free(sql);
 
   /* season */
-  sql = sqlite3_mprintf("SELECT DISTINCT season FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT season FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -237,7 +237,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   sqlite3_free(sql);
 
   /* area */
-  sql = sqlite3_mprintf("SELECT DISTINCT area FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT area FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -273,7 +273,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   sqlite3_free(sql);
 
   /* iter */
-  sql = sqlite3_mprintf("SELECT DISTINCT iter FROM %q_data WHERE slot = '%q' ORDER BY rowID;", name, slot);
+  sql = sqlite3_mprintf("SELECT DISTINCT iter FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowID;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -310,7 +310,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
 
   /* dimnames names */
   PROTECT(names = allocVector(STRSXP, 6));
-  sql = sqlite3_mprintf("SELECT value FROM %q_meta WHERE field = 'quant';", name);
+  sql = sqlite3_mprintf("SELECT value FROM \"%q_meta\" WHERE field = 'quant';", name);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -340,7 +340,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
 
   /* units */
   PROTECT(units = allocVector(STRSXP, 1));
-  sql = sqlite3_mprintf("SELECT units FROM %q_slots WHERE slot = '%q';", name, slot);
+  sql = sqlite3_mprintf("SELECT units FROM \"%q_slots\" WHERE slot = '%q';", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -363,7 +363,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
 
   /* data */
   PROTECT(v = Rf_allocArray(REALSXP, dim)); 
-  sql = sqlite3_mprintf("SELECT data FROM %q_data WHERE slot = '%q' ORDER BY rowId;", name, slot);
+  sql = sqlite3_mprintf("SELECT data FROM \"%q_data\" WHERE slot = '%q' ORDER BY rowId;", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -423,7 +423,7 @@ SEXP getMetaFLComp(sqlite3 *db, const char *name, const char *field)
   INTEGER(Rval)[0] = 1;
 
   /* GET name */ 
-  sql = sqlite3_mprintf("SELECT value FROM %q_meta WHERE field = '%q';", name, field);
+  sql = sqlite3_mprintf("SELECT value FROM \"%q_meta\" WHERE field = '%q';", name, field);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -462,7 +462,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
 
   /* GET range */
   /* Get length of range*/
-  sql = sqlite3_mprintf("SELECT count(*) FROM %q_range;", name);
+  sql = sqlite3_mprintf("SELECT count(*) FROM \"%q_range\";", name);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -489,7 +489,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
   PROTECT(NamesR = allocVector(STRSXP, lenr));
 
   /* Assign names and values to vectors */
-  sql = sqlite3_mprintf("SELECT field, value FROM %q_range;", name);
+  sql = sqlite3_mprintf("SELECT field, value FROM \"%q_range\";", name);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -566,7 +566,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   INTEGER(Rval)[0] = 1;
   
   /* SELECT dims */
-  sql = sqlite3_mprintf("SELECT quant, year, unit, season, area, iter FROM %q_slots WHERE slot = '%q';", name, slot);
+  sql = sqlite3_mprintf("SELECT quant, year, unit, season, area, iter FROM \"%q_slots\" WHERE slot = '%q';", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -603,7 +603,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   PROTECT(d6 = allocVector(STRSXP, INTEGER(dim)[5]));
 
   /* quant */
-  sql = sqlite3_mprintf("SELECT DISTINCT quant FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT quant FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -639,7 +639,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   sqlite3_free(sql);
 
   /* year */
-  sql = sqlite3_mprintf("SELECT DISTINCT year FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT year FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -675,7 +675,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   sqlite3_free(sql);
 
   /* unit */
-  sql = sqlite3_mprintf("SELECT DISTINCT unit FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT unit FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -711,7 +711,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   sqlite3_free(sql);
 
   /* season */
-  sql = sqlite3_mprintf("SELECT DISTINCT season FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT season FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -747,7 +747,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   sqlite3_free(sql);
 
   /* area */
-  sql = sqlite3_mprintf("SELECT DISTINCT area FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT area FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -783,7 +783,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   sqlite3_free(sql);
 
   /* iter */
-  sql = sqlite3_mprintf("SELECT DISTINCT iter FROM %q_data WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT DISTINCT iter FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowID;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can quant SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -820,7 +820,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
 
   /* dimnames names */
   PROTECT(names = allocVector(STRSXP, 6));
-  sql = sqlite3_mprintf("SELECT value FROM %q_meta WHERE field = 'quant';", name);
+  sql = sqlite3_mprintf("SELECT value FROM \"%q_meta\" WHERE field = 'quant';", name);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -850,7 +850,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
 
   /* units */
   PROTECT(units = allocVector(STRSXP, 1));
-  sql = sqlite3_mprintf("SELECT units FROM %q_slots WHERE slot = '%q';", name, slot);
+  sql = sqlite3_mprintf("SELECT units FROM \"%q_slots\" WHERE slot = '%q';", name, slot);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -873,7 +873,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
 
   /* data */
   PROTECT(v = Rf_allocArray(REALSXP, dim)); 
-  sql = sqlite3_mprintf("SELECT data FROM %q_data WHERE slot = '%q' %q ORDER BY rowId;", name, slot, select);
+  sql = sqlite3_mprintf("SELECT data FROM \"%q_data\" WHERE slot = '%q' %q ORDER BY rowId;", name, slot, select);
   rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
   /* Can SELECT statement be prepared? */
   if(rc != SQLITE_OK) {
@@ -918,7 +918,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
 	return (Quant);
 } /* }}} */
 
-/* SEXP getRangeElement(SEXP range, const char *str)  {{{ */ 
+/* Function SEXP getRangeElement(SEXP range, const char *str)  {{{ */ 
 SEXP getRangeElement(SEXP range, const char *str)
 {
   SEXP elmt = allocVector(REALSXP, 1), names = getAttrib(range, R_NamesSymbol);
