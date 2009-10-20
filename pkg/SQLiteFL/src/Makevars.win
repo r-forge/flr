@@ -13,7 +13,7 @@ MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf
 
 include $(RHOME)/src/gnuwin32/MkRules
 
-SOURCES_C = functions.c insert.c select.c init.c methods.c
+SOURCES_C = functions.c insert.c select.c init.c methods.c update.c
 
 OBJECTS = $(SOURCES_C:.c=.o)
 DEPS = $(SOURCES_C:.c=.d)
