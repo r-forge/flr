@@ -21,7 +21,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        stop("harvest slot has to have units of type 'f'")
     if (!validObject(ctrl))
        stop("ctrl not valid")
-        
+
     yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
 
     ## check years
@@ -42,7 +42,6 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        endYr<-NULL
 
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
-
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
 
     ## check iters in ctrl are '1 or n' and correct if necessary
@@ -88,14 +87,12 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     units(x@harvest)<-"f"
 
     stock.n(x)[is.na(stock.n(x))]<-0.0
-
     catch(   x)<-computeCatch(   x)
     landings(x)<-computeLandings(x)
     discards(x)<-computeDiscards(x)
     stock(   x)<-computeStock(   x)
     name(    x)<-name(object)
     desc(    x)<-desc(object)
-
     if (!is.null(endYr)) x <- window(x, end=endYr-1)
 
     return(x)
@@ -106,14 +103,13 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
 setMethod("fwd", signature(object='FLBiol', fleets='FLCatch'),
     function(object,fleets,ctrl,
                 sr           =NULL,
-                sr.residuals =NULL, sr.residuals.mult=TRUE)
-{                         
+                sr.residuals =NULL, sr.residuals.mult=TRUE){
+                
     object<-FLBiols(object)
     if (length(object)>1) stop("Only implemented for 1 FLBiol")
     fleets <- FLFleets(FLFleet(fleets))
     fwd(object=object, fleets=fleets, ctrl=ctrl,sr=sr,sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals) 
-}
-)
+    })
 
 setMethod("fwd", signature(object='FLBiol', fleets='FLFleet'),
     function(object,fleets,ctrl,
@@ -219,14 +215,14 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
    #   stop(dms)
       
    ## Check iters are 1 or n
-   iters<-unique(c(unlist(lapply(fleets, function(x) dims(x)$iters)),
-                   unlist(lapply(biol, function(x) dims(x)$iter))))
-   if ((length(iters) >2) | (length(iters)==2 & !(1 %in% iters)))
-      stop("Iters need to be '1 or n'")
+   iter<-unique(c(unlist(lapply(fleets, function(x) dims(x)$iters)),
+                  unlist(lapply(biol, function(x) dims(x)$iter))))
+   if ((length(iter) >2) | (length(iter)==2 & !(1 %in% iter)))
+      stop("Iter needs to be '1 or n'")
 
-   if (!all(unlist(dims(biol[[1]])[  c("minyear","maxyear","seasons","areas", "iters")])==
-            unlist(dims(fleets[[1]])[c("minyear","maxyear","seasons","areas","iters")])))
-      stop("years, seasons, areas and iters have to match in FLBiol & FLFleet")
+   if (!all(unlist(dims(biol[[1]])[  c("minyear","maxyear","season","area","iter")])==
+            unlist(dims(fleets[[1]])[c("minyear","maxyear","season","area","iter")])))
+      stop("year, season, area and iter have to match in FLBiol & FLFleet")
    
    ## needed cos m plays a big role in the C++ code
    for (i in 1:length(biol))
@@ -245,15 +241,15 @@ ctrl@target <- chkTargetQuantity(ctrl@target)
 #      stop("sr has to either be an FLSR object or a list with items 'model' & 'params'")
 #      
 #   if (!is.null(sr.residuals))
-#      if(dims(sr.residuals)$iter != dms["iters"])
-#         stop("iters in object and sr.residuals don't match")
+#      if(dims(sr.residuals)$iter != dms["iter"])
+#         stop("iter in object and sr.residuals don't match")
     #sr<-setSR(sr=sr, object = object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
 #browser()
 #    sr<-setSR(sr=sr, object=biol[[1]], yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult)          
    #if (is.character(sr)) 
    #   stop(sr)
 
-   dms<-dms[c("minyear","maxyear","units","seasons","areas","iters")]
+   dms<-dms[c("minyear","maxyear","unit","season","area","iter")]
 
    for (i in 1:length(biol))
       if ((yrs[length(yrs)] == dims(biol[[i]])$maxyear)+1  )

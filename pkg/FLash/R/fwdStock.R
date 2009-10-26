@@ -6,13 +6,13 @@ fwdStock<-function(obj,fbar,sr,sr.residuals=NULL,distribution=NULL){
 
    #### check dims
    if (!all(dimnames(fbar)$area   %in% dimnames(m(obj))$area))
-      stop("Areas in FBar and obj don't match")
+      stop("Areas in FBar and obj don´t match")
    if (!all(dimnames(fbar)$season %in% dimnames(m(obj))$season))
-      stop("Seasons in FBar and obj don't match")
+      stop("Seasons in FBar and obj don´t match")
    if (!all(dimnames(fbar)$unit   %in% dimnames(m(obj))$unit))
-      stop("Units in FBar and obj don't match")
+      stop("Units in FBar and obj don´t match")
    if (!all(dimnames(fbar)$year   %in% dimnames(m(obj))$year))
-      stop("Years in FBar and obj don't match")
+      stop("Years in FBar and obj don´t match")
       
    yrs <-dimnames(fbar)$year
 

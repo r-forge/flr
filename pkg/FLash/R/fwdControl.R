@@ -30,7 +30,7 @@ validFwdControl <- function(object){
         return(FALSE)}
 
      if (dim(object@trgtArray)[3]!=dim(object@effArray)[3]){
-        warning("iters in trgtArray & effArray don't match")
+        warning("iter in trgtArray & effArray don't match")
         return(FALSE)}
      }
 
@@ -74,7 +74,7 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
             else if (is(x[[1]],"array") | is(x[[1]],"matrix")) nits<-dim(x[[1]])[length(dim(x[[1]]))]
             else stop("")
 
-         res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iters=1:nits))
+         res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iter=1:nits))
          if ("val" %in% names(x)){
             if (is.vector(x$val)) x$val<-array(x$val,dim=c(1,length(x$val)))
             if (nits == dim(x$val)[2])
@@ -94,7 +94,7 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
           if (is.null(nits))
              nits<-dim(x)[3]
 
-          res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iters=1:nits))
+          res<-array(NA,dim=c(nrws,3,nits),dimnames=list(1:nrws,c("min","val","max"),iter=1:nits))
 
           res[dimnames(x)[[1]],dimnames(x)[[2]],]<-x
           }
@@ -153,7 +153,7 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
           res@target[,"max"]<-median(res@trgtArray[,"max",])
           res@target[,"val"]<-median(res@trgtArray[,"val",])}}
     else{
-       res@trgtArray<-array(as.numeric(NA),dim=c(length(res@target[,1]),3,1),dimnames=list(1:length(res@target[,1]),c("min","val","max"),iters=1))}
+       res@trgtArray<-array(as.numeric(NA),dim=c(length(res@target[,1]),3,1),dimnames=list(1:length(res@target[,1]),c("min","val","max"),iter=1))}
 
     res@target[,"quantity"]<-factor(res@target[,"quantity"],levels=c("ssb","biomass","catch","landings","discards","f","z","f.landings","f.discards","effort","costs","revenue","profit","mnsz"))
 
@@ -184,7 +184,7 @@ fwdControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
             res@effort[,"max"]<-median(res@effArray[,"max",])
             res@effort[,"val"]<-median(res@effArray[,"val",])}}
       else
-         res@effArray<-array(as.numeric(NA),dim=c(length(res@effort[,1]),3,1),dimnames=list(1:length(res@effort[,1]),c("min","val","max"),iters=1))
+         res@effArray<-array(as.numeric(NA),dim=c(length(res@effort[,1]),3,1),dimnames=list(1:length(res@effort[,1]),c("min","val","max"),iter=1))
 
     for (i in 1:length(res@effort[,1])){
        if (any(is.na(res@effArray[i,"min",]))) res@effArray[i,"min",]<-res@effort[i,"min"]
@@ -209,7 +209,7 @@ showArray<-function(object){
     print(array(v3, dim=dim(object)[1:2], dimnames=dimnames(object)[1:2]), quote=FALSE)
 
 		if(dim(object)[3] != 1)
-			cat("iters: ", dim(object)[3],"\n\n")}
+			cat("iter: ", dim(object)[3],"\n\n")}
 
 setMethod('show', signature(object='fwdControl'),
   function(object){
@@ -303,18 +303,18 @@ matrixEffort <- function(effort)
 
 
 chkTrgtArrayIters <- function(object,trgtArray,sr)
-{
+    {
     if (is(object,'FLlst')) object <- object[[1]]
     # get iterations from trgtArray, stock, SR parameters and SR residuals
-    its<-sort(unique(c(length(dimnames(trgtArray)$iters), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
-    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("Iters not 1 or n")
+    its<-sort(unique(c(length(dimnames(trgtArray)$iter), dims(object)$iter, length(dimnames(sr$params[[1]])$iter), length(dimnames(sr$residuals[[1]])$iter))))
+    if (length(its)>2 | (length(its)>1 & its[1]!=1)) stop("iter not 1 or n")
     if (length(its)==2 & length(dimnames(trgtArray)$iter == 1)){
         dmns<-dimnames(trgtArray)
-        dmns$iters<-1:its[2]
+        dmns$iter<-1:its[2]
         trgtArray<-array(trgtArray,dim=unlist(lapply(dmns,length)),dimnames=dmns)}
 
     return(trgtArray)
-}
+    }
 
 # check target quantity is factor and that it is currently implemented
 chkTargetQuantity <- function(target,object)
