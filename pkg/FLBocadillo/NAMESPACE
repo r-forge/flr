@@ -1,0 +1,21 @@
+import("FLCore")
+exportClasses("FLIndexPM")
+importFrom("graphics",
+  "plot")
+export(
+	"readFLStock",
+  "getMassAge",
+  "cor2cov",
+  "OEMIndex",
+  "fapex",
+  "catchSel",
+  "landingsSel",
+  "discardsSel")
+exportMethods(
+  "OEM",
+  "qmin",
+  "qmax",
+  "OEM",
+  "alphaBeta",
+  "steepVirgin",
+  "auto_parscale")
