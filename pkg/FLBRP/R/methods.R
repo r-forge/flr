@@ -59,9 +59,18 @@ setMethod('catch.n', signature(object='FLBRP'),
 # catch.wt  {{{
 setMethod('catch.wt', signature(object='FLBRP'),
   function(object) {
-      idx <- landings.sel(object) == 0 & discards.sel(object) == 0
-      landings.sel(object)[idx] <- 1
-      discards.sel(object)[idx] <- 1
+      idx1 <- landings.sel(object) == 0
+      idx2 <- discards.sel(object) == 0
+      if(dim(idx1)[6] > dim(idx2)[6]) {
+        idx <- array(idx2, dim=dim(idx1)) == TRUE & idx1 == TRUE
+        landings.sel(object)[idx] <- 1
+        discards.sel(object)[apply(idx, 1:5, function(x) as.logical(sum(x)))] <- 1
+      }
+      if(dim(idx2)[6] > dim(idx1)[6]) {
+        idx <- array(idx1, dim=dim(idx2)) == TRUE & idx2 == TRUE
+        discards.sel(object)[idx] <- 1
+        landings.sel(object)[apply(idx, 1:5, function(x) as.logical(sum(x)))] <- 1
+      }
       res <- (landings.wt(object) * landings.sel(object) +
               discards.wt(object) * discards.sel(object)) /
              (landings.sel(object) + discards.sel(object))
