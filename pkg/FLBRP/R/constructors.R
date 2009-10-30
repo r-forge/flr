@@ -63,6 +63,12 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
       for(i in slots[empty])
         slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
 
+    if (!("discards.wt"     %in% names(args))) discards.wt    (res)[]<-0
+    if (!("discards.sel"    %in% names(args))) discards.sel   (res)[]<-0
+    if (!("bycatch.harvest" %in% names(args))) bycatch.harvest(res)[]<-0
+    if (!("bycatch.wt"      %in% names(args))) bycatch.wt     (res)[]<-0
+    if (!("availability"    %in% names(args))) availability   (res)[]<-1
+
     return(res)
 
   }

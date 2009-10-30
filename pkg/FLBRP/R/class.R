@@ -33,7 +33,6 @@ setClass('refpts', representation('FLPar'),
 validFLBRP <- function(object)
 {
   # (1) FLQuant objects must share dimnames[1:5] as follows
-
   #  fbar.obs with landings.obs, discards.obs, ssb.obs, profit.obs
   for (i in c("landings.obs", "discards.obs", "ssb.obs", "profit.obs"))
     if(!all.equal(dimnames(object@fbar.obs), dimnames(slot(object, i))))
