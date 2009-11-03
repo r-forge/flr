@@ -38,7 +38,7 @@ setMethod("auto_parscale", signature(obj="FLModel"),
    iv   <-do.call(obj@initial, args=data[names(formals(obj@initial))])
 
    #iv   <- initial(obj)(rec(obj),ssb(obj))
-   tiny_number <- 1+1e-10
+   tiny_number <- 1e-10
    dll  <- rep(NA,npar)
 
    # Make a list of the LogL arguments with the initial values
@@ -50,17 +50,23 @@ setMethod("auto_parscale", signature(obj="FLModel"),
    for (i in dimnames(params(obj))$params)
      ll_args_orig[[i]] <- iv[[i]]
 
-   ll_orig <- do.call(logl(obj),ll_args_orig)
-   ll_bump <- rep(NA,npar)
-   names(ll_bump) <- dimnames(params(obj))$params
+   ll_orig         <- do.call(logl(obj),ll_args_orig)
+   ll_bump1        <- rep(NA,npar)
+   names(ll_bump1) <- dimnames(params(obj))$params
+   ll_bump2        <- ll_bump1
 
    # cycle over each parameter, bump it and get the new LL
    for (i in dimnames(params(obj))$params){
-      ll_args_bump <- ll_args_orig
-      ll_args_bump[[i]] <- ll_args_bump[[i]] * tiny_number
-      ll_bump[i] <-do.call(logl(obj),ll_args_bump)}
+      ll_args_bump1      <- ll_args_orig
+      ll_args_bump1[[i]] <- ll_args_bump1[[i]] * (1+tiny_number)
+      ll_bump1[i]        <-do.call(logl(obj),ll_args_bump1)
+
+      ll_args_bump2      <- ll_args_orig
+      ll_args_bump2[[i]] <- ll_args_bump2[[i]] * (1-tiny_number)
+      ll_bump2[i]        <-do.call(logl(obj),ll_args_bump2)
+      }
       
-   dll <- (ll_bump-ll_orig) / (unlist(ll_args_orig)[dimnames(params(obj))$params] * (tiny_number-1))
+   dll <- (ll_bump1-ll_bump2) / (unlist(ll_args_orig)[dimnames(params(obj))$params] * (tiny_number*2))
 
    return(abs(1/dll))})
 
