@@ -488,7 +488,7 @@ SEXP FLBRP::ReturnStk(SEXP x)
               _stock(   _stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =  
               _catch(   _stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =  
               _landings(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =
-              _discards(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) =
+              _discards(_stock.minquant(), iYr,iUnit,iSeason,iArea,iIter) =
               _catch_wt(_stock.minquant(),iYr,iUnit,iSeason,iArea,iIter) = 0.0;
 
               for (int iAge=minage; iAge<=maxage; iAge++){
@@ -497,11 +497,11 @@ SEXP FLBRP::ReturnStk(SEXP x)
                  _discards(iAge,iYr,iUnit,iSeason,iArea,iIter) += discards_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_wt(iAge,iYr,iUnit,iSeason,iArea,iIter);
                  catch_n(iAge,iYr,iUnit,iSeason,iArea,iIter)   += landings_n(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_n( iAge,iYr,iUnit,iSeason,iArea,iIter);
                 
-				 double denom = landings_sel(iAge,iYr,iUnit,iSeason,iArea,iIter)+discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter);
+				 double catch_sel = landings_sel(iAge,iYr,iUnit,iSeason,iArea,iIter)+discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter);
                  
-				 if (denom==0.0) denom=1.0;
+				 if (catch_sel==0.0) catch_sel=1.0;
 				 _catch_wt(iAge,iYr,iUnit,iSeason,iArea,iIter) +=(landings_sel(iAge,iYr,iUnit,iSeason,iArea,iIter)*landings_wt(iAge,iYr,iUnit,iSeason,iArea,iIter)+
-                                                                  discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_wt(iAge,iYr,iUnit,iSeason,iArea,iIter))/denom;
+                                                                  discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter)*discards_wt(iAge,iYr,iUnit,iSeason,iArea,iIter))/catch_sel;
                   }
            }
    

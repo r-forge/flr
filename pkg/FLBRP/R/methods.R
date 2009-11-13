@@ -32,18 +32,6 @@ setMethod('stock.n', signature(object='FLBRP'),
   }
 ) # }}}
 
-# catch {{{
-setMethod('catch', signature(object='FLBRP'),
-  function(object) {
-    res <- landings(object) + discards(object)
-    if (units(discards(object)) == units(landings(object)))
-		  units(res) <- units(discards(object))
-    else
-      warning("units of discards and landings do not match")
-    return(res)
-  }
-) # }}}
-
 # catch.n {{{
 setMethod('catch.n', signature(object='FLBRP'),
   function(object) {
@@ -95,15 +83,6 @@ setMethod('catch.sel', signature(object='FLBRP'),
   }
 ) # }}}
 
-# catch.hat {{{
-setGeneric('catch.hat', function(object, ...)
-		standardGeneric('catch.hat'))
-setMethod('catch.hat', signature(object='FLBRP'),
-  function(object) {
-    return(discards.hat(object)+landings.hat(object))
-    }
-) # }}}
-
 # catch.obs {{{
 setGeneric('catch.obs', function(object, ...)
 		standardGeneric('catch.obs'))
@@ -113,22 +92,6 @@ setMethod('catch.obs', signature(object='FLBRP'),
     }
 ) # }}}
 
-# yield {{{
-setGeneric('yield', function(object, ...)
-		standardGeneric('yield'))
-setMethod('yield', signature(object='FLBRP'),
-  function(object) {
-    return(landings(object))
-    }
-) # }}}
-
-# yield.hat {{{
-setGeneric('yield.hat', function(object, ...)
-		standardGeneric('yield.hat'))
-setMethod('yield.hat', signature(object='FLBRP'),
-  function(object) { return(landings(object))
-    }
-) # }}}
 
 # yield.obs {{{
 setGeneric('yield.obs', function(object, ...)
@@ -139,69 +102,6 @@ setMethod('yield.obs', signature(object='FLBRP'),
     }
 ) # }}}
 
-# discards  {{{
-setMethod('discards', signature(object='FLBRP'),
-  function(object) {
-    return(apply(sweep(discards.n(object),c(1,3:6),discards.wt(object),"*"),2,sum))
-    }
-) # }}}
-
-# discards.hat  {{{
-setGeneric('discards.hat', function(object, ...)
-		standardGeneric('discards.hat'))
-setMethod('discards.hat', signature(object='FLBRP'),
-  function(object) return(discards(object))
-) # }}}
-
-# landings  {{{
-setMethod('landings', signature(object='FLBRP'),
-  function(object)
-  {
-    return(apply(sweep(landings.n(object),c(1,3:6),landings.wt(object),"*"),2,sum))
-  }
-) # }}}
-
-# landings.hat  {{{
-setGeneric('landings.hat', function(object, ...)
-		standardGeneric('landings.hat'))
-setMethod('landings.hat', signature(object='FLBRP'),
-  function(object) return(landings(object))
-) # }}}
-
-# stock {{{
-setMethod('stock', signature(object='FLBRP'),
-  function(object)
-  {
-    return(apply(sweep(stock.n(object),c(1,3:6),stock.wt(object),"*"),2,sum))
-  }
-) # }}}
-
-# stock.hat {{{
-setGeneric('stock.hat', function(object, ...)
-		standardGeneric('stock.hat'))
-setMethod('stock.hat', signature(object='FLBRP'),
-  function(object) return(stock(object))
-) # }}}
-
-# ssb {{{
-setMethod('ssb', signature(object='FLBRP'),
-  function(object)
-  {
-    expZ <- exp(-sweep(sweep(harvest(object), c(1,3:6), harvest.spwn(object), "*"),
-      c(1,3:6), m(object) * m.spwn(object), "+"))
-                 
-     return(apply(sweep(stock.n(object) * expZ, c(1,3:6), stock.wt(object) *
-      mat(object),"*"),2:6,sum))
-   }
-) # }}}
-
-# ssb.hat {{{
-setGeneric('ssb.hat', function(object, ...)
-		standardGeneric('ssb.hat'))
-setMethod('ssb.hat', signature(object='FLBRP'),
-  function(object) return(ssb(object))
-) # }}}
-
 # computeFbar  {{{
 setGeneric('computeFbar', function(object, ...)
 		standardGeneric('computeFbar'))
@@ -209,24 +109,6 @@ setMethod('computeFbar', signature(object='FLBRP'),
   function(object)
   {
     return(apply(harvest(object)[ac(object@range["minfbar"]:object@range["maxfbar"])],c(2:6),mean))
-  }
-) # }}}
-
-# revenue {{{
-setMethod('revenue', signature(object='FLBRP'),
-  function(object) {
-    return(apply(sweep(landings.n(object),c(1,3:6),price(object)*landings.wt(object),"*"),2:6,sum))
-    }
-) # }}}
-
-# cost {{{
-setGeneric('cost', function(object, ...)
-		standardGeneric('cost'))
-setMethod('cost', signature(object='FLBRP'),
-  function(object) 
-  {
-    res<-sweep(sweep(fbar(object),3:6,vcost(object),"*"),3:6,fcost(object),"+")
-    return(res)
   }
 ) # }}}
 
@@ -249,15 +131,6 @@ setMethod('rec.hat', signature(object='FLBRP'),
    }
 ) # }}}
 
-# profit  {{{
-setGeneric('profit', function(object, ...)
-		standardGeneric('profit'))
-setMethod('profit', signature(object='FLBRP'),
-  function(object) {
-    return(apply(revenue(object),2,sum)-cost(object))
-  }
-) # }}}
-
 ## harvest {{{
 setMethod("harvest", signature(object="FLBRP", catch="missing"),
 	function(object)
@@ -266,17 +139,10 @@ setMethod("harvest", signature(object="FLBRP", catch="missing"),
     sel <- expand(landings.sel(object) + discards.sel(object),
       year=dimnames(fbar(object))$year)
     sel[,] <- sel[,1]
-    sel <- sweep(sel, 2, fbar(object), '*')
+    sel <- sweep(sel, 2:6, fbar(object), '*')
     units(sel) <- 'f'
     return(sel)
   }
-) # }}}
-
-# profit.hat  {{{
-setGeneric('profit.hat', function(object, ...)
-		standardGeneric('profit.hat'))
-setMethod('profit.hat', signature(object='FLBRP'),
-  function(object) return(profit(object))
 ) # }}}
 
 # spr {{{
@@ -475,3 +341,143 @@ setMethod('iter', signature(object='FLBRP'),
     return(object)
   }
 ) # }}}
+
+# catch {{{
+setMethod('catch', signature(object='FLBRP'),
+  function(object) {
+    res <- landings(object) + discards(object)
+    if (units(discards(object)) == units(landings(object)))
+		  units(res) <- units(discards(object))
+    else
+      warning("units of discards and landings do not match")
+    return(res)
+  }
+) # }}}
+
+
+# catch.hat {{{
+setGeneric('catch.hat', function(object, ...)
+		standardGeneric('catch.hat'))
+
+setMethod('catch.hat', signature(object='FLBRP'),
+  function(object) {
+    return(catch(object))
+    }
+) # }}}
+
+# yield {{{
+setGeneric('yield', function(object, ...)
+		standardGeneric('yield'))
+setMethod('yield', signature(object='FLBRP'),
+  function(object) {
+    return(landings(object))
+    }
+) # }}}
+
+# yield.hat {{{
+setGeneric('yield.hat', function(object, ...)
+		standardGeneric('yield.hat'))
+setMethod('yield.hat', signature(object='FLBRP'),
+  function(object) { return(landings(object))
+    }
+) # }}}
+
+# discards  {{{
+setMethod('discards', signature(object='FLBRP'),
+  function(object) {
+    return(apply(sweep(discards.n(object),c(1,3:6),discards.wt(object),"*"),2,sum))
+    }
+) # }}}
+
+# discards.hat  {{{
+setGeneric('discards.hat', function(object, ...)
+		standardGeneric('discards.hat'))
+setMethod('discards.hat', signature(object='FLBRP'),
+  function(object) return(discards(object))
+) # }}}
+
+# landings  {{{
+setMethod('landings', signature(object='FLBRP'),
+  function(object)
+  {
+    return(apply(sweep(landings.n(object),c(1,3:6),landings.wt(object),"*"),2,sum))
+  }
+) # }}}
+
+# landings.hat  {{{
+setGeneric('landings.hat', function(object, ...)
+		standardGeneric('landings.hat'))
+setMethod('landings.hat', signature(object='FLBRP'),
+  function(object) return(landings(object))
+) # }}}
+
+# stock {{{
+setMethod('stock', signature(object='FLBRP'),
+  function(object)
+  {
+    return(apply(sweep(stock.n(object),c(1,3:6),stock.wt(object),"*"),2,sum))
+  }
+) # }}}
+
+# stock.hat {{{
+setGeneric('stock.hat', function(object, ...)
+		standardGeneric('stock.hat'))
+setMethod('stock.hat', signature(object='FLBRP'),
+  function(object) return(stock(object))
+) # }}}
+
+# ssb {{{
+setMethod('ssb', signature(object='FLBRP'),
+  function(object)
+     {
+     f    <-sweep(harvest(object), c(1,3:6), harvest.spwn(object), "*")
+     M    <-sweep(      m(object), c(1,3:6),       m.spwn(object), "*")
+     expZ <-exp(-sweep(f, c(1,3:6), M, "+"))
+
+     return(apply(sweep(stock.n(object) * expZ, c(1,3:6), stock.wt(object)*mat(object),"*"),2,sum))
+     }
+) # }}}
+
+# ssb.hat {{{
+setGeneric('ssb.hat', function(object, ...)
+		standardGeneric('ssb.hat'))
+setMethod('ssb.hat', signature(object='FLBRP'),
+  function(object) return(ssb(object))
+) # }}}
+
+# revenue {{{
+setMethod('revenue', signature(object='FLBRP'),
+  function(object) {
+    return(apply(sweep(landings.n(object),c(1,3:6),price(object)*landings.wt(object),"*"),2,sum))
+    }
+) # }}}
+
+# cost {{{
+setGeneric('cost', function(object, ...)
+		standardGeneric('cost'))
+setMethod('cost', signature(object='FLBRP'),
+  function(object)
+    {
+    res<-apply(sweep(sweep(fbar(object),3:6,vcost(object),"*"),3:6,fcost(object),"+"),2,sum)
+    return(res)
+    }
+) # }}}
+
+
+# profit  {{{
+setGeneric('profit', function(object, ...)
+		standardGeneric('profit'))
+setMethod('profit', signature(object='FLBRP'),
+  function(object) {
+    return(revenue(object)-cost(object))
+  }
+) # }}}
+
+# profit.hat  {{{
+setGeneric('profit.hat', function(object, ...)
+		standardGeneric('profit.hat'))
+setMethod('profit.hat', signature(object='FLBRP'),
+  function(object) return(profit(object))
+) # }}}
+
+
