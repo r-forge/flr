@@ -15,7 +15,7 @@ setGeneric('validSRPar', function(object, ...)
      #### check that sr has dims in FLQuant
      if (!all(names(sr) %in% c("params","year","unit","season","area","iter")))
         stop("dims in sr not recognised")
-
+        
      #### Check yrs
      if (!is.null(yrs)){
         yrs<-ac(yrs)
@@ -95,6 +95,8 @@ setGeneric('validSRPar', function(object, ...)
      if (dim(res)[3]==1 & dm$unit  =="unique") dm$unit  <-dimnames(res)$unit
      if (dim(res)[4]==1 & dm$season=="all")    dm$season<-dimnames(res)$season
      if (dim(res)[5]==1 & dm$area  =="unique") dm$area  <-dimnames(res)$area
+
+##bug if sr doesn´t match control
      res[,dimnames(sr)$year,dm$unit,dm$season,dm$area,]<-as.FLQuant(sr)
 
      return(FLPar(res))

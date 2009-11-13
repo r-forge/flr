@@ -43,7 +43,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
 
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
-
+    
     ## check iters in ctrl are '1 or n' and correct if necessary
     ctrl@trgtArray <- chkTrgtArrayIters(object,ctrl@trgtArray,sr)
 
@@ -52,7 +52,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        ctrl@target$season<-1
     else if (any(is.na(ctrl@target$season)) & dims(object)$season>1)
        stop("need to specific season in target")
-    
+
     ## Unit
     if (any(is.na(ctrl@target$unit)) & dims(object)$unit==1)
        ctrl@target$unit<-1

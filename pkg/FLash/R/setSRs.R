@@ -50,7 +50,9 @@ setMethod('setSR', signature(sr='list'),
     # If no sr.residuals then thay are NULL and just a quant of 1s is passed
     residuals<-FLQuant(1,dimnames=dmns)
     resYrs<-yrs[yrs %in% dimnames(sr.residuals)$year]
+
     if(!is(sr.residuals,"NULL") & !any(dimnames(sr.residuals)$year %in% yrs[1:(length(yrs)-1)])) warning("Year range of residuals is not within yrs range")
+
     residuals[,resYrs]<-sr.residuals[,resYrs,,,,dimnames(residuals)$iter]
 
 #****** Check and force iterations **********
