@@ -111,6 +111,22 @@ setMethod('steepVirgin', signature(x='FLSR'),
     return(steepVirgin(params(x),model))
     })
 
+setMethod('steepVirgin', signature(x='FLBRP'),
+    function(x,...){
+
+    model<-SRModelName(model(x))
+
+    if (model=="bevholt.sv") model<-"bevholt"  else
+    if (model=="ricker.sv")  model<-"ricker"
+
+    if (!(model %in% c("ricker","bevholt")))
+       stop("model must be 'bevholt' or 'ricker'")
+
+    res<-ab2sv(params(x)["a",,drop=T],params(x)["b",,drop=T],spr0(x),model)
+
+    return(res)
+    })
+
 
     # ab {{{
 setGeneric('ab', function(object, ...)

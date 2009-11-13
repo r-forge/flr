@@ -3,6 +3,8 @@ exportClasses("FLIndexPM")
 importFrom("graphics",
   "plot")
 export(
+  "getLnWt",
+  "nd",
 	"readFLStock",
   "getMassAge",
   "cor2cov",

@@ -54,7 +54,7 @@ mfclFLStock<-function(fileRep,filePar,timeFish=0.5){
                    name        ="",
                    desc        ="read in from Multifan-CL")
 
-
+      N           <-getNya(fileRep)
       N           <-array(c(N),c(nseason,length(dmns$year),length(dmns$age),nreg,1,1))
       stock.n(stk)<-FLQuant(aperm(N,c(3,2,5,1,4,6)),dimnames=dmns)
 

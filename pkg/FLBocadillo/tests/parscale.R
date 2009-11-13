@@ -19,6 +19,10 @@ sr <- as.FLSR(ple4,model="ricker")
 sr <- fmle(sr,control=list(parscale = auto_parscale(sr)))
 plot(sr)
 
+sr <- as.FLSR(ple4,model="geomean")
+sr <- fmle(sr,control=list(parscale = auto_parscale(sr)))
+plot(sr)
+
 
 library(akima)
 
