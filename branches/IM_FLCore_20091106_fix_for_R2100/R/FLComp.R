@@ -34,7 +34,6 @@ setClass("FLComp", representation(name="character", desc="character",
 	range="numeric", "VIRTUAL"), prototype(name=character(0), desc=character(0),
   range	= unlist(list(min=0, max=0, plusgroup=NA, minyear=1, maxyear=1))), 
   validity=validFLComp)
-
 invisible(createFLAccesors('FLComp', include=c('name', 'desc')))
 #  }}}
 
@@ -139,8 +138,7 @@ setMethod("transform", signature(`_data`="FLComp"),
 )	# }}}
 
 ## qapply		{{{
-if (!isGeneric("qapply"))
-	setGeneric("qapply", function(X, FUN, ...) standardGeneric("qapply"))
+setGeneric("qapply", function(X, FUN, ...) standardGeneric("qapply"))
 
 setMethod('qapply', signature(X='FLComp', FUN='function'),
 	function(X, FUN, ..., exclude=missing) {
@@ -450,8 +448,7 @@ setMethod("range", "FLComp",
   }
 ) 
 
-if (!isGeneric("range<-"))
-	setGeneric("range<-", function(x, i, value) standardGeneric("range<-"))
+setGeneric("range<-", function(x, i, value) standardGeneric("range<-"))
 setReplaceMethod("range", "FLComp",
   function(x, i, value)
   {

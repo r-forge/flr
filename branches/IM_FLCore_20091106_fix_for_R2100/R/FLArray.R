@@ -47,9 +47,8 @@ setMethod("units<-", signature(x="FLArray", value="character"),
 ) # }}}
 
 # quant        {{{
-if (!isGeneric("quant"))
-	setGeneric("quant", function(object, ...)
-		standardGeneric("quant"))
+setGeneric("quant", function(object, ...)
+  standardGeneric("quant"))
 
 setMethod("quant", signature(object="FLArray"),
 	function(object)
@@ -59,9 +58,8 @@ setMethod("quant", signature(object="FLArray"),
 ) # }}}
 
 # quant<-      {{{
-if (!isGeneric("quant<-"))
-	setGeneric("quant<-", function(object, value)
-		standardGeneric("quant<-"))
+setGeneric("quant<-", function(object, value)
+  standardGeneric("quant<-"))
 
 setMethod("quant<-", signature(object="FLArray", value='character'),
 	function(object, value)

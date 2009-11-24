@@ -126,9 +126,8 @@ is.FLBiol <- function(x)
 # }}}
 
 ## mean.lifespan {{{
-if (!isGeneric("mean.lifespan"))
-	setGeneric("mean.lifespan", function(x, ...)
-		standardGeneric("mean.lifespan"))
+setGeneric("mean.lifespan", function(x, ...)
+	standardGeneric("mean.lifespan"))
 
 setMethod("mean.lifespan", signature(x="FLBiol"),
 	function(x, ref.age = 'missing',...) {
@@ -168,12 +167,8 @@ setMethod("mean.lifespan", signature(x="FLBiol"),
 )# }}}
 
 ## as.FLBiol {{{
-if (!isGeneric("as.FLBiol")) {
-	setGeneric("as.FLBiol", function(object, ...){
-		value <- standardGeneric("as.FLBiol")
-		value
-	})
-}
+setGeneric("as.FLBiol", function(object, ...)
+  standardGeneric("as.FLBiol"))
 
 setMethod("as.FLBiol", signature(object="FLBiol"),
 
@@ -271,13 +266,8 @@ setMethod("computeStock", signature(object="FLBiol"),
 )	# }}}
 
 ## ssn  {{{
-
-if (!isGeneric("ssn")) {
-	setGeneric("ssn", function(object, ...){
-		value  <-  standardGeneric("ssn")
-		value
-	})
-}
+setGeneric("ssn", function(object, ...)
+  standardGeneric("ssn"))
 
 setMethod("ssn", signature(object="FLBiol"),
 	function(object, ...)
@@ -357,9 +347,8 @@ setMethod('harvest', signature(object='FLBiol', catch='missing'),
 ) # }}}
 
 # leslie {{{
-if (!isGeneric("leslie"))
-	setGeneric("leslie", function(object, ...)
-		standardGeneric("leslie"))
+setGeneric("leslie", function(object, ...)
+	standardGeneric("leslie"))
 
 # this method applies the Leslie Matrix-type model to an FLBiol object
 # ::
@@ -425,16 +414,10 @@ setMethod("leslie", signature(object="FLBiol"),
 
 # calculates the intrinsic rate of increase from the Leslie-transition matrix or the Euler-Lotka equation
 # by year or by cohort
-
-if (!isGeneric("r")) {
-	setGeneric("r", function(object, ...){
-		value  <-  standardGeneric("r")
-		value
-	})
-}
+setGeneric("r", function(object, ...)
+  standardGeneric("r"))
 
 # estimates r by year or cohort using Leslie matrix ideas
-
 setMethod("r", signature(object="FLBiol"),
 	function(object, by = 'year', method = 'el',...) {
 
@@ -606,13 +589,8 @@ setMethod("r", signature(object="FLBiol"),
 ) # }}}
 
 # survprob {{{
-
-if (!isGeneric("survprob")) {
-	setGeneric("survprob", function(object, ...){
-		value  <-  standardGeneric("survprob")
-		value
-	})
-}
+setGeneric("survprob", function(object, ...)
+  standardGeneric("survprob"))
 
 # estimate survival probabilities by year or cohort
 
@@ -673,9 +651,8 @@ s.<-	function(x, plusgroup, na.rm=FALSE)
 )# }}}
 
 # rec(FLBiol)  {{{
-if (!isGeneric("rec"))
-	setGeneric("rec", function(object, ...)
-		standardGeneric("rec"))
+setGeneric("rec", function(object, ...)
+  standardGeneric("rec"))
 setMethod('rec', signature(object='FLBiol'),
   function(object, rec.age=ac(dims(object)$min))
   {
