@@ -34,6 +34,7 @@ setClass("FLComp", representation(name="character", desc="character",
 	range="numeric", "VIRTUAL"), prototype(name=character(0), desc=character(0),
   range	= unlist(list(min=0, max=0, plusgroup=NA, minyear=1, maxyear=1))), 
   validity=validFLComp)
+
 invisible(createFLAccesors('FLComp', include=c('name', 'desc')))
 #  }}}
 

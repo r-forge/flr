@@ -934,9 +934,8 @@ setMethod("iters", signature(object="FLQuant"),
 )   # }}}
 
 # iter<-     {{{
-if (!isGeneric("iter<-"))
-	setGeneric("iter<-", function(object, ..., value)
-		standardGeneric("iter<-"))
+setGeneric("iter<-", function(object, ..., value)
+	standardGeneric("iter<-"))
 setMethod("iter<-", signature(object="FLQuant", value="FLQuant"),
 	function(object, iter, value)
 	{
@@ -946,8 +945,7 @@ setMethod("iter<-", signature(object="FLQuant", value="FLQuant"),
 )   # }}}
 
 # propagate {{{
-if (!isGeneric("propagate"))
-	setGeneric("propagate", function(object, ...) standardGeneric("propagate"))
+setGeneric("propagate", function(object, ...) standardGeneric("propagate"))
 
 setMethod("propagate", signature(object="FLQuant"),
   function(object, iter, fill.iter=TRUE)
@@ -1031,11 +1029,9 @@ setMethod("rpois", signature(n='numeric', lambda="FLQuant"),
 )	 # }}}
 
 # PV	{{{
-if (!isGeneric("pv")) {
-	setGeneric("pv", function(object, ...){
-		standardGeneric("pv")
-	})
-}
+setGeneric("pv", function(object, ...)
+		standardGeneric("pv"))
+
 # Heath. 2006. Oikos 115:573-581
 setMethod('pv', signature(object='FLQuant'),
 	function(object, dist=FALSE)
@@ -1077,8 +1073,7 @@ setMethod('pv', signature(object='FLQuant'),
 # }}}
 
 # setPlusGroup	{{{
-if (!isGeneric("setPlusGroup"))
-	setGeneric("setPlusGroup", function(x, plusgroup, ...)
+setGeneric("setPlusGroup", function(x, plusgroup, ...)
 		standardGeneric("setPlusGroup"))
 setMethod("setPlusGroup", signature(x='FLQuant', plusgroup='numeric'),
 	function(x, plusgroup, na.rm=FALSE)
