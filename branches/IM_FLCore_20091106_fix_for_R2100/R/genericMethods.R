@@ -9,22 +9,48 @@
 
 # TODO Wed 25 Nov 2009 05:48:37 PM CET IM:
 
-# name, name<-
-if(!isGeneric('name'))
-  setGeneric('name', function(object, ...) standardGeneric('name'))
-if(!isGeneric('name<-'))
-  setGeneric('name<-', function(object, ..., value) standardGeneric('name<-'))
+# Existing methods/functions
 
+# as.data.frame
+if (!isGeneric("as.data.frame"))
+setGeneric("as.data.frame", useAsDefault = as.data.frame)
+
+# model.frame
+if (!isGeneric("model.frame"))
+	setGeneric("model.frame", useAsDefault = model.frame)
+
+# names
+#if (!isGeneric("names"))
+  setGeneric("names", useAsDefault=names)
+
+# summary
+# if (!isGeneric("summary"))
+	setGeneric("summary", useAsDefault = summary)
+
+# plot
+# if (!isGeneric("plot"))
+	setGeneric("plot", useAsDefault = plot)
+
+# scale
+if (!isGeneric("scale"))
+setGeneric("scale", useAsDefault = scale)
+
+# transform
+if (!isGeneric("transform"))
+  setGeneric("transform", useAsDefault=transform)
+
+# units, units<-
+if (!isGeneric("units"))
+  setGeneric("units", useAsDefault=units)
+setGeneric("units<-", function(x, value)
+  standardGeneric("units<-"))
+
+# NEW methods
 # desc
 if(!isGeneric('desc'))
   setGeneric('desc', function(object, ...) standardGeneric('desc'))
 if(!isGeneric('desc<-'))
   setGeneric('desc<-', function(object, ..., value) standardGeneric('desc<-'))
-
-# FLStock
-setGeneric('FLStock', function(object, ...)
-		standardGeneric('FLStock'))
-
 # catch
 if(!isGeneric('catch'))
   setGeneric('catch', function(object, ...) standardGeneric('catch'))
@@ -61,6 +87,10 @@ if(!isGeneric('discards.wt'))
 if(!isGeneric('discards.wt<-'))
   setGeneric('discards.wt<-', function(object, ..., value) standardGeneric('discards.wt<-'))
 
+# FLStock
+setGeneric('FLStock', function(object, ...)
+		standardGeneric('FLStock'))
+
 # landings
 if(!isGeneric('landings'))
   setGeneric('landings', function(object, ...) standardGeneric('landings'))
@@ -74,127 +104,96 @@ if(!isGeneric('landings.n<-'))
   setGeneric('landings.n<-', function(object, ..., value) standardGeneric('landings.n<-'))
 
 # landings.wt
-if(!isGeneric('landings.wt'))
-  setGeneric('landings.wt', function(object, ...) standardGeneric('landings.wt'))
-if(!isGeneric('landings.wt<-'))
-  setGeneric('landings.wt<-', function(object, ..., value) standardGeneric('landings.wt<-'))
+setGeneric('landings.wt', function(object, ...) standardGeneric('landings.wt'))
+setGeneric('landings.wt<-', function(object, ..., value) standardGeneric('landings.wt<-'))
+
+# name, name<-
+setGeneric('name', function(object, ...) standardGeneric('name'))
+setGeneric('name<-', function(object, ..., value) standardGeneric('name<-'))
+
 
 # stock
-if(!isGeneric('stock'))
-  setGeneric('stock', function(object, ...) standardGeneric('stock'))
-if(!isGeneric('stock<-'))
-  setGeneric('stock<-', function(object, ..., value) standardGeneric('stock<-'))
+setGeneric('stock', function(object, ...) standardGeneric('stock'))
+setGeneric('stock<-', function(object, ..., value) standardGeneric('stock<-'))
 
 # stock.n
-if(!isGeneric('stock.n'))
-  setGeneric('stock.n', function(object, ...) standardGeneric('stock.n'))
-if(!isGeneric('stock.n<-'))
-  setGeneric('stock.n<-', function(object, ..., value) standardGeneric('stock.n<-'))
+setGeneric('stock.n', function(object, ...) standardGeneric('stock.n'))
+setGeneric('stock.n<-', function(object, ..., value) standardGeneric('stock.n<-'))
 
 # stock.wt
-if(!isGeneric('stock.wt'))
   setGeneric('stock.wt', function(object, ...) standardGeneric('stock.wt'))
-if(!isGeneric('stock.wt<-'))
   setGeneric('stock.wt<-', function(object, ..., value) standardGeneric('stock.wt<-'))
 
 # m
-if(!isGeneric('m'))
   setGeneric('m', function(object, ...) standardGeneric('m'))
-if(!isGeneric('m<-'))
   setGeneric('m<-', function(object, ..., value) standardGeneric('m<-'))
 
 # m.spwn
-if(!isGeneric('m.spwn'))
   setGeneric('m.spwn', function(object, ...) standardGeneric('m.spwn'))
-if(!isGeneric('m.spwn<-'))
   setGeneric('m.spwn<-', function(object, ..., value) standardGeneric('m.spwn<-'))
 
 # harvest
-if(!isGeneric('harvest'))
   setGeneric('harvest', function(object, catch, ...) standardGeneric('harvest'))
-if(!isGeneric('harvest<-'))
   setGeneric('harvest<-', function(object, ..., value) standardGeneric('harvest<-'))
 
 # harvest.spwn
-if(!isGeneric('harvest.spwn'))
   setGeneric('harvest.spwn', function(object, ...) standardGeneric('harvest.spwn'))
-if(!isGeneric('harvest.spwn<-'))
   setGeneric('harvest.spwn<-', function(object, ..., value) standardGeneric('harvest.spwn<-'))
 
 # mat
-if(!isGeneric('mat'))
   setGeneric('mat', function(object, ...) standardGeneric('mat'))
-if(!isGeneric('mat<-'))
   setGeneric('mat<-', function(object, ..., value) standardGeneric('mat<-'))
 
 # computeLandings
-if (!isGeneric("computeLandings"))
 setGeneric("computeLandings", function(object, ...)
 		standardGeneric("computeLandings"))
 
 # computeDiscards
-if (!isGeneric("computeDiscards"))
 	setGeneric("computeDiscards", function(object, ...)
 		standardGeneric("computeDiscards"))
 
 # computeCatch
-if (!isGeneric("computeCatch"))
 	setGeneric("computeCatch", function(object, ...)
 		standardGeneric("computeCatch"))
 
 # computeStock
-if (!isGeneric("computeStock"))
 setGeneric("computeStock", function(object, ...)
 		standardGeneric("computeStock"))
 
 # ssb
-if (!isGeneric("ssb"))
 	setGeneric("ssb", function(object, ...)
 		standardGeneric("ssb"))
 
 # fbar
-if (!isGeneric("fbar"))
 	setGeneric("fbar", function(object, ...)
 		standardGeneric("fbar"))
 
 # as.FLStock
-if (!isGeneric("as.FLStock"))
 	setGeneric("as.FLStock", function(object, ...)
 		standardGeneric("as.FLStock"))
 
 # ssbpurec
-if (!isGeneric("ssbpurec"))
 	setGeneric("ssbpurec", function(object, ...)
 		standardGeneric("ssbpurec"))
 
 # n
-if(!isGeneric('n'))
   setGeneric('n', function(object, ...) standardGeneric('n'))
-if(!isGeneric('n<-'))
   setGeneric('n<-', function(object, ..., value) standardGeneric('n<-'))
 
 # m
-if(!isGeneric('m'))
   setGeneric('m', function(object, ...) standardGeneric('m'))
-if(!isGeneric('m<-'))
   setGeneric('m<-', function(object, ..., value) standardGeneric('m<-'))
 
 # wt
-if(!isGeneric('wt'))
   setGeneric('wt', function(object, ...) standardGeneric('wt'))
-if(!isGeneric('wt<-'))
   setGeneric('wt<-', function(object, ..., value) standardGeneric('wt<-'))
 
 # fec
-if(!isGeneric('fec'))
   setGeneric('fec', function(object, ...) standardGeneric('fec'))
-if(!isGeneric('fec<-'))
-  setGeneric('fec<-', function(object, ..., value) standardGeneric('fec<-'))
+setGeneric('fec<-', function(object, ..., value) standardGeneric('fec<-'))
 
 # spwn
-if(!isGeneric('spwn'))
   setGeneric('spwn', function(object, ...) standardGeneric('spwn'))
-if(!isGeneric('spwn<-'))
   setGeneric('spwn<-', function(object, ..., value) standardGeneric('spwn<-'))
 
 # FLBiol
@@ -234,52 +233,36 @@ setGeneric('FLMetier', function(catches, ...)
 		standardGeneric('FLMetier'))
 
 # gear
-if(!isGeneric('gear'))
   setGeneric('gear', function(object, ...) standardGeneric('gear'))
-if(!isGeneric('gear<-'))
   setGeneric('gear<-', function(object, ..., value) standardGeneric('gear<-'))
 
 # effshare
-if(!isGeneric('effshare'))
   setGeneric('effshare', function(object, ...) standardGeneric('effshare'))
-if(!isGeneric('effshare<-'))
   setGeneric('effshare<-', function(object, ..., value) standardGeneric('effshare<-'))
 
 # vcost
-if(!isGeneric('vcost'))
   setGeneric('vcost', function(object, ...) standardGeneric('vcost'))
-if(!isGeneric('vcost<-'))
   setGeneric('vcost<-', function(object, ..., value) standardGeneric('vcost<-'))
 
 # catches
-if(!isGeneric('catches'))
   setGeneric('catches', function(object, ...) standardGeneric('catches'))
-if(!isGeneric('catches<-'))
   setGeneric('catches<-', function(object, ..., value) standardGeneric('catches<-'))
 
 # effort
 # fcost
-if(!isGeneric('fcost'))
   setGeneric('fcost', function(object, ...) standardGeneric('fcost'))
-if(!isGeneric('fcost<-'))
   setGeneric('fcost<-', function(object, ..., value) standardGeneric('fcost<-'))
 
 # capacity
-if(!isGeneric('capacity'))
   setGeneric('capacity', function(object, ...) standardGeneric('capacity'))
-if(!isGeneric('capacity<-'))
   setGeneric('capacity<-', function(object, ..., value) standardGeneric('capacity<-'))
 
 # crewshare
-if(!isGeneric('crewshare'))
   setGeneric('crewshare', function(object, ...) standardGeneric('crewshare'))
-if(!isGeneric('crewshare<-'))
   setGeneric('crewshare<-', function(object, ..., value) standardGeneric('crewshare<-'))
 
 # metiers
-if(!isGeneric('metiers'))
   setGeneric('metiers', function(object, ...) standardGeneric('metiers'))
-if(!isGeneric('metiers<-'))
   setGeneric('metiers<-', function(object, ..., value) standardGeneric('metiers<-'))
 
 # FLFleet
@@ -432,3 +415,91 @@ setGeneric('covar', function(object, ...)
 setGeneric('covar<-', function(object, ..., value)
 		standardGeneric('covar<-'))
 
+# catch.q
+setGeneric('catch.q', function(object, ...)
+		standardGeneric('catch.q'))
+setGeneric('catch.q<-', function(object, ..., value)
+		standardGeneric('catch.q<-'))
+
+# discards.sel
+setGeneric('discards.sel', function(object, ...)
+		standardGeneric('discards.sel'))
+setGeneric('discards.sel<-', function(object, ..., value)
+		standardGeneric('discards.sel<-'))
+
+# landings.sel
+setGeneric('landings.sel', function(object, ...)
+		standardGeneric('landings.sel'))
+setGeneric('landings.sel<-', function(object, ..., value)
+		standardGeneric('landings.sel<-'))
+
+# price
+setGeneric('price', function(object, ...)
+		standardGeneric('price'))
+setGeneric('price<-', function(object, ..., value)
+		standardGeneric('price<-'))
+
+# spr0
+setGeneric("spr0", function(ssb, rec, fbar, ...)
+	  standardGeneric("spr0"))
+
+# ab
+setGeneric('ab', function(object, ...)
+		standardGeneric('ab'))
+
+# quant, quant<-
+setGeneric("quant", function(object, ...)
+  standardGeneric("quant"))
+setGeneric("quant<-", function(object, value)
+  standardGeneric("quant<-"))
+
+# iter, iter<-
+setGeneric("iter", function(object, ...)
+	standardGeneric("iter"))
+setGeneric("iter<-", function(object, value)
+  standardGeneric("iter<-"))
+
+# trim  
+setGeneric("trim", function(x, ...)
+	standardGeneric("trim"))
+
+# expand
+setGeneric("expand", function(x, ...)
+	standardGeneric("expand"))
+
+# FLCatch
+setGeneric('FLCatch', function(object, ...)
+		standardGeneric('FLCatch'))
+
+# addFLCatch
+setGeneric('addFLCatch', function(e1, e2, ...)
+		standardGeneric('addFLCatch'))
+
+# catchNames
+setGeneric('catchNames', function(object, ...)
+		standardGeneric('catchNames'))
+setGeneric('catchNames<-', function(object, ..., value)
+		standardGeneric('catchNames<-'))
+
+# catch.sel
+setGeneric('catch.sel', function(object, ...)
+		standardGeneric('catch.sel'))
+
+# FLCohort
+setGeneric("FLCohort", function(object, ...)
+	standardGeneric("FLCohort"))
+
+# flc2flq
+setGeneric("flc2flq", function(object, ...)
+	standardGeneric("flc2flq"))
+
+# ccplot
+setGeneric("ccplot", function(x, data, ...)
+	standardGeneric("ccplot"))
+
+# qapply
+setGeneric("qapply", function(X, FUN, ...) standardGeneric("qapply"))
+
+# mcf
+setGeneric("mcf", function(object, ...)
+	standardGeneric("mcf"))
