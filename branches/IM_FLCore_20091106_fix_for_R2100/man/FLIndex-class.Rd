@@ -45,7 +45,7 @@ FLComp
 \item{}{\code{ signature(object=missing) }}
 \item{\link{catch.wt<-}(FLCore) :}{replacement function for the catch.wt slot in the object}
 \item{}{\code{ signature(object=FLIndex,value=FLQuant) }}
-\item{\link[base]{coerce}(methods) :}{Describe method}
+\item{\link[methods]{coerce}(methods) :}{Describe method}
 \item{}{\code{ signature(from=NULL,to=FLIndex,strict=missing) }}
 \item{\link{computeCatch}(FLCore) :}{Compute the catch in the FLIndex method, as catch.n and catch.wt}
 \item{}{\code{ signature(object=missing) }}
@@ -72,5 +72,9 @@ FLComp
 }}
 \author{The FLR Team}
 \seealso{ \link{catch.n}, \link{catch.n<-}, \link{catch.wt}, \link{catch.wt<-}, \link{coerce}, \link{computeCatch}, \link{dims}, \link{iter}, \link[graphics]{plot}, \link{propagate}, \link[base]{summary}, \link[base]{transform}, \link{trim}, \link[stats]{window}, \link{FLComp} }
-\examples{}
+\examples{
+fli <- FLIndex(index=FLQuant(rnorm(8), dim=c(1,8)), name="myTestFLindex")
+summary(fli)
+index(fli)
+}
 \keyword{classes}

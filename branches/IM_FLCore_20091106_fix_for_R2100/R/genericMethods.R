@@ -11,80 +11,104 @@
 
 # Existing methods/functions
 
+setGeneric("update", useAsDefault = update)
+setGeneric("print", useAsDefault = print)
+setGeneric("xyplot", useAsDefault = xyplot)
+setGeneric("bwplot", useAsDefault = bwplot)
+setGeneric("dotplot", useAsDefault = dotplot)
+setGeneric("barchart", useAsDefault = barchart)
+setGeneric("stripplot", useAsDefault = stripplot)
+setGeneric("histogram", useAsDefault = histogram)
+setGeneric("apply", useAsDefault = apply)
+setGeneric("window", useAsDefault = window)
+setGeneric("quantile", useAsDefault = quantile)
+setGeneric("sweep", useAsDefault = sweep)
+setGeneric("rgamma", useAsDefault = rgamma)
+setGeneric("mean", useAsDefault = mean)
+setGeneric("median", useAsDefault = median)
+setGeneric("var", useAsDefault = var)
+setGeneric("densityplot", useAsDefault = densityplot)
+setGeneric("splom", useAsDefault = splom)
+setGeneric("lapply", useAsDefault = lapply)
+setGeneric("sd", useAsDefault = sd)
+
+
+# AIC
+setGeneric('AIC', useAsDefault = stats::AIC)
+
 # as.data.frame
-if (!isGeneric("as.data.frame"))
 setGeneric("as.data.frame", useAsDefault = as.data.frame)
 
+# BIC
+setGeneric('BIC', useAsDefault = stats4::BIC)
+
+# coef
+setGeneric("coef", useAsDefault = coef)
+
+# lm
+setGeneric("lm", useAsDefault = lm)
+
+# lowess
+setGeneric("lowess", useAsDefault = lowess)
+
 # model.frame
-if (!isGeneric("model.frame"))
-	setGeneric("model.frame", useAsDefault = model.frame)
+setGeneric("model.frame", useAsDefault = model.frame)
 
 # names
-#if (!isGeneric("names"))
-  setGeneric("names", useAsDefault=names)
+setGeneric("names")
+
+# nls
+setGeneric("nls", useAsDefault = nls)
 
 # summary
-# if (!isGeneric("summary"))
-	setGeneric("summary", useAsDefault = summary)
+setGeneric("summary", useAsDefault = summary)
 
 # plot
-# if (!isGeneric("plot"))
-	setGeneric("plot", useAsDefault = plot)
+setGeneric("plot", useAsDefault = plot)
+
+# predict
+setGeneric("predict", useAsDefault = predict)
 
 # scale
-if (!isGeneric("scale"))
 setGeneric("scale", useAsDefault = scale)
 
 # transform
-if (!isGeneric("transform"))
-  setGeneric("transform", useAsDefault=transform)
+setGeneric("transform", useAsDefault=transform)
 
 # units, units<-
-if (!isGeneric("units"))
-  setGeneric("units", useAsDefault=units)
-setGeneric("units<-", function(x, value)
-  standardGeneric("units<-"))
+setGeneric("units", useAsDefault=units)
+setGeneric("units<-", function(x, value) standardGeneric("units<-"))
 
 # NEW methods
 # desc
-if(!isGeneric('desc'))
-  setGeneric('desc', function(object, ...) standardGeneric('desc'))
-if(!isGeneric('desc<-'))
-  setGeneric('desc<-', function(object, ..., value) standardGeneric('desc<-'))
+setGeneric('desc', function(object, ...) standardGeneric('desc'))
+setGeneric('desc<-', function(object, ..., value) standardGeneric('desc<-'))
+
+# dims
+setGeneric("dims", function(obj, ...) standardGeneric("dims"))
+
 # catch
-if(!isGeneric('catch'))
   setGeneric('catch', function(object, ...) standardGeneric('catch'))
-if(!isGeneric('catch<-'))
   setGeneric('catch<-', function(object, ..., value) standardGeneric('catch<-'))
 
 # catch.n
-if(!isGeneric('catch.n'))
   setGeneric('catch.n', function(object, ...) standardGeneric('catch.n'))
-if(!isGeneric('catch.n<-'))
   setGeneric('catch.n<-', function(object, ..., value) standardGeneric('catch.n<-'))
 
 # catch.wt
-if(!isGeneric('catch.wt'))
   setGeneric('catch.wt', function(object, ...) standardGeneric('catch.wt'))
-if(!isGeneric('catch.wt<-'))
   setGeneric('catch.wt<-', function(object, ..., value) standardGeneric('catch.wt<-'))
 
 # discards
-if(!isGeneric('discards'))
   setGeneric('discards', function(object, ...) standardGeneric('discards'))
-if(!isGeneric('discards<-'))
   setGeneric('discards<-', function(object, ..., value) standardGeneric('discards<-'))
 
 # discards.n
-if(!isGeneric('discards.n'))
   setGeneric('discards.n', function(object, ...) standardGeneric('discards.n'))
-if(!isGeneric('discards.n<-'))
   setGeneric('discards.n<-', function(object, ..., value) standardGeneric('discards.n<-'))
 
 # discards.wt
-if(!isGeneric('discards.wt'))
   setGeneric('discards.wt', function(object, ...) standardGeneric('discards.wt'))
-if(!isGeneric('discards.wt<-'))
   setGeneric('discards.wt<-', function(object, ..., value) standardGeneric('discards.wt<-'))
 
 # FLStock
@@ -92,15 +116,11 @@ setGeneric('FLStock', function(object, ...)
 		standardGeneric('FLStock'))
 
 # landings
-if(!isGeneric('landings'))
   setGeneric('landings', function(object, ...) standardGeneric('landings'))
-if(!isGeneric('landings<-'))
   setGeneric('landings<-', function(object, ..., value) standardGeneric('landings<-'))
 
 # landings.n
-if(!isGeneric('landings.n'))
   setGeneric('landings.n', function(object, ...) standardGeneric('landings.n'))
-if(!isGeneric('landings.n<-'))
   setGeneric('landings.n<-', function(object, ..., value) standardGeneric('landings.n<-'))
 
 # landings.wt
@@ -503,3 +523,33 @@ setGeneric("qapply", function(X, FUN, ...) standardGeneric("qapply"))
 # mcf
 setGeneric("mcf", function(object, ...)
 	standardGeneric("mcf"))
+
+# FLPar
+setGeneric("FLPar", function(object, ...)
+	standardGeneric("FLPar"))
+
+# lower
+setGeneric("lower", function(object, ...)
+  standardGeneric("lower"))
+setGeneric("lower<-", function(object, ..., value)
+    standardGeneric("lower<-"))
+
+# upper
+setGeneric("upper", function(object, ...)
+  standardGeneric("upper"))
+setGeneric("upper<-", function(object, ..., value)
+  standardGeneric("upper<-"))
+
+# params, params<-
+setGeneric("params", function(object, ...)
+  standardGeneric("params"))
+setGeneric("params<-", function(object, value)
+  standardGeneric("params<-"))
+
+# FLModel
+setGeneric('FLModel', function(model, ...)
+    standardGeneric('FLModel'))
+
+# as.FLSR
+setGeneric("as.FLSR", function(object, ...)
+  standardGeneric("as.FLSR"))

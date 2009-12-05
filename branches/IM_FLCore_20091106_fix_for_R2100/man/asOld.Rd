@@ -47,5 +47,9 @@
 }}
 \author{The FLR Team}
 \seealso{ \link{FLComp} }
-\examples{}
+\examples{
+data(ple4)
+is(ple4)
+is(as.FLBiol(ple4))
+}
 \keyword{methods}

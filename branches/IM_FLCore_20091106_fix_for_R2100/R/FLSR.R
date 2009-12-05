@@ -82,10 +82,6 @@ sr <- function(sr, ...)
 }   #}}}
 
 ## as.FLSR   {{{
-if (!isGeneric("as.FLSR")) 
-	setGeneric("as.FLSR", function(object, ...)
-		standardGeneric("as.FLSR"))
-
 setMethod("as.FLSR", signature(object="FLStock"),
   function(object, rec.age = dims(stock.n(object))$min, ...)
 	{
@@ -249,8 +245,6 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 # }}}
 
 # lowess  {{{
-if (!isGeneric("lowess"))
-  setGeneric("lowess", useAsDefault = lowess)
 setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter='ANY'),
   function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x))))
   {

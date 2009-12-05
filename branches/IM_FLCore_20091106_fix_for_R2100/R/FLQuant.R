@@ -137,8 +137,8 @@ setMethod("FLQuant", signature(object="vector"),
       units=units)
 
 		# Set extra iters to NA
-	    if(dims(flq)$iter > 1 && !fill.iter)
-    		flq[,,,,,2:dims(flq)$iter] <- as.numeric(NA)
+	  if(dims(flq)$iter > 1 && !fill.iter)
+      flq[,,,,,2:dims(flq)$iter] <- as.numeric(NA)
 
 		if (!is.null(quant))
 			quant(flq) <- quant
@@ -490,9 +490,6 @@ setMethod("dimnames<-", signature(x="FLQuant", value='list'),
 ) # }}}
 
 ## dims       {{{
-	setGeneric("dims", function(obj, ...)
-		standardGeneric("dims"))
-
 setMethod("dims", signature(obj="FLQuant"),
 	# Return a list with different parameters
 	function(obj, ...){

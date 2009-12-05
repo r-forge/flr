@@ -9,8 +9,8 @@
   inheritance.
 }
 \section{Slots}{\describe{
-\item{.Data (\code{array}):}{Internal S4 data representation.}
-\item{units (\code{character}):}{The data units in some understandable metric.}
+\item{.Data}{Internal S4 data representation, of class \code{array}.}
+\item{units}{The data units in some understandable metric, as a \code{character} vector.}
 }}
 \section{Extends}{\describe{
 array
@@ -42,9 +42,9 @@ vector
 \item{}{\code{ signature(x=FLArray) }}
 \item{\link{expand}(FLCore) :}{Extend an object along any dimension}
 \item{}{\code{ signature(x=FLArray) }}
-\item{\link[methods]{Arith}(base) :}{Arithmetic operations on FLArray and numeric objects}
+\item{\link[methods]{Arith}(methods) :}{Arithmetic operations on FLArray and numeric objects}
 \item{}{\code{ signature(e1=FLQuant, e2=FLQuant) }}
-\item{\link[methods]{as.data.frame}(base) :}{Convert to a data.frame with 7 columns}
+\item{\link[base]{as.data.frame}(base) :}{Convert to a data.frame with 7 columns}
 \item{}{\code{ signature(x=FLArray,row.names=missing,optional=missing) }}
 }}
 \author{The FLR Team}
