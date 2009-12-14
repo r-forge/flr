@@ -151,7 +151,7 @@ void fwdStk::project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nro
 
    if (relYr>=stk.minyr)
       {
-      double RelVal=getVal(quantity, relYr, relUnt, relSn, relArea, iter);
+      double RelVal=getVal(quantity, relYr, relUnt=1, relSn=1, relArea=1, iter);
 
       min=min*RelVal;
       max=max*RelVal;
