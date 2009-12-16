@@ -33,7 +33,7 @@ ab2sv<-function(a,b,spr0,model)
 			vbiomass  <- (spr0*a*(5*steepness-1))/(4*steepness)
 
 			res       <-rbind(steepness,vbiomass)
-#			names(res)<-c("steepness","vbiomass")
+			names(res)<-c("steepness","vbiomass")
 			return(res)
       }
 
@@ -42,7 +42,7 @@ ab2sv<-function(a,b,spr0,model)
 			steepness<- 0.2*exp(b*(vbiomass)*0.8);
 
 			res       <-rbind(steepness,vbiomass)
-#			names(res)<-c("steepness","vbiomass")
+			names(res)<-c("steepness","vbiomass")
 			return(res)
       }
 
@@ -58,14 +58,13 @@ if (!isGeneric("alphaBeta"))
 setMethod('alphaBeta', signature(x='FLPar'),
  function(x, model,...){
 
-    res<-sv2ab(x["s",,drop=T],x["v",,drop=T],x["spr0",,drop=T],model)
+    res<-sv2ab(x["steepness",,drop=T],x["vbiomass",,drop=T],x["spr0",,drop=T],model)
 
     res<-array(res,c(2,dim(x)[2]),dimnames=list(params=c("a","b"),dimnames(x)$iter))
-
-    x[c("s","v"),]<-res
+    x[c("steepness","vbiomass"),]<-res
 
     dimnames(x)[[1]][1:2]<-c("a","b")
-    
+
     return(x)
     })
 
@@ -75,10 +74,26 @@ setMethod('alphaBeta', signature(x='FLSR'),
     mdl<-SRModelName(x@model)
     
     if (mdl=="bevholt.sv") mdl<-"bevholt"  else
-    if (mdl=="ricker.sv")  mdl<-"ricker"   else
-    stop("model must be 'bevholt' or 'ricker'")
+    if (mdl=="ricker.sv")  mdl<-"ricker"
+    
+    if (!(mdl %in% c("bevholt","ricker"))) stop("model must be 'bevholt' or 'ricker'")
 
     return(alphaBeta(params(x),mdl))
+    })
+
+setMethod('alphaBeta', signature(x='FLBRP'),
+    function(x,...){
+
+    mdl<-SRModelName(model(x))
+
+    if (mdl=="bevholt.sv") mdl<-"bevholt"  else
+    if (mdl=="ricker.sv")  mdl<-"ricker"
+
+    if (!(mdl %in% c("bevholt","ricker"))) stop("model must be 'bevholt' or 'ricker'")
+
+    res<-sv2ab(params(x)["steepness",,drop=T],params(x)["vbiomass",,drop=T],spr0(x),mdl)
+
+    return(res)
     })
 
 if (!isGeneric("steepVirgin"))
@@ -90,45 +105,53 @@ setMethod('steepVirgin', signature(x='FLPar'),
 
     res<-ab2sv(x["a",,drop=T],x["b",,drop=T],x["spr0",,drop=T],model)
 
-    res<-array(res,c(2,dim(x)[2]),dimnames=list(params=c("s","v"),dimnames(x)$iter))
+    res<-array(res,c(2,dim(x)[2]),dimnames=list(params=c("steepness","vbiomass"),dimnames(x)$iter))
 
     x[c("a","b"),]<-res
 
-    dimnames(x)[[1]][1:2]<-c("s","v")
+    dimnames(x)[[1]][1:2]<-c("steepness","vbiomass")
 
     return(x)
     })
 
 setMethod('steepVirgin', signature(x='FLSR'),
-    function(x,...){
+    function(x,spr0,...){
 
-    model<-SRModelName(model(x))
+    mdl<-SRModelName(model(x))
 
-    if (model=="bevholt.sv") model<-"bevholt"  else
-    if (model=="ricker.sv")  model<-"ricker"   else
-    stop("model must be 'bevholt' or 'ricker'")
+    if (mdl=="bevholt.sv") mdl<-"bevholt"  else
+    if (mdl=="ricker.sv")  mdl<-"ricker"
 
-    return(steepVirgin(params(x),model))
+    if (!(mdl %in% c("bevholt","ricker"))) stop("model must be 'bevholt' or 'ricker'")
+
+    dmns<-dimnames(params(x))
+    
+    if (!("spr0" %in% dmns$params))
+       dmns$params<-c(dmns$params,"spr0")
+    
+    pars<-FLPar(NA,dimnames=dmns)
+    pars[dimnames(params(x))$params,]<-params(x)
+    pars["spr0",]                    <-spr0
+
+    return(steepVirgin(pars,mdl))
     })
 
 setMethod('steepVirgin', signature(x='FLBRP'),
     function(x,...){
 
-    model<-SRModelName(model(x))
+    mdl<-SRModelName(model(x))
 
-    if (model=="bevholt.sv") model<-"bevholt"  else
-    if (model=="ricker.sv")  model<-"ricker"
+    if (mdl=="bevholt.sv") mdl<-"bevholt"  else
+    if (mdl=="ricker.sv")  mdl<-"ricker"
 
-    if (!(model %in% c("ricker","bevholt")))
-       stop("model must be 'bevholt' or 'ricker'")
+    if (!(mdl %in% c("bevholt","ricker"))) stop("model must be 'bevholt' or 'ricker'")
 
-    res<-ab2sv(params(x)["a",,drop=T],params(x)["b",,drop=T],spr0(x),model)
+    res<-ab2sv(params(x)["a",,drop=T],params(x)["b",,drop=T],spr0(x),mdl)
 
     return(res)
     })
 
-
-    # ab {{{
+# ab {{{
 setGeneric('ab', function(object, ...)
 		standardGeneric('ab'))
 
@@ -146,7 +169,7 @@ setMethod('ab', signature(object='FLSR'),
   else if (SRModelName(model(object)) == "ricker.sv")
      model<-"ricker"
 
-  par<-FLPar(sv2ab(params(object)["s",],params(object)["v",],params(object)["spr0",],model=model),dimnames=dmns)
+  par<-FLPar(sv2ab(params(object)["steepness",],params(object)["vbiomass",],params(object)["spr0",],model=model),dimnames=dmns)
 
   if (SRModelName(model(object)) == "bevholt.sv")
      model(object)<-bevholt()
