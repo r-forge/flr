@@ -1099,7 +1099,7 @@ setMethod('sweep', signature(x='FLQuant'),
   function(x, MARGIN, STATS, FUN, check.margin=TRUE, ...)
   {
     res <- callNextMethod()
-    FLQuant(res)
+    FLQuant(res, units=units(x))
   }
 ) # }}}
 

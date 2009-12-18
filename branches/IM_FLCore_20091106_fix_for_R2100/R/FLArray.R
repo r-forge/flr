@@ -93,9 +93,11 @@ setMethod("[", signature(x="FLArray", i="array"),
       dimn[[d]] <- dimn[[d]][apply(i, d, any, FALSE)==TRUE]
 
     if(length(x@.Data[i]) != prod(unlist(lapply(dimn, length))))
-      stop("Selected elements do not form a coherent 6D array")
-    return(new(class(x), array(x@.Data[i], dimnames=dimn,
-      dim=unlist(lapply(dimn, length)))))
+      return(x@.Data[i])
+    #      stop("Selected elements do not form a coherent 6D array")
+    else
+      return(new(class(x), array(x@.Data[i], dimnames=dimn,
+        dim=unlist(lapply(dimn, length)))))
   }
 )   # }}}
 

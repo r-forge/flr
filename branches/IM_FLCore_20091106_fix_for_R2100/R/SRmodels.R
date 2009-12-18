@@ -549,8 +549,8 @@ segreg <- function()
 	  # The actual minus log-likelihood
 	  sum(dnorm(log(rec), log(FLQuant(ifelse(ssb <= b, a*ssb, a*b))), sqrt(sigma2), TRUE), TRUE)
 
-  model <- rec ~ FLQuant(ifelse(ssb <= b, a*ssb, a*b))
-  
+  model <- rec ~ FLQuant(ifelse((ssb*a) <= (b/a), a * ssb, a * b))
+
   initial <- structure(function(rec, ssb)
   {
     a <- mean(rec/ssb)

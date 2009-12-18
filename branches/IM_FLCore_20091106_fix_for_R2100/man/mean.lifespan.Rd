@@ -16,13 +16,11 @@ mean.lifespan(x, ...)
 }
 \details{
 Using actuarial definitions for the expected life-span of a given species, for a given 
-survival rate-at-age (natural mortality), we can compute the expected life-span, \eqn{$\ell_x$}{logL(x)}, 
-of a species, from a given reference age $x$, using the following 
-equation:
+survival rate-at-age (natural mortality), we can compute the expected life-span, \eqn{\ell_x}{logL(x)}, of a species, from a given reference age \eqn{x}, using the following equation:
 
-\deqn{\ell_x = \sum\limits_{t=1}^{\infty} \exp\left(-\sum\limits_{i=x}^{x+t}M_i\right)} {logL(x) = SUM_1_inf exp(SUM_i=x_x+t m_i)}.
+\deqn{\ell_x = \sum\limits_{t=1}^{\infty} \exp\left(-\sum\limits_{i=x}^{x+t}M_i\right)}{logL(x) = SUM_1_inf exp(SUM_i=x_x+t m_i)}.
 
-The method accepts objects of class \code{FLbiol} of any particular dimension. If the 
+The method accepts objects of class \code{FLBiol} of any particular dimension. If the 
 object has a seasonal structure to the population dynamics, then we sum over all seasons 
 to get the yearly survival rate.
 }

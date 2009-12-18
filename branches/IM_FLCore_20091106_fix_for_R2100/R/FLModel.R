@@ -194,6 +194,7 @@ setMethod('fmle',
     if(method == 'L-BFGS-B')
     {
       if(missing(lower) && !is.null(lower(object)))
+        # if is(lower, function)
         lower <- lower(object)[match(parnm, names(fixed), nomatch=0)==0]
       if(missing(upper) && !is.null(upper(object)))
         upper <- upper(object)[match(parnm, names(fixed), nomatch=0)==0]
