@@ -1412,7 +1412,7 @@ t3 = dim[2];
        if (dimnames != R_NilValue) 
          if (TYPEOF(dimnames) == VECSXP) 
 //            name_ = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), iRef));
-            name_ = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), iRef));
+            name_ = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), iRef));
 
        name[0] = '\0'; 
        strcpy(name,name_);   

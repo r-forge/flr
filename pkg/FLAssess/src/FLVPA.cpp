@@ -152,7 +152,7 @@ void FLVPA::Init(SEXP x)
 
    for (i=0; i<n; i++)
       {
-      const char *s = CHAR(VECTOR_ELT(RangeNames, i));
+      const char *s = CHAR(STRING_ELT(RangeNames, i));
 
       if (      strcmp(s, "min")==0 || strcmp(s, "minage")==0 || strcmp(s, "minquant")==0)
          minage     = (short)(REAL(range)[i]);
