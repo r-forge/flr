@@ -44,10 +44,10 @@ setMethod("select", signature(flquant="FLQuant", dimnames="list"),
 
 
 
+# TODO: replace needs to match the method in base - function (x, list, values) 
 if(!isGeneric("replace"))
         setGeneric("replace", function(quant1, quant2, ...)
                 standardGeneric("replace"))
-
 setMethod("replace", signature(quant1="FLQuant", quant2="FLQuant"),
      function(quant1, quant2, ...) {
 
