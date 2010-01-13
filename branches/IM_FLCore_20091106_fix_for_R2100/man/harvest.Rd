@@ -18,6 +18,7 @@
 \author{The FLR Team}
 \seealso{ \link{FLComp}, \link{FLBiol-class}}
 \examples{
+data(ple4)
 flb<-as(ple4, 'FLBiol')
 harvest(flb)
 }
