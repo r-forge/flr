@@ -92,6 +92,14 @@ setMethod('catch.obs', signature(object='FLBRP'),
     }
 ) # }}}
 
+# biomass.obs {{{
+setGeneric('biomass.obs', function(object, ...)
+		standardGeneric('biomass.obs'))
+setMethod('biomass.obs', signature(object='FLBRP'),
+  function(object) {
+    return(stock.obs(object))
+    }
+) # }}}
 
 # yield.obs {{{
 setGeneric('yield.obs', function(object, ...)

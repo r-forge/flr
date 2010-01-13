@@ -440,10 +440,20 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
       break;
         
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
-         recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+       //ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+       //recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+	   if (spr<1/sr_params(1,1,iUnit,1,1,iIter)) 
+	      recruits = 0.0; 
+	   else 
+		   recruits = sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter);
+       break;
+
+ 	   if (1.0/spr > sr_params(1,1,iUnit,1,1,iIter)) 
+	      recruits = 0.0; 
+	   else 
+		   recruits = sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter);
       break;
-  
+
       case FLRConst_Mean: default:
          recruits = sr_params(1,1,iUnit,1,1,iIter);
       break;

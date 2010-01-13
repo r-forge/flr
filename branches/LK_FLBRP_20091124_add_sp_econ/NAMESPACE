@@ -50,6 +50,8 @@ exportMethods(
   "discards.obs",
   "rec.obs",
   "ssb.obs",
+  "stock.obs",
+  "biomass.obs",
   "profit.obs",
   "stock.n",
   "landings.n",
