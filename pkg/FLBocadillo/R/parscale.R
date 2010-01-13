@@ -17,8 +17,7 @@ setGeneric("auto_parscale", function(obj, ...)
 		standardGeneric("auto_parscale"))
 
 setMethod("auto_parscale", signature(obj="FLModel"),
-   aps <- function(obj)
-   {
+   aps <- function(obj,tiny_number=1e-10,rel=FALSE){
 
    if (dims(obj)$iter>1) stop("only works for a single iter")
 
@@ -38,38 +37,41 @@ setMethod("auto_parscale", signature(obj="FLModel"),
    iv   <-do.call(obj@initial, args=data[names(formals(obj@initial))])
 
    #iv   <- initial(obj)(rec(obj),ssb(obj))
-   tiny_number <- 1e-10
    dll  <- rep(NA,npar)
 
    # Make a list of the LogL arguments with the initial values
-   ll_args_orig <- unlist(formals(logl(obj)))
+   ll_args_orig <- unlist(formals(obj@logl))
    for (i in datanm)
      ll_args_orig[[i]] <- slot(obj,i)
 
    #ll_args_orig[["ssb"]] <- data[names(formals(obj@initial))]
    for (i in dimnames(params(obj))$params)
      ll_args_orig[[i]] <- iv[[i]]
+     
+   ll_args_orig[names(ll_args_orig) %in% dimnames(params(obj))$params]
 
-   ll_orig         <- do.call(logl(obj),ll_args_orig)
+   ll_args_orig[ll_args_orig[names(ll_args_orig) %in% dimnames(params(obj))$params]==0]<-tiny_number^0.5
+
+   ll_orig         <- do.call(obj@logl,ll_args_orig)
    ll_bump1        <- rep(NA,npar)
    names(ll_bump1) <- dimnames(params(obj))$params
    ll_bump2        <- ll_bump1
 
    # cycle over each parameter, bump it and get the new LL
    for (i in dimnames(params(obj))$params){
-      ll_args_bump1      <- ll_args_orig
-      ll_args_bump1[[i]] <- ll_args_bump1[[i]] * (1+tiny_number)
-      ll_bump1[i]        <-do.call(logl(obj),ll_args_bump1)
+      ll_args_bump      <-ll_args_orig
+      ll_args_bump[[i]] <-ll_args_bump[[i]] * (1+tiny_number)
+      ll_bump1[i]       <-do.call(obj@logl,ll_args_bump)
 
-      ll_args_bump2      <- ll_args_orig
-      ll_args_bump2[[i]] <- ll_args_bump2[[i]] * (1-tiny_number)
-      ll_bump2[i]        <-do.call(logl(obj),ll_args_bump2)
+      ll_args_bump      <-ll_args_orig
+      ll_args_bump[[i]] <-ll_args_bump[[i]] * (1-tiny_number)
+      ll_bump2[i]       <-do.call(obj@logl,ll_args_bump)
       }
-      
-   dll <- (ll_bump1-ll_bump2) / (unlist(ll_args_orig)[dimnames(params(obj))$params] * (tiny_number*2))
 
-   return(abs(1/dll))})
+   dll <- (ll_bump1-ll_bump2)/(unlist(ll_args_orig)[dimnames(params(obj))$params]*2*tiny_number)
 
+   dll<-abs(1/dll)
 
-#grad(sin, pi)
-#function(x)      ll_bump[i] <-do.call(logl(obj),ll_args_bump)}
+   if (rel) dll<-dll/max(dll)
+
+   return(dll)})

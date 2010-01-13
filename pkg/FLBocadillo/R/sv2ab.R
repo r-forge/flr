@@ -1,3 +1,12 @@
+## Ricker parameterised for steepness & virgin biomass
+Ricker.SV <- function (steepness, vbiomass, spr0, ssb) {
+
+  b <- log(5 * steepness) / (vbiomass * 0.8)
+  a <- exp(b * vbiomass) / spr0
+
+  return(a * ssb * exp(-b* ssb))}
+
+
 # sv2ab & ab2sv {{{
 # calc steepness & virgin biomass from alpha & beta, given SSB per R at F=0
 sv2ab <- function(steepness, vbiomass, spr0, model)
