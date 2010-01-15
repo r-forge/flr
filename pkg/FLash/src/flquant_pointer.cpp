@@ -75,7 +75,7 @@ void FLQuant_pointer::Init(SEXP x)
          
          if (n >= 1 && INTEGER(dims)[0] >= 1) 
             {
-            c = CHAR(STRNG_ELT(VECTOR_ELT(dimnames, 0), 0));
+            c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
 
             //check that name is not a text string
             for (int i=0; i<=(signed)strlen(c); i++)
@@ -91,7 +91,7 @@ void FLQuant_pointer::Init(SEXP x)
          if (n >= 2 && INTEGER(dims)[1] >= 1) 
             {
             t = 0;
-            c = CHAR(STRNG_ELT(VECTOR_ELT(dimnames, 1), 0));
+            c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
 
             //check that name is not a text string
             for (int i=0; i<=(signed)strlen(c); i++)
