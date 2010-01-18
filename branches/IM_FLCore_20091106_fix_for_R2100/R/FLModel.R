@@ -258,12 +258,6 @@ setMethod('fmle',
       else
         data <- alldata
       
-      # check values
-      toolarge <- names(data)[unlist(lapply(data, max, na.rm=TRUE))>10000]
-      if(length(toolarge) > 0)
-        warning(paste("Values might be too large for optimizer in ",
-          paste(toolarge, collapse=", ")))
-    
       # add covar if defined and available
       if('covar' %in% slotNames(object))
       {
