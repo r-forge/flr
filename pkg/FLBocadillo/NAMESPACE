@@ -1,8 +1,9 @@
-import("FLCore")
+import("FLBRP")
 exportClasses("FLIndexPM")
 importFrom("graphics",
   "plot")
 export(
+  "srModel",
   "getLnWt",
   "nd",
 	"readFLStock",
@@ -26,13 +27,12 @@ export(
   "bevholt.d",
   "ricker.d")
 exportMethods(
+  "autoParscale",
   "OEM",
   "qmin",
   "qmax",
   "lprof",
-  "srModel",
   "OEM",
   "alphaBeta",
   "steepVirgin",
-  "autoParscale",
   "lprof")

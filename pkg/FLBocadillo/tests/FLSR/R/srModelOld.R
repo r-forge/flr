@@ -13,11 +13,7 @@ load(paste(myDir,"tests/FLSR/data/cod4.RData", sep="/"))
 load(paste(myDir,"tests/FLSR/data/ple4.RData", sep="/"))
 load(paste(myDir,"tests/FLSR/data/her4.RData", sep="/"))
 
-source(paste(myDir,"R/lprof.R"))
-source(paste(myDir,"R/parscale.R"))
-source(paste(myDir,"R/srModel.R"))
-
-source(paste(myDir,"R/plotSRs.R"))
+source(paste(myDir,"tests/FLSR/R/plotSRs.R",  sep="/"))
 
 ########################################################################################################################
 ## Old model()                                                                                                        ##
@@ -91,6 +87,6 @@ plotSPR(her4SR,maxSSB=5000000,cols=rainbow(9))
 for (i in names(her4SR)){
   lprof(her4SR[[i]],scaling=c("rel","rel"),a =seq(0.5,1.5,length.out=10),b =seq(0.5,1.5,length.out=10));mtext(i)}
 
-savePlot(paste(myDir,"/figs/chkModelNew", sep="/"))
+savePlot(paste(myDir,"tests/FLSR/figs/chkModelOld", sep="/"))
 ########################################################################################################################
 
