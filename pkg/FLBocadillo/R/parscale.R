@@ -12,11 +12,11 @@ getSlotNamesClass <- function(object, class)
     return(names(contains[contains == TRUE]))
 } # }}}
 
-if (!isGeneric("auto_parscale"))
-setGeneric("auto_parscale", function(obj, ...)
-		standardGeneric("auto_parscale"))
+if (!isGeneric("autoParscale"))
+setGeneric("autoParscale", function(obj, ...)
+		standardGeneric("autoParscale"))
 
-setMethod("auto_parscale", signature(obj="FLModel"),
+setMethod("autoParscale", signature(obj="FLModel"),
    aps <- function(obj,tiny_number=1e-10,rel=FALSE){
 
    if (dims(obj)$iter>1) stop("only works for a single iter")

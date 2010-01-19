@@ -3,7 +3,7 @@ Title: Generic methods for FLR Interface to 3rd party stock assessment methods
 Version: 2.00-0
 Author: Laurie T. Kell <laurie.kell@iccat.int>
 Description: A generic set of methods for interfacing 3rd party stock assessment methids to FLR
-Collate: mfcl2FLR.R FLQuantExtras.R r.R aspic2FLR.R cor2cov.R FLIndexPM.R perfectAssessment.R OEM.R assignFLIndex.R dimFLComp.R fwdControl.R FLFishery.R advicePlot.R getLnWt.R sel.R sv2ab.R npv.R parscale.R surplusProduction.R utility.R
+Collate: mfcl2FLR.R FLQuantExtras.R r.R aspic2FLR.R cor2cov.R FLIndexPM.R perfectAssessment.R OEM.R assignFLIndex.R dimFLComp.R fwdControl.R FLFishery.R advicePlot.R getLnWt.R sel.R sv2ab.R npv.R parscale.R surplusProduction.R utility.R srModel.R as.FLSRBRP.R fixFLQuant.R lprof.R spr0.R
 Depends: FLCore(>= 2.0.100), methods, pkpkg, getmfclstuff
 LinkingTo: FLCore
 Maintainer: Laurie T. Kell <laurie.kell@iccat.int>

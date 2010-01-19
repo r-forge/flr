@@ -12,12 +12,27 @@ export(
   "fapex",
   "catchSel",
   "landingsSel",
-  "discardsSel")
+  "discardsSel",
+  "ricker",
+  "bevholt",
+  "segreg",
+  "shepherd",
+  "shepherd.d",
+  "shepherd.ndc",
+  "shepherd.ar1",
+  "shepherd.d.ar1",
+  "shepherd.ndc.ar1",
+  "ricker.d",
+  "bevholt.d",
+  "ricker.d")
 exportMethods(
   "OEM",
   "qmin",
   "qmax",
+  "lprof",
+  "srModel",
   "OEM",
   "alphaBeta",
   "steepVirgin",
-  "auto_parscale")
+  "autoParscale",
+  "lprof")
