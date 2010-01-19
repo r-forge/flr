@@ -4,6 +4,7 @@ importFrom("graphics",
   "plot")
 export(
   "srModel",
+  "calcSigma",
   "getLnWt",
   "nd",
 	"readFLStock",
