@@ -4,7 +4,6 @@ importFrom("graphics",
   "plot")
 export(
   "srModel",
-  "calcSigma",
   "getLnWt",
   "nd",
 	"readFLStock",
@@ -29,6 +28,7 @@ export(
   "ricker.d")
 exportMethods(
   "autoParscale",
+  "sigma",
   "OEM",
   "qmin",
   "qmax",

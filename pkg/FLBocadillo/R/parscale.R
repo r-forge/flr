@@ -48,8 +48,6 @@ setMethod("autoParscale", signature(obj="FLModel"),
    for (i in dimnames(params(obj))$params)
      ll_args_orig[[i]] <- iv[[i]]
      
-   ll_args_orig[names(ll_args_orig) %in% dimnames(params(obj))$params]
-
    ll_args_orig[ll_args_orig[names(ll_args_orig) %in% dimnames(params(obj))$params]==0]<-tiny_number^0.5
 
    ll_orig         <- do.call(obj@logl,ll_args_orig)

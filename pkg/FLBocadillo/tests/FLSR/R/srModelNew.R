@@ -8,15 +8,16 @@ library(FLBocadillo)
 
 myDir<-"C:/Stuff/FLR/pkg/FLBocadillo"
 
-load(paste(myDir,"data/cod4.RData", sep="/"))
-load(paste(myDir,"data/ple4.RData", sep="/"))
-load(paste(myDir,"data/her4.RData", sep="/"))
+load(paste(myDir,"tests/FLSR/data/cod4.RData", sep="/"))
+load(paste(myDir,"tests/FLSR/data/ple4.RData", sep="/"))
+load(paste(myDir,"tests/FLSR/data/her4.RData", sep="/"))
+
+source(paste(myDir,"tests/FLSR/R/plotSRs.R",  sep="/"))
 
 #source(paste(myDir,"R/lprof.R",    sep="/"))
 #source(paste(myDir,"R/parscale.R", sep="/"))
 #source(paste(myDir,"R/srModel.R",  sep="/"))
 
-source(paste(myDir,"tests/FLSR/R/plotSRs.R",  sep="/"))
 
 ########################################################################################################################
 # srModel()                                                                                                            #

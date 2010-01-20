@@ -29,12 +29,17 @@ SRModelName<-function(formula){
 
 srr<-c("bevholt","ricker","cushing","shepherd","segreg","mean","dersh","pellat","bevholt","rickerD","cushingD","shepherdD")
 
-calcSigma<-function(obs,hat=rep(0,length(obs))){
+setGeneric("sigma", function(obj, ...){
+ standardGeneric("sigma")})
+
+setMethod('sigma',
+  signature(obj='FLQuant'),
+    function(obj,hat=rep(0,length(obj))){
    ## calculates sigma squared for use in concentrated liklihood
 
-   SS   <-sum((obs-hat)^2,na.rm=T)
+   SS   <-sum((obj-hat)^2,na.rm=T)
 
-   return((SS/length(hat))^0.5)}
+   return((SS/length(hat))^0.5)})
 
 logl.ar1<-function(rho,sigma,obs,hat){
     ## likelihood for AR(1) process
@@ -289,11 +294,11 @@ srModel<- function(mdl="bevholt",ll="normlog",sv=FALSE){
     ## log likelihood, assuming normal log.
     cat("foo<-function(",args,",rec,ssb){\n",
                        ifelse(sv,"\t\tsv2ab(s,v,spr0)\n",""),
-                       "\t\that   <-",ac(modelFunc(mdl))[[3]],"\n",
-                       "\t\that   <-",hat,"\n",
-                       "\t\trec   <-",rec,"\n",
-                       "\t\tsigma <-calcSigma(rec, hat)\n",
-                       "\t\tres   <-",loglFunc(ll),"\n",
+                       "\t\that  \t<-",ac(modelFunc(mdl))[[3]],"\n",
+                       "\t\that  \t<-",hat,"\n",
+                       "\t\trec  \t<-",rec,"\n",
+                       "\t\tsigma\t<-sigma(rec, hat)\n",
+                       "\t\tres  \t<-",loglFunc(ll),"\n",
                        "\t\treturn(res)}\n",sep="",file="foo.txt")
 
     source("foo.txt")
@@ -306,7 +311,7 @@ bevholt<-function(){
   logl <- function(a, b, rec, ssb){
        hat. <-log((a*ssb)/(b+ssb))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
     	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
 
     	 return(res)}
@@ -332,7 +337,7 @@ ricker<-function(){
  logl <- function(a, b, rec, ssb){
      hat. <-log(a*ssb*exp(-b*ssb))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      #res<--logl.ar1(0,sigma,obs,hat.)
@@ -365,7 +370,7 @@ segreg <- function(){
 	logl <- function(a, b, rec, ssb){
      hat. <-log(ifelse(ssb <= b, a*ssb, a*b))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      #res<--logl.ar1(0,sigma,obs,hat.)
@@ -397,7 +402,7 @@ shepherd<-function(){
   logl <- function(a,b,c,rec,ssb){
      hat. <-log(a*ssb/(1+(ssb/b)^c))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      #res<--logl.ar1(0,sigma,obs,hat.)
@@ -430,7 +435,7 @@ pellat<-function(){
   logl <- function(a, b, c, rec, ssb){
        hat. <-log(qmax(a*ssb*(1-(ssb/b)^c),0.001))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
     	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
 
     	 return(res)}
@@ -458,7 +463,7 @@ dersch<-function(){
   logl <- function(a, b, c, rec, ssb){
        hat. <-log(a*(1-b*c*ssb)^(1/c))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
     	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
 
     	 return(res)}
@@ -486,7 +491,7 @@ shepherd.d<-function(){
   logl <- function(a,b,c,rec,ssb){
      hat. <-log(a*ssb^2/(1+(ssb/b)^c))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      #res<--logl.ar1(0,sigma,obs,hat.)
@@ -518,7 +523,7 @@ shepherd.ndc<-function(){
       ssb<-ssb*(1+d)
       hat. <-log(a*ssb^2/(1+(ssb/b)^c))
       obs  <-log(rec)
-	    sigma<-calcSigma(obs,hat.)
+	    sigma<-sigma(obs,hat.)
 
 	    # minus log-likelihood
       #res<--logl.ar1(0,sigma,obs,hat.)
@@ -549,7 +554,7 @@ shepherd.ar1<-function(){
    logl <- function(a,b,c,rho,rec,ssb){
      hat. <-log(a*ssb/(1+(ssb/b)^c))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      res<--logl.ar1(rho,sigma,obs,hat.)
@@ -577,7 +582,7 @@ shepherd.d.ar1<-function(){
   logl <- function(a,b,c,rho, rec, ssb){
      hat. <-log(a*ssb^2/(1+(ssb/b)^c))
      obs  <-log(rec)
-	   sigma<-calcSigma(obs,hat.)
+	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
      res<--logl.ar1(rho,sigma,obs,hat.)
@@ -606,7 +611,7 @@ shepherd.ndc.ar1<-function(){
        ssb  <-ssb*(1+d)
        hat. <-log(a*(ssb-d)/(1+((ssb-d)/b)^c))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
        res<--logl.ar1(rho,sigma,obs,hat.)
@@ -637,7 +642,7 @@ bevholt.d<-function(){
   logl <- function(a, b, c, rec, ssb){
        hat. <-log((a*ssb^c)/(b+ssb^c))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
        #res<--logl.ar1(0,sigma,obs,hat.)
@@ -668,7 +673,7 @@ ricker.d<-function(){
 	logl <- function(a, b, c, rec, ssb){
        hat. <-log(a*ssb^c*exp(-b*ssb))
        obs  <-log(rec)
-	     sigma<-calcSigma(obs,hat.)
+	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
        #res<--logl.ar1(0,sigma,obs,hat.)
@@ -697,3 +702,43 @@ ricker.d<-function(){
 
 	return(list(logl=logl, model=model, initial=initial))}
 
+RickerSV <- function (s, v, spr0, ssb){
+  b <- log(5*s)/(v*0.8)
+  a <- exp(b*v)/spr0
+  
+  return(a*ssb*exp(-b*ssb))}
+
+rickerSV <- function(){
+  logl<-function(s,v,spr0,rec,ssb){
+     sigma<-sigma(log(rec), log(BevholtSV(s,v,spr0,ssb)))
+     sum(dnorm(log(rec), log(RickerSV(s,v,spr0,ssb)),sigma,TRUE),na.rm=TRUE)}
+
+  initial <- structure(function(rec,ssb) {
+     return(list(s=.5,v=mean(as.vector(ssb))*2,spr0=.5))},
+
+     lower = c(.1, 1e-08, 1e-08),
+     upper = c(5, rep(Inf, 2)))
+
+  model<-rec~RickerSV(s,v,spr0,ssb)
+
+  return(list(logl=logl,model=model,initial=initial))}
+
+BevholtSV<-function(s,v,spr0,ssb){
+    param<-sv2ab(s,v,spr0,"bevholt")
+
+    return(param["a"]*ssb/(param["b"]+ssb))}
+
+bevholtSV<-function(){
+    logl <- function(s,v,spr0,rec,ssb){
+       sigma<-sigma(log(rec),log(BevholtSV(s,v,spr0,ssb)))
+       sum(dnorm(log(rec),log(BevholtSV(s,v,spr0,ssb)),sigma,TRUE),na.rm=TRUE)}
+
+    initial<-structure(function(rec,ssb){
+        return(list(s=.75,v=mean(as.vector(ssb),na.rm=TRUE)*2,spr0=1))},
+
+        lower = c(.21,rep(1e-08, 3)),
+        upper = c(1,rep(Inf, 3)))
+
+    model<-rec~BevholtSV(s,v,spr0,ssb)
+
+    return(list(logl=logl,model=model,initial=initial))}

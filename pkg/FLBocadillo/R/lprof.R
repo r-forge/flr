@@ -6,15 +6,16 @@ setMethod('lprof',
   signature(object='FLSR'),
   function(object, plot=TRUE, solution=TRUE, scaling=c("rel","rel"),parscale=NULL,...){
 
-if (FALSE) { object<-cod4SR[["ices shepherd.ar1"]]
+if (FALSE) {
+            object<-cod4SR[["bevholtSV"]]
             plot=TRUE
             solution=TRUE
             scaling=c("rel","rel")
-            parscale="b"
-            a =seq(0.5,1.5,length.out=10)
-            b =seq(0.5,1.5,length.out=10)
-            args <- list(a=a,b=b)
-            }
+            parscale="s"
+            s =seq(0.5,1.5,length.out=10)
+            v =seq(0.5,1.5,length.out=10)
+            args<-list(s=s,v=v,fixed=list(spr0=0.45))}
+
 
       ## function to get parameter coordinate system
       getScale<-function(x,pars){
@@ -28,9 +29,9 @@ if (FALSE) { object<-cod4SR[["ices shepherd.ar1"]]
           }
 
     ## Get parameters to profile
-    args <- list(...)
+   args <- list(...)
     pars <-names(args)[names(args) %in% dimnames(params(object))$params]
-
+#print(pars)
     ## 1D profile
     if (length(pars) == 1){
       ## create a grid centred on best guess
@@ -89,14 +90,24 @@ if (FALSE) { object<-cod4SR[["ices shepherd.ar1"]]
 
         names(fixed)<-pars
 
-        if (length(dimnames(params(object))$params)>2){
-           psPar<-dimnames(params(object))$params[!(dimnames(params(object))$params %in% pars)]
-           paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(parscale=as.list(autoParscale(object)[psPar]))))
-        }else
-           paramGrid[i,"ll"]<-logl(object)(fixed[[1]],fixed[[2]],rec(object),ssb(object))
-        }
+        if ("fixed" %in% names(args)) fixed=c(fixed,args[names(args)=="fixed"][[1]])
         
-      ## plot liklihood
+        if (all(names(fixed) %in% dimnames(params(object))$params)){
+           #paramGrid[i,"ll"]<-logl(object)(fixed[[1]],fixed[[2]],rec(object),ssb(object))
+           arg<-fixed
+           arg[["ssb"]]<-ssb(object)
+           arg[["rec"]]<-rec(object)
+           logl.<-logl(object)
+print(1)
+print(arg)
+           paramGrid[i,"ll"]<-do.call("logl.",arg)
+        }else{
+           psPar<-dimnames(params(object))$params[!(dimnames(params(object))$params %in% pars)]
+print(psPar)
+                      paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(parscale=as.list(autoParscale(object)[psPar]))))}
+      }
+      
+      ## plot liklihood"
       if (plot){
         plotGrid<-list(x=sort(unique(paramGrid[,1])), y=sort(unique(paramGrid[,2])), z=tapply(paramGrid[,"ll"], list(paramGrid[,1],paramGrid[,2]),mean))
         image(  plotGrid,xlab=pars[1],ylab=pars[2])
@@ -104,7 +115,8 @@ if (FALSE) { object<-cod4SR[["ices shepherd.ar1"]]
 
         if (solution)
           points(params(object)[pars[1],1,drop=T],params(object)[pars[2],1,drop=T],pch=19)}
-    } else if (length(pars) > 2 | length(pars) == 0) stop("need to specify 1 or 2 valid parameters")
+
+    }else if (length(pars) > 2 | length(pars) == 0) stop("need to specify 1 or 2 valid parameters")
 
 
     ## explicit return
