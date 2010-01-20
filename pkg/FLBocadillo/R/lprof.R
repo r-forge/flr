@@ -4,14 +4,14 @@ setGeneric("lprof", function(object, ...){
 
 setMethod('lprof',
   signature(object='FLSR'),
-  function(object, plot=TRUE, solution=TRUE, scaling=c("rel","rel"),parscale=NULL,...){
+    function(object, .plot=TRUE, .soultion=TRUE, .scaling=c("rel","rel"),.parscale=NULL,...){
 
 if (FALSE) {
             object<-cod4SR[["bevholtSV"]]
             plot=TRUE
-            solution=TRUE
-            scaling=c("rel","rel")
-            parscale="s"
+            .soultion=TRUE
+            .scaling=c("rel","rel")
+            .parscale="s"
             s =seq(0.5,1.5,length.out=10)
             v =seq(0.5,1.5,length.out=10)
             args<-list(s=s,v=v,fixed=list(spr0=0.45))}
@@ -29,9 +29,9 @@ if (FALSE) {
           }
 
     ## Get parameters to profile
-   args <- list(...)
+    args <- list(...)
     pars <-names(args)[names(args) %in% dimnames(params(object))$params]
-#print(pars)
+
     ## 1D profile
     if (length(pars) == 1){
       ## create a grid centred on best guess
@@ -46,37 +46,37 @@ if (FALSE) {
         names(fixed)<-pars
 
         psPar<-dimnames(params(object))$params[dimnames(params(object))$params!=pars]
-        paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(parscale=autoParscale(object)[psPar])))}
+        paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(.parscale=auto.parscale(object)[psPar])))}
 
       ## plot liklihood
       if (plot){
         plot(  paramGrid[,"ll"]~paramGrid[,1],xlab=pars[1],ylab="Likelihood",type="l")
 
-        if (solution)
+        if (.soultion)
            points(logLik(object)~params(object)[pars[1],1],pch=19)}
 
     ## 2D profile
     } else if (length(pars) == 2){
 
-      scaling<-getScale(scaling,pars)
+      .scaling<-getScale(.scaling,pars)
 
       ## create grid
       rng1<-args[[pars[1]]]
       rng2<-args[[pars[2]]]
 
       ## specify rnages as relative proportions
-      if (substr(scaling[1],1,1)=="r") rng1<-rng1*params(object)[pars[1],1]
-      if (substr(scaling[2],1,1)=="r") rng2<-rng2*params(object)[pars[2],1]
+      if (substr(.scaling[1],1,1)=="r") rng1<-rng1*params(object)[pars[1],1]
+      if (substr(.scaling[2],1,1)=="r") rng2<-rng2*params(object)[pars[2],1]
 
-      ## use automatic parscaling to set parameter ranges so that profile is similar for x- & y-axes
-      if (!is.null(parscale[1])) if (parscale[1] %in% pars){
-         scl<-params(object)[pars,1,drop=T]/autoParscale(object)[pars]
-         scl<-scl[parscale[1]]/scl[!(names(scl) %in% parscale[1])]
+      ## use automatic par.scaling to set parameter .scalings so that profile is similar for x- & y-axes
+      if (!is.null(.parscale[1])) if (.parscale[1] %in% pars){
+         scl<-params(object)[pars,1,drop=T]/auto.parscale(object)[pars]
+         scl<-scl[.parscale[1]]/scl[!(names(scl) %in% .parscale[1])]
          scl<-1/scl
          
-         if (parscale[1] == pars[1])
+         if (.parscale[1] == pars[1])
             rng1<-params(object)[pars[1],1,drop=T]-scl*(params(object)[pars[1],1,drop=T]-rng1) else
-         if (parscale[1] == pars[2])
+         if (.parscale[1] == pars[2])
             rng2<-params(object)[pars[2],1,drop=T]-scl*(params(object)[pars[2],1,drop=T]-rng2)
          }
          
@@ -98,13 +98,10 @@ if (FALSE) {
            arg[["ssb"]]<-ssb(object)
            arg[["rec"]]<-rec(object)
            logl.<-logl(object)
-print(1)
-print(arg)
            paramGrid[i,"ll"]<-do.call("logl.",arg)
         }else{
            psPar<-dimnames(params(object))$params[!(dimnames(params(object))$params %in% pars)]
-print(psPar)
-                      paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(parscale=as.list(autoParscale(object)[psPar]))))}
+           paramGrid[i,"ll"]<-logLik(fmle(object,fixed=fixed,control=list(.parscale=as.list(auto.parscale(object)[psPar]))))}
       }
       
       ## plot liklihood"
@@ -113,7 +110,7 @@ print(psPar)
         image(  plotGrid,xlab=pars[1],ylab=pars[2])
         contour(plotGrid,add=T)
 
-        if (solution)
+        if (.soultion)
           points(params(object)[pars[1],1,drop=T],params(object)[pars[2],1,drop=T],pch=19)}
 
     }else if (length(pars) > 2 | length(pars) == 0) stop("need to specify 1 or 2 valid parameters")
@@ -123,7 +120,7 @@ print(psPar)
     invisible(paramGrid)
     })
   
-#lprof(cod4SR[["ices bevholt"]],plot=TRUE, solution=TRUE, scaling=c("rel","rel"),parscale="b",a =seq(0.5,1.5,length.out=10),b =seq(0.5,1.5,length.out=10))
-#lprof(cod4SR[["ices bevholt"]],plot=TRUE, solution=TRUE, scaling=c("rel","rel"),parscale=NULL,a =seq(0.5,1.5,length.out=10))
+#lprof(cod4SR[["ices bevholt"]],plot=TRUE, .soultion=TRUE, .scaling=c("rel","rel"),.parscale="b",a =seq(0.5,1.5,length.out=10),b =seq(0.5,1.5,length.out=10))
+#lprof(cod4SR[["ices bevholt"]],plot=TRUE, .soultion=TRUE, .scaling=c("rel","rel"),.parscale=NULL,a =seq(0.5,1.5,length.out=10))
 
     
