@@ -1,18 +1,19 @@
-\name{setPlusGroups}
+\name{}
 \docType{methods}
-\alias{setPlusGroup,FLBRP,numeric-method}
-\title{Set plusgroup for FLBRP}
+% \alias{methodName,class1,class2-method}
+\alias{setPlusGroup,FLBRP-method}
+\alias{}
+\title{}
 \description{
 }
 \section{Generic function}{
- setPlusGroups(x, plusgroup, ...) 
+methodName(class1, class2) 
 }
 \section{Methods}{\describe{
-\item{}{}
-  }
-}
+\item{signature(obj1=class1,obj2=class2):}{}
+}}
 \author{The FLR Team}
-\seealso{}
+\seealso{\link[originalPkg]{methodName}}
 \examples{
 }
 \keyword{methods}
