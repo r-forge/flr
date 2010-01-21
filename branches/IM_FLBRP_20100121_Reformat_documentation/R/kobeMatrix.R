@@ -1,7 +1,4 @@
 #### Kobe Advice plots #########################################################
-if (!isGeneric("kobe"))
-	setGeneric("kobe", function(b,f, ...)
-		standardGeneric("kobe"))
 
 setMethod("kobe", signature(b="FLQuants", f="FLQuants"),
   function(b,f,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,type="tapas",...){

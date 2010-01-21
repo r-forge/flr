@@ -3,13 +3,10 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Apr 2009 11:08
+# Last Change: 21 Jan 2010 18:06
 # $Id$
 
 # constructors  {{{
-if (!isGeneric("refpts"))
-	setGeneric("refpts", function(object, ...)
-		standardGeneric("refpts"))
 
 # refpts(array)
 setMethod('refpts', signature(object='array'),
@@ -107,10 +104,6 @@ setMethod('propagate', signature(object='refpts'),
 ) # }}}
 
 # refpts<-  {{{
-if (!isGeneric("refpts<-"))
-	setGeneric("refpts<-", function(object, ..., value)
-		standardGeneric("refpts<-"))
-
 setMethod('refpts<-', signature(object='FLBRP', value='refpts'),
   function(object, value)
   {

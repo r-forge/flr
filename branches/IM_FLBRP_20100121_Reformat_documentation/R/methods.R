@@ -84,18 +84,13 @@ setMethod('catch.sel', signature(object='FLBRP'),
 ) # }}}
 
 # catch.obs {{{
-setGeneric('catch.obs', function(object, ...)
-		standardGeneric('catch.obs'))
 setMethod('catch.obs', signature(object='FLBRP'),
   function(object) {
     return(discards.obs(object)+landings.obs(object))
     }
 ) # }}}
 
-
 # yield.obs {{{
-setGeneric('yield.obs', function(object, ...)
-		standardGeneric('yield.obs'))
 setMethod('yield.obs', signature(object='FLBRP'),
   function(object) {
     return(landings.obs(object))
@@ -103,8 +98,6 @@ setMethod('yield.obs', signature(object='FLBRP'),
 ) # }}}
 
 # computeFbar  {{{
-setGeneric('computeFbar', function(object, ...)
-		standardGeneric('computeFbar'))
 setMethod('computeFbar', signature(object='FLBRP'),
   function(object)
   {
@@ -113,8 +106,6 @@ setMethod('computeFbar', signature(object='FLBRP'),
 ) # }}}
 
 # rec {{{
-setGeneric('rec', function(object, ...)
-		standardGeneric('rec'))
 setMethod('rec', signature(object='FLBRP'),
   function(object) {
     return(stock.n(object)[1,])
@@ -122,8 +113,6 @@ setMethod('rec', signature(object='FLBRP'),
 ) # }}}
 
 # rec.hat {{{
-setGeneric('rec.hat', function(object, ...)
-   standardGeneric('rec.hat'))
 setMethod('rec.hat', signature(object='FLBRP'),
    function(object)
    {
@@ -146,8 +135,6 @@ setMethod("harvest", signature(object="FLBRP", catch="missing"),
 ) # }}}
 
 # spr {{{
-setGeneric('spr', function(object, ...)
-		standardGeneric('spr'))
 setMethod('spr', signature(object='FLBRP'),
   function(object)
   {
@@ -163,8 +150,6 @@ setMethod('spr', signature(object='FLBRP'),
 ) # }}}
 
 # ypr   {{{
-setGeneric('ypr', function(object, ...)
-		standardGeneric('ypr'))
 setMethod('ypr', signature(object='FLBRP'),
   function(object)
   {
@@ -180,8 +165,6 @@ setMethod('ypr', signature(object='FLBRP'),
 ) # }}}
 
 # computeRefpts {{{
-setGeneric('computeRefpts', function(object, ...)
-		standardGeneric('computeRefpts'))
 setMethod('computeRefpts', signature(object='FLBRP'),
  function(object)
   {
@@ -217,8 +200,6 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 ) # }}}
 
 # brp  {{{
-setGeneric('brp', function(object, ...)
-		standardGeneric('brp'))
 setMethod('brp', signature(object='FLBRP'),
   function(object)
   {
@@ -250,9 +231,6 @@ setMethod('brp', signature(object='FLBRP'),
 ) # }}}
 
 # hcrYield  {{{
-setGeneric('hcrYield', function(object, fbar, ...)
-		standardGeneric('hcrYield')
-)
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
   {
@@ -354,11 +332,7 @@ setMethod('catch', signature(object='FLBRP'),
   }
 ) # }}}
 
-
 # catch.hat {{{
-setGeneric('catch.hat', function(object, ...)
-		standardGeneric('catch.hat'))
-
 setMethod('catch.hat', signature(object='FLBRP'),
   function(object) {
     return(catch(object))
@@ -366,8 +340,6 @@ setMethod('catch.hat', signature(object='FLBRP'),
 ) # }}}
 
 # yield {{{
-setGeneric('yield', function(object, ...)
-		standardGeneric('yield'))
 setMethod('yield', signature(object='FLBRP'),
   function(object) {
     return(landings(object))
@@ -375,8 +347,6 @@ setMethod('yield', signature(object='FLBRP'),
 ) # }}}
 
 # yield.hat {{{
-setGeneric('yield.hat', function(object, ...)
-		standardGeneric('yield.hat'))
 setMethod('yield.hat', signature(object='FLBRP'),
   function(object) { return(landings(object))
     }
@@ -390,8 +360,6 @@ setMethod('discards', signature(object='FLBRP'),
 ) # }}}
 
 # discards.hat  {{{
-setGeneric('discards.hat', function(object, ...)
-		standardGeneric('discards.hat'))
 setMethod('discards.hat', signature(object='FLBRP'),
   function(object) return(discards(object))
 ) # }}}
@@ -405,8 +373,6 @@ setMethod('landings', signature(object='FLBRP'),
 ) # }}}
 
 # landings.hat  {{{
-setGeneric('landings.hat', function(object, ...)
-		standardGeneric('landings.hat'))
 setMethod('landings.hat', signature(object='FLBRP'),
   function(object) return(landings(object))
 ) # }}}
@@ -420,8 +386,6 @@ setMethod('stock', signature(object='FLBRP'),
 ) # }}}
 
 # stock.hat {{{
-setGeneric('stock.hat', function(object, ...)
-		standardGeneric('stock.hat'))
 setMethod('stock.hat', signature(object='FLBRP'),
   function(object) return(stock(object))
 ) # }}}
@@ -439,8 +403,6 @@ setMethod('ssb', signature(object='FLBRP'),
 ) # }}}
 
 # ssb.hat {{{
-setGeneric('ssb.hat', function(object, ...)
-		standardGeneric('ssb.hat'))
 setMethod('ssb.hat', signature(object='FLBRP'),
   function(object) return(ssb(object))
 ) # }}}
@@ -453,8 +415,6 @@ setMethod('revenue', signature(object='FLBRP'),
 ) # }}}
 
 # cost {{{
-setGeneric('cost', function(object, ...)
-		standardGeneric('cost'))
 setMethod('cost', signature(object='FLBRP'),
   function(object)
     {
@@ -463,10 +423,7 @@ setMethod('cost', signature(object='FLBRP'),
     }
 ) # }}}
 
-
 # profit  {{{
-setGeneric('profit', function(object, ...)
-		standardGeneric('profit'))
 setMethod('profit', signature(object='FLBRP'),
   function(object) {
     return(revenue(object)-cost(object))
@@ -474,8 +431,6 @@ setMethod('profit', signature(object='FLBRP'),
 ) # }}}
 
 # profit.hat  {{{
-setGeneric('profit.hat', function(object, ...)
-		standardGeneric('profit.hat'))
 setMethod('profit.hat', signature(object='FLBRP'),
   function(object) return(profit(object))
 ) # }}}

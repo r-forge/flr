@@ -6,8 +6,6 @@
 # $Id$
 
 # FLBRP
-setGeneric('FLBRP', function(object, sr, ...)
-  standardGeneric('FLBRP'))
 
 # FLBRP(object='missing', sr='missing') {{{
 setMethod('FLBRP', signature(object='missing', sr='missing'),
