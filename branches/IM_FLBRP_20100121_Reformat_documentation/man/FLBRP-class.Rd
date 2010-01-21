@@ -1,19 +1,18 @@
 \name{}
 \docType{class}
-% \alias{className-class}
-% \alias{className}
-% \alias{className-methods}
-% \alias{className, inputClass-method}
+\alias{refpts}
+\alias{refpts-methods}
 \alias{refpts<-,FLBRP,refpts-method}
 \alias{refpts<-,FLBRP,numeric-method}
 \alias{refpts,FLBRP-method}
 \alias{propagate,FLBRP-method}
 \alias{iter,FLBRP-method}
+\alias{FLBRP}
+\alias{FLBRP-methods}
 \alias{FLBRP,missing,missing-method}
 \alias{FLBRP,missing,FLSR-method}
 \alias{FLBRP,FLStock,FLSR-method}
 \alias{FLBRP,FLStock,missing-method}
-
 \title{}
 \description{
 }

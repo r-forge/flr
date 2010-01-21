@@ -1,11 +1,11 @@
 \name{}
 \docType{methods}
-%\alias{methodName}
-%\alias{methodName-methods}
-%\alias{methodName,class1-method}
-\alias{computeRefpts,FLBRP-method}
+\alias{brp}
+\alias{brp-methods}
 \alias{brp,FLBRP-method}
-\alias{}
+\alias{computeRefpts}
+\alias{computeRefpts-methods}
+\alias{computeRefpts,FLBRP-method}
 \title{}
 \description{
 }
