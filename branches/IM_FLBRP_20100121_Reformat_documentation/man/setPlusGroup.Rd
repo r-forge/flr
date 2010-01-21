@@ -1,9 +1,7 @@
-\name{}
+\name{setPlusGroupFLBRP}
 \docType{methods}
-% \alias{methodName,class1,class2-method}
 \alias{setPlusGroup,FLBRP-method}
-\alias{}
-\title{}
+\title{setPlusGroup method for FLBRP}
 \description{
 }
 \section{Generic function}{

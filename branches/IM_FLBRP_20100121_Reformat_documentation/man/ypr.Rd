@@ -1,8 +1,5 @@
-\name{}
+\name{ypr}
 \docType{methods}
-%\alias{methodName}
-%\alias{methodName-methods}
-%\alias{methodName,class1-method}
 \alias{spr}
 \alias{spr-methods}
 \alias{spr,FLBRP-method}
@@ -12,9 +9,7 @@
 \alias{spr0}
 \alias{spr0-methods}
 \alias{spr0,FLBRP,missing,missing-method}
-
-\alias{}
-\title{}
+\title{Yield and Spawn-per-recruit calculations}
 \description{
 }
 \section{Generic function}{

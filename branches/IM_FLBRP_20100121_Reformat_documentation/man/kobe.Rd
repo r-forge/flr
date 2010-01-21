@@ -1,8 +1,5 @@
-\name{}
+\name{kobe}
 \docType{methods}
-%\alias{methodName}
-%\alias{methodName-methods}
-%\alias{methodName,class1-method}
 \alias{kobe,FLQuants,FLQuants-method}
 \alias{kobe,FLQuants,FLQuant-method}
 \alias{kobe,FLQuant,FLQuants-method}
@@ -10,8 +7,7 @@
 \alias{kobe,FLQuants,missing-method}
 \alias{kobe,array,missing-method}
 \alias{kobe,data.frame,missing-method}
-\alias{}
-\title{}
+\title{Kobe plots of stock status against MSY}
 \description{
 }
 \section{Generic function}{

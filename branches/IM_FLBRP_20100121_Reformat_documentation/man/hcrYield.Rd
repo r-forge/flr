@@ -1,14 +1,9 @@
-\name{}
+\name{hcrYield}
 \docType{methods}
-%\alias{methodName}
-%\alias{methodName-methods}
-%\alias{methodName,class1-method}
 \alias{computeFbar,FLBRP-method}
 \alias{hcrYield,FLBRP,FLQuant-method}
 \alias{hcrYield,FLBRP,numeric-method}
-
-\alias{}
-\title{}
+\title{Calculate yield and fishing mortalities from FLBRP}
 \description{
 }
 \section{Generic function}{

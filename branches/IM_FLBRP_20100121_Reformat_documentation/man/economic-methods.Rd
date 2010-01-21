@@ -1,13 +1,10 @@
-\name{}
+\name{economicFLBRP}
 \docType{methods}
-% \alias{methodName,class1,class2-method}
-\alias{}
 \alias{revenue,FLBRP-method}
 \alias{cost,FLBRP-method}
 \alias{profit,FLBRP-method}
 \alias{profit.hat,FLBRP-method}
-
-\title{}
+\title{Methods for economics variables}
 \description{
 }
 \section{Generic function}{

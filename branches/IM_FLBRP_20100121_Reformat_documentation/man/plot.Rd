@@ -1,10 +1,8 @@
-\name{}
+\name{plotFLBRP}
 \docType{methods}
-% \alias{methodName,class1,class2-method}
 \alias{plot,FLBRP,missing-method}
-\alias{plot,FLBRP,FLStock-method
-\alias{}
-\title{}
+\alias{plot,FLBRP,FLStock-method}
+\title{plot methods for FLBRP}
 \description{
 }
 \section{Generic function}{

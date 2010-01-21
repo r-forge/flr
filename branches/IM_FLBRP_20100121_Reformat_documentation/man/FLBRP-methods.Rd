@@ -1,6 +1,5 @@
-\name{}
+\name{FLBRP-methods}
 \docType{methods}
-% \alias{methodName,class1,class2-method}
 \alias{landings.n,FLBRP-method}
 \alias{discards.n,FLBRP-method}
 \alias{stock.n,FLBRP-method}
@@ -24,8 +23,7 @@
 \alias{ssb.hat,FLBRP-method}
 \alias{catch,FLBRP-method}
 \alias{catch.hat,FLBRP-method}
-\alias{}
-\title{}
+\title{Methods for calculations on FLBRP}
 \description{
 }
 \section{Generic function}{

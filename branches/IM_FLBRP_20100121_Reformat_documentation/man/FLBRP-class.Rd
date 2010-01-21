@@ -1,7 +1,5 @@
-\name{}
+\name{FLBRP-class}
 \docType{class}
-\alias{refpts}
-\alias{refpts-methods}
 \alias{refpts<-,FLBRP,refpts-method}
 \alias{refpts<-,FLBRP,numeric-method}
 \alias{refpts,FLBRP-method}
@@ -13,7 +11,7 @@
 \alias{FLBRP,missing,FLSR-method}
 \alias{FLBRP,FLStock,FLSR-method}
 \alias{FLBRP,FLStock,missing-method}
-\title{}
+\title{Class FLBRP for biological and economic reference points}
 \description{
 }
 \section{Slots}{\describe{

@@ -1,8 +1,8 @@
-\name{}
+\name{coerceFLBRP}
 \docType{methods}
-% \alias{methodName,class1,class2-method}
-\alias{}
-\title{}
+\alias{coerce,FLBRP,FLSR-method}
+\alias{coerce,FLBRP,FLStock-method}
+\title{Coercion from FLBRP to other classes}
 \description{
 }
 \section{Generic function}{

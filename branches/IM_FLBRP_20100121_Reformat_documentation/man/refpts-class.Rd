@@ -1,9 +1,5 @@
-\name{}
+\name{refpts-class}
 \docType{class}
-% \alias{className-class}
-% \alias{className}
-% \alias{className-methods}
-% \alias{className, inputClass-method}
 \alias{refpts}
 \alias{refpts-methods}
 \alias{refpts,array-method}
@@ -13,7 +9,7 @@
 \alias{refpts,refpts-method}
 \alias{show,refpts-method}
 \alias{propagate,refpts-method}
-\title{}
+\title{Class refpts for reference points}
 \description{
 }
 \section{Slots}{\describe{

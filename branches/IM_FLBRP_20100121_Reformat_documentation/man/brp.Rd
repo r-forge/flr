@@ -1,4 +1,4 @@
-\name{}
+\name{brp}
 \docType{methods}
 \alias{brp}
 \alias{brp-methods}
@@ -6,7 +6,7 @@
 \alias{computeRefpts}
 \alias{computeRefpts-methods}
 \alias{computeRefpts,FLBRP-method}
-\title{}
+\title{Methods for estimating reference points}
 \description{
 }
 \section{Generic function}{
