@@ -67,12 +67,13 @@ setMethod('setSR', signature(sr='list'),
     t.       <- vector(mode="numeric",length(yrs))
     names(t.)<-yrs
     if (is(model,"formula")) model<-SRModelName(model)
+    browser()
     t.[]     <-SRchar2code(model)
     model <-t.
 
 #****** Check and force parameters for all years ********
     # Turn the FLPar or Quant into a Quant of right dimensions
-    dmns <-list(params=SRParams(SRcode2char(model[1])),
+    dmns <-list(params=SRParams(SRcode2char(ac(model[1]))),
                 year  =yrs,
                 unit  =dimnames(m(object))$unit,
                 season=dimnames(m(object))$season,
@@ -121,7 +122,7 @@ SRchar2code<-function(strCode){
                                    "ricker.d"        = 31,
                                    "ricker.c.a"      = 32,
                                    "ricker.c.b"      = 33,
-                                   "ricker.sv "      = 34,
+                                   "ricker.sv"       = 34,
                                    "ricker.ndc"      = 35,
                                    "ricker.ar1"      = 36,
                                    default           = 0))
@@ -144,7 +145,7 @@ SRcode2char<-function(strCode){
                          "31"   = "ricker.d",      
                          "32"   = "ricker.c.a",    
                          "33"   = "ricker.c.b",    
-                         "34"   = "ricker.sv ",    
+                         "34"   = "ricker.sv",    
                          "35"   = "ricker.ndc",    
                          "36"   = "ricker.ar1",    
                          "0"    = default)         

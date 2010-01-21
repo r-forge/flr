@@ -23,6 +23,3 @@ matrixTarget(target)
 matrixControl(control)
 }
 \keyword{internal}
-
-\eof
-

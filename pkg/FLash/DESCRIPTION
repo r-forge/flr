@@ -6,4 +6,4 @@ Description: Saviour of the universe
 Depends: methods, R(>= 2.6.0), FLCore(>= 1.99-6)
 LinkingTo: FLCore
 Maintainer: Prince Baron <t.dalton@arboria.ac.uk>
-License: GPL 2 or above
+License: GPL 2

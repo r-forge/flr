@@ -458,4 +458,3 @@ void FLashVPA::RunVPA(int iter, adouble *FRatio_ad, FLBool FRatioFlag, bool Flag
         F_ad(iage,iyr,1,1,1,iter) =  fmax(0.0,-log(N_ad(iage+1,iyr+1,1,1,1,iter)/N_ad(iage,iyr,1,1,1,iter)) - M(iage, iyr,1,1,1,iter));
         }
    }
-

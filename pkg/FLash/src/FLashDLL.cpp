@@ -434,4 +434,3 @@ extern "C" SEXPDLLExport AdaptTapeGrad(SEXP xQ)
 	
    return RtnVal;
    }
-

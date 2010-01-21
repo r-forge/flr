@@ -37,13 +37,13 @@ and likewise to model the MP*OM interaction
 \code{TAC<-computeCatch(codoid.MP)[,"2000"]
 
 target<-fwdTarget(year=2000,value=TAC,quantity="catch")
-Codoid<-fwd(codoid,fleet,target,control,codoid.sr)$biol}
+Codoid<-fwd(codoid,fleet,target,control,codoid.sr)[['biol']]}
 
 We can even model compliance by specify effort constraints e.g. fleets will not
 reduce F below that last year
 
 \code{target<-fwdTarget(year=2000,value=TAC,quantity=c("catch","f"),min(NA,1.0),rel=c(NA,1999))
-Codoid<-fwd(codoid,fleet,target,control,codoid.sr)$biol}
+Codoid<-fwd(codoid,fleet,target,control,codoid.sr)[['biol']]}
 
 or base implementation-error on revenue
 
@@ -112,17 +112,17 @@ For (i=1; i<=nTrgt; i++)
 fwdTarget(list(year=1998:2000,value=c(50000,51000,52000),quantity=rep("landings",3)))
 }
 \arguments{
-  \item{object: } {either a \code{FLStock}, \code{FLStocks}, \code{FLBiol}, \code{FLBiols}}
-  \item{fleet: } {either a \code{FLFleet}, \code{FLFleets}}
-  \item{control: } {Control object of type fwdControl}
-  \item{target: } {Target object of type fwdTarget}
-  \item{sr: } {an object of type \code{FLSR}}
-  \item{sr.model: } {character vector with name of stock recruit relationship}
-  \item{sr.params: } {Stock recruit parameters}
-  \item{sr.residuals: } {an object of type \code{FLQuant} with recruitment residuals for projection years}
+  \item{object: }{either a \code{FLStock}, \code{FLStocks}, \code{FLBiol}, \code{FLBiols}}
+  \item{fleet: }{either a \code{FLFleet}, \code{FLFleets}}
+  \item{control: }{Control object of type fwdControl}
+  \item{target: }{Target object of type fwdTarget}
+  \item{sr: }{an object of type \code{FLSR}}
+  \item{sr.model: }{character vector with name of stock recruit relationship}
+  \item{sr.params: }{Stock recruit parameters}
+  \item{sr.residuals: }{an object of type \code{FLQuant} with recruitment residuals for projection years}
   }
 \details{
-  \code{fwd} {allows a range HCR to be set and MSEs to be run for stocks and fisheries.}
+  \code{fwd}{allows a range HCR to be set and MSEs to be run for stocks and fisheries.}
 }
 \value{
   Stuff
@@ -131,7 +131,7 @@ fwdTarget(list(year=1998:2000,value=c(50000,51000,52000),quantity=rep("landings"
   \code{\link{fwdControl}}, \code{\link{fwdTarget}}
 }
 \author{
-  Laurence Kell, Finlay Scott & Iago Mosqueira
+  Laurence Kell, Finlay Scott and Iago Mosqueira
   }
 \examples{
 \dontrun{target<-fwdTarget(year=2000,value=c(.40,100000,5000,120000,220000,0.65),
@@ -142,5 +142,3 @@ codoid.MP  <-fwd(codoid.MP, target, sr.model="mean", sr.param=25000)
 \keyword{fwd}
 \keyword{fwdTarget}
 \keyword{fwdControl }
-
-\eof

@@ -127,5 +127,3 @@ black.bird      <-fwd(ple4, target, sr.model="mean", sr.param=25000)
 
 \keyword{fwd}
 \keyword{fwdTarget}
-
-\eof
