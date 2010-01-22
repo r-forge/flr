@@ -3,7 +3,7 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 21 Jan 2010 18:06
+# Last Change: 22 Jan 2010 11:45
 # $Id$
 
 # constructors  {{{
@@ -166,30 +166,32 @@ setMethod('refpts', signature(object='FLBRP'),
 # recalculations  {{{
 
 # MSY
-msy <- function(object)
-  {
-  refpts(object) <- refpts(as.numeric(NA), refpt='msy', iter=as.numeric(dimnames(object)$iter))
-  computeRefpts(object)
+setMethod("msy", signature(object="FLBRP"),
+  function(object) {
+    refpts(object) <- refpts(as.numeric(NA), refpt='msy',
+      iter=as.numeric(dimnames(object@refpts)$iter))
+    computeRefpts(object)
   }
+)
 
 # f0.1
 f0.1 <- function(object)
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 
 # fmax
 fmax <- function(object)
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 
 # spr
 sprr <- function(object, spr='.30')
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 

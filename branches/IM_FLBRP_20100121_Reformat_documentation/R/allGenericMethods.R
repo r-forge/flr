@@ -80,3 +80,9 @@ setGeneric("refpts<-", function(object, ..., value)
 
 setGeneric('FLBRP', function(object, sr, ...)
   standardGeneric('FLBRP'))
+
+setGeneric("msy", function(object, ...)
+  standardGeneric("msy"))
+
+setGeneric("spr0", function(ssb, rec, fbar, ...)
+  standardGeneric("spr0"))

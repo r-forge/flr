@@ -139,10 +139,10 @@ setMethod('spr', signature(object='FLBRP'),
   function(object)
   {
     params(object)<-FLPar(1)
-    model( object)<-formula(rec~a)
+    model(object)<-formula(rec~a)
     
     res <- .Call("spr", object, SRchar2code(SRModelName(object@model)),
-      FLQuant(c(params(object)),dimnames=dimnames(params(object))), 
+      FLQuant(c(params(object)), dimnames=dimnames(params(object))), 
       PACKAGE = "FLBRP")
 
     return(res)
@@ -259,22 +259,6 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='numeric'),
   function(object, fbar)
   {
     hcrYield(object, FLQuant(fbar))
-  }
-) # }}}
-
-# spr0 {{{
-setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
-  function(ssb)
-  {
-    params(ssb)<-FLPar(1)
-    model(ssb)<-formula(rec~a)
-    fbar(ssb) <- FLQuant(0)
-    
-    res <- .Call("spr", ssb, SRchar2code(SRModelName(ssb@model)),
-      FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))),
-      PACKAGE = "FLBRP")
-
-    return(res)
   }
 ) # }}}
 
