@@ -3,7 +3,6 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 11 Mar 2009 16:17
 # $Id$
 
 
@@ -34,7 +33,7 @@ validFLBRP <- function(object)
 {
   # (1) FLQuant objects must share dimnames[1:5] as follows
   #  fbar.obs with landings.obs, discards.obs, ssb.obs, profit.obs
-  for (i in c("landings.obs", "discards.obs", "ssb.obs", "profit.obs"))
+  for (i in c("landings.obs", "discards.obs", "ssb.obs", "stock.obs", "profit.obs"))
     if(!all.equal(dimnames(object@fbar.obs), dimnames(slot(object, i))))
       return(paste("dimnames mismatch:", i))
   # with rec.obs, except dimnames[1]
@@ -69,6 +68,7 @@ setClass("FLBRP",
       discards.obs   ="FLQuant",
       rec.obs        ="FLQuant",
       ssb.obs        ="FLQuant",
+      stock.obs      ="FLQuant",
       profit.obs     ="FLQuant",
 #      stock.n        ="FLQuant",
 #      landings.n     ="FLQuant",
@@ -104,6 +104,7 @@ setClass("FLBRP",
       discards.obs    =new("FLQuant"),
       rec.obs         =new("FLQuant"),
       ssb.obs         =new("FLQuant"),
+      stock.obs       =new("FLQuant"),
       profit.obs      =new("FLQuant"),
 #      stock.n         =new("FLQuant"),
 #      landings.n      =new("FLQuant"),

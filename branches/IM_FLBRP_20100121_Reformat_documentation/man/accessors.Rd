@@ -18,6 +18,8 @@
 \alias{rec.obs<-,FLBRP,FLQuant-method}
 \alias{ssb.obs,FLBRP-method}
 \alias{ssb.obs<-,FLBRP,FLQuant-method}
+\alias{biomass.obs,FLBRP-method}
+\alias{biomass.obs<-,FLBRP,FLQuant-method}
 \alias{profit.obs,FLBRP-method}
 \alias{profit.obs<-,FLBRP,FLQuant-method}
 \alias{landings.sel,FLBRP-method}

@@ -1,5 +1,6 @@
 \name{refpts-class}
 \docType{class}
+\alias{refpts-class}
 \alias{refpts}
 \alias{refpts-methods}
 \alias{refpts,array-method}

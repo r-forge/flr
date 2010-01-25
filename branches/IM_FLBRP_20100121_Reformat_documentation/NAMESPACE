@@ -6,6 +6,7 @@ exportClasses("FLBRP",
   "refpts")
 exportMethods(
   "coerce",
+  "biomass.obs",
   "catch",
   "catch.hat",
   "catch.n",

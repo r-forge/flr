@@ -5,6 +5,7 @@
 \alias{refpts,FLBRP-method}
 \alias{propagate,FLBRP-method}
 \alias{iter,FLBRP-method}
+\alias{FLBRP-class}
 \alias{FLBRP}
 \alias{FLBRP-methods}
 \alias{FLBRP,missing,missing-method}

@@ -15,6 +15,9 @@ setGeneric('FLBRP', function(object, sr, ...)
 setGeneric('catch.obs', function(object, ...)
 	standardGeneric('catch.obs'))
 
+setGeneric('biomass.obs', function(object, ...)
+	standardGeneric('biomass.obs'))
+
 setGeneric('yield.obs', function(object, ...)
 	standardGeneric('yield.obs'))
 

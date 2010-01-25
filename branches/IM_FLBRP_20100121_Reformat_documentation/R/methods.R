@@ -90,6 +90,16 @@ setMethod('catch.obs', signature(object='FLBRP'),
     }
 ) # }}}
 
+# biomass.obs {{{
+setGeneric('biomass.obs', function(object, ...)
+		standardGeneric('biomass.obs'))
+setMethod('biomass.obs', signature(object='FLBRP'),
+  function(object) {
+    # TODO check
+    return(stock.obs(object))
+    }
+) # }}}
+
 # yield.obs {{{
 setMethod('yield.obs', signature(object='FLBRP'),
   function(object) {
@@ -131,21 +141,6 @@ setMethod("harvest", signature(object="FLBRP", catch="missing"),
     sel <- sweep(sel, 2:6, fbar(object), '*')
     units(sel) <- 'f'
     return(sel)
-  }
-) # }}}
-
-# spr {{{
-setMethod('spr', signature(object='FLBRP'),
-  function(object)
-  {
-    params(object)<-FLPar(1)
-    model(object)<-formula(rec~a)
-    
-    res <- .Call("spr", object, SRchar2code(SRModelName(object@model)),
-      FLQuant(c(params(object)), dimnames=dimnames(params(object))), 
-      PACKAGE = "FLBRP")
-
-    return(res)
   }
 ) # }}}
 

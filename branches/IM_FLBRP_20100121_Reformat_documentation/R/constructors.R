@@ -17,8 +17,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     res <- do.call(new, c(list(Class='FLBRP', model=model, params=params, fbar=fbar),
       args))
     # resize: years
-    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
-      'profit.obs')
+    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs', 'stock.obs','profit.obs')
     # find slots not provided as argument
     empty <- !slots %in% names(args)
     # if any of them given, use for sizing
@@ -146,6 +145,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
       # ssb.obs
       ssb.obs= ssb(object),
+
+      stock.obs= computeStock(object),
 
       # landings & discards
       landings.obs = object@landings,

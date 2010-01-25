@@ -9,6 +9,22 @@
 
 # TODO Fri 22 Jan 2010 11:13:59 AM CET IM:
 
+
+# spr {{{
+setMethod('spr', signature(object='FLBRP'),
+  function(object)
+  {
+    params(object)<-FLPar(1)
+    model(object)<-formula(rec~a)
+    
+    res <- .Call("spr", object, SRchar2code(SRModelName(object@model)),
+      FLQuant(c(params(object)), dimnames=dimnames(params(object))), 
+      PACKAGE = "FLBRP")
+
+    return(res)
+  }
+) # }}}
+
 # spr0(FLBRP,missing,missing) {{{
 setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
   function(ssb)
