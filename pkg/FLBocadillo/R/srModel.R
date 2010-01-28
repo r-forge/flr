@@ -7,6 +7,7 @@
 # Reference:
 # Notes: Updated to make generic
 
+flagNormLog=FALSE
 #### Utility functions
 ## Gets formula from names
 SRModelName<-function(formula){
@@ -41,7 +42,7 @@ setMethod('sigma',
 
    return((SS/length(hat))^0.5)})
 
-logl.ar1<-function(rho,sigma,obs,hat){
+loglAR1<-function(rho,sigma,obs,hat){
     ## likelihood for AR(1) process
     sigma2   <-sigma^2
     n        <-length(obs)
@@ -58,14 +59,14 @@ sprFunc<-function(type,spr,a=NULL,b=NULL,c=NULL,d=NULL){
         "bevholt"  =a*(spr)-b,
         "ricker"   =log(a*spr)/b,
         "cushing"  =(1/a)*spr^(b-1),
-        "shepherd" =b(a*(spr)-1)^(1/c),
+        "shepherd" =b*(a*spr-1)^(1/c),
         "segreg"   =ifelse(ssb <= b, a/(spr), 0),
         "mean"     =a/(spr),
         "dersh"    =ssb*a*(1-b*c*ssb)^c,
         "pellat"   =1/(a/ssb-a/ssb*(ssb/b)^c),
         "bevholtD" =a*(spr)-b,
         "rickerD"  =log(a*spr)/b,
-        "shepherdD"=b(a*(spr)-1)^(1/c))}
+        "shepherdD"=NULL)}
 
 srrFunc<-function(type,ssb=NULL,spr=NULL,a=NULL,b=NULL,c=NULL,d=NULL){
     #recruits as function of ssb or ssb/red
@@ -83,10 +84,18 @@ srrFunc<-function(type,ssb=NULL,spr=NULL,a=NULL,b=NULL,c=NULL,d=NULL){
           "pellat"   =a*(1-(ssb/b)^c),
           "bevholtD" =a*ssb/(b+ssb),
           "rickerD"  =a*ssb*exp(-b*ssb),
-          "shepherdD"=a*ssb/(1+(ssb/b)^c))}
+          "shepherdD"=a*ssb^2/(1+(ssb/b)^c))}
 
 sv<-function(type,spr0,a,b=NULL,c=NULL,d=NULL){
       # converts a&b parameterisation into steepness & vergin biomass
+      if (type=="shepherd2"){
+        v<-b*(a*spr0-1)^(1/c)
+        s<-(0.2+0.2*(v/b)^c)/(1+(v*0.2/b)^c)
+        res<-c(s,v)
+        names(res)<-c("s","v")
+
+        return(res)}
+      
       v=sprFunc(type,spr0,a=a,b=b,c=c,d=d)
       s=srrFunc(type,ssb=v*.2,a=a,b=b,c=c,d=d)/srrFunc(type,ssb=v,a=a,b=b,c=c,d=d)
 
@@ -99,8 +108,9 @@ ab<-function(type,spr0,s=NULL,v=NULL,c=NULL,d=NULL){
       switch(type,
         "bevholt" ={a<-(v+(v-s*v)/(5*s-1))/spr0; b<-(v-s*v)/(5*s-1)},
         "ricker"  ={b<-log(5*s)/(v*0.8);         a<-exp(v*b)/spr0},
-        "cushing" ={b<-5*log(s);                 a<-(1/spr0)*v^(b-1)}
-        )
+        "cushing" ={b<-5*log(s);                 a<-(1/spr0)*v^(b-1)},
+        "segreg"  =stop("can´t parameterise segmented regression as steepness and virgin biomass"),
+        "shepherd"={b<-v*(((0.2-s)/(s*0.2^c-0.2))^-(1/c));   a<-((v/b)^c+1)/spr0})
 
         res<-c(a,b)
         names(res)<-c("a","b")
@@ -119,16 +129,16 @@ modelFunc<-function(type){
         "pellat"   =rec~a*(1-(ssb/b)^c),
         "bevholtD" =rec~a*ssb/(b+ssb),
         "rickerD"  =rec~a*ssb*exp(-b*ssb),
-        "shepherdD"=rec~a*ssb/(1+(ssb/b)^c))}
+        "shepherdD"=rec~a*ssb^2/(1+(ssb/b)^c))}
 
 loglFunc<-function(type){
     # Loglikelihoods
     switch(type,
         "normlog"   ="sum(dnorm(rec, hat, sigma, TRUE), na.rm=TRUE)",
         "normal"    ="sum(dnorm(rec, hat, sigma, FALSE), na.rm=TRUE)",
-        "lognorm"   ="logl.ar1(0,  sigma,rec,hat)",
-        "normar1"   ="logl.ar1(rho,sigma,rec,hat)",
-        "lognormar1"="logl.ar1(rho,sigma,rec),hat)")}
+        "lognorm"   ="loglAR1(0,  sigma,rec,hat)",
+        "normar1"   ="loglAR1(rho,sigma,rec,hat)",
+        "lognormar1"="loglAR1(rho,sigma,rec),hat)")}
 
 initialFunc<-function(type){
    # Initial parameter values and upper & lower limits
@@ -171,12 +181,18 @@ initialFunc<-function(type){
                upper=rep(Inf, 2)),
 
         "shepherd"=structure(
-                function(rec, ssb){
-                  a <- mean(rec/ssb,na.rm=T)
-                  b <- mean(ssb,na.rm=T)
-                  c <- 1.0
+                function(rec,ssb){
+                  c<-2
+                  a<-quantile(c(rec/ssb),prob=0.75,na.rm=T)
+                  #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-                  return(list(a=a,b=b,c=c))},
+                  b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+
+                  names(a)<-NULL
+                  names(b)<-NULL
+
+                  return(list(a=a, b=b, c=c))
+                  },
 
                 lower = c(0,  1e-08, 1),
                 upper = c(Inf,Inf,   4)),
@@ -252,12 +268,13 @@ initialFunc<-function(type){
         	  upper=c(Inf,Inf)),
 
         "shepherdD"=structure(
-                function(rec, ssb){
+                function(rec,ssb){
                   a <- mean(rec/ssb,na.rm=T)
-                  b <- mean(ssb,na.rm=T)
+                  b <- mean(ssb,na.rm=T)/a
                   c <- 1.0
 
-                  return(list(a=a,b=b,c=c))},
+                  return(list(a=a, b=b, c=c))
+                  },
 
                 lower = c(0,  1e-08, 1),
                 upper = c(Inf,Inf,   4)))}
@@ -312,8 +329,9 @@ bevholt<-function(){
        hat. <-log((a*ssb)/(b+ssb))
        obs  <-log(rec)
 	     sigma<-sigma(obs,hat.)
-    	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
 
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
     	 return(res)}
 
   ## initial parameter values
@@ -340,8 +358,8 @@ ricker<-function(){
 	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
-     #res<--logl.ar1(0,sigma,obs,hat.)
-	   res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
 
      if (!is.finite(res)) res<--10e-200
 
@@ -368,13 +386,13 @@ ricker<-function(){
 
 segreg <- function(){
 	logl <- function(a, b, rec, ssb){
-     hat. <-log(ifelse(ssb <= b, a*ssb, a*b))
+     hat. <-FLQuant(log(ifelse(ssb <= b, a*ssb, a*b)))
      obs  <-log(rec)
 	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
-     #res<--logl.ar1(0,sigma,obs,hat.)
-	   res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
 
      if (!is.finite(res)) res<--10e-200
 
@@ -397,37 +415,45 @@ segreg <- function(){
 
 	return(list(logl=logl, model=model, initial=initial))}
 
-shepherd<-function(){
-  ## log likelihood, assuming normal log.
-  logl <- function(a,b,c,rec,ssb){
-     hat. <-log(a*ssb/(1+(ssb/b)^c))
-     obs  <-log(rec)
-	   sigma<-sigma(obs,hat.)
+shepherd<-function()
+    {
+    ## log likelihood, assuming normal log.
+    logl <- function(a,b,c,rec,ssb){
+       hat. <-log(a*ssb/(1+(ssb/b)^c))
+       obs  <-log(rec)
+  	   sigma<-sigma(obs,hat.)
 
-	   # minus log-likelihood
-     #res<--logl.ar1(0,sigma,obs,hat.)
-	   res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+  	   # minus log-likelihood
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
-     if (!is.finite(res)) res<--10e-200
+       if (!is.finite(res)) res<--10e-200
 
-     return(res)}
+       return(res)}
 
-  ## initial parameter values
-    initial<-structure(
+    initial <- structure(
       function(rec,ssb){
-        a<-mean(rec/ssb,na.rm=T)
-        b<-mean(ssb,na.rm=T)
-        c<-1.0
+        c<-2
+        a<-quantile(c(rec/ssb^2),prob=0.75,na.rm=T)
+        #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-        return(list(a=a, b=b, c=c))},
+        b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+        b<-b/quantile(c(ssb),prob=0.5,na.rm=T)
 
-      lower = c(0, 1e-08, 1),
-      upper = c(Inf,Inf,4))
+        names(a)<-NULL
+        names(b)<-NULL
 
-  ## model to be fitted
-  model <-rec~a*ssb/(1+(ssb/b)^c)
+        return(list(a=a,b=b,c=c))
+        },
 
-	return(list(logl=logl,model=model,initial=initial))}
+      lower = c(1e-08, 1e-08, 1),
+      upper = c(1e02,  1e+08,10))
+
+    model <- rec ~ a * ssb/(1 + (ssb/b)^c)
+
+    return(list(logl = logl, model = model, initial = initial))
+    } # }}}
+
 
 pellat<-function(){
 
@@ -436,7 +462,8 @@ pellat<-function(){
        hat. <-log(qmax(a*ssb*(1-(ssb/b)^c),0.001))
        obs  <-log(rec)
 	     sigma<-sigma(obs,hat.)
-    	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
     	 return(res)}
 
@@ -445,7 +472,7 @@ pellat<-function(){
       a<-quantile(c(rec/ssb),.9)
       b<-quantile(c(ssb)    ,.9)
 
-    return(list(a=a, b=b, c=1))},
+    return(list(a=a,b=b,c=1))},
 
   ## bounds
   lower=c(0, 0, 0),
@@ -464,7 +491,8 @@ dersch<-function(){
        hat. <-log(a*(1-b*c*ssb)^(1/c))
        obs  <-log(rec)
 	     sigma<-sigma(obs,hat.)
-    	 res  <-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE)
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
     	 return(res)}
 
@@ -486,7 +514,7 @@ dersch<-function(){
 
 	return(list(logl=logl, model=model, initial=initial))}
 
-shepherd.d<-function(){
+shepherdD<-function(){
   ## log likelihood, assuming normal log.
   logl <- function(a,b,c,rec,ssb){
      hat. <-log(a*ssb^2/(1+(ssb/b)^c))
@@ -494,8 +522,8 @@ shepherd.d<-function(){
 	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
-     #res<--logl.ar1(0,sigma,obs,hat.)
-	   res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
 
      if (!is.finite(res)) res<--10e-200
 
@@ -504,14 +532,21 @@ shepherd.d<-function(){
   ## initial parameter values
     initial<-structure(
       function(rec,ssb){
-        a<-mean(rec/ssb^2,na.rm=T)
-        b<-mean(ssb,na.rm=T)
-        c<-1.0
+        c<-2
+        a<-quantile(c(rec/ssb^2),prob=0.75,na.rm=T)
+        #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-        return(list(a=a, b=b, c=c))},
+        b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+        b<-b/quantile(c(ssb),prob=0.5,na.rm=T)
+
+        names(a)<-NULL
+        names(b)<-NULL
+
+        return(list(a=a,b=b,c=c))
+        },
 
       lower = c(0, 1e-08, 1),
-      upper = c(Inf,Inf,4))
+      upper = c(Inf,Inf,10))
 
   ## model to be fitted
   model <-rec~a*ssb^2/(1+(ssb/b)^c)
@@ -526,21 +561,25 @@ shepherd.ndc<-function(){
 	    sigma<-sigma(obs,hat.)
 
 	    # minus log-likelihood
-      #res<--logl.ar1(0,sigma,obs,hat.)
-	    res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+      if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                       res<-loglAR1(0,sigma,obs,hat.)
 
       if (!is.finite(res)) res<--10e-200
 
       return(res)}
 
     initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
+      function(rec,ssb){
+        c<-2
+        a<-quantile(c(rec/ssb),prob=0.75,na.rm=T)
+        #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-        return(list(a=a,b=b,c=c,d=1))
+        b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+
+        names(a)<-NULL
+        names(b)<-NULL
+
+        return(list(a=a, b=b, c=c))
         },
 
       lower = c(0,1e-08,1,0.9), upper = c(Inf,Inf,4,1.1)
@@ -557,19 +596,25 @@ shepherd.ar1<-function(){
 	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
-     res<--logl.ar1(rho,sigma,obs,hat.)
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
 
      if (!is.finite(res)) res<--10e-200
 
      return(res)}
 
-    initial <- structure(function(rec, ssb){
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        rho<-0.0
+    initial <- structure(
+      function(rec,ssb){
+        c<-2
+        a<-quantile(c(rec/ssb),prob=0.75,na.rm=T)
+        #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-        return(list(a=a,b=b,c=c,rho=rho))},
+        b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+
+        names(a)<-NULL
+        names(b)<-NULL
+
+        return(list(a=a,b=b,c=c,rho=0))},
 
       lower = c(0, 1e-08, 1, -0.9),
       upper = c(Inf,Inf,4,0.9))
@@ -585,19 +630,26 @@ shepherd.d.ar1<-function(){
 	   sigma<-sigma(obs,hat.)
 
 	   # minus log-likelihood
-     res<--logl.ar1(rho,sigma,obs,hat.)
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
 
      if (!is.finite(res)) res<--10e-200
 
      return(res)}
 
-    initial <- structure(function(rec, ssb){
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        rho<-0.0
+    initial <- structure(
+          function(rec,ssb){
+              c<-2
+              a<-quantile(c(rec/ssb),prob=0.75,na.rm=T)
+              #b<-quantile(c(rec),prob=0.75,na.rm=T)/a
 
-        return(list(a = a, b = b, c = c, rho=rho))},
+              b<-(quantile(c(rec),prob=0.75,na.rm=T)*quantile(c(ssb^(c-1)),prob=0.5,na.rm=T)/a)^(1/c)
+
+              names(a)<-NULL
+              names(b)<-NULL
+
+              return(list(a=a,b=b,c=c,rho=0))
+              },
 
       lower = c(0, 1e-08, 1, -0.9, 1e-08),
       upper = c(Inf,Inf,4,0.9,Inf))
@@ -614,18 +666,18 @@ shepherd.ndc.ar1<-function(){
 	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
-       res<--logl.ar1(rho,sigma,obs,hat.)
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
-     if (!is.finite(res)) res<--10e-200
+       if (!is.finite(res)) res<--10e-200
 
-     return(res)}
+       return(res)}
 
     initial <- structure(
-      function(rec, ssb)
+      function(rec, ssb, c=2)
         {
         a <- mean(rec/ssb,na.rm=T)
         b <- mean(ssb,na.rm=T)
-        c <- 1.0
 
         return(list(a = a, b = b, c = c, d=0, rho=0))
         },
@@ -645,8 +697,8 @@ bevholt.d<-function(){
 	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
-       #res<--logl.ar1(0,sigma,obs,hat.)
-	     res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
        if (!is.finite(res)) res<- -10e-200
 
@@ -676,8 +728,8 @@ ricker.d<-function(){
 	     sigma<-sigma(obs,hat.)
 
 	     # minus log-likelihood
-       #res<--logl.ar1(0,sigma,obs,hat.)
-	     res<-sum(dnorm(obs, hat., sigma, TRUE), TRUE)
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
 
        if (!is.finite(res)) res<- -10e-200
 
@@ -711,7 +763,16 @@ RickerSV <- function (s, v, spr0, ssb){
 rickerSV <- function(){
   logl<-function(s,v,spr0,rec,ssb){
      sigma<-sigma(log(rec), log(BevholtSV(s,v,spr0,ssb)))
-     sum(dnorm(log(rec), log(RickerSV(s,v,spr0,ssb)),sigma,TRUE),na.rm=TRUE)}
+     obs <-log(rec)
+     hat.<-log(RickerSV(s,v,spr0,ssb))
+
+     # minus log-likelihood
+     if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                      res<-loglAR1(0,sigma,obs,hat.)
+
+     if (!is.finite(res)) res<--10e-200
+
+     return(res)}
 
   initial <- structure(function(rec,ssb) {
      return(list(s=.5,v=mean(as.vector(ssb))*2,spr0=.5))},
@@ -731,14 +792,64 @@ BevholtSV<-function(s,v,spr0,ssb){
 bevholtSV<-function(){
     logl <- function(s,v,spr0,rec,ssb){
        sigma<-sigma(log(rec),log(BevholtSV(s,v,spr0,ssb)))
-       sum(dnorm(log(rec),log(BevholtSV(s,v,spr0,ssb)),sigma,TRUE),na.rm=TRUE)}
+       obs <-log(rec)
+       hat.<-log(BevholtSV(s,v,spr0,ssb))
+
+       # minus log-likelihood
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
+
+       if (!is.finite(res)) res<--10e-200
+
+       return(res)}
 
     initial<-structure(function(rec,ssb){
-        return(list(s=.75,v=mean(as.vector(ssb),na.rm=TRUE)*2,spr0=1))},
+        spr0=quantile(c(ssb/rec),prob=0.9,rm.na=F)
+        names(spr0)<-NULL
+        return(list(s=.75,v=mean(as.vector(ssb),na.rm=TRUE)*2,spr0=spr0))},
 
         lower = c(.21,rep(1e-08, 3)),
         upper = c(1,rep(Inf, 3)))
 
     model<-rec~BevholtSV(s,v,spr0,ssb)
+
+    return(list(logl=logl,model=model,initial=initial))}
+
+ShepherdSV<-function(s,v,c,spr0,ssb){
+    param<-ab("shepherd",spr0,s,v,c)
+#    return(a*ssb/(1+(ssb/b)^c))}
+    return(srrFunc("shepherd",ssb=ssb,a=param["a"],b=param["b"],c=c))}
+
+shepherdSV<-function(){
+    logl <- function(s,v,c,spr0,rec,ssb){
+
+       hat.<- log(ShepherdSV(s,v,c,spr0,ssb))
+       obs <- log(rec)
+
+       sigma<-sigma(obs,hat.)
+
+       # minus log-likelihood
+       if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(0,sigma,obs,hat.)
+
+       if (!is.finite(res)) res<--10e-200
+
+       return(res)}
+
+    initial<-structure(
+      function(rec,ssb){
+
+        spr0=quantile(c(ssb/rec),prob=0.9,rm.na=F)
+        v   =quantile(c(ssb),prob=0.90,na.rm=T)
+        names(spr0)<-NULL
+        names(v)   <-NULL
+
+        return(list(s=0.75,v=v,c=2,spr0=spr0))
+        },
+
+        lower = c(.21,1e-08,1,1e-08),
+        upper = c(0.999,Inf,10,Inf))
+
+    model<-rec~ShepherdSV(s,v,c,spr0,ssb)
 
     return(list(logl=logl,model=model,initial=initial))}
