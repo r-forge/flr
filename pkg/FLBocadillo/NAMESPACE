@@ -18,14 +18,10 @@ export(
   "bevholt",
   "segreg",
   "shepherd",
-  "shepherd.d",
-  "shepherd.ndc",
-  "shepherd.ar1",
-  "shepherd.d.ar1",
-  "shepherd.ndc.ar1",
-  "ricker.d",
-  "bevholt.d",
-  "ricker.d")
+  "shepherdD",
+  "shepherdSV",
+  "rickerSV",
+  "bevholtSV")
 exportMethods(
   "autoParscale",
   "sigma",
