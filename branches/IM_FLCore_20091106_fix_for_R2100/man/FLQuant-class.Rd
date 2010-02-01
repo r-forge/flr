@@ -4,10 +4,10 @@
 \alias{FLQuant}
 \alias{FLQuant-methods}
 \alias{FLQuant,missing-method}
- \alias{FLQuant,vector-method}
- \alias{FLQuant,array-method}
- \alias{FLQuant,matrix-method}
- \alias{FLQuant,FLQuant-method}
+\alias{FLQuant,vector-method}
+\alias{FLQuant,array-method}
+\alias{FLQuant,matrix-method}
+\alias{FLQuant,FLQuant-method}
 
 \title{FLQuant class for numerical data}
 \description{
@@ -64,7 +64,7 @@ array
 \item{\link[base]{[<-}(base) :}{Substitute elements}
 \item{}{\code{ signature(x=FLQuant,i=ANY,j=ANY,value=missing) }}
 \item{\link[base]{apply}(base) :}{Operate with a function along certain dimensions}
-\item{}{\link[apply,FLQuant,missing,missing-method]{signature(X=FLQuant,MARGIN=missing,FUN=missing)}}
+\item{}{\code{signature(X=FLQuant,MARGIN=numeric,FUN=function)}}
 \item{\link[methods]{Arith}(methods) :}{Arithmetic operations}
 \item{}{\code{ signature(e1=FLQuant,e2=FLQuant) }}
 \item{\link[base]{as.data.frame}(base) :}{Convert to a data.frame with 7 columns}

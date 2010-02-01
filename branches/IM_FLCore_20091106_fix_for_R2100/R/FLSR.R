@@ -258,3 +258,23 @@ setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter=
     return(x)
   }
 ) # }}}
+
+# lowess  {{{
+setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter='ANY'),
+  function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x))))
+  {
+    res <- lowess(rec(x)~ssb(x), f=f, delta=delta, iter=iter)
+    return(FLQuants(rec=FLQuant(res$y, dimnames=dimnames(rec(x))),
+      ssb=FLQuant(res$x, dimnames=dimnames(ssb(x)))))
+  }
+) # }}}
+
+# lowess  {{{
+setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter='ANY'),
+  function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x))))
+  {
+    res <- lowess(rec(x)~ssb(x), f=f, delta=delta, iter=iter)
+    return(FLQuants(y=FLQuant(res$y, dimnames=dimnames(rec(x))),
+      x=FLQuant(res$x, dimnames=dimnames(ssb(x)))))
+  }
+) # }}}

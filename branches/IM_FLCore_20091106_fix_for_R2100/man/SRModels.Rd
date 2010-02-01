@@ -219,10 +219,8 @@
         parameters, (spr0 = spawning at recruit at F= 0.0parameters).
 	
         Beverton and Holt:
-          \deqn{a =  \frac{4 \cdot vbiomass \cdot steepness}{spr0*(5*steepness-1)}}
-          {a = vbiomass*4*steepness/(spr0*(5*steepness-1))}
-          \deqn{b = \frac{a \cdot spr0 (\frac{1}{steepness} - 1)}{4}}
-          {b = a*spr0*(1/steepness - 1)/4}
+          \deqn{a =  \frac{4 \cdot vbiomass \cdot steepness}{spr0*(5*steepness-1)}}{a = vbiomass*4*steepness/(spr0*(5*steepness-1))}
+          \deqn{b = \frac{a \cdot spr0 (\frac{1}{steepness} - 1)}{4}}{b = a*spr0*(1/steepness - 1)/4}
                 
         Ricker:
           \deqn{a = e^{\frac{b \cdot vbiomass}{spro}}}{a = exp(b*vbiomass)/spr0}

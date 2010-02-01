@@ -123,11 +123,11 @@ plotResidAll<-function(resid,obs,prd,hat,indVar,indVar.,Xttl="X",Yttl="Y")
     invisible()
     }
 
-setGeneric('plot.', function(x,y, ...)
-		standardGeneric('plot.'))
-setMethod("plot.", signature(x="FLSR", y="missing"),
+setGeneric('plotA', function(x,y, ...)
+		standardGeneric('plotA'))
+setMethod("plotA", signature(x="FLSR", y="missing"),
 
-plot.<-	function(x)
+function(x)
 	{
   resid <-residuals(x)
   obs   <-rec(x)

@@ -15,18 +15,20 @@ leslie(object, ...)
   \item{\dots}{ Extra arguments accepted by each implementation.}
 }
 \details{
-Usual Leslie matrix type dynamics for ab \code{FLBiol} object. 
+Usual Leslie matrix type dynamics for a \code{FLBiol} object. 
 }
 \value{
 	An object of class \code{\link{FLBiol-class}}.
 }
-\references{}
-\author{FLR Team}
-\note{}
-\seealso{\code{\link{FLBiol-class}}}
-\examples{\dontrun{
-data(ple4biol)
-ple4.l <- leslie(ple4.biol,plusgroup=FALSE)
+\references{
+Leslie, P.H. (1945) The use of matrices in certain population mathematics. Biometrika,33(3), 183-212.
+
+Leslie, P.H. (1948) Some further notes on the use of matrices in population mathematics. Biometrika, 35(3-4), 213-245.
 }
+\author{FLR Team}
+\seealso{\code{\link{FLBiol-class}}}
+\examples{
+data(ple4.biol)
+ple4.l <- leslie(ple4.biol,plusgroup=FALSE)
 }
 \keyword{methods}

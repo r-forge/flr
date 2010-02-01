@@ -36,8 +36,9 @@ FLRConstSRR getSRType(SEXP v)
 
     for (short i = 0; i<max; i++)
       {
+//      t = strlwr((char *)CHAR(VECTOR_ELT(v, i)));
       t = strlwr((char *)CHAR(STRING_ELT(v, i)));
-   
+
       if       (strcmp(t, "m")==1)
          return FLRConst_Mean;
       else  if (strcmp(t, "b")==1)
@@ -61,6 +62,7 @@ void InputAgeRange(SEXP obj, int *MinAge, int *MaxAge)
 
    for (int i=0; i<n; i++)
       {
+//    const char *s = CHAR(VECTOR_ELT(names, i));
       const char *s = CHAR(STRING_ELT(names, i));
 
       if (      strcmp(s, "min")==0)
@@ -1047,12 +1049,12 @@ void FLVector::Init(SEXP x)
    if (LENGTH(names) == n) //index by name
       {
       //get indices
-      mindim = atoi(CHAR(STRING_ELT(names, 0))); 
+      mindim = atoi(CHAR(VECTOR_ELT(names, 0))); 
       maxdim = mindim + n - 1;
 
       //check indices
       for (int i=1; i<n; i++)
-         if ((mindim+i) != atoi(CHAR(STRING_ELT(names, i))))
+         if ((mindim+i) != atoi(CHAR(VECTOR_ELT(names, i))))
             return;
       }
    else
@@ -1183,12 +1185,12 @@ void FLBool::Init(SEXP x)
    if (LENGTH(names) == n) //index by name
       {
       //get indices
-      mindim = atoi(CHAR(STRING_ELT(names, 0))); 
+      mindim = atoi(CHAR(VECTOR_ELT(names, 0))); 
       maxdim = mindim + n - 1;
 
       //check indices
       for (int i=1; i<n; i++)
-         if ((mindim+i) != atoi(CHAR(STRING_ELT(names, i))))
+         if ((mindim+i) != atoi(CHAR(VECTOR_ELT(names, i))))
             return;
       }
    else
@@ -1340,7 +1342,7 @@ void FL2D::Init(SEXP x)
              	   
             if (n >= 1 && INTEGER(dims)[0] >= 1) 
                {
-               c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
+               c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), 0));
 
                //check that name is not a text string
                for (int i=0; i<=(signed)strlen(c); i++)
@@ -1354,7 +1356,7 @@ void FL2D::Init(SEXP x)
   	            }
 		      if (n >= 2 && INTEGER(dims)[1] >= 1) 
                {
-	            c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
+	            c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), 0));
 
                //check that name is not a text string
                for (int i=0; i<=(signed)strlen(c); i++)
@@ -1393,7 +1395,7 @@ void FL2D::Init(SEXP x)
           int  t = 0;
           const char *c;
              	   
-          c = CHAR(STRING_ELT(names, 0));
+          c = CHAR(VECTOR_ELT(names, 0));
 
           //check that name is not a text string
           for (int i=0; i<=(signed)strlen(c); i++)
@@ -1405,7 +1407,7 @@ void FL2D::Init(SEXP x)
           min1 = t; 
  
           if (t==0)      
-            min1 = atoi(CHAR(STRING_ELT(names, 0))); 
+            min1 = atoi(CHAR(VECTOR_ELT(names, 0))); 
           else 
             min1 = t;
 
@@ -1929,12 +1931,12 @@ void FLQuant2::Init(int i7, SEXP x)
         
         if (n >= 1 && INTEGER(dims)[0] >= 1) 
            {
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), 0));
             //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             minquant(i7) += t;
             maxquant(i7) += t;
  	         }
@@ -1942,13 +1944,13 @@ void FLQuant2::Init(int i7, SEXP x)
         if (n >= 2 && INTEGER(dims)[1] >= 1) 
            {
            t = 0;
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), 0));
            //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
 
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             
             minyr(i7)   += t;
             maxyr(i7)   += t;
@@ -2464,12 +2466,12 @@ void FLQuant3::Init(int i8, int i7, SEXP x)
         
         if (n >= 1 && INTEGER(dims)[0] >= 1) 
            {
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), 0));
             //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             minquant(i8,i7) += t;
             maxquant(i8,i7) += t;
  	         }
@@ -2477,13 +2479,13 @@ void FLQuant3::Init(int i8, int i7, SEXP x)
         if (n >= 2 && INTEGER(dims)[1] >= 1) 
            {
            t = 0;
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), 0));
            //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
 
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             
             minyr(i8,i7)   += t;
             maxyr(i8,i7)   += t;
@@ -3082,12 +3084,12 @@ void FLQuant4::Init(int i9, int i8, int i7, SEXP x)
         
         if (n >= 1 && INTEGER(dims)[0] >= 1) 
            {
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), 0));
             //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             minquant(i9,i8,i7) += t;
             maxquant(i9,i8,i7) += t;
  	         }
@@ -3095,13 +3097,13 @@ void FLQuant4::Init(int i9, int i8, int i7, SEXP x)
         if (n >= 2 && INTEGER(dims)[1] >= 1) 
            {
            t = 0;
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), 0));
            //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
 
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             
             minyr(i9,i8,i7)   += t;
             maxyr(i9,i8,i7)   += t;
@@ -3716,12 +3718,12 @@ void _FLQuant::Init(int i9, int i8, int i7, SEXP x)
         
         if (n >= 1 && INTEGER(dims)[0] >= 1) 
            {
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), 0));
             //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             minquant(i9,i8,i7) += t;
             maxquant(i9,i8,i7) += t;
  	         }
@@ -3729,13 +3731,13 @@ void _FLQuant::Init(int i9, int i8, int i7, SEXP x)
         if (n >= 2 && INTEGER(dims)[1] >= 1) 
            {
            t = 0;
-           c = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), 0));
+           c = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), 0));
            //check that name is not a text string
            for (int i=0; i<=(signed)strlen(c); i++)
               if (isalpha(c[i])) t=1;
 
             if (t !=1)
-              t = atoi(c); 
+            t = atoi(c); 
             
             minyr(i9,i8,i7)   += t;
             maxyr(i9,i8,i7)   += t;

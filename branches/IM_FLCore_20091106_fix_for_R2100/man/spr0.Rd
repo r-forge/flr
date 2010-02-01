@@ -23,6 +23,7 @@
 \author{The FLR Team}
 \seealso{ \link{FLStock-class},  \link{FLSR-class}}
 \examples{
+data(ple4)
 # example FLStock dataset
 spr0(ple4)
 }

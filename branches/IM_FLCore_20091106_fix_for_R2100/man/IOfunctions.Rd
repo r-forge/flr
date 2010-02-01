@@ -77,9 +77,10 @@
   via \code{file.path}) to specify where the files should be written.
 }
 \value{
+  An object of class \code{FLQuant}, \code{FLStock} or \code{FLIndex} depending on the function.
 }
 \seealso{
-
+\link{FLQuant}, \link{FLStock}, \link{FLIndex}.
 }
 \examples{
 \dontrun{
