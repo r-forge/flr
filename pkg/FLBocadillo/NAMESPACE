@@ -21,9 +21,17 @@ export(
   "shepherdD",
   "shepherdSV",
   "rickerSV",
-  "bevholtSV")
+  "bevholtSV",
+  ".shepherdSV",
+  ".rickerSV",
+  ".bevholtSV",
+  "sv2ab",
+  "ab2sv",
+  "loglAR1")
 exportMethods(
   "autoParscale",
+  "lprof",
+  "spr0",
   "sigma",
   "OEM",
   "qmin",
@@ -32,4 +40,6 @@ exportMethods(
   "OEM",
   "alphaBeta",
   "steepVirgin",
-  "lprof")
+  "lprof",
+  "lowess",
+  "plot")
