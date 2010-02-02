@@ -63,11 +63,10 @@ if (FALSE) {
       for (i in 1:length(paramGrid[,1])){
         fixed=(list(paramGrid[i,pars[1]]))
         names(fixed)<-pars
-
         if ("fixed" %in% names(args)) fixed=c(fixed,args[names(args)=="fixed"][[1]])
 
         psPar<-dimnames(params(object))$params[dimnames(params(object))$params!=pars]
-        psPar<-dimnames(params(object))$params[dimnames(params(object))$params!=pars]
+        psPar<-psPar[!(psPar %in% names(fixed))]
         paramGrid[i,"ll"]<-logLik(fmle(object,start=.start,fixed=fixed,control=list(parscale=autoParscale(object)[psPar])))}
 
       ## plot liklihood
