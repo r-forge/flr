@@ -30,6 +30,7 @@ export(
   "loglAR1")
 exportMethods(
   "autoParscale",
+  "predictFLModel",
   "lprof",
   "spr0",
   "sigma",
