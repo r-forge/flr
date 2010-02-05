@@ -3,7 +3,6 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 09 Oct 2009 23:46
 # $Id$
 
 # Reference:

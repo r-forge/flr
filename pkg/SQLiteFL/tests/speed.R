@@ -1,15 +1,12 @@
 # speed - «Short one line description»
-# speed
+# SQLiteFL/tests/speed.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 08 Jan 2009 16:02
 # $Id$
 
 # Reference:
 # Notes:
-
-# TODO Wed 07 Jan 2009 03:47:58 PM CET IM:
 
 library(SQLiteFL)
 db <- tempfile()

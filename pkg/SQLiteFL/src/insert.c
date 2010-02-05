@@ -435,7 +435,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
     if (s==0)
     {
       /* quant */
-      sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(VECTOR_ELT(names, 0)));
+      sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('quant', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(names, 0)));
       rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
       /* Can quant in meta be inserted? */
       if(rc != SQLITE_OK) {
@@ -448,7 +448,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
     }
   
     /* slots */
-    sql = sqlite3_mprintf("INSERT INTO \"%q_slots\" (slot, units, quant, year, unit, season, area, iter) VALUES ('%q', '%q', '%i', '%i', '%i', '%i', '%i', '%i');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(Rsnames, s)), CHAR(VECTOR_ELT(units, 0)), INTEGER(dims)[0], INTEGER(dims)[1], INTEGER(dims)[2], INTEGER(dims)[3], INTEGER(dims)[4], INTEGER(dims)[5]);
+    sql = sqlite3_mprintf("INSERT INTO \"%q_slots\" (slot, units, quant, year, unit, season, area, iter) VALUES ('%q', '%q', '%i', '%i', '%i', '%i', '%i', '%i');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(Rsnames, s)), CHAR(STRING_ELT(units, 0)), INTEGER(dims)[0], INTEGER(dims)[1], INTEGER(dims)[2], INTEGER(dims)[3], INTEGER(dims)[4], INTEGER(dims)[5]);
     rc = sqlite3_exec(db, sql, 0, 0, 0);
     /* Can slots be inserted? */
     if(rc != SQLITE_OK) {
@@ -489,22 +489,22 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
                 dname = CHAR(STRING_ELT(Rsnames, s));
                 rc=sqlite3_bind_text(stmt, 1, dname, -1, NULL);
                 /* BIND quant (2) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 0), i));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), i));
                 rc=sqlite3_bind_text(stmt, 2, dname, -1, NULL);
                 /* BIND year (3) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 1), j));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 1), j));
                 rc=sqlite3_bind_text(stmt, 3, dname, -1, NULL);
                 /* BIND unit (4) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 2), k));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 2), k));
                 rc=sqlite3_bind_text(stmt, 4, dname, -1, NULL);
                 /* BIND season (5) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 3), l));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 3), l));
                 rc=sqlite3_bind_text(stmt, 5, dname, -1, NULL);
                 /* BIND area (6) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 4), m));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 4), m));
                 rc=sqlite3_bind_text(stmt, 6, dname, -1, NULL);
                 /* BIND iter (7) */
-                dname = CHAR(VECTOR_ELT(VECTOR_ELT(dimnames, 5), n));
+                dname = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 5), n));
                 rc=sqlite3_bind_text(stmt, 7, dname, -1, NULL);
                 /* BIND data (8) */
                 rc = sqlite3_bind_double(stmt, 8, REAL(Quant)[i+(leni*j)+(leni*lenj*k)+

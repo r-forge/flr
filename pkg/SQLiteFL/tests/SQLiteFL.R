@@ -8,7 +8,6 @@
 # -----
 library(SQLiteFL)
 db <- tempfile()
-db <- '/home/imosqueira/sql4.db'
 
 data(ple4)
 
@@ -34,7 +33,7 @@ catch(sql4, year=1957:1960) <- 10
 catch(sql4, year=1957:1960) <- 1:4
 
 # How to get this to work?
-#catch(sql4) <- 1:52
+# catch(sql4) <- 1:52
 
 catch(sql4) <- catch(ple4)
 

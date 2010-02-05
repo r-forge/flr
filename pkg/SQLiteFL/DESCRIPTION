@@ -8,6 +8,6 @@ Depends: methods, FLCore
 Conflicts: RSQLite
 Imports: FLCore
 Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
-License: GPL 2 or above
+License: GPL 2
 LazyLoad: Yes
 Collate: classes.R FLComp.R FLStock.R FLQuant.R
