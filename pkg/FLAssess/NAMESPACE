@@ -1,7 +1,5 @@
 useDynLib("FLAssess")
 import("FLCore")
-importFrom("graphics",
-  "plot")
 exportClasses("FLAssess",
   "FLAssess.retro",
   "FLSepVPA.control",
@@ -36,7 +34,7 @@ exportMethods(
   "plot",
   "retro",
   "project",
-  "replace",
+#  "replace",
   "select",
   "SepVPA",
   "stf",
