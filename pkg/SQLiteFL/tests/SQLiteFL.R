@@ -1,5 +1,5 @@
 # SQLiteFL - «Short one line description»
-# SQLiteFL
+# SQLiteFL/tests/SQLiteFL.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
