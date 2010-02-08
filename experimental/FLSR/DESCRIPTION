@@ -1,0 +1,12 @@
+Package: FLSR
+Title: Generic methods for FLR Interface to 3rd party stock assessment methods
+Version: 2.10-1
+Author: Laurie T. Kell <laurie.kell@iccat.int>
+Description: New FLSR
+Collate: FLSR-plotDiagnostics.R FLSR-srModel.R FLSR-autoParscale.R FLSR-lprof.R FLSR-lowess.R FLSR-plot.R FLSR-predict.R FLSR-deprecated.R
+Depends: FLCore(>= 2.0.100)
+LinkingTo: FLCore
+Maintainer: Laurie T. Kell <laurie.kell@iccat.int>
+License: GPL 2.0
+lazyLoad: Yes
+lazyData: Yes
