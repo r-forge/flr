@@ -1,5 +1,16 @@
+setGeneric("predict", useAsDefault = predict)
+
+getSlotNamesClass <- function(object, class){
+    slots <- names(getClass(class(object))@slots)
+    contains <- as.list(rep(FALSE, length(slots)))
+    names(contains) <- slots
+    for(what in slots)
+      if(is(slot(object, what), class))
+        contains[[what]] <- TRUE
+    return(names(contains[contains == TRUE]))}
+
 predictFLModel<-function(object, ...)
-  {
+    {
     args <- list(...)
     if(length(args) > 0 && is.null(names(args)))
       stop('FLQuant or FLCohort inputs must be named to apply formula')
@@ -91,7 +102,7 @@ predictFLModel<-function(object, ...)
     return(res)
   }
 
-setMethod('predict', signature(object='FLSR'),
+setMethod('predict', signature(object='FLModel'),
   function(object, ...){
 
    lowess.<-function(object,f=2/3,iter=3,delta=0.01*diff(range(ssb(object)))){
