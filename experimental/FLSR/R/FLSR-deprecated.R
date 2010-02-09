@@ -122,8 +122,7 @@ segreg <- function(){
 
 	return(list(logl=logl, model=model, initial=initial))}
 
-shepherd<-function()
-    {
+shepherd<-function(){
     ## log likelihood, assuming normal log.
     logl <- function(a,b,c,rec,ssb){
        hat. <-log(a*ssb/(1+(ssb/b)^c))
@@ -157,6 +156,31 @@ shepherd<-function()
       upper = c(1e02,  1e+08,10))
 
     model <- rec ~ a * ssb/(1 + (ssb/b)^c)
+
+    return(list(logl = logl, model = model, initial = initial))}
+
+geomean<-function(){
+    logl <- function(a,rec,ssb){
+       hat. <-log(a)
+       obs  <-log(rec)
+  	   sigma<-sigma(obs,hat.)
+
+  	   # minus log-likelihood
+       #if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(obs,hat.,0,sigma)
+
+       if (!is.finite(res)) res<--10e-200
+
+       return(res)}
+
+    initial <- structure(function(rec) {
+        a     <- exp(mean(log(rec), na.rm=TRUE))
+        sigma2 <- var(log(rec/a), na.rm = TRUE)
+        return(list(a = a, sigma2 = sigma2))
+        },
+        lower = c(1e-08, 1e-08), upper = rep(Inf, 2))
+
+    model <- rec ~ a
 
     return(list(logl = logl, model = model, initial = initial))}
 

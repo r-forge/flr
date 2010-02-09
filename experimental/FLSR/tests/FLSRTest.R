@@ -1,9 +1,17 @@
 library(ggplot2)
 library(FLCore)
+library(FLSR)
 
 ########################################################################################################################
+## Steepness & V. Biomass to Alpha & Beta                                                                             ##
 ########################################################################################################################
 source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-Methods.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-Funcs.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-srModel.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-plotDiagnostics.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-lowess.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-predict.R")
+source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-deprecated.R")
 
 
 svPar<-expand.grid(Steepness=seq(0.5,1,length.out=6),v=c(1000))
@@ -55,15 +63,8 @@ p
 
 
 ########################################################################################################################
+## Old interface                                                                                                      ##
 ########################################################################################################################
-
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-srModel.R")
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-plotDiagnostics.R")
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-lowess.R")
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-predict.R")
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-deprecated.R")
-source("C:/Stuff/FLR/Experimental/FLSR/R/FLSR-Methods.R")
-
 model(nsher)<-bevholt()
 nshBH<-fmle(nsher)
 plot(nshBH)
@@ -101,6 +102,7 @@ p    <- p + geom_line(aes(ssbHat,BevHolt))
 p    <- p + geom_line(aes(ssbHat,Ricker))
 p    <- p + geom_line(aes(ssbHat,Cushing))
 p    <- p + geom_line(aes(ssbHat,SegReg))
+p
 
 p    <- ggplot(srr.) + geom_point(aes(x=SSB,y=Recruits/SSB))
 p    <- p + scale_y_continuous(limits=c(0,max(srr.$Recruits/srr.$SSB)))+ scale_x_continuous(limits=c(0,max(srr.$SSB)))
@@ -108,4 +110,72 @@ p    <- p + geom_line(aes(ssbHat,BevHolt/ssbHat))
 p    <- p + geom_line(aes(ssbHat, Ricker/ssbHat))
 p    <- p + geom_line(aes(ssbHat,Cushing/ssbHat))
 p    <- p + geom_line(aes(ssbHat, SegReg/ssbHat))
+p
+########################################################################################################################
 
+########################################################################################################################
+## New interface                                                                                                      ##
+########################################################################################################################
+model(nsher)<-srModel("bevholt")
+nshBH<-fmle(nsher)
+plot(nshBH)
+
+model(nsher)<-srModel("ricker")
+nshRK<-fmle(nsher)
+plot(nshRK)
+
+model(nsher)<-srModel("cushing")
+nshCH<-fmle(nsher)
+plot(nshCH)
+
+model(nsher)<-srModel("shepherd")
+nshSH<-fmle(nsher)
+plot(nshSH)
+
+model(nsher)<-srModel("segreg")
+nshSG<-fmle(nsher)
+plot(nshSG)
+
+ssb<-FLQuant(seq(0,max(ssb(nsher)),length.out=dim(ssb(nsher))[2]))
+srr.<-model.frame(FLQuants("BevHolt"  =predict(nshBH,ssb=ssb),
+                           "Ricker"   =predict(nshRK,ssb=ssb),
+                           "Cushing"  =predict(nshCH,ssb=ssb),
+                           "Shepherd" =predict(nshSH,ssb=ssb),
+                           "SegReg"   =predict(nshSG,ssb=ssb),
+                           SSB        =ssb(nsher),
+                           Recruits   =rec(nsher)))[,7:13]
+
+srr.$ssbHat<-seq(0,max(ssb(nsher)),length.out=dim(srr.)[1])
+
+p    <- ggplot(srr.,aes(x=SSB, y=Recruits)) + geom_point(aes(x=SSB,y=Recruits))
+p    <- p + scale_y_continuous(limits=c(0,max(srr.$Recruits)))+ scale_x_continuous(limits=c(0,max(srr.$SSB)))
+p    <- p + geom_line(aes(ssbHat,BevHolt))
+p    <- p + geom_line(aes(ssbHat,Ricker))
+p    <- p + geom_line(aes(ssbHat,Cushing))
+p    <- p + geom_line(aes(ssbHat,SegReg))
+p
+
+p    <- ggplot(srr.) + geom_point(aes(x=SSB,y=Recruits/SSB))
+p    <- p + scale_y_continuous(limits=c(0,max(srr.$Recruits/srr.$SSB)))+ scale_x_continuous(limits=c(0,max(srr.$SSB)))
+p    <- p + geom_line(aes(ssbHat,BevHolt/ssbHat))
+p    <- p + geom_line(aes(ssbHat, Ricker/ssbHat))
+p    <- p + geom_line(aes(ssbHat,Cushing/ssbHat))
+p    <- p + geom_line(aes(ssbHat, SegReg/ssbHat))
+p
+
+
+model(nsher)<-srModel("bevholt",ll="lognorm")
+nshBH<-fmle(nsher)
+plot(nshBH)
+
+model(nsher)<-srModel("bevholt",ll="normar1")
+nshBH<-fmle(nsher)
+plot(nshBH)
+########################################################################################################################
+
+########################################################################################################################
+## Profiling                                                                                                          ##
+########################################################################################################################
+lprof(nshBH,params=list(a =seq(0.5,1.5,length.out=10),b =seq(0.5,1.5,length.out=10)), plot=TRUE, .soultion=TRUE, scaling=c("rel","rel"),parscale="b")
+lprof(nshBH,params=list(a =seq(0.5,1.5,length.out=10)),                               plot=TRUE, .soultion=TRUE, scaling=c("rel","rel"),parscale=NULL)
+########################################################################################################################
