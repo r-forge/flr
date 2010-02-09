@@ -112,13 +112,13 @@ setMethod('lprof',
       ## plot liklihood"
       if (plot){
          plotGrid<-list(x=sort(unique(paramGrid[,1])), y=sort(unique(paramGrid[,2])), z=tapply(paramGrid[,"ll"], list(paramGrid[,1],paramGrid[,2]),mean))
-         CI<-logLik(object)-qchisq(CI,2)
+         .CI<-logLik(object)-qchisq(CI,2)
          if (is.null(xlab)) xlab=pars[1]
          if (is.null(ylab)) ylab=pars[2]
 
          image(  plotGrid,ylab=ylab, xlab=xlab) #, breaks=CI,col=rainbow(length(CI)-1))
-         contour(plotGrid,  levels=CI,add=T, col="grey",  lwd=2, labels=CI)
-print(CI)
+         contour(plotGrid,  levels=.CI,add=T, col="grey",  lwd=2, labels=CI)
+
         #image(  plotGrid,xlab=pars[1],ylab=pars[2])
         #contour(plotGrid,add=T)
 
