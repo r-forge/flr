@@ -1,0 +1,6 @@
+NRC Clean data set Proportion of M before Spawning
+1	8
+1901	1920
+1	12
+3	
+0.0	

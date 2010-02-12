@@ -1,0 +1,13 @@
+NRC
+1
+NRCLA.txt
+NRCCatch.txt
+NRCCW.txt
+NRCSW.txt
+NRCM.txt
+NRCMAT.txt
+NRCPF.txt
+NRCPM.txt
+************
+************
+NRCCPUE.txt

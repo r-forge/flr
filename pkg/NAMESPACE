@@ -1,0 +1,18 @@
+importClassesFrom(
+  "FLCore",
+	"FLQuant",
+	"FLStock",
+	"FLIndex",
+	"FLIndexSurvey",
+	"FLIndices")
+importFrom(
+  "FLCore",
+	"FLQuant",
+	"as.FLQuant")
+exportClasses(
+  "FLBREM.control",
+	"FLBREM")
+export(
+  "FLBREM",
+	"is.FLBREM",
+	"FLBREM.control")
