@@ -40,6 +40,12 @@ setMethod('dims', signature(obj='sqliteFLComp'),
 # show
 
 # iter  {{{
+setMethod("iter", signature(object="sqliteFLComp"),
+  function(object, iter=1, ...)
+  {
+    stop("TODO")
+  }
+)
 # }}}
 
 # iter<-

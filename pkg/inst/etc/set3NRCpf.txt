@@ -1,6 +1,0 @@
-NRC Clean data set Proportion of F before Spawning
-1	7
-1901	1920
-1	12
-3	
-0.0	

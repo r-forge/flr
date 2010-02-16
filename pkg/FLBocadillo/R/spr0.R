@@ -1,7 +1,4 @@
 ## calcs spawner per recruit at F=0.0
-if (!isGeneric("spr0"))
-  setGeneric("spr0", function(ssb, rec, fbar, ...)
-	  standardGeneric("spr0"))
 
 setMethod('spr0', signature(ssb='FLQuant', rec='FLQuant', fbar='FLQuant'),
    function(ssb, rec, fbar){
