@@ -1,0 +1,8 @@
+Package: FLBREM
+Title: Biomass random effects model for fisheries independent data
+Version: 0.1
+Author: Laurence T. Kell
+Description: 
+Maintainer: Laurence T. Kell <l.t.kell@cefas.co.uk>
+License: GPL 2.0
+Depends: FLCore
