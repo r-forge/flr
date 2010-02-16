@@ -63,6 +63,5 @@ Control<-fwdControl(data.frame(year    =rep(1995:2000),value=c(.40,100000,5000,1
                        quantity=c("f", "ssb","catch","ssb","ssb","f")))
 
 }}
-
 \keyword{fwd}
 \keyword{fwdControl}

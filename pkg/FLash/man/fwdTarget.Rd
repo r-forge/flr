@@ -44,5 +44,3 @@ fwdTarget(list(year=1998:2000,value=c(50000,51000,52000),quantity=rep("landings"
 
 \keyword{fwd}
 \keyword{fwdTarget}
-
-\eof
