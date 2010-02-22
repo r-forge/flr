@@ -269,6 +269,7 @@ setMethod('fmle',
       }
 
       # start values
+browser()
       if(missing(start)) {
         # add call to @initial
         if(is.function(object@initial))
@@ -848,7 +849,7 @@ setMethod("autoParscale", signature(obj="FLModel"),
     # Works with one iter only
     if (dims(object)$iter > 1)
        stop("only works for a single iter")
-
+browser()
     # get slot names of class FLArray (FLQuant, FLCohort)
     datanm <- getSlotNamesClass(object, 'FLArray')
     # add those of class numeric
