@@ -524,3 +524,7 @@ setGeneric('FLModel', function(model, ...)
 # as.FLSR
 setGeneric("as.FLSR", function(object, ...)
   standardGeneric("as.FLSR"))
+
+# autoParscale
+setGeneric("autoParscale", function(object, ...)
+		standardGeneric("autoParscale"))

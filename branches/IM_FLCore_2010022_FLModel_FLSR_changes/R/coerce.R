@@ -145,7 +145,7 @@ setAs('FLCatch', 'FLMetiers',
   }
 )
 setAs('FLCatch', 'FLIndex',
-rr<-	function(from)
+  function(from)
 	{
     dmns    <-dimnames(from@landings.n)
     dmns$age<-"all"
@@ -171,3 +171,28 @@ rr<-	function(from)
 	}
 )
 # }}}
+
+# FLArray	{{{
+setAs('FLArray', 'data.frame',
+	function(from)
+	{
+		# to avoid warnings when NA have to be added
+		options(warn=-1)
+        if(any(is.na(suppressWarnings(as.numeric(dimnames(from)[[1]])))))
+            quant <- as.character(dimnames(from)[[1]])
+        else
+            quant <- as.numeric(dimnames(from)[[1]])
+    dnames <- dimnames(from)
+		df <- data.frame(expand.grid(quant=quant,
+			year=as.numeric(dnames[[2]]),
+			unit=factor(dnames[[3]], levels=dnames[[3]]),
+			season=factor(dnames[[4]], levels=dnames[[4]]),
+			area=factor(dnames[[5]], levels=dnames[[5]]),
+			iter=factor(dnames[[6]], levels=dnames[[6]])),
+			data=as.vector(from))
+		names(df)[1:2] <- names(dnames)[1:2]
+		attributes(df)$units <- units(from)
+		options(warn=0)
+		return(df)
+	}
+)	# }}}

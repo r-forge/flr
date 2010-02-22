@@ -166,9 +166,10 @@ setMethod('fmle',
   signature(object='FLModel', start='ANY'),
   function(object, start, method='L-BFGS-B', fixed=list(),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, ...)
+    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=TRUE, ...)
   {
     # TODO Check with FL
+    args <- list(...)
     call <- sys.call(1)
     logl <- object@logl
     
@@ -268,26 +269,32 @@ setMethod('fmle',
       }
 
       # start values
-      if(missing(start))
-      # add call to @initial
-      if(is.function(object@initial))
-        start <- do.call(object@initial, args=data[names(formals(object@initial))])
-      else
-        start <- formals(logl)[names(formals(logl))%in%parnm]
+      if(missing(start)) {
+        # add call to @initial
+        if(is.function(object@initial))
+          start <- do.call(object@initial, args=data[names(formals(object@initial))])
+        else
+          start <- formals(logl)[names(formals(logl))%in%parnm]
+      }
+
       if(!is.null(fixnm))
         start[fixnm] <- NULL
       if(any(!names(start) %in% parnm))
         stop("some named arguments in 'start' are not arguments to the
           supplied log-likelihood")
       start <- start[order(match(names(start), parnm))]
+      
+      # autoParscale
+      if(autoParscale && !'parscale' %in% names(args))
+        control <- c(control, list(parscale=autoParscale(iter(object, it), start=start)))
 
       if(is.null(start))
         stop("No starting values provided and no initial function available")
-
+      
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
         hessian=TRUE, control=control, lower=lower, upper=upper, gr=gr, ...)))
-      
+
       # output
       # place out$par in right iter dim
       iter(object@params[names(out$par),], it) <- out$par
@@ -808,9 +815,9 @@ setMethod("iter", signature(object="logLik"),
 	}
 )   # }}}
 
+# profile(fitted, which)
 # confint
 #     signature(object = "mle"): Confidence intervals from likelihood profiles.
-# profile(fitted, which)
 
 # glm
 
@@ -832,4 +839,69 @@ setMethod("params<-", signature(object="FLModel", value='FLPar'),
     object@params <- value
     return(object)
 	}
+) # }}}
+
+# autoParscale {{{
+setMethod("autoParscale", signature(obj="FLModel"),
+  function(object, start, tiny_number=1e-10, rel=FALSE) {
+    
+    # Works with one iter only
+    if (dims(object)$iter > 1)
+       stop("only works for a single iter")
+
+    # get slot names of class FLArray (FLQuant, FLCohort)
+    datanm <- getSlotNamesClass(object, 'FLArray')
+    # add those of class numeric
+    datanm <- c(datanm, getSlotNamesClass(object, 'numeric'))
+
+    # get data names in formals of logl
+    datanm <- datanm[datanm %in% names(formals(object@logl))]
+
+    # input data: list of slots whose names are in datanm
+    data <- list()
+    for (i in datanm)
+      data[[i]] <- slot(object, i)
+
+    # no. of parameters
+    npar <- dim(params(object))[1]
+
+    dll  <- rep(NA,npar)
+
+    # Make a list of the LogL arguments with the initial values
+    ll_args_orig <- unlist(formals(object@logl))
+    for (i in datanm)
+      ll_args_orig[[i]] <- slot(object, i)
+
+    for (i in dimnames(params(object))$params)
+      ll_args_orig[[i]] <- start[[i]]
+    
+    ll_args_orig[ll_args_orig[names(ll_args_orig) %in%
+      dimnames(params(object))$params]==0] <- tiny_number^0.5
+
+    ll_orig <- do.call(object@logl, ll_args_orig)
+    ll_bump1 <- rep(NA, npar)
+    names(ll_bump1) <- dimnames(params(object))$params
+    ll_bump2 <- ll_bump1
+
+    # cycle over each parameter, bump it and get the new LL
+    for (i in dimnames(params(object))$params) {
+      ll_args_bump <- ll_args_orig
+      ll_args_bump[[i]] <- ll_args_bump[[i]] * (1 + tiny_number)
+      ll_bump1[i] <- do.call(object@logl, ll_args_bump)
+
+      ll_args_bump <- ll_args_orig
+      ll_args_bump[[i]] <- ll_args_bump[[i]] * (1 - tiny_number)
+      ll_bump2[i] <- do.call(object@logl, ll_args_bump)
+    }
+
+    dll <- (ll_bump1-ll_bump2)/(unlist(ll_args_orig)[dimnames(params(object))$params] *
+        2 * tiny_number)
+
+    dll<-abs(1/dll)
+
+    if (rel)
+      dll <- dll/max(dll)
+
+   return(dll)
+ }
 ) # }}}

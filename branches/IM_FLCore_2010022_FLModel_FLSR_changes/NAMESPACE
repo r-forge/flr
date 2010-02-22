@@ -130,6 +130,7 @@ exportMethods(
 	"as.FLStock",
 	"as.FLSR",
 	"Arith",
+  "autoParscale",
 	"barchart",
 	"BIC",
 	"bkey",
