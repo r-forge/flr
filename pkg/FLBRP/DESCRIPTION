@@ -1,12 +1,12 @@
 Package: FLBRP
 Title: Biological Reference Points
-Version: 2.00
+Version: 0.7.0
 Author: Laurence T. Kell
 Description: Calculates a range of biological reference points based upon yield per
   recruit and stock recruit based equilibrium calculations. These include F based
   reference points like F0.1, FMSY and biomass based reference points like BMSY.
 URL: http://flr-project.org
-Depends: FLCore(>= 1.99.9),FLash,methods,MASS
+Depends: FLCore(>= 2.2), FLash(>= 0.7) , methods, MASS
 LinkingTo: FLCore,FLash
 Maintainer: Laurence T. Kell  <laurie.kell@iccat.int>
 License: GPL 2.0

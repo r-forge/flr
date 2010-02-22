@@ -342,7 +342,7 @@ setMethod("plot", signature(x="FLBRP", y="FLStock"),
        plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     else if (type=="rasta")
        plotRastaFLBRPFLStock(x,y)
-    else stop("type has to be ´rasta´or ´tapas´")
+    else stop("type has to be \"rasta\" or \"tapas\"")
     })
 
 

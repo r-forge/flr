@@ -8,6 +8,8 @@
 # FLBRP
 
 # FLBRP(object='missing', sr='missing') {{{
+setGeneric('FLBRP', function(object, sr, ...) standardGeneric('FLBRP'))
+
 setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04)))
