@@ -67,7 +67,6 @@ setMethod('setSR', signature(sr='list'),
     t.       <- vector(mode="numeric",length(yrs))
     names(t.)<-yrs
     if (is(model,"formula")) model<-SRModelName(model)
-    browser()
     t.[]     <-SRchar2code(model)
     model <-t.
 

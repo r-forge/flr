@@ -4,7 +4,7 @@
 
 \title{fwd() A generic method for forward projection within FLR}
 \description{
-  \code{fwd} {\code{fwd} implements a generic method for forward projection within FLR,
+  \code{fwd} implements a generic method for forward projection within FLR,
 it can be used with all the main FLCore objects \code{FLStock},  \code{FLStocks},
 \code{FLBiol},  \code{FLBiols},  \code{FLFleet},  \code{FLFleets} and versions
 will be implemented for  \code{FLIndex} and \code{FLIndices}.
@@ -16,7 +16,7 @@ of HCRs and for conducting MSE e.g.
 stks<-fwd(stks,target,sr)
 res <-fwd(biol,fleet,target,control,sr)}
 
-The main task is in setting up approraite target \code{fwdTarget} and control \code{fwdControl}
+The main task is in setting up approriate target \code{fwdTarget} and control \code{fwdControl}
 objects, there is no need for a control for stock or stocks since with only a
 single fleet and metier you can only control total effort.
 
@@ -34,10 +34,9 @@ codoid.MP  <-fwd(codoid.MP, target, sr.model="mean", sr.param=25000)}
 
 and likewise to model the MP*OM interaction
 
-\code{TAC<-computeCatch(codoid.MP)[,"2000"]
-
-target<-fwdTarget(year=2000,value=TAC,quantity="catch")
-Codoid<-fwd(codoid,fleet,target,control,codoid.sr)[['biol']]}
+\code{TAC<-computeCatch(codoid.MP)[,"2000"]}
+\code{target<-fwdTarget(year=2000,value=TAC,quantity="catch")}
+\code{Codoid<-fwd(codoid,fleet,target,control,codoid.sr)[['biol']]}
 
 We can even model compliance by specify effort constraints e.g. fleets will not
 reduce F below that last year
@@ -45,7 +44,7 @@ reduce F below that last year
 \code{target<-fwdTarget(year=2000,value=TAC,quantity=c("catch","f"),min(NA,1.0),rel=c(NA,1999))
 Codoid<-fwd(codoid,fleet,target,control,codoid.sr)[['biol']]}
 
-or base implementation-error on revenue
+or base implementation error on revenue
 
 \code{target<-fwdTarget(year=2000,value=TAC,quantity=c("catch","revenue"),min(NA,1.0),rel=c(NA,1999))}
 

@@ -160,7 +160,6 @@ setMethod("fwd", signature(object='FLBiols', fleets='FLFleets'),
                 sr           =NULL,
                 sr.residuals =NULL, sr.residuals.mult=TRUE)
    {                         
-
     # Turn biol into FLBiols
 #    object<-FLBiols(object)
     if (length(object)>1) stop("Only implemented for 1 FLBiol")

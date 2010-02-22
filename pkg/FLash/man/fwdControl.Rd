@@ -24,29 +24,27 @@ fwdControl(list(year,fleet,metier,value,rel.yr,rel.fleet,rel.metier,min,max,rel.
   \item{rel.bound: } {are min and max absolute or relative}
   }
 \details{
-  \code{fwdControl} {allows a range of Control options to be set for stocks and fisheries,
-  particularly useful for mixed stock/fisheries.
-  The control object specifies how to estimate effort by fleet*metier,
+  \code{fwdControl} allows a range of Control options to be set for stocks and fisheries, particularly useful for mixed stock/fisheries. The control object specifies how to estimate effort by fleet*metier,
 
-If value =NA then fwd estimates it, if it is a valid value then it is fixed. Min and max are bounds. Therefore you can't have values for min, max and value so the following is invalid
+If value =NA then fwd estimates it, if it is a valid value then it is fixed. Min and max are bounds. Therefore you can't have values for min, max and value so the following is invalid.
 
 \code{fwdControl(year=1999:2000,value=.2,min=.1,max=.6)}
 
 but the following are all valid but currently fail validity
 
 \code{#fix effort
-fwdControl(year=1999:2000,value=.2,min=NA,max=NA)
+fwdControl(year=1999:2000,value=.2,min=NA,max=NA)}
 
-#estimate effort
-fwdControl(year=1999:2000,value=NA,min=NA,max=NA)
+\code{#estimate effort
+fwdControl(year=1999:2000,value=NA,min=NA,max=NA)}
 
-#estimate effort but lower bound on effort
-fwdControl(year=1999:2000,value=NA,min=.1,max=NA)
+\code{#estimate effort but lower bound on effort
+fwdControl(year=1999:2000,value=NA,min=.1,max=NA)}
 
-#estimate effort but upper bound on effort
+\code{#estimate effort but upper bound on effort
 fwdControl(year=1999:2000,value=.2,min=NA,max=.6)}
 }
-}
+
 \value{
   A data frame with columns for year etc, and rows for year and fleet/metier/spp
   combinations.
@@ -65,3 +63,4 @@ Control<-fwdControl(data.frame(year    =rep(1995:2000),value=c(.40,100000,5000,1
 }}
 \keyword{fwd}
 \keyword{fwdControl}
+
