@@ -40,8 +40,8 @@ catch.n(ple4.test)[catch.n(ple4.test)==0] <- 1
 stock.n(ple4.test)[] <- NA
 harvest(ple4.test)[] <- NA
 # Set Fs in final year and final ages
-harvest(ple4.test)[,"2008"] <- harvest(ple4)[,"2008"]
-harvest(ple4.test)[10,] <- harvest(ple4)[10,]
+harvest(ple4.test)[,"2001"] <- harvest(ple4)[,"2001"]
+harvest(ple4.test)["10",] <- harvest(ple4)["10",]
 # Run the VPA
 ple4.vpa <- VPA(ple4.test)
 # Take a look at the harvest

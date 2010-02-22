@@ -185,7 +185,7 @@ ssb.constraint  <-  function(stock, sr, ssb, years){
       for (j in seq(iters)) {
 
       if(any(is.element(all.vars(model(sr)),"ssb")))       
-        rec <- predict(sr, ssb=ssb(stk)[,ac(i-1)],,,,j)  #if a stock recruit function exists
+        rec <- predict(sr, ssb=ssb(stock)[,ac(i-1)],,,,j)  #if a stock recruit function exists
 
       if(!any(is.element(all.vars(model(sr)),"ssb")))       
         rec <- predict(sr)                               #if no srr

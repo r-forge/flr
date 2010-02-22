@@ -8,31 +8,31 @@
 validProjectControl <- function(object){
 	return(TRUE)
 
-  if (dim(object@target)[1]!=dim(object@trgtArray)[1]){
-     warning("rows in target & trgtArray don't match")
-     return(FALSE)}
+#  if (dim(object@target)[1]!=dim(object@trgtArray)[1]){
+#     warning("rows in target & trgtArray don't match")
+#     return(FALSE)}
 
-  if (any(object@target[,"quantity"] %in% names(quantity))){
-     warning("quantity not recognised")
-     return(FALSE)}
+#  if (any(object@target[,"quantity"] %in% names(quantity))){
+#     warning("quantity not recognised")
+#     return(FALSE)}
      
-  if (length(slot(object, 'effort'))>0){
-     if (dim(object@effort)[1]!=dim(object@effArray)[1]){
-        warning("rows in effort & effArray don't match")
-        return(FALSE)}
+#  if (length(slot(object, 'effort'))>0){
+#     if (dim(object@effort)[1]!=dim(object@effArray)[1]){
+#        warning("rows in effort & effArray don't match")
+#        return(FALSE)}
       
-     if (dim(object@target)[1]!=dim(object@effort)[1]){
-        warning("rows in target & effort don't match")
-        return(FALSE)}   
+#     if (dim(object@target)[1]!=dim(object@effort)[1]){
+#        warning("rows in target & effort don't match")
+#        return(FALSE)}   
  
-     if (dim(object@trgtArray)[3]!=dim(object@effArray)[3]){
-        warning("iters in trgtArray & effArray don't match")
-        return(FALSE)}   
-     }
+#     if (dim(object@trgtArray)[3]!=dim(object@effArray)[3]){
+#        warning("iters in trgtArray & effArray don't match")
+#        return(FALSE)}   
+#     }
      
 	# Everything is fine
-	return(TRUE)
-  }
+#	return(TRUE)
+}
 
 setClass("projectControl",
 	representation(

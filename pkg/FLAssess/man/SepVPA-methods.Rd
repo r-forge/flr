@@ -30,7 +30,7 @@ my.stock@catch.n[my.stock@catch.n==0] <- 1
 my.stock@m <- ple4@m
 my.control <- FLSepVPA.control(sep.age = 5)
 # Set up in final year
-my.stock@stock.n[,52] <- ple4@stock.n[,52]
+my.stock@stock.n[,"2001"] <- ple4@stock.n[,"2001"]
 # Run SepVPA
 my.stock.SepVPA <- SepVPA(my.stock, my.control, fit.plusgroup=TRUE)
 }
