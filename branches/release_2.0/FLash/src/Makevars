@@ -1,0 +1,6 @@
+FLCore_HOME=`Rscript -e 'cat(system.file("libs", package="FLCore"))'`
+PKG_LIBS=$(FLCore_HOME)/FLCore.so -ladolc
+PKG_CXXFLAGS= -ggdb -I/usr/include/adolc -I/usr/local/include/adolc
+CFLAGS=-g -0
+CXXFLAGS=-g -0
+
