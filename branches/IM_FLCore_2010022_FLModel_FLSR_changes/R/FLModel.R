@@ -36,7 +36,7 @@ setClass('FLModel',
     fitted=FLQuant(),
     residuals=FLQuant())
 )
-#invisible(createFLAccesors("FLModel", exclude=c('name', 'desc', 'range', 'params')))  # }}}
+invisible(createFLAccesors("FLModel", exclude=c('name', 'desc', 'range', 'params')))  # }}}
 
 # FLModel()  {{{
 setMethod('FLModel', signature(model='missing'),
@@ -289,7 +289,6 @@ setMethod('fmle',
         stop("No starting values provided and no initial function available")
       
       # autoParscale
-browser()
       if(autoParscale && !'parscale' %in% names(args))
       {
         # named vectors for logl plus/minus tiny_number and diff
@@ -303,11 +302,11 @@ browser()
           # bump up & down each param by tiny_number
           bump_params <- start
           bump_params[[j]] <- bump_params[[j]] * (1 + tiny_number)
-          logl_bump1[[j]] <- do.call(logl, args=c(data, bump_params))
+          logl_bump1[[j]] <- do.call(logl, args=c(data, bump_params, fixed))
           #
           bump_params <- start
           bump_params[[j]] <- bump_params[[j]] * (1 - tiny_number)
-          logl_bump2[[j]] <- do.call(logl, args=c(data, bump_params))
+          logl_bump2[[j]] <- do.call(logl, args=c(data, bump_params, fixed))
         }
         diff_logl <- abs(1 / ((logl_bump1-logl_bump2) / (unlist(start) * 2 * tiny_number)))
         control <- c(control, list(parscale=diff_logl))
