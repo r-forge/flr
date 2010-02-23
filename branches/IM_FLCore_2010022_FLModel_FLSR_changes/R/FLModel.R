@@ -284,6 +284,9 @@ setMethod('fmle',
         stop("some named arguments in 'start' are not arguments to the
           supplied log-likelihood")
       start <- start[order(match(names(start), parnm))]
+
+      # add small number to start if 0
+      start <- lapply(start, function(x) if(x == 0) x <- tiny_number ^ 0.5)
       
       if(is.null(start))
         stop("No starting values provided and no initial function available")
