@@ -36,7 +36,7 @@ setClass('FLModel',
     fitted=FLQuant(),
     residuals=FLQuant())
 )
-invisible(createFLAccesors("FLModel", exclude=c('name', 'desc', 'range', 'params')))  # }}}
+#invisible(createFLAccesors("FLModel", exclude=c('name', 'desc', 'range', 'params')))  # }}}
 
 # FLModel()  {{{
 setMethod('FLModel', signature(model='missing'),
@@ -166,7 +166,8 @@ setMethod('fmle',
   signature(object='FLModel', start='ANY'),
   function(object, start, method='L-BFGS-B', fixed=list(),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=TRUE, ...)
+    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=TRUE,
+    tiny_number=1e-10,...)
   {
     # TODO Check with FL
     args <- list(...)
@@ -269,7 +270,6 @@ setMethod('fmle',
       }
 
       # start values
-browser()
       if(missing(start)) {
         # add call to @initial
         if(is.function(object@initial))
@@ -285,13 +285,36 @@ browser()
           supplied log-likelihood")
       start <- start[order(match(names(start), parnm))]
       
-      # autoParscale
-      if(autoParscale && !'parscale' %in% names(args))
-        control <- c(control, list(parscale=autoParscale(iter(object, it), start=start)))
-
       if(is.null(start))
         stop("No starting values provided and no initial function available")
       
+      # autoParscale
+browser()
+      if(autoParscale && !'parscale' %in% names(args))
+      {
+        # named vectors for logl plus/minus tiny_number and diff
+        diff_logl <- logl_bump1 <- logl_bump2 <- unlist(start)
+
+        # get logLik for start values
+        logl_start <- do.call(logl, args=c(start, data, fixed)) 
+
+        for(j in names(start))
+        {
+          # bump up & down each param by tiny_number
+          bump_params <- start
+          bump_params[[j]] <- bump_params[[j]] * (1 + tiny_number)
+          logl_bump1[[j]] <- do.call(logl, args=c(data, bump_params))
+          #
+          bump_params <- start
+          bump_params[[j]] <- bump_params[[j]] * (1 - tiny_number)
+          logl_bump2[[j]] <- do.call(logl, args=c(data, bump_params))
+        }
+        diff_logl <- abs(1 / ((logl_bump1-logl_bump2) / (unlist(start) * 2 * tiny_number)))
+        control <- c(control, list(parscale=diff_logl))
+      }
+
+      #  control <- c(control, list(parscale=autoParscale(iter(object, it), start=start)))
+
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
         hessian=TRUE, control=control, lower=lower, upper=upper, gr=gr, ...)))
@@ -840,69 +863,4 @@ setMethod("params<-", signature(object="FLModel", value='FLPar'),
     object@params <- value
     return(object)
 	}
-) # }}}
-
-# autoParscale {{{
-setMethod("autoParscale", signature(obj="FLModel"),
-  function(object, start, tiny_number=1e-10, rel=FALSE) {
-    
-    # Works with one iter only
-    if (dims(object)$iter > 1)
-       stop("only works for a single iter")
-browser()
-    # get slot names of class FLArray (FLQuant, FLCohort)
-    datanm <- getSlotNamesClass(object, 'FLArray')
-    # add those of class numeric
-    datanm <- c(datanm, getSlotNamesClass(object, 'numeric'))
-
-    # get data names in formals of logl
-    datanm <- datanm[datanm %in% names(formals(object@logl))]
-
-    # input data: list of slots whose names are in datanm
-    data <- list()
-    for (i in datanm)
-      data[[i]] <- slot(object, i)
-
-    # no. of parameters
-    npar <- dim(params(object))[1]
-
-    dll  <- rep(NA,npar)
-
-    # Make a list of the LogL arguments with the initial values
-    ll_args_orig <- unlist(formals(object@logl))
-    for (i in datanm)
-      ll_args_orig[[i]] <- slot(object, i)
-
-    for (i in dimnames(params(object))$params)
-      ll_args_orig[[i]] <- start[[i]]
-    
-    ll_args_orig[ll_args_orig[names(ll_args_orig) %in%
-      dimnames(params(object))$params]==0] <- tiny_number^0.5
-
-    ll_orig <- do.call(object@logl, ll_args_orig)
-    ll_bump1 <- rep(NA, npar)
-    names(ll_bump1) <- dimnames(params(object))$params
-    ll_bump2 <- ll_bump1
-
-    # cycle over each parameter, bump it and get the new LL
-    for (i in dimnames(params(object))$params) {
-      ll_args_bump <- ll_args_orig
-      ll_args_bump[[i]] <- ll_args_bump[[i]] * (1 + tiny_number)
-      ll_bump1[i] <- do.call(object@logl, ll_args_bump)
-
-      ll_args_bump <- ll_args_orig
-      ll_args_bump[[i]] <- ll_args_bump[[i]] * (1 - tiny_number)
-      ll_bump2[i] <- do.call(object@logl, ll_args_bump)
-    }
-
-    dll <- (ll_bump1-ll_bump2)/(unlist(ll_args_orig)[dimnames(params(object))$params] *
-        2 * tiny_number)
-
-    dll<-abs(1/dll)
-
-    if (rel)
-      dll <- dll/max(dll)
-
-   return(dll)
- }
 ) # }}}
