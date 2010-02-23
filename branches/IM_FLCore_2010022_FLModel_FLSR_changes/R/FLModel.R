@@ -167,7 +167,7 @@ setMethod('fmle',
   function(object, start, method='L-BFGS-B', fixed=list(),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
     upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=TRUE,
-    tiny_number=1e-10,...)
+    tiny_number=1e-10, relAutoParscale=FALSE, ...)
   {
     # TODO Check with FL
     args <- list(...)
@@ -312,6 +312,10 @@ setMethod('fmle',
           logl_bump2[[j]] <- do.call(logl, args=c(data, bump_params, fixed))
         }
         diff_logl <- abs(1 / ((logl_bump1-logl_bump2) / (unlist(start) * 2 * tiny_number)))
+        # relative
+        if(relAutoParscale)
+          diff_logl <- diff_logl / max(diff_logl)
+
         control <- c(control, list(parscale=diff_logl))
       }
 
