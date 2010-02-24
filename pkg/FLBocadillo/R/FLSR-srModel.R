@@ -192,6 +192,8 @@ bevholt<-function(){
 
        #if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
                         res<-loglAR1(obs,hat.,0,sigma)
+       if (!is.finite(res)) res<--10e-200
+
     	 return(res)}
 
   ## initial parameter values
@@ -203,7 +205,7 @@ bevholt<-function(){
     return(list(a=a,b=b))},
 
   ## bounds
-  lower=c(0, 0.0001),
+  lower=c(10e-8, 10e-8),
 	upper=rep(Inf, 2))
 
   ## model to be fitted
