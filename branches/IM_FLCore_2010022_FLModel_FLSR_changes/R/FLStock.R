@@ -385,13 +385,13 @@ expandAgeFLStock<-function(object,maxage,...)
        }
 
     ## calc exp(-cum(Z)) i.e. the survivors 
-    n               <-FLQuant(exp(-apply(slot(res,"m")[ac(oldMaxage:maxage)]@.Data,2:6,cumsum)-apply(slot(res,"harvest")[ac(oldMaxage:maxage)]@.Data,2:6,cumsum)))
+    n               <-FLQuant(exp(-apply(slot(res,"m")[ac(oldMaxage:maxage)]@.Data,2:6,cumsum)-apply(slot(res,"harvest")[ac(oldMaxage:maxage)]@.Data,2:6,cumsum)), quant='age')
     n[ac(maxage)]<-n[ac(maxage)]*(-1.0/(exp(-harvest(res)[ac(maxage)]-m(res)[ac(maxage)])-1.0))
     n               <-sweep(n,2:6,apply(n,2:6,sum),"/")
     ## calc exp(-cum(Z)) i.e. the survivors
     z            <-harvest(res)[ac(maxage)]+m(res)[ac(maxage)]
     n            <-exp(-apply((m(res)[ac(oldMaxage:maxage)]-harvest(res)[ac(oldMaxage:maxage)])@.Data,2:6,cumsum))
-    n            <-FLQuant(c(n),dimnames=dimnames(n))
+    n            <-FLQuant(c(n),dimnames=dimnames(n), quant='age')
     n[ac(maxage)]<-n[ac(maxage)]*(-1.0/(exp(-z)-1.0))
     n            <-sweep(n,2:6,apply(n,2:6,sum),"/")
     stock.n(res)[ac((oldMaxage):maxage)]<-sweep(stock.n(res)[ac((oldMaxage):maxage)],1:6,n,"*")
@@ -424,12 +424,11 @@ expandAgeFLStock<-function(object,maxage,...)
     }
 
 setMethod('setPlusGroup', signature(x='FLStock', plusgroup='numeric'),
-sg<-	function(x, plusgroup, na.rm=FALSE)
+  function(x, plusgroup, na.rm=FALSE)
 	{
 	if (!validObject(x)) stop("x not a valid FLStock object")
 	
 	if (plusgroup>dims(x)$max) return(expandAgeFLStock(x, plusgroup))
-	
 	# FLQuants by operation
 	pg.wt.mean <-c("catch.wt","landings.wt","discards.wt")
 	pg.truncate<-c("harvest","m","mat","harvest.spwn","m.spwn")
