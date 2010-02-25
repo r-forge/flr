@@ -527,4 +527,8 @@ setGeneric("as.FLSR", function(object, ...)
 
 # autoParscale
 setGeneric("autoParscale", function(object, ...)
-		standardGeneric("autoParscale"))
+  standardGeneric("autoParscale"))
+
+# sigma
+setGeneric("sigma", function(object, ...)
+  standardGeneric("sigma"))

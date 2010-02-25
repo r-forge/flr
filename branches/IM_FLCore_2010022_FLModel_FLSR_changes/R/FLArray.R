@@ -362,3 +362,14 @@ setMethod('sweep', signature(x='FLArray'),
     do.call(class(x), list(res, units=units(x)))
   }
 ) # }}}
+
+# sigma {{{
+setMethod('sigma', signature(object='FLArray'),
+  function(object, hat=rep(0, length(object))) {
+    ## calculates sigma squared for use in concentrated likelihood
+    SS <- sum((object - hat) ^ 2, na.rm=T)
+
+    return((SS/length(hat)) ^ 0.5)
+   }
+)
+
