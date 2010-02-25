@@ -532,3 +532,7 @@ setGeneric("autoParscale", function(object, ...)
 # sigma
 setGeneric("sigma", function(object, ...)
   standardGeneric("sigma"))
+
+# gradient
+setGeneric("gradient", function(func, x, ...)
+  standardGeneric("gradient"))

@@ -846,7 +846,6 @@ setMethod("iter", signature(object="logLik"),
 
 # profile(fitted, which)
 # confint
-# glm
 
 # params        {{{
 setMethod("params", signature(object="FLModel"),
@@ -868,8 +867,9 @@ setMethod("params<-", signature(object="FLModel", value='FLPar'),
 	}
 ) # }}}
 
-# grad {{{
-setMethod('grad', signature(func='function', x='FLPar'),
+# gradient {{{
+# TODO: checck and polish
+setMethod('gradient', signature(func='function', x='FLPar'),
   function(func, x, method="Richardson", eps=1e-4, d=0.0001,
       zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2, show.details=FALSE, ...)
   {
@@ -937,5 +937,3 @@ setMethod('grad', signature(func='function', x='FLPar'),
     }
   }
 ) # }}}
-
-  

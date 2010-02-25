@@ -8,6 +8,53 @@
 # Reference:
 # Notes:
 
+# ricker  {{{
+ricker <- function()
+{
+  logl <- function(a, b, rec, ssb)
+		sum(dnorm(log(rec), log(a*ssb*exp(-b*ssb)), sigma(log(rec), log(a*ssb*exp(-b*ssb))),
+      TRUE), na.rm=TRUE)
+
+  initial <- structure(function(rec, ssb) {
+		# The function to provide initial values
+    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
+    return(list(a=max(exp(res[1])), b=-max(res[2])))
+	},
+  # lower and upper limits for optim()
+	lower=rep(1e-10, 2),
+	upper=rep(Inf, 2)
+	)
+	model  <- rec~a*ssb*exp(-b*ssb)
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# bevholt {{{
+bevholt <- function()
+  {
+  ## log likelihood, assuming normal log.
+  logl <- function(a, b, rec, ssb)
+		sum(dnorm(log(rec), log(a*ssb/(b+ssb)), sigma(log(rec), log(a*ssb/(b+ssb))), TRUE),
+        na.rm=TRUE)
+
+  ## initial parameter values
+  initial <- structure(function(rec, ssb) {
+    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
+    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
+    return(list(a = a, b = a/b))
+	},
+
+  ## bounds
+  lower=rep(10e-8, 2),
+	upper=rep(Inf, 2))
+
+  ## model to be fitted
+  model  <- rec~a*ssb/(b+ssb)
+  
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+
+
 # SRModelName {{{
 SRModelName<-function(formula)
 {
@@ -149,51 +196,6 @@ setMethod('ab', signature(object='FLSR'),
 
   return(object)
   })  # }}}
-
-# Ricker  {{{
-ricker <- function()
-{
-  logl <- function(a, b, rec, ssb)
-		sum(dnorm(log(rec), log(a*ssb*exp(-b*ssb)), sigma(log(rec), log(a*ssb*exp(-b*ssb))),
-      TRUE), na.rm=TRUE)
-
-  initial <- structure(function(rec, ssb) {
-		# The function to provide initial values
-    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
-    return(list(a=max(exp(res[1])), b=-max(res[2])))
-	},
-  # lower and upper limits for optim()
-	lower=rep(1e-10, 2),
-	upper=rep(Inf, 2)
-	)
-	model  <- rec~a*ssb*exp(-b*ssb)
-	return(list(logl=logl, model=model, initial=initial))
-} # }}}
-
-# bevholt {{{
-bevholt <- function()
-  {
-  ## log likelihood, assuming normal log.
-  logl <- function(a, b, rec, ssb)
-		sum(dnorm(log(rec), log(a*ssb/(b+ssb)), sigma(log(rec), log(a*ssb/(b+ssb))), TRUE),
-        na.rm=TRUE)
-
-  ## initial parameter values
-  initial <- structure(function(rec, ssb) {
-    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
-    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
-    return(list(a = a, b = a/b))
-	},
-
-  ## bounds
-  lower=rep(10e-8, 2),
-	upper=rep(Inf, 2))
-
-  ## model to be fitted
-  model  <- rec~a*ssb/(b+ssb)
-  
-	return(list(logl=logl, model=model, initial=initial))
-} # }}}
 
 # Depensatory Ricker {{{
 ricker.d<-function () 
