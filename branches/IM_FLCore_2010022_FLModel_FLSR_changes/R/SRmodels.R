@@ -8,67 +8,6 @@
 # Reference:
 # Notes:
 
-# ricker  {{{
-ricker <- function()
-{
-  logl <- function(a, b, rec, ssb)
-		sum(dnorm(log(rec), log(a*ssb*exp(-b*ssb)), sigma(log(rec), log(a*ssb*exp(-b*ssb))),
-      TRUE), na.rm=TRUE)
-
-  initial <- structure(function(rec, ssb) {
-		# The function to provide initial values
-    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
-    return(list(a=max(exp(res[1])), b=-max(res[2])))
-	},
-  # lower and upper limits for optim()
-	lower=rep(1e-10, 2),
-	upper=rep(Inf, 2)
-	)
-	model  <- rec~a*ssb*exp(-b*ssb)
-	return(list(logl=logl, model=model, initial=initial))
-} # }}}
-
-# bevholt {{{
-bevholt <- function()
-  {
-  ## log likelihood, assuming normal log.
-  logl <- function(a, b, rec, ssb)
-		sum(dnorm(log(rec), log(a*ssb/(b+ssb)), sigma(log(rec), log(a*ssb/(b+ssb))), TRUE),
-        na.rm=TRUE)
-
-  ## initial parameter values
-  initial <- structure(function(rec, ssb) {
-    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
-    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
-    return(list(a = a, b = a/b))
-	},
-
-  ## bounds
-  lower=rep(10e-8, 2),
-	upper=rep(Inf, 2))
-
-  ## model to be fitted
-  model  <- rec~a*ssb/(b+ssb)
-  
-	return(list(logl=logl, model=model, initial=initial))
-} # }}}
-
-
-
-# SRModelName {{{
-SRModelName<-function(formula)
-{
-  srmodels <- list('ricker', 'ricker.d', 'ricker.c.a', 'ricker.c.b', 'ricker.sv',
-  'ricker.ar1', 'bevholt', 'bevholt.ar1','bevholt.d', 'bevholt.c.a', 'bevholt.c.b',   
-  'bevholt.sv', 'bevholt.ndc', 'shepherd', 'shepherd.ar1', 'shepherd.d', 'geomean', 'segreg')
-  srformulae <- lapply(srmodels, function(x) do.call(x, list())$model)
-  names(srformulae) <- srmodels
-  for(i in srmodels)
-    if(formula == srformulae[[i]])
-      return(i)
-  return(FALSE)
-} # }}}
-
 # spr0  {{{
 ## calcs spawner per recruit at F=0.0   
 setMethod('spr0', signature(ssb='FLQuant', rec='FLQuant', fbar='FLQuant'),
@@ -196,6 +135,102 @@ setMethod('ab', signature(object='FLSR'),
 
   return(object)
   })  # }}}
+
+# SRModelName {{{
+SRModelName<-function(formula)
+{
+  srmodels <- list('ricker', 'ricker.d', 'ricker.c.a', 'ricker.c.b', 'ricker.sv',
+  'ricker.ar1', 'bevholt', 'bevholt.ar1','bevholt.d', 'bevholt.c.a', 'bevholt.c.b',   
+  'bevholt.sv', 'bevholt.ndc', 'shepherd', 'shepherd.ar1', 'shepherd.d', 'geomean', 'segreg')
+  srformulae <- lapply(srmodels, function(x) do.call(x, list())$model)
+  names(srformulae) <- srmodels
+  for(i in srmodels)
+    if(formula == srformulae[[i]])
+      return(i)
+  return(FALSE)
+} # }}}
+
+# ricker  {{{
+ricker <- function()
+{
+  logl <- function(a, b, rec, ssb)
+		sum(dnorm(log(rec), log(a*ssb*exp(-b*ssb)), sigma(log(rec), log(a*ssb*exp(-b*ssb))),
+      TRUE), na.rm=TRUE)
+
+  initial <- structure(function(rec, ssb) {
+		# The function to provide initial values
+    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
+    return(list(a=max(exp(res[1])), b=-max(res[2])))
+	},
+  # lower and upper limits for optim()
+	lower=rep(1e-10, 2),
+	upper=rep(Inf, 2)
+	)
+	model  <- rec~a*ssb*exp(-b*ssb)
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# bevholt {{{
+bevholt <- function()
+  {
+  ## log likelihood, assuming normal log.
+  logl <- function(a, b, rec, ssb)
+		sum(dnorm(log(rec), log(a*ssb/(b+ssb)), sigma(log(rec), log(a*ssb/(b+ssb))), TRUE),
+        na.rm=TRUE)
+
+  ## initial parameter values
+  initial <- structure(function(rec, ssb) {
+    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
+    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
+    return(list(a = a, b = a/b))
+	},
+
+  ## bounds
+  lower=rep(10e-8, 2),
+	upper=rep(Inf, 2))
+
+  ## model to be fitted
+  model  <- rec~a*ssb/(b+ssb)
+  
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# segreg  {{{
+segreg <- function()
+{
+	logl <- function(a, b, rec, ssb)
+	  # The actual minus log-likelihood
+	  sum(dnorm(log(rec), log(ifelse(ssb<=b,a*ssb,a*b)), sigma(log(rec), log(ifelse(ssb<=b,a*ssb,a*b))), TRUE), na.rm=TRUE)
+
+  model <- rec ~ FLQuant(ifelse(ssb<=b,a*ssb,a*b))
+
+  initial <- structure(function(rec, ssb)
+  {
+    return(list(a=median(c(rec/ssb)), b=median(c(ssb))))
+  },
+    lower=rep(0, 1e-7),
+    upper=rep(Inf, 2))
+
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# geomean {{{
+geomean<-function() 
+    {
+    logl <- function(a, rec)
+      sum(dnorm(log(rec), log(rep(a, length(rec))), sigma(log(rec), log(rep(a, length(rec)))), TRUE), na.rm=TRUE)
+    
+    initial <- structure(function(rec) {
+        return(list(a = exp(mean(log(rec), na.rm=TRUE))))
+        }, 
+        lower = c(1e-08), upper = rep(Inf))
+    
+    model <- rec ~ a
+    
+    return(list(logl = logl, model = model, initial = initial))
+    } # }}}
+
+##
 
 # Depensatory Ricker {{{
 ricker.d<-function () 
@@ -433,24 +468,6 @@ bevholt.sv<-function()
     return(list(logl = logl, model = model, initial = initial))
     } # }}}
 
-# Geomean {{{
-geomean<-function() 
-    {
-    logl <- function(a, sigma2, rec)
-      sum(dnorm(log(rec), log(rep(a, length(rec))), sqrt(sigma2), TRUE), na.rm=TRUE)
-    
-    initial <- structure(function(rec) {
-        a     <- exp(mean(log(rec), na.rm=TRUE))
-        sigma2 <- var(log(rec/a), na.rm = TRUE)
-        return(list(a = a, sigma2 = sigma2))
-        }, 
-        lower = c(1e-08, 1e-08), upper = rep(Inf, 2))
-    
-    model <- rec ~ a
-    
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
 # logl.ar1  {{{
 logl.ar1<-function(rho,sigma2,obs,hat)
   {
@@ -530,29 +547,7 @@ ricker.ar1<-function()
     return(list(logl = logl, model = model, initial = initial))
     } # }}}
 
-# segreg  {{{
-segreg <- function()
-{
-	logl <- function(a, b, sigma2, rec, ssb)
-	  # The actual minus log-likelihood
-	  sum(dnorm(log(rec), log(FLQuant(ifelse(ssb <= b, a*ssb, a*b))), sqrt(sigma2), TRUE), TRUE)
-
-  model <- rec ~ FLQuant(ifelse((ssb*a) <= (b/a), a * ssb, a * b))
-
-  initial <- structure(function(rec, ssb)
-  {
-    a <- mean(rec/ssb)
-    b <- mean(ssb)
-    sigma2 <- var(log(rec/ifelse(ssb <= b, a*ssb, a*b)), y=NULL, na.rm=TRUE)
-    return(list(a=a, b=b, sigma2=sigma2))
-  },
-    lower=rep(0.0001, 3),
-    upper=rep(Inf, 3))
-
-	return(list(logl=logl, model=model, initial=initial))
-} # }}}
-
-# Sheperd {{{
+# sheperd {{{
 shepherd<-function()
     {
     logl <- function(a, b, c, sigma2, rec, ssb)
