@@ -949,76 +949,67 @@ setClass("FLModelProfile", representation("FLModel"), prototype(FLModel()),
 setMethod("plot", signature(x="FLModelProfile", y="missing"),
   function(x, ...) {
 
-    # profiled params
-
     # create data.frame
-    data <- data.frame(t(as.matrix((params(x)[profiled,]@.Data))), logLik=c(logLik(x)))
+    data <- as.data.frame(params(x))
+    data <- cbind(data, logLik=c(logLik(x)))
+    data <- aggregate(data$logLik, by=list(value=data$data, param=data$param), mean)
 
-    grid <- list(x = sort(unique(data[,1])), y = sort(unique(data[,2])),
-        z= tapply(data[,"logLik"], list(data[,1],data[,2]),mean))
-    
     # plot
-    do.call('contour', grid)
-
+    xyplot(x ~ value | param, data=data, type='l', scales=list(x=list(relation='free')),
+        xlab="", ylab='logLik')
   }
 ) # }}}
 
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
-  function(fitted, which=dimnames(params(fitted))$params, maxsteps=10, range=0.1, ...)
+  function(fitted, maxsteps=10, range=0.1, ...)
   {
     # vars
     foo <- logl(fitted)
     params <- params(fitted)
+    parnames <- dimnames(params)$params
 
 
-    # selected param
-    if(length(which) < length(dimnames(params)$params)) {
+    # create grid of param values:
+    exgrid <- list()
+    for(i in parnames) {
+      # steps for param[i]
+      estim <- c(params[i,])
+      steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
+      exgrid[[i]] <- steps
     }
+    grid <- do.call(expand.grid, exgrid)
 
-    # all params
-    if(length(which) == length(dimnames(params)$params)) {
+    # col for logLik
+    grid$logLik <- as.numeric(NA)
 
-      # create grid of param values:
-      exgrid <- list()
-      for(i in which) {
-        # steps for param[i]
-        estim <- c(params[i,])
-        steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
-        exgrid[[i]] <- steps
-      }
-      grid <- do.call(expand.grid, exgrid)
+    args <- list()
 
-      # col for logLik
-      grid$logLik <- as.numeric(NA)
+    # data
+    data <- names(formals(foo))
+    data <- data[data %in% slotNames(fitted)]
+    for(i in data)
+      args[i] <- list(slot(fitted, i))
 
-      args <- list()
-
-      # data
-      data <- names(formals(foo))
-      data <- data[data %in% slotNames(fitted)]
-      for(i in data)
-        args[i] <- list(slot(fitted, i))
-
-      # params not profiled
-      fixpars <- as.list(params)
-      names(fixpars) <- dimnames(params)$params
-      args <- c(args, fixpars[!dimnames(params)$params %in% which])
+    # params not profiled
+    fixpars <- as.list(params)
+    names(fixpars) <- dimnames(params)$params
+    args <- c(args, fixpars[!dimnames(params)$params %in% parnames])
  
-      # calculate logLik for grid
-      for(i in seq(nrow(grid))) {
-        grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,which])))
-      }
+    # calculate logLik for grid
+    for(i in seq(nrow(grid))) {
+      grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,parnames])))
     }
-    
+        
     # FLPar
     params(fitted) <- propagate(params(fitted), nrow(grid))
     # TODO: Fix FLPar!!!!!
-    params(fitted)[] <- new('FLPar', aperm(as.matrix(grid[, which]), c(2,1)))
+    params(fitted)[] <- new('FLPar', aperm(as.matrix(grid[, parnames]), c(2,1)))
 
     # logLik
     logLik(fitted) <- c(grid$logLik)
     
-    return(fitted)
+    return(new('FLModelProfile', fitted))
   }
 ) # }}}
+
