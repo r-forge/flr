@@ -107,6 +107,8 @@ exportClasses(
 	"FLMetier",
 	"FLMetiers",
 	"FLModel",
+	"FLModelProfile",
+	"FLModelSurface",
 	"FLPar",
 	"FLQuant",
 	"FLQuantPoint",
