@@ -341,11 +341,11 @@ setGeneric('logl', function(object, ...)
 setGeneric('logl<-', function(object, ..., value)
 		standardGeneric('logl<-'))
 
-# grad
-setGeneric('grad', function(object, ...)
-		standardGeneric('grad'))
-setGeneric('grad<-', function(object, ..., value)
-		standardGeneric('grad<-'))
+# gr
+setGeneric('gr', function(object, ...)
+		standardGeneric('gr'))
+setGeneric('gr<-', function(object, ..., value)
+		standardGeneric('gr<-'))
 
 # initial
 setGeneric('initial', function(object, ...)
@@ -541,3 +541,7 @@ setGeneric("gradient", function(func, x, ...)
 # surface
 setGeneric("surface", function(fitted, ...)
   standardGeneric("surface"))
+
+# parscale
+setGeneric("parscale", function(object, ...)
+  standardGeneric("parscale"))

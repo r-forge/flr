@@ -21,7 +21,7 @@ setClass('FLModel',
   representation('FLComp',
     model='formula',
     logl='function',
-    grad='function',
+    gr='function',
     initial='function',
     params='FLPar',
     logLik='logLik',
@@ -207,9 +207,9 @@ setMethod('fmle',
       upper <- Inf
     }
 
-    # grad function
-    if(!is.null(body(object@grad)))
-      gr <- object@grad
+    # gr function
+    if(!is.null(body(object@gr)))
+      gr <- object@gr
     else
       gr <- NULL
 
@@ -865,11 +865,12 @@ setMethod("params<-", signature(object="FLModel", value='FLPar'),
 ) # }}}
 
 # gradient {{{
-# TODO: checck and polish
+# TODO: check and polish
 setMethod('gradient', signature(func='function', x='FLPar'),
   function(func, x, method="Richardson", eps=1e-4, d=0.0001,
       zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2, show.details=FALSE, ...)
   {
+    browser()
     # TODO: Should grad work along all params? Or only for one? How to select it?
     # take data args
     args <- list(...)
@@ -932,5 +933,49 @@ setMethod('gradient', signature(func='function', x='FLPar'),
       }
       return(c(a))
     }
+  }
+) # }}}
+
+# parscale  {{{
+setMethod("parscale", signature(object="FLModel"),
+  function(object, start=missing, tiny_number=1e-6, ...) {
+browser()
+    # get data
+    loglnames <- names(formals(logl(nsher)))
+    data <- loglnames[loglnames %in% slotNames(object)]
+    args <- list()
+    logl <- logl(object)
+
+    for(i in data)
+      args[[i]] <- slot(object, i)
+
+    # get start
+    if(missing(start))
+      start <- do.call(initial(object), args)
+
+    # named vectors for logl plus/minus tiny_number and diff
+    diff_logl <- logl_bump1 <- logl_bump2 <- unlist(start)
+
+    # get logLik for start values
+    logl_start <- do.call(logl, args=c(start, args)) 
+
+    for(j in names(start))
+    {
+      # bump up & down each param by tiny_number
+      bump_params <- start
+      bump_params[[j]] <- bump_params[[j]] * (1 + tiny_number)
+      logl_bump1[[j]] <- do.call(logl, args=c(args, bump_params))
+      #
+      bump_params <- start
+      bump_params[[j]] <- bump_params[[j]] * (1 - tiny_number)
+      logl_bump2[[j]] <- do.call(logl, args=c(args, bump_params))
+    }
+    diff_logl <- 1 / (abs(logl_bump1) + abs(logl_bump2)) / (unlist(start) * 2 * tiny_number)
+        
+    # relative
+    if(relAutoParscale)
+      diff_logl <- diff_logl / max(diff_logl)
+
+    return(diff_logl)
   }
 ) # }}}
