@@ -349,6 +349,7 @@ exportMethods(
 	"stock.wt<-",
 	"stripplot",
 	"summary",
+  "surface",
   "survprob",
   "sweep",
 	"transform",
