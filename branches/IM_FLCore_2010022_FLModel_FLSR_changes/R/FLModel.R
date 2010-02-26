@@ -1048,41 +1048,37 @@ setMethod("profile", signature(fitted="FLModel"),
     parnames <- dimnames(params)$params
     
     # create grid of param values:
-    exgrid <- list()
+    grid <- list()
     for(i in parnames) {
       # steps for param[i]
       estim <- c(params[i,])
       steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
-      exgrid[[i]] <- steps
+      grid[[i]] <- steps
     }
-    
-    grid <- do.call(expand.grid, exgrid)
 
-    # col for logLik
-    grid$logLik <- as.numeric(NA)
-
-    args <- list()
-
-    # data
-    data <- names(formals(foo))
-    data <- data[data %in% slotNames(fitted)]
-    for(i in data)
-      args[i] <- list(slot(fitted, i))
-
-    # calculate logLik for grid
-    for(i in seq(nrow(grid))) {
-      grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,parnames])))
+    # estimate
+    logLik <- lapply(grid, function(x) rep(NA, length(x)))
+    for(i in parnames) {
+      for (j in seq(length(grid[[i]]))) {
+        fixed <- list(fixed=grid[[i]][j])
+        names(fixed) <- i
+        logLik[[i]][j] <- c(logLik(fmle(fitted, fixed=fixed)))
+      }
     }
-        
+
     # FLPar
-    params(fitted) <- propagate(params(fitted), nrow(grid))
-    # TODO: Fix FLPar!!!!!
-    params(fitted)[] <- new('FLPar', aperm(as.matrix(grid[, parnames]), c(2,1)))
+    params(fitted) <- propagate(params(fitted), maxsteps * length(grid), fill.iter=FALSE)
+    
+    newparams <- matrix(NA, nrow=length(parnames), ncol=length(parnames)*maxsteps)
+    for(i in seq(length(grid))) {
+      newparams[i,seq(1+((i-1)*maxsteps), maxsteps*(i-1)+maxsteps)] <- t(grid[[i]])
+    }
 
+    params(fitted)[] <- newparams
+    
     # logLik
-    logLik(fitted) <- c(grid$logLik)
+    logLik(fitted) <- c(unlist(logLik, use.names=FALSE))
     
     return(new('FLModelProfile', fitted))
   }
 ) # }}}
-
