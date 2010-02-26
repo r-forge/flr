@@ -32,6 +32,7 @@ setGeneric("nls", useAsDefault = nls)
 setGeneric("plot", useAsDefault = plot)
 setGeneric("predict", useAsDefault = predict)
 setGeneric("print", useAsDefault = print)
+setGeneric("profile", useAsDefault = profile)
 setGeneric("quantile", useAsDefault = quantile)
 setGeneric("rgamma", useAsDefault = rgamma)
 setGeneric("scale", useAsDefault = scale)
@@ -536,3 +537,7 @@ setGeneric("sigma", function(object, ...)
 # gradient
 setGeneric("gradient", function(func, x, ...)
   standardGeneric("gradient"))
+
+# surface
+setGeneric("surface", function(fitted, ...)
+  standardGeneric("surface"))
