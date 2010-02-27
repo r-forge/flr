@@ -166,8 +166,8 @@ setMethod('fmle',
   signature(object='FLModel', start='ANY'),
   function(object, start, method='L-BFGS-B', fixed=list(),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=TRUE,
-    tiny_number=1e-6, relAutoParscale=TRUE, ...)
+    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=FALSE,
+    tiny_number=1e-6, relAutoParscale=FALSE, ...)
   {
     # TODO Check with FL
     args <- list(...)
