@@ -8,6 +8,54 @@
 # Reference:
 # Notes:
 
+
+setGeneric("sigma", function(obj, ...){
+  standardGeneric("sigma")})
+setMethod('sigma',
+  signature(obj='FLQuant'),
+    function(obj,hat=rep(0,length(obj))){
+       ## calculates sigma squared for use in concentrated liklihood
+       SS<-sum((obj-hat)^2,na.rm=T)
+
+       return((SS/length(hat))^0.5)})
+
+setGeneric("rSq", function(obs,hat){
+  standardGeneric("rSq")})
+setMethod('rSq',
+  signature(obs='FLQuant',hat='FLQuant'),
+    function(obs,hat=rep(0,length(obj))){
+       ## calculates R squared
+       mn   <-mean(obs)
+       mnHat<-mean(hat)
+       SStot<-sum((obs-mn)^2)
+       SSreg<-sum((hat-mnHat)^2)
+       SSerr<-sum((obs-hat)^2)
+
+       res  <-1-SSerr/SStot
+
+       return(res)})
+
+setGeneric("loglAR1", function(obs,hat,rho,sigma){
+  standardGeneric("loglAR1")})
+setMethod('loglAR1',
+  signature(obs='FLQuant',hat='FLQuant'),
+    function(obs,hat,rho=0,sigma=NULL){
+    ## calculates likelihood for AR(1) process
+
+    if (is.null(sigma)) {
+       sigma2<-sigma(obs,hat)
+       sigma2<-sigma2^2}
+    else
+       sigma2<-sigma^2
+
+    n        <-length(obs)
+    s2       <-sum((obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])^2)
+    s1       <-(1-rho^2)*(obs[,1]-hat[,1])^2 + s2
+    sigma2.a <-(1-rho^2)*sigma2
+    res      <-(log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
+
+    return(res)})
+
 # spr0:  calcs spawner per recruit at F=0.0
 if (!isGeneric("spr0"))
   setGeneric("spr0", function(ssb, rec, fbar, ...)
@@ -55,6 +103,36 @@ setMethod('spr0', signature(ssb='FLStock', rec='missing', fbar='missing'),
 setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
   function(ssb, fbar){
     spr0(ssb=ssb(ssb), rec=rec(ssb), fbar=fbar)})
+
+#### converts formula from FLSR@model into name
+srModelName<-function(formula){
+  srformulae        <-lapply(srmodels, function(x) do.call(x, list())$model)
+  names(srformulae) <-srmodels
+
+  for(i in srmodels)
+    if(formula == srformulae[[i]])
+      return(i)
+
+  return(FALSE)}
+
+srmodels <-    c('bevholt', 'bevholtSV', 'bevholtNDC',  'bevholtCA',  'bevholtCB',
+                 'ricker',  'rickerSV',  'rickerNDC',   'rickerCA',   'rickerCB',
+                 'shepherd','shepherdSV','shepherdNDC', 'shepherdCA', 'shepherdCB',
+                 'cushing', 'cushingSV', 'cushingNDC',  'cushingCA',  'cushingCB',
+                 'geomean', 'cushingSV',                'geomeanCA',
+                 'dersch',               'derschNDC',   'derschCA',   'derschCB',
+                 'pellat',               'pellatNDC',   'pellatCA',   'pellatCB',
+                 'segreg',   'segregSV', 'segregNDC',   'segregCA',   'segregCB',
+                 'bevholtD',             'bevholtDNDC', 'bevholtDCA', 'bevholtDCB',
+                 'rickerD',              'rickerDNDC',  'rickerDCA',  'rickerDCB',
+                 'shepherdD',            'shepherdDNDC','shepherdDCA','shepherdDCB')
+
+srmodels <-    c('bevholt',
+                 'ricker',
+                 'shepherd',
+                 'cushing',
+                 'geomean',
+                 'segreg')
 
 # calc steepness & virgin biomass from alpha & beta, given SSB per R at F=0
 sv<-function(type,spr0,a,b=NULL,c=NULL,d=NULL){
@@ -211,5 +289,60 @@ shepherd<-function()
       upper = c(1e02,  1e+08,10))
 
     model <- rec ~ a * ssb/(1 + (ssb/b)^c)
+
+    return(list(logl = logl, model = model, initial = initial))}
+
+cushing<-function(){
+  ## log likelihood, assuming normal log.
+  logl <- function(a, b, rec, ssb){
+       hat. <-log(a*ssb^b)
+       obs  <-log(rec)
+	     sigma<-sigma(obs,hat.)
+
+       #if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(obs,hat.,0,sigma)
+    	 return(res)}
+
+  ## initial parameter values
+  initial<-structure(function(rec, ssb){
+       a <- mean(rec/ssb)
+       b <- 1.0
+
+       res<-list(a=a,b=b)
+
+       return(res)},
+
+  ## bounds
+  lower=c(0, 0.0001),
+	upper=c(Inf, 1))
+
+
+  ## model to be fitted
+  model  <- rec~a*ssb^b
+
+	return(list(logl=logl, model=model, initial=initial))}
+
+geomean<-function(){
+    logl <- function(a,rec,ssb){
+       hat. <-FLQuant(log(a),dimnames=dimnames(rec))
+       obs  <-log(rec)
+  	   sigma<-sigma(obs,hat.)
+
+  	   # minus log-likelihood
+       #if (flagNormLog) res<-sum(dnorm(obs, hat., sigma, TRUE), na.rm=TRUE) else
+                        res<-loglAR1(obs,hat.,0,sigma)
+
+       if (!is.finite(res)) res<--10e-200
+
+       return(res)}
+
+    initial <- structure(function(rec) {
+        a     <- exp(mean(log(rec), na.rm=TRUE))
+        sigma2 <- var(log(rec/a), na.rm = TRUE)
+        return(list(a = a))
+        },
+        lower = c(1e-08), upper = c(Inf))
+
+    model <- rec ~ a
 
     return(list(logl = logl, model = model, initial = initial))}
