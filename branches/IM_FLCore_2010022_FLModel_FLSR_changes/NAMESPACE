@@ -226,6 +226,7 @@ exportMethods(
 	"harvest<-",
 	"harvest.spwn",
 	"harvest.spwn<-",
+  "hessian",
 	"histogram",
   "index",
   "index<-",

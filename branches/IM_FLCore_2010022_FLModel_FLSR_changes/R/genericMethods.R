@@ -371,6 +371,12 @@ setGeneric('vcov', function(object, ...)
 setGeneric('vcov<-', function(object, ..., value)
 		standardGeneric('vcov<-'))
 
+# hessian
+setGeneric('hessian', function(object, ...)
+		standardGeneric('hessian'))
+setGeneric('hessian<-', function(object, ..., value)
+		standardGeneric('hessian<-'))
+
 # details
 setGeneric('details', function(object, ...)
 		standardGeneric('details'))
