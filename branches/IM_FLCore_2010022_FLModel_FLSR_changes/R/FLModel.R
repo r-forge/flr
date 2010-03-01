@@ -940,7 +940,6 @@ setMethod('gradient', signature(func='function', x='FLPar'),
 # parscale  {{{
 setMethod("parscale", signature(object="FLModel"),
   function(object, start=missing, tiny_number=1e-6, ...) {
-browser()
     # get data
     loglnames <- names(formals(logl(nsher)))
     data <- loglnames[loglnames %in% slotNames(object)]
@@ -1010,10 +1009,10 @@ setMethod("computeHessian", signature(object="FLModel"),
       stop("values in 'params' cannot be NA")
 
     # call numDeriv's hessian
-    D <- computeD(object)
-    H <- diag(NA,length(x))
-    u <- length(x)
-    for(i in 1:length(x))
+    D <- computeD(object, params)
+    H <- diag(NA,length(parnames))
+    u <- length(parnames)
+    for(i in 1:length(parnames))
     {
       for(j in 1:i)
       {
@@ -1028,8 +1027,7 @@ setMethod("computeHessian", signature(object="FLModel"),
 )  # }}}
 
 # computeD  {{{
-setMethod("computeD", signature(object="FLModel"),
-  function(object, method="Richardson", eps=1e-4, d=0.0001,
+computeD <- function(object, params, method="Richardson", eps=1e-4, d=0.0001,
     zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2) {
   
     # check v
@@ -1046,8 +1044,6 @@ setMethod("computeD", signature(object="FLModel"),
       data[[i]] <- slot(object, i)
     
     # params
-    params <- as.list(params(object))
-    names(params) <- dimnames(params(object))$params
     x <- unlist(params)
 
     # f0
@@ -1118,7 +1114,4 @@ setMethod("computeD", signature(object="FLModel"),
   	    }  
   	 }
      return(D)
-     D <- list(D=D, p=length(x), f0=f0, func=func, x=x, d=d,
-            method=method, method.args=args)# Darray constructor (genD.default)
-  }
-) # }}}
+  } # }}}

@@ -156,6 +156,7 @@ exportMethods(
 	"coerce",
 	"computeDiscards",
 	"computeCatch",
+	"computeHessian",
 	"computeLandings",
 	"computeStock",
   "convertFLPar",
