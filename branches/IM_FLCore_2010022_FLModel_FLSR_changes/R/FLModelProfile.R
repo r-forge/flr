@@ -109,37 +109,77 @@ setMethod("surface", signature(fitted="FLModel"),
 
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
-  function(fitted, maxsteps=10, range=0.1, fixed=missing, ...)
+  function(fitted, which, maxsteps=10, range=0.4, fixed=missing, ...)
   {
     # vars
     foo <- logl(fitted)
     params <- params(fitted)
-    parnames <- dimnames(params)$params
-
-    # fixed params
-    if(!missing(fixed)) {
-      parnames <- parnames[!parnames %in% names(fixed)]
-    }
-    
-    # create grid of param values:
     grid <- list()
-    for(i in parnames) {
-      # steps for param[i]
-      estim <- c(params[i,])
-      steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
-      grid[[i]] <- steps
+
+    # params
+    parnames <- dimnames(params)$params
+    
+    # to profile
+    if(missing(which))
+      which <- parnames
+    
+    # to fix
+    if(!missing(fixed))
+      which <- which[!which %in% names(fixed)]
+    else
+      fixed <- list()
+
+    # which are all in params
+    if(any(!which %in% parnames))
+      stop("parameter to profile not found in object 'params' slot")
+
+    # create grid of param values:
+    if(is.numeric(range) && length(range) == 1)
+    {
+      for(i in which) {
+        # steps for param[i]
+        estim <- c(params[i,])
+        steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
+        grid[[i]] <- steps
+      }
+    } else if (is.list(range)) {
+      # TODO checks all params to be profiled specified
+      if(names(range) != parnames)
+        stop("range not specified for parameters:", parnames[!parnames%in%names(range)])
     }
 
-    # estimate
+    # logLik
     logLik <- lapply(grid, function(x) rep(NA, length(x)))
-    for(i in parnames) {
-      for (j in seq(length(grid[[i]]))) {
-        profiled <- list(fixed=grid[[i]][j])
-        names(profiled) <- i
-        logLik[[i]][j] <- c(logLik(fmle(fitted, fixed=profiled)))
+
+    # (1) if all params in fixed + which
+    if(length(parnames) - length(fixed) == 1)
+    {
+      # data to do.call logl
+      data <- list()
+      datanm <- names(formals(logl(fitted)))
+      for(n in slotNames(fitted)[slotNames(fitted) %in% datanm])
+        data[[n]] <- slot(fitted, n)
+
+      # loop over grid
+      for(i in which)
+        for(j in seq(grid[[i]]))
+        {
+          args <- c(lapply(grid[i], function(x) x[j]), fixed)
+          logLik[[i]][j] <- do.call(logl(fitted), c(data, args))
+        }
+    }
+    # (2) if params to estimate
+    else if(length(parnames) - length(fixed) > 1)
+    {
+      for(i in which) {
+        for (j in seq(length(grid[[i]]))) {
+          profiled <- c(lapply(grid[i], function(x) x[j]), fixed)
+          logLik[[i]][j] <- c(logLik(fmle(fitted, fixed=profiled, ...)))
+          logLik[[i]][j] <- c(logLik(fmle(fitted, fixed=profiled)))
+        }
       }
     }
-
+browser()
     # FLPar
     params(fitted) <- propagate(params(fitted), maxsteps * length(grid), fill.iter=FALSE)
     
