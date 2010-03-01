@@ -551,3 +551,11 @@ setGeneric("surface", function(fitted, ...)
 # parscale
 setGeneric("parscale", function(object, ...)
   standardGeneric("parscale"))
+
+# computeD
+setGeneric("computeD", function(object, ...)
+  standardGeneric("computeD"))
+
+# computeHessian
+setGeneric("computeHessian", function(object, ...)
+  standardGeneric("computeHessian"))
