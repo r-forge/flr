@@ -293,7 +293,7 @@ setMethod('fmle',
         stop("No starting values provided and no initial function available")
     
       # autoParscale
-      if(autoParscale && !'parscale' %in% names(args))
+      if(autoParscale && !'parscale' %in% names(control))
       {
         # named vectors for logl plus/minus tiny_number and diff
         diff_logl <- logl_bump1 <- logl_bump2 <- unlist(start)
@@ -312,7 +312,8 @@ setMethod('fmle',
           bump_params[[j]] <- bump_params[[j]] * (1 - tiny_number)
           logl_bump2[[j]] <- do.call(logl, args=c(data, bump_params, fixed))
         }
-          diff_logl <- 1 / (abs(logl_bump1) + abs(logl_bump2)) / (unlist(start) * 2 * tiny_number)
+          diff_logl <- 1 / (abs(logl_bump1) + abs(logl_bump2)) / (unlist(start) *
+            2 * tiny_number)
         
         # relative
         if(relAutoParscale)

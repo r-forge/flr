@@ -208,14 +208,3 @@ setMethod("profile", signature(fitted="FLModel"),
     return(new('FLModelProfile', fitted))
   }
 ) # }}}
-
-setMethod("ci", signature(object="FLModelSurface"),
-  function(object, intervals=c(0.5, 0.75, 0.9, 0.95))
-  {
-    data <- data.frame(t(as.matrix((params(object)@.Data))), logLik=c(logLik(object)))
-
-    z <- tapply(data[,"logLik"], list(data[,1],data[,2]),mean)
-    
-    cis <- logLik(nsher) - qchisq(intervals, 2)
-  }
-)
