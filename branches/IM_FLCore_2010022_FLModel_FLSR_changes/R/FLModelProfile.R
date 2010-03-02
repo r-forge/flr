@@ -133,7 +133,7 @@ setMethod("profile", signature(fitted="FLModel"),
     if(any(!which %in% parnames))
       stop("parameter to profile not found in object 'params' slot")
 
-    # create grid of param values:
+    # (1) create grid of param values for numeric range
     if(is.numeric(range) && length(range) == 1)
     {
       for(i in which) {
@@ -141,11 +141,19 @@ setMethod("profile", signature(fitted="FLModel"),
         estim <- c(params[i,])
         steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
         grid[[i]] <- steps
-      }
-    } else if (is.list(range)) {
-      # TODO checks all params to be profiled specified
-      if(names(range) != parnames)
-        stop("range not specified for parameters:", parnames[!parnames%in%names(range)])
+    }
+    # (2) and for list of ranges
+    } else if (is.list(range)) 
+    {
+      # if missing(which), which is names in range
+      if(missing(which))
+        which <- names(range)
+      else
+        # checks all params to be profiled specified
+        if(any(names(range) != which))
+          stop("range not specified for parameters:", which[!which%in%names(range)])
+
+      grid <- range
     }
 
     # logLik
@@ -179,13 +187,16 @@ setMethod("profile", signature(fitted="FLModel"),
         }
       }
     }
-browser()
+
     # FLPar
-    params(fitted) <- propagate(params(fitted), maxsteps * length(grid), fill.iter=FALSE)
+    params(fitted) <- propagate(params(fitted), sum(unlist(lapply(logLik, length))),
+        fill.iter=FALSE)
     
-    newparams <- matrix(NA, nrow=length(parnames), ncol=length(parnames)*maxsteps)
+    newparams <- matrix(NA, nrow=length(parnames), ncol=sum(unlist(lapply(logLik,
+      length))))
+    idx <- c(0, unlist(lapply(grid, length)))
     for(i in seq(length(grid))) {
-      newparams[i,seq(1+((i-1)*maxsteps), maxsteps*(i-1)+maxsteps)] <- t(grid[[i]])
+      newparams[i, seq(1+idx[i], sum(idx[1:i+1]))] <- t(grid[[i]])
     }
 
     params(fitted)[] <- newparams
