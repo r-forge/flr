@@ -30,6 +30,7 @@
 \author{The FLR Team}
 \seealso{}
 \examples{
+data(ple4)
 # create an FLBRP from ple4 and some extra arguments
 fbrp <- FLBRP(ple4, name='Example FLBRP from ple4')
 summary(fbrp)
