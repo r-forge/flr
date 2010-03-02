@@ -853,12 +853,12 @@ setMethod("params", signature(object="FLModel"),
     if(missing(param))
       return(object@params)
     else
-      return(object@params[,param])
+      return(object@params[param,])
 	}
 ) # }}}
 
 # params<-      {{{
-setMethod("params<-", signature(object="FLModel", value='FLPar'),
+setMethod("params<-", signature(object="FLModel", value="FLPar"),
 	function(object, value)
   {
     object@params <- value

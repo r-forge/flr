@@ -353,12 +353,6 @@ setGeneric('initial', function(object, ...)
 setGeneric('initial<-', function(object, ..., value)
 		standardGeneric('initial<-'))
 
-# params
-setGeneric('params', function(object, ...)
-		standardGeneric('params'))
-setGeneric('params<-', function(object, ..., value)
-		standardGeneric('params<-'))
-
 # logLik
 setGeneric('logLik', function(object, ...)
 		standardGeneric('logLik'))
