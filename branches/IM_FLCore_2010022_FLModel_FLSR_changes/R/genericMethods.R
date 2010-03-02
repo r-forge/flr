@@ -555,3 +555,7 @@ setGeneric("parscale", function(object, ...)
 # computeHessian
 setGeneric("computeHessian", function(object, ...)
   standardGeneric("computeHessian"))
+
+# computeD
+setGeneric("computeD", function(object, ...)
+  standardGeneric("computeD"))

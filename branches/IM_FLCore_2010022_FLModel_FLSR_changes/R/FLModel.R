@@ -168,7 +168,7 @@ setMethod('fmle',
   function(object, start, method='L-BFGS-B', fixed=list(),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
     upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=FALSE,
-    tiny_number=1e-6, relAutoParscale=FALSE, ...)
+    tiny_number=1e-6, relAutoParscale=TRUE, ...)
   {
     # TODO Check with FL
     args <- list(...)
@@ -872,7 +872,6 @@ setMethod('gradient', signature(func='function', x='FLPar'),
   function(func, x, method="Richardson", eps=1e-4, d=0.0001,
       zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2, show.details=FALSE, ...)
   {
-    browser()
     # TODO: Should grad work along all params? Or only for one? How to select it?
     # take data args
     args <- list(...)
@@ -1028,19 +1027,20 @@ setMethod("computeHessian", signature(object="FLModel"),
 )  # }}}
 
 # computeD  {{{
-computeD <- function(object, params, method="Richardson", eps=1e-4, d=0.0001,
-    zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2) {
-  
+setMethod("computeD", signature(object="FLModel"),
+    function(object, params=as(object@params, 'list'), method="Richardson",
+    eps=1e-4, d=0.0001, zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2) {
+    
     # check v
     if (v!=2) stop("The current code assumes v is 2 (the default).")	 
 
     # args
     func.args <- list(eps=eps, d=d, r=r, v=v, zero.tol=zero.tol)
-
+    
     # data
     data <- list()
     datanm <- names(formals(logl(object)))
-    datanm <- datanm[!datanm %in% dimnames(params(object))$params]
+    datanm <- datanm[!datanm %in% names(params)]
     for(i in datanm)
       data[[i]] <- slot(object, i)
     
@@ -1115,4 +1115,4 @@ computeD <- function(object, params, method="Richardson", eps=1e-4, d=0.0001,
   	    }  
   	 }
      return(D)
-  } # }}}
+  }) # }}}
