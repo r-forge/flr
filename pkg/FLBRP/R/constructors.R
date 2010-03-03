@@ -97,7 +97,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears, sel.nyears=fbar.nyears,
     na.rm=TRUE, mean='arithmetic', ...)
-    {
+  {
     # dims & dimnames
     dims <- dims(object)
     if (!all(c("minfbar","maxfbar") %in% names(range(object))))
@@ -124,6 +124,13 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       2:6, 'mean', na.rm=na.rm), "/")
     # 2. mean across fyears. All years are thus given equal weight
     scaling <- apply(scaling, c(1,3:6), foo)
+
+    # check for discards.n
+    if(all(is.na(discards.n(object))))
+      if(all.equal(landings.n(object), catch.n(object)))
+        discards.n(object) <- 0
+      else
+        stop("'discards.n' is set to 'NA' in FLStock and 'catch.n' != 'landings.n'")
 
     # NEW FLBRP
     res <- new('FLBRP',
