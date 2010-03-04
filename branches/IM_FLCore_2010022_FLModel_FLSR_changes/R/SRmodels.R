@@ -129,6 +129,84 @@ cushing<-function()
 	return(list(logl=logl, model=model, initial=initial))
 }  # }}}
 
+# rickerSV  {{{
+rksv2ab <- function(s, B0, spr0)
+{
+  b <- log(5.0*s)/(B0*0.8)
+  a <- exp(b*B0)/spr0
+  return(unlist(list(a=a, b=b)))
+}
+rkab2sv <- function(a,b,spr0)
+{
+  B0 <- log(spr0 * a)/b
+	s <- 0.2*exp(b*(B0)*0.8)
+  return(unlist(list(s=s, B0=B0, spr0=spr0)))
+}
+
+rickerSV <- function()
+{
+  logl <- function(s, B0, spr0, rec, ssb)
+  { 
+    pars <- rksv2ab(s, B0, spr0)
+    loglAR1(log(rec), log(pars['a']*ssb*exp(-pars['b']*ssb)), sigma(log(rec),
+      log(pars['a']*ssb*exp(-pars['b']*ssb)))^2)
+  }
+
+  initial <- structure(function(rec, ssb) {
+		# The function to provide initial values
+    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
+    pars <- rkab2sv(a=max(exp(res[1])), b=-max(res[2]), spr0=1)
+    return(as.list(pars))
+	},
+  # lower and upper limits for optim()
+  lower=rep(10e-8, 3),
+	upper=c(0.999, Inf, Inf))
+
+	model  <- rec~rksv2ab(s, B0, spr0)['a']*ssb*exp(-rksv2ab(s, B0, spr0)['b']*ssb)
+
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# bevholtSV {{{
+bhsv2ab <- function(s, B0, spr0)
+{
+  a <- B0*4*s / (spr0*(5*s-1.0))
+  b  <- a*spr0*(1.0/s - 1.0)/4.0
+  return(unlist(list(a=a, b=b)))
+}
+bhab2sv <- function(a,b,spr0)
+{
+  s <- a*spr0/(4*b+a*spr0)
+	B0 <- (spr0*a*(5*s-1))/(4*s)
+  return(unlist(list(s=s, B0=B0, spr0=spr0)))
+}
+bevholtSV <- function()
+  {
+  logl <- function(s, B0, spr0, rec, ssb)
+  {
+    pars <- bhsv2ab(s, B0, spr0)
+    loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
+      ssb/(pars['b']+ssb)))^2)
+  }
+
+  ## initial parameter values
+  initial <- structure(function(rec, ssb)
+  {
+    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
+    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
+    return(as.list(bhab2sv(a, b, 1)))
+	},
+
+  ## bounds
+  lower=rep(10e-8, 3),
+	upper=c(0.999, Inf, Inf))
+
+  ## model to be fitted
+  model  <- rec~bhsv2ab(s, B0, spr0)['a']*ssb/(bhsv2ab(s, B0, spr0)['b']+ssb)
+  
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
 # methods
 
 # spr0  {{{
@@ -178,86 +256,6 @@ setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
   }
 )
 # }}}
-
-# sv2ab & ab2sv {{{
-# calc steepness & virgin biomass from alpha & beta, given SSB per R at F=0
-sv2ab <- function(steepness, vbiomass, spr0, model)
-{
-   bh.sv2ab<-function(steepness,vbiomass,spr0)
-      {
-      a <- vbiomass*4*steepness/(spr0*(5*steepness-1.0))
-      b  <- a*spr0*(1.0/steepness - 1.0)/4.0
-
-			res       <-c(a,b)
-			names(res)<-c("a","b")
-			return(res)
-			}
-
-   rk.sv2ab<-function(steepness,vbiomass,spr0){
-      b  <- log(5.0*steepness)/(vbiomass*0.8);
-      a <- exp(b*vbiomass)/spr0;
-
-			res   <-c(a,b)
-			names(res)<-c("a","b")
-			return(res)
-			}
-
-   if (model=="bevholt") return(bh.sv2ab(steepness,vbiomass,spr0))
-   if (model=="ricker")  return(rk.sv2ab(steepness,vbiomass,spr0))
-}
-
-#Get a & b from Steepness & virgin biomass
-ab2sv<-function(a,b,spr0,model)
-   {
-   bh.ab2sv<-function(a,b,spr0){
-			steepness <- a*spr0/(4*b+a*spr0)
-			vbiomass  <- (spr0*a*(5*steepness-1))/(4*steepness)
-
-			res       <-c(steepness,vbiomass)
-			names(res)<-c("steepness","vbiomass")
-			return(res)
-      }
-
-   rk.ab2sv<-function(a,b,spr0){
-			vbiomass <- log(spr0 * a)/b
-			steepness<- 0.2*exp(b*(vbiomass)*0.8);
-
-			res       <-c(steepness,vbiomass)
-			names(res)<-c("steepness","vbiomass")
-			return(res)
-      }
-  
-   if (model=="bevholt") return(bh.ab2sv(a,b,spr0))
-   if (model=="ricker")  return(rk.ab2sv(a,b,spr0))
-}
-# }}}
-
-# ab {{{
-setMethod('ab', signature(object='FLSR'),
-  function(object, plusgroup=dims(object)$max, ...){
-
-  if (!(SRModelName(model(object)) %in% c("bevholt.sv","ricker.sv")))
-  return(object)
-
-  dmns<-dimnames(params(object))
-  dmns$params<-c("a","b")
-
-  if (SRModelName(model(object)) == "bevholt.sv")
-     model<-"bevholt"
-  else if (SRModelName(model(object)) == "ricker.sv")
-     model<-"ricker"
-
-  par<-FLPar(sv2ab(params(object)["s",],params(object)["v",],params(object)["spr0",],model=model),dimnames=dmns)
-
-  if (SRModelName(model(object)) == "bevholt.sv")
-     model(object)<-bevholt()
-  else if (SRModelName(model(object)) == "ricker.sv")
-     model(object)<-ricker()
-
-  params(object)<-par
-
-  return(object)
-  })  # }}}
 
 # SRModelName {{{
 SRModelName<-function(formula)
