@@ -553,3 +553,11 @@ setGeneric("computeHessian", function(object, ...)
 # computeD
 setGeneric("computeD", function(object, ...)
   standardGeneric("computeD"))
+
+# loglAR1
+setGeneric("loglAR1", function(obs, hat, ...)
+  standardGeneric("loglAR1"))
+
+# rSq
+setGeneric("rSq", function(obs, hat, ...)
+  standardGeneric("rSq"))
