@@ -36,14 +36,20 @@ setMethod("plot", signature(x="FLModelProfile", y="missing"),
 
     # plot
     xyplot(x ~ value | param, data=data, type='l', scales=list(x=list(relation='free')),
-        xlab="", ylab='logLik')
+        xlab="", ylab='logLik', ...)
   }
 ) # }}}
 
 # plot(FLModelSurface)  {{{
+setMethod("plot", signature(x="FLModelSurface", y="FLModel"),
+  function(x, y, ...) {
+    plot(x, ...)
+    points(params(y)[1,],params(y)[2,],pch=19)
+  }
+)
 setMethod("plot", signature(x="FLModelSurface", y="missing"),
-  function(x, xlab=dimnames(params(x))$params[1], ylab= dimnames(params(x))$params[1],
-      ci=c(0.5, 0.75, 0.9, 0.95), ...) {
+  function(x, xlab=dimnames(params(x))$params[1], ylab= dimnames(params(x))$params[2],
+      ci=c(0.5, 0.75, 0.9, 0.95), contour=TRUE, ...) {
 
     # create data.frame
     data <- data.frame(t(as.matrix((params(x)@.Data))), logLik=c(logLik(x)))
@@ -56,14 +62,15 @@ setMethod("plot", signature(x="FLModelSurface", y="missing"),
 
     # plot
     do.call('image', c(grid, list(xlab=xlab, ylab=ylab), list(...)))
-    do.call('contour', c(grid, list(levels=cis, col='black', lwd=2, labels=ci,
-      labcex=0.8, add=TRUE)))
+    if(contour)
+      do.call('contour', c(grid, list(levels=cis, col='black', lwd=2, labels=ci,
+        labcex=0.8, add=TRUE)))
   }
 ) # }}}
 
 # surface {{{
 setMethod("surface", signature(fitted="FLModel"),
-  function(fitted, maxsteps=10, range=0.1, ...)
+  function(fitted, maxsteps=10, range=0.5, ...)
   {
     # vars
     foo <- logl(fitted)

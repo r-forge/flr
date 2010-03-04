@@ -34,7 +34,6 @@ importFrom("lattice",
 	"histogram"
 )
 export(
-  "ab2sv",
   "ac",
 	"bevholt",
 	"bevholt.ar1",
@@ -88,7 +87,6 @@ export(
 	"sr",
   "SRModelName",
 	"startTest",
-  "sv2ab",
 	"tagTest",
 	"writeFLStock"
 )
