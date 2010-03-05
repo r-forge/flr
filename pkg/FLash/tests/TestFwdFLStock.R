@@ -35,7 +35,8 @@ tagTest("fwd(FLStock) testing ...")
 
 ##Target option
 checkRun(
-  Target <- fwdTarget(year=1998:2000,value=c(fbar(ple4)[1,as.character(1998:2000)]),quantity="f"))
+  Target <- fwdTarget(year=1998:2000,value=c(fbar(ple4)[1,as.character(1998:2000)]),quantity="f")
+)
   
 ##fwd()  
 checkRun(

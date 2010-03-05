@@ -1,5 +1,8 @@
 HEADERS=-I../../inst/include
 
+ADOLC_CXXFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+ADOLC_CFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+
 ADCOBJS=adalloc.o malloc.o \
 	adouble.o avector.o convolut.o fortutils.o forward_partx.o \
 	fos_forward.o fos_reverse.o fov_forward.o fov_reverse.o \
