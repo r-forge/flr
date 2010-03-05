@@ -1,0 +1,15 @@
+ADOLC_CXXFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_DLL=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+ADOLC_CFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_DLL=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+
+HEADERS=-I../../../inst/include
+
+DRVOBJS=drivers.o driversf.o odedrivers.o odedriversf.o taylor.o
+
+%.o: %.c
+	@echo CC  $<
+	@${CC} ${HEADERS} ${ADOLC_CFLAGS} -c $<
+
+library: $(DRVOBJS)
+
+clean:
+	@-rm -f *.o

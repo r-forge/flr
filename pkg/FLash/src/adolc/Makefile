@@ -1,5 +1,8 @@
 HEADERS=-I../../inst/include
 
+ADOLC_CXXFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_DLL=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+ADOLC_CFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_DLL=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
+
 ADCOBJS=adalloc.o malloc.o \
 	adouble.o avector.o convolut.o fortutils.o forward_partx.o \
 	fos_forward.o fos_reverse.o fov_forward.o fov_reverse.o \
@@ -14,8 +17,6 @@ SPAOBJS=sparse/int_forward_s.o sparse/int_forward_t.o \
 	sparse/jacutils.o sparse/sparse.o sparse/sparsedrivers.o \
 	sparse/graph_hess.o sparse/graph_jac.o sparse/hessutils.o
 TAPOBJS=tapedoc/tapedoc.o
-
-include ../scripts/adolc.flags
 
 library: lib
 
@@ -32,14 +33,14 @@ LIB = ../adolc.a
 lib: $(LIB)
 
 $(LIB): $(ADCOBJS)
-	@make -C drivers -f Makefile.win library
-	@make -C sparse -f Makefile.win library
-	@make -C tapedoc -f Makefile.win library
+	@make -C drivers -f Makefile library
+	@make -C sparse -f Makefile library
+	@make -C tapedoc -f Makefile library
 	@${AR} -rucs $(LIB) ${ADCOBJS} ${DRVOBJS} ${SPAOBJS} ${TAPOBJS}
 
 clean:
 		@-rm -f $(LIB)
 		@-rm -f $(ADCOBJS)
-		@make -C drivers -f Makefile.win clean
-		@make -C sparse -f Makefile.win clean
-		@make -C tapedoc -f Makefile.win clean
+		@make -C drivers -f Makefile clean
+		@make -C sparse -f Makefile clean
+		@make -C tapedoc -f Makefile clean
