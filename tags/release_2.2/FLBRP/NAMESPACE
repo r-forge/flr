@@ -2,8 +2,8 @@ useDynLib("FLBRP")
 import("FLCore")
 importFrom("FLash",
   "SRchar2code")
-importFrom("graphics",
-  "plot")
+#importFrom("graphics",
+#  "plot")
 exportClasses("FLBRP",
   "refpts")
 exportMethods(
