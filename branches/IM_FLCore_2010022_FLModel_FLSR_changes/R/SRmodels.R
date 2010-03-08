@@ -75,7 +75,7 @@ segreg <- function()
 geomean<-function() 
     {
     logl <- function(a, rec)
-      loglAR1(log(rec), log(rep(a, length(rec))), sigma(log(rec), log(rep(a, length(rec))))^2)
+      loglAR1(log(rec), log(FLQuant(rep(a, length(rec)))), sigma(log(rec), log(FLQuant(rep(a, length(rec)))))^2)
     
     initial <- structure(function(rec) {
         return(list(a = exp(mean(log(rec), na.rm=TRUE))))

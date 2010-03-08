@@ -36,6 +36,7 @@
 \item{params}{Estimated parameter values. \code{FLPar}.}
 \item{logLik}{Value of the log-likelihood. \code{logLik}.}
 \item{vcov}{Variance-covariance matrix. \code{array}.}
+\item{hessian}{Hessian matrix obtained from the parameter fitting. \code{array}.}
 \item{details}{extra information on the model fit procedure. \code{list}.}
 }}
 \section{Extends}{\describe{

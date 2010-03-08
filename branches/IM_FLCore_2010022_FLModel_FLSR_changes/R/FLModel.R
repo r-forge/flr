@@ -357,7 +357,7 @@ setMethod('fmle',
       # logLik
       object@logLik[it] <- -out$value
       attr(object@logLik, 'nobs') <- length(data[[1]])
-      
+
       # fitted & residuals
       iter(fitted(object), it) <- predict(iter(object, it))
       iter(residuals(object), it) <- iter(slot(object,
@@ -382,6 +382,7 @@ setMethod('predict', signature(object='FLModel'),
       stop('FLQuant or FLCohort inputs must be named to apply formula')
     # call
     call <- as.list(object@model)[[3]]
+    fittedSlot <- as.list(object@model)[[2]]
 
     # check vars in call match input in args
     if(length(args) > 0 & !any(names(args)%in%all.vars(call)))
@@ -453,6 +454,13 @@ setMethod('predict', signature(object='FLModel'),
 
       params <- as.vector(obj@params@.Data)
       names(params) <- dimnames(obj@params)[['params']]
+
+      # get right dimnames
+      if(length(args) > 0)
+        dimnames <- dimnames(args[[1]])
+      else
+        dimnames <- dimnames(slot(obj, fittedSlot))
+
       # check inputs
       if(it == 1)
       {
@@ -465,6 +473,7 @@ setMethod('predict', signature(object='FLModel'),
           envir=c(params, data, dimdat))))
       }
     }
+    dimnames(res)[1:5] <- dimnames[1:5]
     return(res)
   }
 )   # }}}

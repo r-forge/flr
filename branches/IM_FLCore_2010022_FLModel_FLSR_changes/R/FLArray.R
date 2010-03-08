@@ -372,4 +372,3 @@ setMethod('sigma', signature(object='FLArray'),
     return((SS/length(hat)) ^ 0.5)
    }
 )
-
