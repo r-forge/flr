@@ -42,10 +42,20 @@ setMethod('FLPar', signature(object="array"),
     if(!is.null(dimnames(object)))
     {
       dimnames <- dimnames(object)
+      # dimnames with no names
+      if(names(dimnames)[length(dimnames)] == "")
+        names(dimnames)[length(dimnames)] <- 'iter'
+
+      if(any(names(dimnames) == ""))
+        names(dimnames)[names(dimnames) == ""] <-
+          paste('dim', seq(sum(names(dimnames) == "")))
+
       pnames <- match(c('params', 'iter'), names(dimnames))
       object <- aperm(object, c(pnames[1], seq(1, length(dimnames))[!seq(1,
         length(dimnames)) %in% pnames], pnames[2]))
-      dimnames <- dimnames(object)
+      
+      if(is.null(dimnames[['iter']]))
+        dimnames['iter'] <- seq(dim(object)[length(dim(object))])
     }
 		
     res <- array(object, dim=dim(object), dimnames=dimnames)
