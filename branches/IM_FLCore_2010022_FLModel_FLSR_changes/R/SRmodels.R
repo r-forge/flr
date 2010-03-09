@@ -130,24 +130,24 @@ cushing<-function()
 }  # }}}
 
 # rickerSV  {{{
-rksv2ab <- function(s, B0, spr0)
+rksv2ab <- function(s, v, spr0)
 {
-  b <- log(5.0*s)/(B0*0.8)
-  a <- exp(b*B0)/spr0
+  b <- log(5.0*s)/(v*0.8)
+  a <- exp(b*v)/spr0
   return(unlist(list(a=a, b=b)))
 }
 rkab2sv <- function(a,b,spr0)
 {
-  B0 <- log(spr0 * a)/b
-	s <- 0.2*exp(b*(B0)*0.8)
-  return(unlist(list(s=s, B0=B0, spr0=spr0)))
+  v <- log(spr0 * a)/b
+	s <- 0.2*exp(b*(v)*0.8)
+  return(unlist(list(s=s, v=v, spr0=spr0)))
 }
 
 rickerSV <- function()
 {
-  logl <- function(s, B0, spr0, rec, ssb)
+  logl <- function(s, v, spr0, rec, ssb)
   { 
-    pars <- rksv2ab(s, B0, spr0)
+    pars <- rksv2ab(s, v, spr0)
     loglAR1(log(rec), log(pars['a']*ssb*exp(-pars['b']*ssb)), sigma(log(rec),
       log(pars['a']*ssb*exp(-pars['b']*ssb)))^2)
   }
@@ -162,29 +162,29 @@ rickerSV <- function()
   lower=rep(10e-8, 3),
 	upper=c(0.999, Inf, Inf))
 
-	model  <- rec~rksv2ab(s, B0, spr0)['a']*ssb*exp(-rksv2ab(s, B0, spr0)['b']*ssb)
+	model  <- rec~rksv2ab(s, v, spr0)['a']*ssb*exp(-rksv2ab(s, v, spr0)['b']*ssb)
 
 	return(list(logl=logl, model=model, initial=initial))
 } # }}}
 
 # bevholtSV {{{
-bhsv2ab <- function(s, B0, spr0)
+bhsv2ab <- function(s, v, spr0)
 {
-  a <- B0*4*s / (spr0*(5*s-1.0))
+  a <- v*4*s / (spr0*(5*s-1.0))
   b  <- a*spr0*(1.0/s - 1.0)/4.0
   return(unlist(list(a=a, b=b)))
 }
 bhab2sv <- function(a,b,spr0)
 {
   s <- a*spr0/(4*b+a*spr0)
-	B0 <- (spr0*a*(5*s-1))/(4*s)
-  return(unlist(list(s=s, B0=B0, spr0=spr0)))
+	v <- (spr0*a*(5*s-1))/(4*s)
+  return(unlist(list(s=s, v=v, spr0=spr0)))
 }
 bevholtSV <- function()
   {
-  logl <- function(s, B0, spr0, rec, ssb)
+  logl <- function(s, v, spr0, rec, ssb)
   {
-    pars <- bhsv2ab(s, B0, spr0)
+    pars <- bhsv2ab(s, v, spr0)
     loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
       ssb/(pars['b']+ssb)))^2)
   }
@@ -202,7 +202,7 @@ bevholtSV <- function()
 	upper=c(0.999, Inf, Inf))
 
   ## model to be fitted
-  model  <- rec~bhsv2ab(s, B0, spr0)['a']*ssb/(bhsv2ab(s, B0, spr0)['b']+ssb)
+  model  <- rec~bhsv2ab(s, v, spr0)['a']*ssb/(bhsv2ab(s, v, spr0)['b']+ssb)
   
 	return(list(logl=logl, model=model, initial=initial))
 } # }}}
