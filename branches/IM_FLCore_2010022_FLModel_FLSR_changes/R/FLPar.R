@@ -468,3 +468,41 @@ setMethod("show", signature(object="FLPar"),
 		cat("units: ", object@units, "\n")
 	}
 )   # }}}
+
+## Arith    {{{
+setMethod("Arith", ##  "+", "-", "*", "^", "%%", "%/%", "/"
+	signature(e1 = "FLPar", e2 = "FLArray"),
+	function(e1, e2)
+  {
+    if(length(e1) == 1)
+      return(new(class(e2), callGeneric(c(e1), e2@.Data), units=units(e2)))
+    else if(dim(e1)[length(dim(e1))] == dim(e2)[6] &&
+          all(dim(e1)[-length(dim(e1))] == 1))
+      for(i in seq(dim(e2[6])))
+      {
+        e2[,,,,,i] <- callGeneric(c(e1[,i]), e2[,,,,,i])
+        return(e2)
+      }
+    else
+      stop("Error in Arith(e1, e2): non-conformable arrays")
+	}
+)
+setMethod("Arith",
+	signature(e1 = "FLArray", e2 = "FLPar"),
+  function(e1, e2)
+  {
+    if(length(e2) == 1)
+      return(new(class(e1), callGeneric(c(e2), e1@.Data), units=units(e1)))
+    else if(dim(e2)[length(dim(e2))] == dim(e1)[length(dim(e1))] &&
+          all(dim(e2)[-length(dim(e2))] == 1))
+      for(i in 1:20)
+      {
+        e1[,,,,,i] <- callGeneric(c(e2[,i]), e1[,,,,,i])
+        return(e1)
+      }
+    else
+      stop("Error in Arith(e1, e2): non-conformable arrays")
+	}
+
+)
+# }}}
