@@ -1143,7 +1143,7 @@ setMethod("profile", signature(fitted="FLModel"),
       which <- parnames
     if(length(which) > 2)
         stop("surface only works over 2 parameters")
-    
+
     # (1) create grid of param values for numeric range
     if(is.numeric(range) && length(range) == 1)
     {
@@ -1188,9 +1188,12 @@ setMethod("profile", signature(fitted="FLModel"),
     # or fit over grid
     else
       for(i in seq(nrow(grid)))
-        grid[i, 'logLik'] <- fmle(fitted, fixed=as.list(grid[i,which]))@logLik
+      {
+        fixed <- as.list(grid[i,which]); names(fixed) <- which
+        grid[i, 'logLik'] <- fmle(fitted, fixed=fixed)@logLik
+      }
     
-    surface <- tapply(grid$logLik, grid[,1:2], sum)
+    surface <- tapply(grid$logLik, grid[,which], sum)
 
     # CIs
     cis <- max(surface) - qchisq(ci, 2)
@@ -1198,15 +1201,26 @@ setMethod("profile", signature(fitted="FLModel"),
     # plot
     if(plot)
     {
-      do.call('image', c(list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
-        xlab=which[1], ylab=which[2]), list(...)))
+      if(length(which == 2))
+      {
+        do.call('image', c(list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
+          xlab=which[1], ylab=which[2]), list(...)))
 
-      points(params[which[1]], params[which[2]], pch=19)
+        points(params[which[1]], params[which[2]], pch=19)
 
-      do.call('contour', list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
-        levels=cis, add=TRUE, labcex=0.8, labels=ci))
+        do.call('contour', list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
+          levels=cis, add=TRUE, labcex=0.8, labels=ci))
+      }
+      else if(length(which) == 1)
+      {
+        plot(grid[,which], grid[,'logLik'], type='l', xlab=which, ylab="")
+        points(params[which], logLik(fitted), pch=19)
+      }
     }
     else
-      invisible(list(x=grid[,1], y=grid[,2], z=surface))
+      if(length(which == 2))
+        invisible(list(x=grid[,which[1]], y=grid[,which[2]], z=surface))
+      else if(length(which) == 1)
+        invisible(list(x=grid[which], y=grid['logLik']))
   }
 ) # }}}
