@@ -1197,11 +1197,11 @@ setMethod("profile", signature(fitted="FLModel"),
 
     # CIs
     cis <- max(surface) - qchisq(ci, 2)
-
+    
     # plot
     if(plot)
     {
-      if(length(which == 2))
+      if(length(which) == 2)
       {
         do.call('image', c(list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
           xlab=which[1], ylab=which[2]), list(...)))
@@ -1213,12 +1213,13 @@ setMethod("profile", signature(fitted="FLModel"),
       }
       else if(length(which) == 1)
       {
-        plot(grid[,which], grid[,'logLik'], type='l', xlab=which, ylab="")
+        plot(grid[,which], grid[,'logLik'], type='l', xlab=which, ylab="logLik", axes=F)
+        axis(1); box()
         points(params[which], logLik(fitted), pch=19)
       }
     }
     else
-      if(length(which == 2))
+      if(length(which) == 2)
         invisible(list(x=grid[,which[1]], y=grid[,which[2]], z=surface))
       else if(length(which) == 1)
         invisible(list(x=grid[which], y=grid['logLik']))
