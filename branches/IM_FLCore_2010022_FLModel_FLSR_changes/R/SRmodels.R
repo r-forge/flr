@@ -82,7 +82,7 @@ geomean<-function()
         }, 
         lower = c(1e-08), upper = rep(Inf))
     
-    model <- rec ~ a
+    model <- rec ~ FLQuant(a, dimnames=dimnames(rec))
     
     return(list(logl = logl, model = model, initial = initial))
     } # }}}
@@ -298,6 +298,9 @@ setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
     s1 <- (1-rho^2)*(obs[,1]-hat[,1])^2 + s2
     sigma2.a <- (1-rho^2)*sigma2
     res <- (log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
+
+    if (!is.finite(res)) 
+      res <- -1e100
 
     return(res)
   }

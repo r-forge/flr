@@ -1125,3 +1125,88 @@ setMethod("computeD", signature(object="FLModel"),
   	 }
      return(D)
   }) # }}}
+
+# profile {{{
+setMethod("profile", signature(fitted="FLModel"),
+  function(fitted, which, maxsteps=10, range=0.5, ci=c(0.5, 0.75, 0.9, 0.95),
+      plot=TRUE, ...)
+  {
+    # vars
+    foo <- logl(fitted)
+    params <- params(fitted)
+    parnames <- dimnames(params)$params
+    profiled <- list()
+    grid <- list()
+
+    # which params to profile
+    if(missing(which))
+      which <- parnames
+    if(length(which) > 2)
+        stop("surface only works over 2 parameters")
+    
+    # (1) create grid of param values for numeric range
+    if(is.numeric(range) && length(range) == 1)
+    {
+      for(i in which)
+      {
+        # steps for param[i]
+        estim <- c(params[i,])
+        steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
+        profiled[[i]] <- steps
+      }
+    # (2) and for list of ranges
+    } else if (is.list(range)) 
+    {
+      # if missing(which), which is names in range
+      if(missing(which))
+        which <- names(range)
+      else
+        # checks all params to be profiled specified
+        if(any(names(range) != which))
+          stop("range not specified for parameters:", which[!which%in%names(range)])
+      profiled <- range
+    }
+
+    # grid
+    grid <- do.call(expand.grid, profiled)
+    
+    # col for logLik
+    grid$logLik <- as.numeric(NA)
+
+    # data
+    args <- list()
+    data <- names(formals(foo))
+    data <- data[data %in% slotNames(fitted)]
+    for(i in data)
+      args[i] <- list(slot(fitted, i))
+
+    # calculate logLik for grid if no fitting
+    if(identical(order(which), order(parnames)))
+      for(i in seq(nrow(grid)))
+        grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,parnames])))
+
+    # or fit over grid
+    else
+      for(i in seq(nrow(grid)))
+        grid[i, 'logLik'] <- fmle(fitted, fixed=as.list(grid[i,which]))@logLik
+    
+    surface <- tapply(grid$logLik, grid[,1:2], sum)
+
+    # CIs
+    cis <- max(surface) - qchisq(ci, 2)
+
+    # plot
+    if(plot)
+    {
+      do.call('image', c(list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
+        xlab=which[1], ylab=which[2]), list(...)))
+
+      points(params[which[1]], params[which[2]], pch=19)
+
+      do.call('contour', list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
+        levels=cis, add=TRUE, labcex=0.8, labels=ci))
+    }
+    else
+      invisible(list(x=grid[,1], y=grid[,2], z=surface))
+  }
+) # }}}
