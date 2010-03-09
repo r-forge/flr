@@ -219,7 +219,7 @@ setMethod('fmle',
       params <- as.list(par)
       names(params) <- names(start)
       params[fixnm] <- fixed
-      return(-1*(do.call(logl, args=c(params, data))))
+      return((do.call(logl, args=c(params, data))))
     }
 
     # iterations
@@ -321,6 +321,12 @@ setMethod('fmle',
 
         control <- c(control, list(parscale=diff_logl))
       }
+
+      # maximize by default
+      if('fnscale' %in% names(control))
+        warning("'fnscale' should be set to a negative value for most FLModel models")
+      else
+        control <- c(control, list(fnscale=-1))
 
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
