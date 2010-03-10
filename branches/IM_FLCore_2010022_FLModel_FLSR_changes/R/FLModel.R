@@ -185,6 +185,8 @@ setMethod('fmle',
     if(any(!fixnm %in% parnm))
       stop("some named arguments in 'fixed' are not arguments to the
         supplied log-likelihood")
+    # HACK! clean up fixed list if elements are named vectors
+    fixed <- lapply(fixed, function(x){ names(x) <- NULL; x})
 
     # create list of input data
     #   get FLQuant slots' names
@@ -355,7 +357,7 @@ setMethod('fmle',
           0
       
       # logLik
-      object@logLik[it] <- out$value
+      object@logLik[it] <- -out$value
       attr(object@logLik, 'nobs') <- length(data[[1]])
 
       # fitted & residuals
@@ -1129,18 +1131,22 @@ setMethod("computeD", signature(object="FLModel"),
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
   function(fitted, which, maxsteps=10, range=0.5, ci=c(0.5, 0.75, 0.9, 0.95),
-      plot=TRUE, ...)
+      plot=TRUE, fixed=list(), ...)
   {
     # vars
     foo <- logl(fitted)
     params <- params(fitted)
     parnames <- dimnames(params)$params
+    fixnames <- names(fixed)
     profiled <- list()
     grid <- list()
 
+    # HACK! clean up fixed list if elements are named vectors
+    fixed <- lapply(fixed, function(x){ names(x) <- NULL; x})
+
     # which params to profile
     if(missing(which))
-      which <- parnames
+      which <- parnames[!parnames %in% fixnames]
     if(length(which) > 2)
         stop("surface only works over 2 parameters")
 
@@ -1169,7 +1175,7 @@ setMethod("profile", signature(fitted="FLModel"),
 
     # grid
     grid <- do.call(expand.grid, profiled)
-    
+
     # col for logLik
     grid$logLik <- as.numeric(NA)
 
@@ -1181,9 +1187,9 @@ setMethod("profile", signature(fitted="FLModel"),
       args[i] <- list(slot(fitted, i))
 
     # calculate logLik for grid if no fitting
-    if(identical(order(which), order(parnames)))
+    if(identical(order(c(which, fixnames)), order(parnames)))
       for(i in seq(nrow(grid)))
-        grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,parnames])))
+        grid[i, 'logLik'] <- do.call(logl(fitted), c(args, as.list(grid[i,which]), fixed))
 
     # or fit over grid
     else
@@ -1194,6 +1200,13 @@ setMethod("profile", signature(fitted="FLModel"),
       }
     
     surface <- tapply(grid$logLik, grid[,which], sum)
+
+    # print
+    cat(paste("logLik:", format(logLik(fitted), digits=5), " max(profile):",
+      format(max(grid$logLik), digits=5), "-- "))
+    for(i in which)
+      cat(paste(i, " = ", format(grid[max(grid$logLik),i], digits=5), " "))
+    cat("\n")
 
     # CIs
     cis <- max(surface) - qchisq(ci, 2)
