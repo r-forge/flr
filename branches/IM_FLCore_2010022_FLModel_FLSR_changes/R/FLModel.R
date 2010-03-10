@@ -1130,7 +1130,7 @@ setMethod("computeD", signature(object="FLModel"),
 
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
-  function(fitted, which, maxsteps=11, range=0.5, ci=c(0.5, 0.75, 0.9, 0.95),
+  function(fitted, which, maxsteps=11, range=0.5, ci=c(0.25, 0.5, 0.75, 0.95),
       plot=TRUE, fixed=list(), print=FALSE, ...)
   {
     # vars
