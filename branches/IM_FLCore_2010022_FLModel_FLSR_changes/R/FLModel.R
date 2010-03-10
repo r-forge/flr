@@ -1130,8 +1130,8 @@ setMethod("computeD", signature(object="FLModel"),
 
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
-  function(fitted, which, maxsteps=10, range=0.5, ci=c(0.5, 0.75, 0.9, 0.95),
-      plot=TRUE, fixed=list(), ...)
+  function(fitted, which, maxsteps=11, range=0.5, ci=c(0.5, 0.75, 0.9, 0.95),
+      plot=TRUE, fixed=list(), print=FALSE, ...)
   {
     # vars
     foo <- logl(fitted)
@@ -1157,7 +1157,7 @@ setMethod("profile", signature(fitted="FLModel"),
       {
         # steps for param[i]
         estim <- c(params[i,])
-        steps <- seq(estim - (estim*range), estim + (estim*range), length=maxsteps)
+        steps <- estim * seq(range, 1+range, length=maxsteps)
         profiled[[i]] <- steps
       }
     # (2) and for list of ranges
@@ -1202,11 +1202,17 @@ setMethod("profile", signature(fitted="FLModel"),
     surface <- tapply(grid$logLik, grid[,which], sum)
 
     # print
-    cat(paste("logLik:", format(logLik(fitted), digits=5), " max(profile):",
-      format(max(grid$logLik), digits=5), "-- "))
-    for(i in which)
-      cat(paste(i, " = ", format(grid[max(grid$logLik),i], digits=5), " "))
-    cat("\n")
+    if(print)
+    {
+      cat(paste("max(profile) =", format(logLik(fitted), digits=5), " "))
+      for(i in which)
+        cat(paste(i, " = ", format(grid[max(grid$logLik),i], digits=5), " "))
+      cat("\n")
+      cat(paste("logLik =", format(logLik(fitted), digits=5), " "))
+      for(i in which)
+        cat(paste(i, " = ", format(c(params(fitted)[i]), digits=5), " "))
+      cat("\n")
+    }
 
     # CIs
     cis <- max(surface) - qchisq(ci, 2)
