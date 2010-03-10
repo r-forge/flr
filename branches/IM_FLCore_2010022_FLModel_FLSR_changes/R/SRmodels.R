@@ -152,15 +152,16 @@ rickerSV <- function()
       log(pars['a']*ssb*exp(-pars['b']*ssb)))^2)
   }
 
-  initial <- structure(function(rec, ssb) {
-		# The function to provide initial values
-    res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
-    pars <- rkab2sv(a=max(exp(res[1])), b=-max(res[2]), spr0=1)
-    return(as.list(pars))
+  initial <- structure(function(rec, ssb)
+  {
+    s <- 0.75
+    spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
+    v <-mean(as.vector(ssb), na.rm = TRUE)*2
+    return(list(s=s, v=v, spr0=spr0))
 	},
-  # lower and upper limits for optim()
-  lower=rep(10e-8, 3),
-	upper=c(0.999, Inf, Inf))
+  ## bounds
+  lower=c(1e-8, rep(1e-8, 2)),
+	upper=c(10, Inf, Inf))
 
 	model  <- rec~rksv2ab(s, v, spr0)['a']*ssb*exp(-rksv2ab(s, v, spr0)['b']*ssb)
 
@@ -192,13 +193,53 @@ bevholtSV <- function()
   ## initial parameter values
   initial <- structure(function(rec, ssb)
   {
-    a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
-    b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
-    return(as.list(bhab2sv(a, b, 1)))
+    s <- 0.75
+    spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
+    v <-mean(as.vector(ssb), na.rm = TRUE)*2
+    return(list(s=s, v=v, spr0=spr0))
 	},
-
   ## bounds
-  lower=rep(10e-8, 3),
+  lower=c(0.2, rep(10e-8, 2)),
+	upper=c(0.999, Inf, Inf))
+
+  ## model to be fitted
+  model  <- rec~bhsv2ab(s, v, spr0)['a']*ssb/(bhsv2ab(s, v, spr0)['b']+ssb)
+  
+	return(list(logl=logl, model=model, initial=initial))
+} # }}}
+
+# shepherdSV {{{
+shsv2ab <- function(s, v, spr0)
+{
+  a <- v*4*s / (spr0*(5*s-1.0))
+  b  <- a*spr0*(1.0/s - 1.0)/4.0
+  return(unlist(list(a=a, b=b, c=)))
+}
+shab2sv <- function(a,b,spr0)
+{
+  s <- a*spr0/(4*b+a*spr0)
+	v <- (spr0*a*(5*s-1))/(4*s)
+  return(unlist(list(s=s, v=v, spr0=spr0)))
+}
+bevholtSV <- function()
+  {
+  logl <- function(s, v, spr0, rec, ssb)
+  {
+    pars <- bhsv2ab(s, v, spr0)
+    loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
+      ssb/(pars['b']+ssb)))^2)
+  }
+
+  ## initial parameter values
+  initial <- structure(function(rec, ssb)
+  {
+    s <- 0.75
+    spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
+    v <-mean(as.vector(ssb), na.rm = TRUE)*2
+    return(list(s=s, v=v, spr0=spr0))
+	},
+  ## bounds
+  lower=c(0.2, rep(10e-8, 2)),
 	upper=c(0.999, Inf, Inf))
 
   ## model to be fitted
@@ -305,6 +346,22 @@ setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
     return(res)
   }
 ) # }}}
+
+# spr2ssb {{{
+spr2ssb <- function(model, params)
+{
+  call <- switch(as.character(model)[3],
+    # bevholt
+    "a * ssb/(b + ssb)" = expression(a*spr-b),
+    # ricker
+    "a * ssb * exp(-b * ssb)" = expression(log(a*spr)/b),
+    # cushing
+    "a * ssb^b" = expression((1/(a*spr))^(1/(b-1))),
+    # shepherd
+    "a * ssb/(1 + (ssb/b)^c)" = expression(b*(a*spr-1)^(1/c)),
+    )
+  FLPar(eval(call, params), params='ssb', iter=max(unlist(lapply(params, length))))
+} # }}}
 
 # srmodel
 
