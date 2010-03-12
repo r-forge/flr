@@ -1,17 +1,20 @@
 \name{brp}
 \docType{methods}
 \alias{brp}
-\title{brp method for estimating BRPs}
+\alias{brp-methods}
+\alias{brp,FLBRP-method}
+\alias{computeRefpts}
+\alias{computeRefpts-methods}
+\alias{computeRefpts,FLBRP-method}
+\title{Methods for estimating reference points}
 \description{
-  Estimates all specified reference points and returns an object of class \code{\link{FLBP-class}}.
 }
 \section{Generic function}{
- brp(object) 
+% methodName(object) 
 }
 \section{Methods}{\describe{
-\item{}{}
-  }
-}
+\item{signature(object=oneClass) :}{}
+}}
 \author{The FLR Team}
 \seealso{}
 \examples{

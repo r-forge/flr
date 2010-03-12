@@ -3,13 +3,10 @@
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 02 Apr 2009 11:08
+# Last Change: 22 Jan 2010 11:45
 # $Id$
 
 # constructors  {{{
-if (!isGeneric("refpts"))
-	setGeneric("refpts", function(object, ...)
-		standardGeneric("refpts"))
 
 # refpts(array)
 setMethod('refpts', signature(object='array'),
@@ -107,10 +104,6 @@ setMethod('propagate', signature(object='refpts'),
 ) # }}}
 
 # refpts<-  {{{
-if (!isGeneric("refpts<-"))
-	setGeneric("refpts<-", function(object, ..., value)
-		standardGeneric("refpts<-"))
-
 setMethod('refpts<-', signature(object='FLBRP', value='refpts'),
   function(object, value)
   {
@@ -173,30 +166,32 @@ setMethod('refpts', signature(object='FLBRP'),
 # recalculations  {{{
 
 # MSY
-msy <- function(object)
-  {
-  refpts(object) <- refpts(as.numeric(NA), refpt='msy', iter=as.numeric(dimnames(object)$iter))
-  computeRefpts(object)
+setMethod("msy", signature(object="FLBRP"),
+  function(object) {
+    refpts(object) <- refpts(as.numeric(NA), refpt='msy',
+      iter=as.numeric(dimnames(object@refpts)$iter))
+    computeRefpts(object)
   }
+)
 
 # f0.1
 f0.1 <- function(object)
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 
 # fmax
 fmax <- function(object)
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 
 # spr
 sprr <- function(object, spr='.30')
   {
-  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object)$iter))
+  refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object@refpts)$iter))
   computeRefpts(object)
   }
 

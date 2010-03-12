@@ -1,19 +1,18 @@
-\name{coerce}
+\name{coerceFLBRP}
 \docType{methods}
-\alias{coerce,FLlst,list-method}
-\title{coercion of FLBRP objects}
+\alias{coerce,FLBRP,FLSR-method}
+\alias{coerce,FLBRP,FLStock-method}
+\title{Coercion from FLBRP to other classes}
 \description{
-  Methods to transform from and to class \code{\link{FLBRP-class}}.
 }
 \section{Generic function}{
- brp(object) 
+methodName(class1, class2) 
 }
 \section{Methods}{\describe{
-\item{}{}
-  }
-}
+\item{signature(obj1=class1,obj2=class2):}{}
+}}
 \author{The FLR Team}
-\seealso{}
+\seealso{\link[originalPkg]{methodName}}
 \examples{
 }
 \keyword{methods}

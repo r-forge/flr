@@ -2,7 +2,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 26 Feb 2009 16:11
+# Last Change: 21 Jan 2010 18:17
 # $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
@@ -342,7 +342,7 @@ setMethod("plot", signature(x="FLBRP", y="FLStock"),
        plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     else if (type=="rasta")
        plotRastaFLBRPFLStock(x,y)
-    else stop("type has to be \"rasta\" or \"tapas\"")
+    else stop("type has to be 'rasta' or 'tapas'")
     })
 
 

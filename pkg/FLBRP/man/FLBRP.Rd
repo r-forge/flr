@@ -9,7 +9,7 @@
   appropriate format to the \code{FLBRP} object.
 
   Individual slots can also be filled by using named arguments of the right class. See 
-  \code{\link{FLBRP-class}} for slot names and classes.
+  \code{\link{FLBRp-class}} for slot names and classes.
 
   The default SR model in an \code{FLBRP} object, when none is provided, is that of mean
   recruitment (\code{rec ~ a}), while the corresponding default for \code{params} is a
@@ -30,6 +30,7 @@
 \author{The FLR Team}
 \seealso{}
 \examples{
+data(ple4)
 # create an FLBRP from ple4 and some extra arguments
 fbrp <- FLBRP(ple4, name='Example FLBRP from ple4')
 summary(fbrp)

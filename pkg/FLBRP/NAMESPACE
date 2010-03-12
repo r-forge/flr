@@ -2,12 +2,11 @@ useDynLib("FLBRP")
 import("FLCore")
 importFrom("FLash",
   "SRchar2code")
-importFrom("graphics",
-  "plot")
 exportClasses("FLBRP",
   "refpts")
 exportMethods(
   "coerce",
+  "biomass.obs",
   "catch",
   "catch.hat",
   "catch.n",
@@ -89,9 +88,9 @@ exportMethods(
   "m.spwn<-",
   "availability<-",
   "price<-",
+  "msy",
   "vcost<-",
   "fcost<-",
   "iter")
 export("f0.1",
-  "msy",
   "fmax")

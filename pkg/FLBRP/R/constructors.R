@@ -8,8 +8,6 @@
 # FLBRP
 
 # FLBRP(object='missing', sr='missing') {{{
-setGeneric('FLBRP', function(object, sr, ...) standardGeneric('FLBRP'))
-
 setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04)))
@@ -19,8 +17,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     res <- do.call(new, c(list(Class='FLBRP', model=model, params=params, fbar=fbar),
       args))
     # resize: years
-    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
-      'profit.obs')
+    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs', 'stock.obs','profit.obs')
     # find slots not provided as argument
     empty <- !slots %in% names(args)
     # if any of them given, use for sizing
@@ -97,7 +94,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears, sel.nyears=fbar.nyears,
     na.rm=TRUE, mean='arithmetic', ...)
-  {
+    {
     # dims & dimnames
     dims <- dims(object)
     if (!all(c("minfbar","maxfbar") %in% names(range(object))))
@@ -125,13 +122,6 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     # 2. mean across fyears. All years are thus given equal weight
     scaling <- apply(scaling, c(1,3:6), foo)
 
-    # check for discards.n
-    if(all(is.na(discards.n(object))))
-      if(all.equal(landings.n(object), catch.n(object)))
-        discards.n(object) <- 0
-      else
-        stop("'discards.n' is set to 'NA' in FLStock and 'catch.n' != 'landings.n'")
-
     # NEW FLBRP
     res <- new('FLBRP',
       # range
@@ -155,6 +145,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
       # ssb.obs
       ssb.obs= ssb(object),
+
+      stock.obs= computeStock(object),
 
       # landings & discards
       landings.obs = object@landings,
