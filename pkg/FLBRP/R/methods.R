@@ -7,8 +7,7 @@
 
 # landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
-  function(object)
-  {
+  function(object){
     .Call('landings_n', object, SRchar2code(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
@@ -216,6 +215,8 @@ setMethod('brp', signature(object='FLBRP'),
    if ("virgin" %in% dimnames(refpts)$refpt){
        refpts@.Data["virgin",,         ]<-as.numeric(NA)
        refpts@.Data["virgin","harvest",]<-0}
+
+ print(SRchar2code(SRModelName(object@model)))
 
     res <- .Call("brp", object, refpts, SRchar2code(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),

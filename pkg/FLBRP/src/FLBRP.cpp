@@ -1,3 +1,5 @@
+double t1,t2;
+
 /*
  * FLBRP.cpp = 
  *
@@ -429,30 +431,32 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
          ssb      = spr*sr_params(1,1,iUnit,1,1,iIter)-sr_params(2,1,iUnit,1,1,iIter);
          recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(ssb+sr_params(2,1,iUnit,1,1,iIter));
       break;
+
       case FLRConst_Ricker:
          ssb      = log(spr*sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter);
          recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb*exp(-sr_params(2,1,iUnit,1,1,iIter)*ssb);
       break;
       
-      case FLRConst_SRR_shepherd:
-          ssb     = pow((spr-sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter), 1.0/(sr_params(3,1,iUnit,1,1,iIter)+1.0));
+  	  case FLRConst_Cushing:
+         ssb      =pow(1.0/(sr_params(1,1,iUnit,1,1,iIter)*spr),(1.0/(sr_params(2,1,iUnit,1,1,iIter)-1.0)));
+         recruits =sr_params(1,1,iUnit,1,1,iIter)*pow(ssb,sr_params(2,1,iUnit,1,1,iIter));
+      break;
+      
+      case FLRConst_Shepherd:
+         ssb      =pow(sr_params(2,1,iUnit,1,1,iIter)*(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0),1.0/sr_params(3,1,iUnit,1,1,iIter));;
          recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
       break;
-        
+              
       case FLRConst_SegReg:
-		if (spr<1/sr_params(1,1,iUnit,1,1,iIter)) 
+       //ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+       //recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+      if (1/spr > sr_params(1,1,iUnit,1,1,iIter)) 
 	      recruits = 0.0; 
-	   	else 
+	   else 
 		   recruits = sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter);
-       	break;
+       break;
 
- 	   	if (1.0/spr > sr_params(1,1,iUnit,1,1,iIter)) 
-	      recruits = 0.0; 
-	   	else 
-		   recruits = sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter);
-      break;
-  
-      case FLRConst_Mean: default:
+	  case FLRConst_Mean: default:
          recruits = sr_params(1,1,iUnit,1,1,iIter);
       break;
       }
@@ -1419,7 +1423,6 @@ t3 = dim[2];
        {
        if (dimnames != R_NilValue) 
          if (TYPEOF(dimnames) == VECSXP) 
-//            name_ = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), iRef));
             name_ = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), iRef));
 
        name[0] = '\0'; 
@@ -1842,15 +1845,27 @@ adouble FLBRP::Recruits(adouble FMult, int iUnit, int iIter)
          recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb*adtl::exp(-sr_params(2,1,iUnit,1,1,iIter)*ssb);
       break;
       
-      case FLRConst_SRR_shepherd:
-          ssb     = adtl::pow((spr-sr_params(1,1,iUnit,1,1,iIter))/sr_params(2,1,iUnit,1,1,iIter), 1.0/(sr_params(3,1,iUnit,1,1,iIter)+1.0));
-         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/adtl::pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
+  	  case FLRConst_Cushing:
+         ssb      =pow(1.0/(sr_params(1,1,iUnit,1,1,iIter)*spr),(1.0/(sr_params(2,1,iUnit,1,1,iIter)-1.0)));
+         recruits =sr_params(1,1,iUnit,1,1,iIter)*pow(ssb,sr_params(2,1,iUnit,1,1,iIter));
       break;
-        
+      
+      case FLRConst_Shepherd:
+         ssb      =pow(sr_params(2,1,iUnit,1,1,iIter)*(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0),1.0/sr_params(3,1,iUnit,1,1,iIter));;
+         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
+      break;
+              
       case FLRConst_SegReg:
-         ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
-         recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
-      break;
+
+//ifelse(ssb<=b,a*ssb,a*b)
+
+       //ssb      = (spr < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : spr*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+       //recruits = (ssb < 1/sr_params(2,1,iUnit,1,1,iIter) ? 0.0 : ssb*sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter));
+	   if (1/spr > sr_params(1,1,iUnit,1,1,iIter)) 
+	      recruits = 0.0; 
+	   else 
+		   recruits = sr_params(1,1,iUnit,1,1,iIter)*sr_params(2,1,iUnit,1,1,iIter);
+       break;
   
       case FLRConst_Mean: default:
          recruits = sr_params(1,1,iUnit,1,1,iIter);
