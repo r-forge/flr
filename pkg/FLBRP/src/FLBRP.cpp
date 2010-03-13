@@ -443,8 +443,8 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
       break;
       
       case FLRConst_Shepherd:
-         ssb      =pow(sr_params(2,1,iUnit,1,1,iIter)*(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0),1.0/sr_params(3,1,iUnit,1,1,iIter));;
-         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
+         ssb      =sr_params(2,1,iUnit,1,1,iIter)*pow(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0,1/sr_params(3,1,iUnit,1,1,iIter));
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(1.0+pow(ssb/sr_params(2,1,iUnit,1,1,iIter),sr_params(3,1,iUnit,1,1,iIter)));
       break;
               
       case FLRConst_SegReg:
@@ -1851,8 +1851,8 @@ adouble FLBRP::Recruits(adouble FMult, int iUnit, int iIter)
       break;
       
       case FLRConst_Shepherd:
-         ssb      =pow(sr_params(2,1,iUnit,1,1,iIter)*(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0),1.0/sr_params(3,1,iUnit,1,1,iIter));;
-         recruits = sr_params(1,1,iUnit,1,1,iIter) * ssb/pow(sr_params(2,1,iUnit,1,1,iIter) + ssb,sr_params(3,1,iUnit,1,1,iIter));
+         ssb      =sr_params(2,1,iUnit,1,1,iIter)*pow(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0,1/sr_params(3,1,iUnit,1,1,iIter));
+         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(1.0+pow(ssb/sr_params(2,1,iUnit,1,1,iIter),sr_params(3,1,iUnit,1,1,iIter)));
       break;
               
       case FLRConst_SegReg:
