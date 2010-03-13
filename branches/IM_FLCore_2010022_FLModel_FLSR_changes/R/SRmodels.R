@@ -680,30 +680,28 @@ ricker.ar1<-function()
     return(list(logl = logl, model = model, initial = initial))
     } # }}}
 
-# sheperd {{{
-shepherd<-function()
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * ssb/(1 + (ssb/b)^c)), sqrt(sigma2), TRUE), na.rm=TRUE)
+shepherd <- function(){
+  logl <- function(a,b,c,rec,ssb)
+      loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)), sigma(log(rec), log(a*ssb/(1+(ssb/b)^c)))^2)
 
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        sigma2 <- var(log(rec/(a * ssb/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        },
+  initial <- structure(function(rec,ssb){
+        c <- 2
+    		x <- ssb^c
+		    y <- ssb/rec
 
-      lower = c(0, 1e-08, 1, 1e-08), upper = c(Inf,Inf,4,Inf)
-      )
+        res<-coefficients(lm(c(y)~c(x)))
 
-    model <- rec ~ a * ssb/(1 + (ssb/b)^c)
+        a<-max(1/res[1])
+        b<-max(b=1/((res[2]*a)^(1/c)))
 
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
+    return(list(a=a,b=b,c=c))},
+    
+    lower = c(1e-08, 1e-08, 1),
+    upper = c(1e02,  1e+08,10))
+
+  model <- rec ~ a * ssb/(1 + (ssb/b)^c)
+
+  return(list(logl = logl, model = model, initial = initial))}
 
 # Sheperd {{{
 shepherd.d<-function()
