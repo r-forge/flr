@@ -444,7 +444,7 @@ double FLBRP::Recruits(double FMult, int iUnit, int iIter)
       
       case FLRConst_Shepherd:
          ssb      =sr_params(2,1,iUnit,1,1,iIter)*pow(sr_params(1,1,iUnit,1,1,iIter)*spr-1.0,1/sr_params(3,1,iUnit,1,1,iIter));
-         recruits = sr_params(1,1,iUnit,1,1,iIter)*ssb/(1.0+pow(ssb/sr_params(2,1,iUnit,1,1,iIter),sr_params(3,1,iUnit,1,1,iIter)));
+         recruits =sr_params(1,1,iUnit,1,1,iIter)*ssb/(1.0+pow(ssb/sr_params(2,1,iUnit,1,1,iIter),sr_params(3,1,iUnit,1,1,iIter)));
       break;
               
       case FLRConst_SegReg:
@@ -1939,7 +1939,8 @@ double FLBRP::RecGrad(double FMult, int iIter)
 
 double FLBRP::BiomassGrad(double FMult, int iIter)
   {
-  adouble result=0.0;
+  adouble
+  result=0.0;
   adouble FMult_ad;
   FMult_ad = FMult;
   FMult_ad.setADValue(1);
