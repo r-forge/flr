@@ -337,7 +337,6 @@ plotBeer=function(v){
 
 setMethod("plot", signature(x="FLBRP", y="FLStock"),
     function(x,y,type="tapas",yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE){
-
     if (type=="tapas")
        plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     else if (type=="rasta")
@@ -425,7 +424,8 @@ plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"
     abline(h=1.0,v=1,col="grey")
     lines(y[[1]]~x[[1]], col=cols, type="l", lwd=2)
     
-    if (!is.null(ssbPts) & !is.null(fbrPts)){
+    if (!is.null(ssbPts) & !is.null(fbrPts))
+    if (dims(ssbPts)$iter==dims(ssbPts)$iter && dims(ssbPts)$iter>5){
        t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
        col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
        points(c(fbrPts[,,,,,t.])~c(ssbPts[,,,,,t.]), col=col.,pch=19,cex=0.75)
