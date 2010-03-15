@@ -216,6 +216,8 @@ setMethod('brp', signature(object='FLBRP'),
        refpts@.Data["virgin",,         ]<-as.numeric(NA)
        refpts@.Data["virgin","harvest",]<-0}
 
+ print(object@model)
+ print(SRModelName(object@model))
  print(SRchar2code(SRModelName(object@model)))
 
     res <- .Call("brp", object, refpts, SRchar2code(SRModelName(object@model)),

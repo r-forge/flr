@@ -419,20 +419,21 @@ plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"
        maxY<-maxY.
 
     cols<-gray(0:length(x) / length(x))
-    
-    plot(y[[1]]~x[[1]], col=cols, type="l", lwd=2, xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
+
+    plot(y[[1]]~x[[1]], xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
     fish.pg(maxX,maxY)
     abline(h=1.0,v=1,col="grey")
-
+    lines(y[[1]]~x[[1]], col=cols, type="l", lwd=2)
+    
     if (!is.null(ssbPts) & !is.null(fbrPts)){
        t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
        col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
        points(c(fbrPts[,,,,,t.])~c(ssbPts[,,,,,t.]), col=col.,pch=19,cex=0.75)
-       lines(y[[1]]~x[[1]], col=cols,lwd=2)
+       lines(y[[1]]~x[[1]]) #, col=cols,lwd=2)
        }
 
     if (length(x)==length(y) & length(y)>1)
-    for (i in 2:length(y))
+    for (i in 1:length(y)) 
        lines(x[[i]],y[[i]],col=cols[i],lwd=2)
     }
 

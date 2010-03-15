@@ -30,7 +30,7 @@ setMethod("kobe", signature(b="FLQuant", f="FLQuant"),
     function(b,f,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE,type="tapas"){
 
     if (type=="tapas")
-       plotTapas2(x=b,y=f,ssbPts=ssbPts,fbrPts=fbrPts,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
+       plotTapas2(x=FLQuants(b),y=FLQuants(f),ssbPts=ssbPts,fbrPts=fbrPts,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
     else if (type=="rasta")
        plotRasta2(b,f,title)
     })
