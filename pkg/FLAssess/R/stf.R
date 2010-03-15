@@ -23,10 +23,10 @@ setMethod('stf', signature(object='FLStock'),
       stop("'nyears' and 'end' do not match: ", dims$maxyear + nyears, " vs. ", end)
 
     # years
-    years <- ac((dims$maxyear+1):end)
-    wts.years <- ac(seq(dims$maxyear-wts.nyears+1, dims$maxyear))
+    years      <- ac((dims$maxyear+1):end)
+    wts.years  <- ac(seq(dims$maxyear-wts.nyears+1, dims$maxyear))
     fbar.years <- ac(seq(dims$maxyear-fbar.nyears+1, dims$maxyear))
-    fbar.ages <- ac(range(object, 'minfbar'):range(object, 'maxfbar'))
+    fbar.ages  <- ac(range(object, 'minfbar'):range(object, 'maxfbar'))
 
     # arith or geometric
     if(arith.mean)
@@ -46,8 +46,8 @@ setMethod('stf', signature(object='FLStock'),
       }
 
     # landings.n and discards.n as proportions of wts.years
-    slot(res, 'discards.n')[,years] <- apply(slot(res, 'discards.n')[, wts.years] /
-      slot(res, 'catch.n')[, wts.years], c(1,3:6), mean)
+    for (i in years)
+       slot(res, 'discards.n')[,i] <- apply(slot(res, 'discards.n')[, wts.years]/slot(res, 'catch.n')[, wts.years], c(1,3:6), mean)
     slot(res, 'landings.n')[,years] <- 1 - slot(res, 'discards.n')[,years]
 
     # harvest as mean over fbar.nyears
@@ -66,10 +66,8 @@ setMethod('stf', signature(object='FLStock'),
         na.rm=na.rm)
 
       # divide by fbar and multiply by lastfbar
-      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
-        years], 3:6, fbar, '/')
-      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[,
-        years], 3:6, lastfbar, '*')
+      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[, years], 3:6, fbar, '/')
+      slot(res, 'harvest')[, years] <- sweep(slot(res, 'harvest')[, years], 3:6, lastfbar, '*')
     }
     return(res)
   }
