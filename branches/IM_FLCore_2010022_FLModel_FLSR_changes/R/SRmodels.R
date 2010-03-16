@@ -82,7 +82,7 @@ geomean<-function()
         }, 
         lower = c(1e-08), upper = rep(Inf))
     
-    model <- rec ~ FLQuant(a, dimnames=dimnames(rec))
+    model <- rec ~ a + ssb/ssb - 1
     
     return(list(logl = logl, model = model, initial = initial))
     } # }}}
@@ -93,14 +93,18 @@ shepherd <- function()
   logl <- function(a,b,c,rec,ssb)
       loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)), sigma(log(rec), log(a*ssb/(1+(ssb/b)^c)))^2)
 
-  initial <- structure(function(rec,ssb)
-  {
-    c <- 1
-    a <- quantile(c(rec/ssb),prob=0.75,na.rm=T, names=FALSE)
-    b <- (quantile(c(rec),prob=0.75,na.rm=T, names=FALSE)*quantile(c(ssb^(c-1)),
-      prob=0.5,na.rm=T, names=FALSE)/a)^(1/c)
-    return(list(a=a,b=b,c=c))
-  },
+  initial <- structure(function(rec,ssb){
+    c <- 2
+    x <- ssb^c
+		y <- ssb/rec
+
+    res <- coefficients(lm(c(y)~c(x)))
+
+    a <- max(1/res[1])
+    b <- max(b=1/((res[2]*a)^(1/c)))
+
+    return(list(a=a,b=b,c=c))},
+    
     lower = c(1e-08, 1e-08, 1),
     upper = c(1e02,  1e+08,10))
 
@@ -147,7 +151,7 @@ rickerSV <- function()
 {
   logl <- function(s, v, spr0, rec, ssb)
   { 
-    pars <- rksv2ab(s, v, spr0)
+    pars <- abPars('ricker', s=s, v=v, spr0=spr0)
     loglAR1(log(rec), log(pars['a']*ssb*exp(-pars['b']*ssb)), sigma(log(rec),
       log(pars['a']*ssb*exp(-pars['b']*ssb)))^2)
   }
@@ -163,29 +167,17 @@ rickerSV <- function()
   lower=c(1e-8, rep(1e-8, 2)),
 	upper=c(10, Inf, Inf))
 
-	model  <- rec~rksv2ab(s, v, spr0)['a']*ssb*exp(-rksv2ab(s, v, spr0)['b']*ssb)
+	model  <- rec~abPars('ricker', s=s, v=v, spr0=spr0)['a']*ssb*exp(-abPars('ricker', s=s, v=v, spr0=spr0)['b']*ssb)
 
 	return(list(logl=logl, model=model, initial=initial))
 } # }}}
 
 # bevholtSV {{{
-bhsv2ab <- function(s, v, spr0)
-{
-  a <- v*4*s / (spr0*(5*s-1.0))
-  b  <- a*spr0*(1.0/s - 1.0)/4.0
-  return(unlist(list(a=a, b=b)))
-}
-bhab2sv <- function(a,b,spr0)
-{
-  s <- a*spr0/(4*b+a*spr0)
-	v <- (spr0*a*(5*s-1))/(4*s)
-  return(unlist(list(s=s, v=v, spr0=spr0)))
-}
 bevholtSV <- function()
   {
   logl <- function(s, v, spr0, rec, ssb)
   {
-    pars <- bhsv2ab(s, v, spr0)
+    pars <- abPars('bevholt', s=s, v=v, spr0=spr0)
     loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
       ssb/(pars['b']+ssb)))^2)
   }
@@ -203,31 +195,20 @@ bevholtSV <- function()
 	upper=c(0.999, Inf, Inf))
 
   ## model to be fitted
-  model  <- rec~bhsv2ab(s, v, spr0)['a']*ssb/(bhsv2ab(s, v, spr0)['b']+ssb)
+  model  <- rec~abPars('bevholt', s=s, v=v, spr0=spr0)['a']*ssb /
+    (abPars('bevholt', s=s, v=v, spr0=spr0)['b']+ssb)
   
 	return(list(logl=logl, model=model, initial=initial))
 } # }}}
 
 # shepherdSV {{{
-shsv2ab <- function(s, v, spr0)
-{
-  a <- v*4*s / (spr0*(5*s-1.0))
-  b  <- a*spr0*(1.0/s - 1.0)/4.0
-  return(unlist(list(a=a, b=b, c=)))
-}
-shab2sv <- function(a,b,spr0)
-{
-  s <- a*spr0/(4*b+a*spr0)
-	v <- (spr0*a*(5*s-1))/(4*s)
-  return(unlist(list(s=s, v=v, spr0=spr0)))
-}
-bevholtSV <- function()
+shepherdSV <- function()
   {
-  logl <- function(s, v, spr0, rec, ssb)
+  logl <- function(s, v, spr0, c, rec, ssb)
   {
-    pars <- bhsv2ab(s, v, spr0)
-    loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
-      ssb/(pars['b']+ssb)))^2)
+    pars <- abPars('shepherd', s=s, v=v, spr0=spr0, c=c)
+    loglAR1(log(rec), log(pars['a']*ssb/(1+(ssb/pars['b'])^c)), sigma(log(rec),
+      log(pars['a']*ssb/(1+(ssb/pars['b'])^c)))^2)
   }
 
   ## initial parameter values
@@ -236,14 +217,15 @@ bevholtSV <- function()
     s <- 0.75
     spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
     v <-mean(as.vector(ssb), na.rm = TRUE)*2
-    return(list(s=s, v=v, spr0=spr0))
+    return(list(s=s, v=v, spr0=spr0, c=1))
 	},
   ## bounds
-  lower=c(0.2, rep(10e-8, 2)),
-	upper=c(0.999, Inf, Inf))
+  lower=c(0.2, rep(10e-8, 2), 1),
+	upper=c(0.999, Inf, Inf, 10))
 
   ## model to be fitted
-  model  <- rec~bhsv2ab(s, v, spr0)['a']*ssb/(bhsv2ab(s, v, spr0)['b']+ssb)
+  model  <- rec~abPars('shepherd', s=s, v=v, spr0=spr0, c=c)['a']*ssb /
+    (1 + (ssb / abPars('shepherd', s=s, v=v, spr0=spr0, c=c)['b']) ^ c)
   
 	return(list(logl=logl, model=model, initial=initial))
 } # }}}
@@ -298,20 +280,6 @@ setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
 )
 # }}}
 
-# SRModelName {{{
-SRModelName<-function(formula)
-{
-  srmodels <- list('ricker', 'ricker.d', 'ricker.c.a', 'ricker.c.b', 'ricker.sv',
-  'ricker.ar1', 'bevholt', 'bevholt.ar1','bevholt.d', 'bevholt.c.a', 'bevholt.c.b',   
-  'bevholt.sv', 'bevholt.ndc', 'shepherd', 'shepherd.ar1', 'shepherd.d', 'geomean', 'segreg')
-  srformulae <- lapply(srmodels, function(x) do.call(x, list())$model)
-  names(srformulae) <- srmodels
-  for(i in srmodels)
-    if(formula == srformulae[[i]])
-      return(i)
-  return(FALSE)
-} # }}}
-
 # rSq {{{
 setMethod('rSq', signature(obs='FLQuant',hat='FLQuant'),
   function(obs,hat=rep(0,length(obj)))
@@ -347,498 +315,98 @@ setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
   }
 ) # }}}
 
-# spr2ssb {{{
-spr2ssb <- function(model, params)
+# SRModelName {{{
+SRmodel2name <- function(model)
 {
-  call <- switch(as.character(model)[3],
-    # bevholt
-    "a * ssb/(b + ssb)" = expression(a*spr-b),
-    # ricker
-    "a * ssb * exp(-b * ssb)" = expression(log(a*spr)/b),
-    # cushing
-    "a * ssb^b" = expression((1/(a*spr))^(1/(b-1))),
-    # shepherd
-    "a * ssb/(1 + (ssb/b)^c)" = expression(b*(a*spr-1)^(1/c)),
-    )
-  FLPar(eval(call, params), params='ssb', iter=max(unlist(lapply(params, length))))
+  return(switch(gsub(" ", "", as.character(as.list(model)[3])),
+      "a*ssb*exp(-b*ssb)" = "ricker",
+      "a*ssb/(b+ssb)" = "bevholt",
+      "a*ssb/(1+(ssb/b)^c)" = "shepherd",
+      "a*ssb^b" = "cushing",
+      "FLQuant(ifelse(ssb<=b,a*ssb,a*b))" = "segreg",
+      "FLQuant(a,dimnames=dimnames(rec))" = "mean",
+      'abPars("bevholt",s=s,v=v,spr0=spr0)["a"]*ssb/(abPars("bevholt",s=s,v=v,spr0=spr0)["b"]+ssb)' = "bevholt",
+      'abPars("ricker",s=s,v=v,spr0=spr0)["a"]*ssb*exp(-abPars("ricker",s=s,v=v,spr0=spr0)["b"]*ssb)' = "ricker",
+      NULL))
 } # }}}
 
-# srmodel
-
-# Depensatory Ricker {{{
-ricker.d<-function () 
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * (ssb^c) * exp(-b * ssb)), sqrt(sigma2), TRUE),
-        na.rm=TRUE)
-    
-    initial <- structure(function(rec, ssb) {
-        x <- ssb
-        y <- log(rec/ssb)
-        sx <- sum(x, na.rm=TRUE)
-        sy <- sum(y, na.rm=TRUE)
-        sxx <- sum(x * x)
-        sxy <- sum(x * y)
-        s2x <- sx * sx
-        sxsy <- sx * sy
-        b <- -(length(ssb) * sxy - sxsy)/(length(ssb) * sxx - 
-            s2x)
-        b <- b + b/10
-        a <- exp(sum(y, na.rm=TRUE)/length(ssb) + b * (sum(x, na.rm=TRUE)/length(ssb)))
-        a <- a + a/10
-        c <- 1
-        return(list(a = a, b = b, c=c, sigma2 = var(log(rec) - log(a * 
-            (ssb^c) * exp(-b * ssb)))))
-    }, lower = c(1e-08, 1e-08,1e-08, 1e-08), upper = rep(Inf, 4))
-    
-    model <- rec ~ a * (ssb^c) * exp(-b * ssb)
-    
-    return(list(logl = logl, model = model, initial = initial))
-    }   # }}}
-
-# Ricker with covariate  {{{
-ricker.c.a<-function () 
-  {
-    logl <- function(a, b, c, sigma2, rec, ssb, covar)
-      sum(dnorm(log(rec), log(a*(1-c*covar) * ssb * exp(-b * ssb)), sqrt(sigma2),
-        TRUE), na.rm=TRUE)
-    initial <- structure(function(rec, ssb, covar) {
-        x <- ssb
-        y <- log(rec/ssb)
-        sx <- sum(x, na.rm=TRUE)
-        sy <- sum(y, na.rm=TRUE)
-        sxx <- sum(x * x)
-        sxy <- sum(x * y)
-        s2x <- sx * sx
-        sxsy <- sx * sy
-        b <- -(length(ssb) * sxy - sxsy)/(length(ssb) * sxx - 
-            s2x)
-        b <- b + b/10
-        a <- exp(sum(y, na.rm=TRUE)/length(ssb) + b * (sum(x, na.rm=TRUE)/length(ssb)))
-        a <- a + a/10
-        c <- 0
-        return(list(a = a, b = b, c=c, sigma2 = var(log(rec) - log(a*(1-c*covar) * 
-            ssb * exp(-b * ssb)))))
-    }, lower = c(1e-08, 1e-08, 1e-08, 1e-08), upper = rep(Inf, 4))
-    model <- rec ~ a*(1-c*covar) * ssb * exp(-b * ssb)
-    return(list(logl = logl, model = model, initial = initial))
-  }
-
-ricker.c.b<-function () 
-  {
-    logl <- function(a, b, c, sigma2, rec, ssb, covar)
-      sum(dnorm(log(rec), log(a * ssb * exp(-b*(1-c*covar) * ssb)), sqrt(sigma2),
-        TRUE), na.rm=TRUE)
-    initial <- structure(function(rec, ssb, covar) {
-        x <- ssb
-        y <- log(rec/ssb)
-        sx <- sum(x, na.rm=TRUE)
-        sy <- sum(y, na.rm=TRUE)
-        sxx <- sum(x * x)
-        sxy <- sum(x * y)
-        s2x <- sx * sx
-        sxsy <- sx * sy
-        b <- -(length(ssb) * sxy - sxsy)/(length(ssb) * sxx - 
-            s2x)
-        b <- b + b/10
-        a <- exp(sum(y, na.rm=TRUE)/length(ssb) + b * (sum(x, na.rm=TRUE)/length(ssb)))
-        a <- a + a/10
-        c <- 0
-        return(list(a = a, b = b, c=c, sigma2 = var(log(rec) - log(a * 
-            ssb * exp(-b*(1-c*covar) * ssb)))))
-    }, lower = c(1e-08, 1e-08, 1e-08, 1e-08), upper = rep(Inf, 4))
-    model <- rec ~ a * ssb * exp(-b*(1-c*covar) * ssb)
-    return(list(logl = logl, model = model, initial = initial))
-  } # }}}
-
-# Ricker parameterised for steepness & virgin biomass {{{
-Ricker.SV <- function (steepness, vbiomass, spr0, ssb) 
+# SRModelCode {{{
+SRname2code <- function(name)
 {
-  b <- log(5 * steepness) / (vbiomass * 0.8)
-  a <- exp(b * vbiomass) / spr0
-  return(a * ssb * exp(-b* ssb))      
+  code <- switch(name,
+    "mean" = 1,
+    "bevholt" = 2,
+    "ricker" = 3,
+    "segreg" = 4,
+    "shepherd" = 5,
+    "cushing" = 6,
+    "dersch" = 7,
+    "pellat" = 8,
+    "shepherdD" = 51,
+    "bevholtD" = 21,
+    "bevholtSV" = 22,
+    "rickerdD" = 31,
+    "rickerdSV" = 32,
+    "rickerdD" = 51,
+    "rickerdSV" = 52,
+    NA)
+
+  if(is.na(code))
+    stop("model name has not been recognized")
+
+  return(as.integer(code))
+} # }}}
+
+# svPars {{{
+svPars <- function(model, spr0, a, b=NULL, c=NULL, d=NULL)
+{
+  v <- spr2v(model, spr0, a, b, c, d)
+  s <- srr2s(model, ssb=v*.2, a=a, b=b, c=c, d=d) / srr2s(model, ssb=v, a=a,
+      b=b, c=c, d=d)
+  return(c(s=s, v=v, spr0=spr0))
 }
+# }}}
 
-ricker.sv <- function()
+# spr2v {{{
+spr2v <- function(model, spr, a=NULL, b=NULL, c=NULL, d=NULL)
 {
-  logl <- function(steepness, vbiomass, spr0, sigma2, rec, ssb)
-    sum(dnorm(log(rec), log(Ricker.SV(steepness, vbiomass, spr0, ssb)), sqrt(sigma2),
-    TRUE), na.rm=TRUE)
-
-  initial <- structure(function(rec, ssb) {
-    return(list(steepness = .5, vbiomass = mean(as.vector(ssb))*2, spr0=spr0,
-      sigma2 = 0.3))
-  }, lower = c(.1, 1e-08, 1e-08, 1e-08), upper = c(5, rep(Inf, 3)))
-
-  model <- rec ~ Ricker.SV(steepness, vbiomass, spr0, ssb)
-
-  return(list(logl = logl, model = model, initial = initial))
+  # SSB as function of ssb/rec
+  return(switch(model,
+    "bevholt"  = a*(spr)-b,
+    "ricker"   = log(a*spr)/b,
+    "cushing"  = (1/(a*spr))^(1/(b-1)),
+    "shepherd" = b*(a*spr-1)^(1/c),
+    "segreg"   = ifelse(ssb <= b, a/(spr), 0),
+    "mean"     = a/(spr),
+    "dersh"    = ssb*a*(1-b*c*ssb)^c,
+    "pellat"   = 1/(a/ssb-a/ssb*(ssb/b)^c),
+    NULL))
 } # }}}
 
-# Bevholt {{{
-bevholt.d<-function() 
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * ssb^c/(b + ssb^c)), sqrt(sigma2), TRUE), na.rm=TRUE)
-    
-    initial <- structure(
-      function(rec, ssb) 
-        {
-        a <- max(rec, na.rm=TRUE) + 0.1 * (max(rec, na.rm=TRUE) - min(rec, na.rm=TRUE))
-        b <- 0.5 * min(ssb, na.rm=TRUE)
-        c <- 1.0
-        sigma2 <- var(log(rec/(a * ssb^c/(b + ssb^c))), y = NULL, 
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        }, 
-      
-      lower = c(0, 1e-08, 1e-08, 1e-08), upper = rep(Inf, 4)
-      )
-    
-    model <- rec ~ a * ssb^c/(b + ssb^c)
-    
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
+# srr2s {{{
+srr2s <- function(model, ssb=NULL, spr=NULL, a=NULL, b=NULL, c=1, d=NULL)
+{
+  #recruits as function of ssb or ssb/rec
+  if (is.null(ssb) & !is.null(spr))
+    ssb <- spr2v(model, spr, a, b, c, d)
 
-# Bevholt NDC {{{
-bevholt.ndc<-function() 
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * ssb*(1+c)/(b + ssb*(1+c))), sqrt(sigma2), TRUE),
-        na.rm=TRUE)
-    
-    initial <- structure(
-      function(rec, ssb) 
-        {
-        a <- max(rec, na.rm=TRUE) + 0.1 * (max(rec, na.rm=TRUE) - min(rec, na.rm=TRUE))
-        b <- 0.5 * min(ssb, na.rm=TRUE)
-        c <- 0.0
-        sigma2 <- var(log(rec/(a * ssb*(1+c)/(b + ssb*(1+c)))), y = NULL, 
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        }, 
-      
-      lower = c(1e-08, 1e-08, -0.5, 1e-08), upper = c(Inf,Inf,0.5,Inf)
-      )
-    
-    model <- rec ~ a * ssb*(1+c)/(b + ssb*(1+c))
-    
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
+  eval(as.list(do.call(model, list())$model)[[3]], envir=list(ssb=ssb, spr0=spr, a=a, b=b, c=c, d=d))
+} # }}}
 
-# Bevholt covariates {{{
-bevholt.c.b<-function() 
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb, covar)
-      sum(dnorm(log(rec), log(a*ssb/(b*(1-c*covar) + ssb)), sqrt(sigma2), TRUE),
-        na.rm=TRUE)
-    
-    initial <- structure(
-      function(rec, ssb, covar) 
-        {
-        a <- max(rec, na.rm=TRUE) + 0.1 * (max(rec, na.rm=TRUE) - min(rec, na.rm=TRUE))
-        b <- 0.5 * min(ssb)
-        c <- 0.0
-        sigma2 <- var(log(rec/(a * (1-c*covar)*ssb/(b + ssb))), y = NULL, 
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        }, 
-      
-      lower = c(1e-08, 1e-08, -10, 1e-08), upper = rep(Inf, 4)
-      )
-    
-    model <- rec ~ a*ssb/(b*(1-c*covar) + ssb)
-    
-    return(list(logl = logl, model = model, initial = initial))
-    }
+# abPars {{{
+abPars <- function(model, s=NULL, v, spr0, c=NULL, d=NULL)
+{
+  # converts a & b parameterisation into steepness & virgin biomass (s & v)
 
-bevholt.c.a<-function() 
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb, covar)
-      sum(dnorm(log(rec), log(a*(1-c*covar) * ssb/(b + ssb)), sqrt(sigma2), TRUE),
-        na.rm=TRUE)
-    
-    initial <- structure(
-      function(rec, ssb, covar) 
-        {
-        a <- max(rec, na.rm=TRUE) + 0.1 * (max(rec, na.rm=TRUE) - min(rec, na.rm=TRUE))
-        b <- 0.5 * min(ssb, na.rm=TRUE)
-        c <- 0.0
-        sigma2 <- var(log(rec/(a*(1-c*covar) * ssb/(b + ssb))), y = NULL, 
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        }, 
-      
-      lower = c(1e-08, 1e-08, -1, 1e-08), upper = c(Inf,Inf,1,Inf)
-      )
-    
-    model <- rec ~ a*(1-c*covar) * ssb/(b + ssb)
-    
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-    
-# bevholt parameterised for steepness & virgin biomass  {{{
-Bevholt.SV<-function(s,v,spr0,ssb)
-    {
-    param<-sv2ab(s,v,spr0,"bevholt")
+  switch(model,
+    "bevholt" ={a=(v+(v-s*v)/(5*s-1))/spr0; b=(v-s*v)/(5*s-1)},
+    "ricker"  ={b=log(5*s)/(v*0.8); a=exp(v*b)/spr0},
+    "cushing" ={b=log(s)/log(0.2); a=(v^(1-b))/(spr0)},
+    "shepherd"={b=v*(((0.2-s)/(s*0.2^c-0.2))^-(1/c)); a=((v/b)^c+1)/spr0},
+    "mean"    ={a=v/spr0;b=NULL},
+    "segreg"  ={a=5*s/spr0; b=v/(a*spr0)},
+    {stop("model name not recognized")})
 
-    return(param["a"] * ssb/(param["b"] + ssb))
-    }
-    
-bevholt.sv<-function()
-    {
-    logl <- function(s, v, spr0, sigma2, rec, ssb)
-       sum(dnorm(log(rec), log(Bevholt.SV(s,v,spr0,ssb)), sqrt(sigma2), TRUE),
-        na.rm=TRUE)
-
-    initial <- structure(function(rec, ssb) {
-        return(list(s = .75, v = mean(as.vector(ssb), na.rm=TRUE)*2, spr0=1,
-          sigma2 = 0.3))
-    }, lower = c(.21,rep(1e-08, 3)), upper = c(1,rep(Inf, 3)))
-
-    model <- rec ~ Bevholt.SV(s,v,spr0,ssb)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-# logl.ar1  {{{
-logl.ar1<-function(rho,sigma2,obs,hat)
-  {
-  n        <-length(obs)
-  s2       <-sum((obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])^2)
-  s1       <-(1-rho^2)*(obs[,1]-hat[,1])^2 + s2
-  sigma2.a <-(1-rho^2)*sigma2
-  res      <-(log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
-
-  return(res)
-  } # }}}
-
-# bevholt AR1  {{{
-bevholt.ar1 <- function()
-  {
-  ## log likelihood, assuming normal log.
-  logl <- function(a, b, rho, sigma2, rec, ssb)
-     {
-     hat<-a*+ssb/(b+ssb)
-
-     return(logl.ar1(rho,sigma2,log(rec),log(hat)))
-     }
-
-  ## initial parameter values
-  initial <- structure(function(rec, ssb)
-	  	{
-			a <- max(rec, na.rm=TRUE) + 0.1 * (max(rec, na.rm=TRUE) - min(rec, na.rm=TRUE))
-			b <- 0.5 * min(ssb, na.rm=TRUE)
-      rho<-0.0
-			sigma2 <- var(log(rec /( a * ssb / (b + ssb))), y= NULL, na.rm = TRUE)
-			return(list(a=a, b=b, rho=rho, sigma2=sigma2))
-  		},
-
-  ## bounds
-  lower=c(0, 1e-8, -0.5, 1e-8),
-	upper=c(Inf,Inf,0.5,Inf))
-
-  ## model to be fitted
-  model  <- rec~a*ssb/(b+ssb)
-
-	return(list(logl=logl, model=model, initial=initial))
-} #}}}
-
-# Ricker AR1  {{{
-ricker.ar1<-function()
-    {
-    logl <- function(a, b, rho, sigma2, rec, ssb) 
-       {
-       hat<-a*log(ssb)*exp(-b*log(ssb))
-           
-       return(logl.ar1(rho,sigma2,log(rec),log(hat)))
-       }
-    
-    initial <- structure(function(rec, ssb) {
-        x <- ssb
-        y <- log(rec/ssb)
-        sx <- sum(x, na.rm=TRUE)
-        sy <- sum(y, na.rm=TRUE)
-        sxx <- sum(x * x)
-        sxy <- sum(x * y)
-        s2x <- sx * sx
-        sxsy <- sx * sy
-        b <- -(length(ssb) * sxy - sxsy)/(length(ssb) * sxx - 
-            s2x)
-        b <- b + b/10
-        a <- exp(sum(y, na.rm=TRUE)/length(ssb) + b * (sum(x, na.rm=TRUE)/length(ssb)))
-        a <- a + a/10
-        rho<-0
-    
-        return(list(a = a, b = b, rho=rho, sigma2 = var(log(rec) - log(a * 
-            ssb * exp(-b * ssb)))))
-        }, 
-        lower = c(1e-08, 1e-08, -1.0, 1e-08), upper = c(Inf,Inf,1.0,Inf))
-    
-    model <- rec ~ a * ssb * exp(-b * ssb)
-    
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-shepherd <- function(){
-  logl <- function(a,b,c,rec,ssb)
-      loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)), sigma(log(rec), log(a*ssb/(1+(ssb/b)^c)))^2)
-
-  initial <- structure(function(rec,ssb){
-        c <- 2
-    		x <- ssb^c
-		    y <- ssb/rec
-
-        res<-coefficients(lm(c(y)~c(x)))
-
-        a<-max(1/res[1])
-        b<-max(b=1/((res[2]*a)^(1/c)))
-
-    return(list(a=a,b=b,c=c))},
-    
-    lower = c(1e-08, 1e-08, 1),
-    upper = c(1e02,  1e+08,10))
-
-  model <- rec ~ a * ssb/(1 + (ssb/b)^c)
-
-  return(list(logl = logl, model = model, initial = initial))}
-
-# Sheperd {{{
-shepherd.d<-function()
-    {
-    logl <- function(a, b, c, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * ssb^2/(1 + (ssb/b)^c)), sqrt(sigma2), TRUE), na.rm=TRUE)
-
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        sigma2 <- var(log(rec/(a * ssb^2/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, sigma2 = sigma2))
-        },
-
-      lower = c(0, 1e-08, 1, 1e-08), upper = c(Inf,Inf,4,Inf)
-      )
-
-    model <- rec ~ a * ssb^2/(1 + (ssb/b)^c)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-# Sheperd {{{
-shepherd.ndc<-function()
-    {
-    logl <- function(a, b, c, d, sigma2, rec, ssb)
-      sum(dnorm(log(rec), log(a * (ssb-d)/(1 + ((ssb-d)/b)^c)), sqrt(sigma2), TRUE), na.rm=TRUE)
-
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        sigma2 <- var(log(rec/(a * ssb/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, d=0, sigma2 = sigma2))
-        },
-
-      lower = c(0, 1e-08, 1, -1.5, 1e-08), upper = c(Inf,Inf,4,0.5,Inf)
-      )
-
-    model <- rec ~ a * (ssb-d)/(1 + ((ssb-d)/b)^c)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-# Sheperd.ar1 {{{
-shepherd.ar1<-function()
-    {
-    logl <- function(a,b,c,rho, sigma2, rec, ssb)
-       {
-       hat<-a * ssb/(1 + (ssb/b)^c)
-
-       return(logl.ar1(rho,sigma2,log(rec),log(hat)))
-       }
-
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        rho<-0.0
-
-        sigma2 <- var(log(rec/(a * ssb/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, rho=rho, sigma2 = sigma2))
-        },
-
-      lower = c(0, 1e-08, 1, -0.9, 1e-08), upper = c(Inf,Inf,4,0.9,Inf)
-      )
-
-    model <- rec ~ a * ssb/(1 + (ssb/b)^c)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-# Sheperd.d.ar1 {{{
-shepherd.d.ar1<-function()
-    {
-    logl <- function(a,b,c,rho, sigma2, rec, ssb)
-       {
-       hat<-a * ssb^2/(1 + (ssb/b)^c)
-
-       return(logl.ar1(rho,sigma2,log(rec),log(hat)))
-       }
-
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        rho<-0.0
-
-        sigma2 <- var(log(rec/(a * ssb^2/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, rho=rho, sigma2 = sigma2))
-        },
-
-      lower = c(0, 1e-08, 1, -0.9, 1e-08), upper = c(Inf,Inf,4,0.9,Inf)
-      )
-
-    model <- rec ~ a * ssb^2/(1 + (ssb/b)^c)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
-
-# Sheperd.ar1 {{{
-shepherd.ndc.ar1<-function()
-    {
-    logl <- function(a,b,c,d, rho, sigma2, rec, ssb)
-       {
-       hat<-a * (ssb-d)/(1 + ((ssb-d)/b)^c)
-       return(logl.ar1(rho,sigma2,log(rec),log(hat)))
-       }
-
-    initial <- structure(
-      function(rec, ssb)
-        {
-        a <- mean(rec/ssb,na.rm=T)
-        b <- mean(ssb,na.rm=T)
-        c <- 1.0
-        sigma2 <- var(log(rec/(a * ssb/(1 + (ssb/b)^c))), y = NULL,
-            na.rm = TRUE)
-        return(list(a = a, b = b, c = c, d=0, rho=0, sigma2 = sigma2))
-        },
-
-      lower = c(0, 1e-08, 1, -1.5, -0.9, 1e-08), upper = c(Inf,Inf,4,0.5,0.9,Inf)
-      )
-
-    model <- rec ~ a * (ssb-d)/(1 + ((ssb-d)/b)^c)
-
-    return(list(logl = logl, model = model, initial = initial))
-    } # }}}
+  res <- c(a=a, b=b)
+  return(res[!is.null(res)])
+} # }}}
