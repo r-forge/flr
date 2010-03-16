@@ -27,7 +27,6 @@ setClass('FLModel',
     logLik='logLik',
     vcov='array',
     hessian='array',
-    logerror='logical',
     details='list',
     residuals='FLArray',
     fitted='FLArray'),
@@ -35,7 +34,6 @@ setClass('FLModel',
     desc=character(0),
     range=unlist(list(min=NA, max=NA, minyear=1, maxyear=1)),
     model=formula(NULL),
-    logerror=TRUE,
     fitted=FLQuant(),
     residuals=FLQuant())
 )
@@ -329,7 +327,7 @@ setMethod('fmle',
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
         hessian=TRUE, control=control, lower=lower, upper=upper, gr=gr, ...)))
-
+      
       # output
       # place out$par in right iter dim
       iter(object@params[names(out$par),], it) <- out$par
@@ -373,7 +371,6 @@ setMethod('fmle',
     dimnames(residuals(object)) <- dimnames(fitted(object))
 
     # return object
-    browser()
     return(object)
   }
 )   # }}}
@@ -753,7 +750,7 @@ getFLPar <- function(object, formula=object@model)
   # get those in formula
   datanm <- datanm[datanm%in%all.vars(formula)]
   parnm <- all.vars(formula)[!all.vars(formula) %in% datanm]
-
+browser()
   # covar
   if('covar' %in% slotNames(object))
   {
@@ -770,9 +767,8 @@ getFLPar <- function(object, formula=object@model)
   if(!is.null(object@logl))
   {
     lkhnm <- names(formals(object@logl))
-    lkhnm <- lkhnm[!lkhnm %in% parnm]
     lkhnm <- lkhnm[!lkhnm %in% datanm]
-    parnm <- c(parnm, lkhnm)
+    parnm <- c(lkhnm, sort(parnm)[!sort(parnm) %in% sort(lkhnm)])
   }
     
   # params

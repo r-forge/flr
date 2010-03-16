@@ -272,6 +272,6 @@ setMethod("fmle", signature(object="FLSR", start="ANY"),
     res <- callNextMethod()
     if(object@logerror)
       residuals(res) <- log(rec(res)) - log(fitted(res))
-    log(residuals(res))
+    return(object)
   }
 ) # }}}
