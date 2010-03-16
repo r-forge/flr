@@ -316,7 +316,7 @@ setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
 ) # }}}
 
 # SRModelName {{{
-SRmodel2name <- function(model)
+SRModelName <- function(model)
 {
   return(switch(gsub(" ", "", as.character(as.list(model)[3])),
       "a*ssb*exp(-b*ssb)" = "ricker",
@@ -330,8 +330,8 @@ SRmodel2name <- function(model)
       NULL))
 } # }}}
 
-# SRModelCode {{{
-SRname2code <- function(name)
+# SRNameCode {{{
+SRNameCode <- function(name)
 {
   code <- switch(name,
     "mean" = 1,

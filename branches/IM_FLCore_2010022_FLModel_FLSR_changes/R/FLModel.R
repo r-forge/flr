@@ -27,6 +27,7 @@ setClass('FLModel',
     logLik='logLik',
     vcov='array',
     hessian='array',
+    logerror='logical',
     details='list',
     residuals='FLArray',
     fitted='FLArray'),
@@ -34,6 +35,7 @@ setClass('FLModel',
     desc=character(0),
     range=unlist(list(min=NA, max=NA, minyear=1, maxyear=1)),
     model=formula(NULL),
+    logerror=TRUE,
     fitted=FLQuant(),
     residuals=FLQuant())
 )
@@ -371,6 +373,7 @@ setMethod('fmle',
     dimnames(residuals(object)) <- dimnames(fitted(object))
 
     # return object
+    browser()
     return(object)
   }
 )   # }}}

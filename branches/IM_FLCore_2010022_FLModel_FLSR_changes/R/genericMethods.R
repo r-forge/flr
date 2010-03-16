@@ -371,6 +371,12 @@ setGeneric('hessian', function(object, ...)
 setGeneric('hessian<-', function(object, ..., value)
 		standardGeneric('hessian<-'))
 
+# logerror
+setGeneric('logerror', function(object, ...)
+		standardGeneric('logerror'))
+setGeneric('logerror<-', function(object, ..., value)
+		standardGeneric('logerror<-'))
+
 # details
 setGeneric('details', function(object, ...)
 		standardGeneric('details'))
@@ -561,3 +567,11 @@ setGeneric("loglAR1", function(obs, hat, ...)
 # rSq
 setGeneric("rSq", function(obs, hat, ...)
   standardGeneric("rSq"))
+
+# ab
+setGeneric("ab", function(x, model, ...)
+  standardGeneric("ab"))
+
+# sv
+setGeneric("sv", function(x, model, ...)
+  standardGeneric("sv"))

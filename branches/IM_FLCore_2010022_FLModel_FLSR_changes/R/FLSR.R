@@ -18,8 +18,9 @@ setClass('FLSR',
 	  'FLModel',
   	rec='FLQuant',
 	  ssb='FLQuant',
-  	covar='FLQuants'),
-  prototype(residuals=FLQuant(), fitted=FLQuant()),
+  	covar='FLQuants',
+    logerror='logical'),
+  prototype(residuals=FLQuant(), fitted=FLQuant(), logerror=TRUE),
 	validity=validFLSR)
 remove(validFLSR)
 
@@ -94,7 +95,7 @@ setMethod("as.FLSR", signature(object="FLStock"),
 		  -which(names(args) == "rec.age"), 1:length(args))]
 
     # calculate ssb and create FLSR object incorprating rec.age
-    rec <- dimSums(object@stock.n[as.character(rec.age),])
+    rec <- object@stock.n[as.character(rec.age),]
     ssb <- ssb(object)
 
     # now alter stock and recruitment to factor in the recruitement age
@@ -261,5 +262,16 @@ setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter=
     res <- lowess(rec(x)~ssb(x), f=f, delta=delta, iter=iter)
     return(FLQuants(rec=FLQuant(res$y, dimnames=dimnames(rec(x))),
       ssb=FLQuant(res$x, dimnames=dimnames(ssb(x)))))
+  }
+) # }}}
+
+# fmle {{{
+setMethod("fmle", signature(object="FLSR", start="ANY"),
+  function(object, start, ...)
+  {
+    res <- callNextMethod()
+    if(object@logerror)
+      residuals(res) <- log(rec(res)) - log(fitted(res))
+    log(residuals(res))
   }
 ) # }}}

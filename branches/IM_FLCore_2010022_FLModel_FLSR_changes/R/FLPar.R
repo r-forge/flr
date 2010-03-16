@@ -506,3 +506,60 @@ setMethod("Arith",
 
 )
 # }}}
+
+# ab {{{
+setMethod('ab', signature(x='FLPar', model='character'),
+  function(x, model, spr0=NULL)
+  {
+    # input params and default values
+    param <- as(x, 'list')
+    args <- list(s=NULL, v=NULL, spr0=NULL, c=NULL, d=NULL)
+    args[names(param)] <- param
+    args['model'] <- model
+
+    res <- do.call('abPars', args)
+    
+    # get back c and d
+    cd <- args[c('c', 'd', 'spr0')]
+    res <- c(res, unlist(cd[!unlist(lapply(cd, is.null))]))
+
+    return(FLPar(res, params=names(res)))
+  })
+
+setMethod('ab', signature(x='FLPar', model='formula'),
+  function(x, model, spr0=NULL)
+  {
+    model <- SRModelName(model)
+    if(is.null(model))
+      stop("model provided has not been identified")
+    else
+      return(ab(x, model))
+  })# }}}
+
+# sv {{{
+setMethod('sv', signature(x='FLPar', model='character'),
+  function(x, model, spr0)
+  {
+    # input params and default values
+    param <- as(x, 'list')
+    args <- list(spr0=spr0, a=NULL, b=NULL, c=NULL, d=NULL)
+    args[names(param)] <- param
+    args['model'] <- model
+
+    res <- do.call('svPars', args)
+    # get back c and d
+    cd <- args[c('c', 'd')]
+    res <- c(res, unlist(cd[!unlist(lapply(cd, is.null))]))
+
+    return(FLPar(res, params=names(res)))
+  })
+
+setMethod('ab', signature(x='FLPar', model='formula'),
+  function(x, model, spr0=NULL)
+  {browser()
+    model <- SRModelName(model)
+    if(is.null(model))
+      stop("model provided has not been identified")
+    else
+      return(ab(x, model))
+  })# }}}
