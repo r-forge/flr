@@ -323,7 +323,7 @@ setMethod('fmle',
 
         control <- c(control, list(parscale=diff_logl))
       }
-
+      
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
         hessian=TRUE, control=control, lower=lower, upper=upper, gr=gr, ...)))
@@ -750,7 +750,7 @@ getFLPar <- function(object, formula=object@model)
   # get those in formula
   datanm <- datanm[datanm%in%all.vars(formula)]
   parnm <- all.vars(formula)[!all.vars(formula) %in% datanm]
-browser()
+  
   # covar
   if('covar' %in% slotNames(object))
   {
