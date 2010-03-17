@@ -766,7 +766,7 @@ getFLPar <- function(object, formula=object@model)
   }
 
   # check likelihood
-  if(!is.null(object@logl()))
+  if(!is.null(body(object@logl)))
   {
     lkhnm <- names(formals(object@logl))
     lkhnm <- lkhnm[!lkhnm %in% datanm]
