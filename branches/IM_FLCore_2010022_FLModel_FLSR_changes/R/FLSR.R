@@ -238,20 +238,21 @@ setMethod("plot", signature(x="FLSR", y="missing"),
       data=cbind(resid, ssb=c(x@ssb)),
 			panel=srpanel, main='Residuals by SSB', scales=scales), split=c(2,2,2,3), more=TRUE)
 
-		# 5. Residuals plotted against Recruits
-		print(xyplot(formula(paste("resid~fitted", cond)), ylab='Residuals',
-      xlab='Recruits hat', data=cbind(resid, fitted=c(x@fitted)),
-			panel=srpanel, main='Residuals by Estimated Recruits', scales=scales),
-      split=c(1,3,2,3), more=TRUE)
-
-		# 6. qqplot of residuals
+    # 5. qqplot of residuals
 		print(qqmath(formula(paste("~resid", cond)), ylab='Residuals',
     xlab='Sample Quantiles', data=resid, scales=scales,
       panel = function(x, ...) {
           panel.qqmath(x, ..., , col='gray40', cex=cex)
           panel.qqmathline(x, ..., col='red')
-       }, main='Normal Q-Q Plot'), split=c(2,3,2,3), more=FALSE)
-		invisible()
+       }, main='Normal Q-Q Plot'), split=c(1,3,2,3), more=TRUE)
+
+		# 6. Residuals plotted against Recruits
+		print(xyplot(formula(paste("resid~fitted", cond)), ylab='Residuals',
+      xlab='Recruits hat', data=cbind(resid, fitted=c(x@fitted)),
+			panel=srpanel, main='Residuals by Estimated Recruits', scales=scales),
+      split=c(2,3,2,3), more=FALSE)
+
+				invisible()
 	}
 )
 # }}}

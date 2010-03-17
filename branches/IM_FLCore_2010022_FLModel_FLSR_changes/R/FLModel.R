@@ -69,7 +69,6 @@ setMethod('FLModel', signature(model='formula'),
     # new object
     res <- new(class)
     slot(res, 'model') <- model
-
     # args
     args <- list(...)
     for (i in names(args))
@@ -254,6 +253,7 @@ setMethod('fmle',
     object@vcov <- array(NA, dim=c(rep(length(parnm)-length(fixed),2), iter),
       dimnames=list(parnm[!parnm%in%names(fixed)],parnm[!parnm%in%names(fixed)],
       iter=1:iter))
+    object@hessian <- object@vcov
 
 
     for (it in 1:iter)
@@ -356,6 +356,7 @@ setMethod('fmle',
             0
         } else
           0
+      object@hessian[,,it] <- out$hessian
       
       # logLik
       object@logLik[it] <- -out$value
@@ -765,7 +766,7 @@ getFLPar <- function(object, formula=object@model)
   }
 
   # check likelihood
-  if(!is.null(object@logl))
+  if(!is.null(object@logl()))
   {
     lkhnm <- names(formals(object@logl))
     lkhnm <- lkhnm[!lkhnm %in% datanm]
