@@ -179,7 +179,7 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 	{
 		years <- as.numeric(dimnames(residuals(x))$year)
     scales <- list(y=list(rot=90), tck=c(1,0))
-		
+
     # initial device settings
     trellis.device(new=FALSE)
     trellis.par.set(list(layout.heights = list(bottom.padding = -0.3,
@@ -202,17 +202,18 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 		cond <- paste(condnames, collapse="+")
 		if(cond != "") cond <- paste("|", cond)
 		# 1. SR values with fitted curve
-    ssb <- FLQuant(seq(0, max(ssb(x) + (ssb(x)*0.15)), length=dim(ssb(x))[2]),
-      dimnames=dimnames(ssb(x)))
+    ssb <- FLQuant(seq(0, max(ssb(x) + (ssb(x)*0.15), na.rm=TRUE), length=dim(ssb(x))[2]),
+      dimnames=dimnames(ssb(x))[1:5])
+    fitted <- predict(x, ssb=ssb)
     print(xyplot(formula(paste("fitted~ssb", cond)), ylab='Recruits', xlab='SSB',
-			model.frame(FLQuants(rec=x@rec, ssb=ssb, fitted=predict(x, ssb=ssb))),
+			model.frame(FLQuants(rec=propagate(x@rec, dims(x)$iter), ssb=ssb, fitted=fitted)),
       col='red', main=main,
       xlim=c(0, max(ssb, na.rm=TRUE)), ylim=c(0, max(x@rec, na.rm=TRUE)+
       (max(x@rec,na.rm=TRUE)/10)), groups=iter, type='l',
       scales=scales), split=c(1,1,2,3), more=TRUE)
 		# Add model line & lowess
 		trellis.focus("panel", 1, 1)
-    lpoints(x@ssb, x@rec, col='black', cex=0.8)
+    lpoints(x@ssb, x@rec, col='black', cex=0.6)
     llines(lowess(x)$ssb, lowess(x)$rec, col='blue', lty=4)
 		trellis.unfocus()
 
@@ -257,11 +258,23 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 
 #lowess  {{{
 setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter='ANY'),
-  function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x))))
+  function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x)[!is.na(ssb(x))])))
   {
-    res <- lowess(rec(x)~ssb(x), f=f, delta=delta, iter=iter)
-    return(FLQuants(rec=FLQuant(res$y, dimnames=dimnames(rec(x))),
-      ssb=FLQuant(res$x, dimnames=dimnames(ssb(x)))))
+    # output object
+    rec <- FLQuant(dimnames=dimnames(rec(x))[1:5], iter=dims(x)$iter, units=units(rec))
+    ssb <- FLQuant(dimnames=dimnames(ssb(x))[1:5], iter=dims(x)$iter, units=units(ssb))
+
+    for(i in seq(dims(x)$iter))
+    {
+      idx <- array(as.logical(is.na(iter(rec(x), i)) + is.na(iter(ssb(x), i))),
+        dim=dim(iter(rec(x),i)))
+      out <- lowess(iter(rec(x),i)@.Data[!idx]~iter(ssb(x),i)@.Data[!idx],
+        f=f, delta=delta, iter=iter)
+      iter(rec, i)[!idx] <- out$y
+      iter(ssb, i)[!idx] <- out$x
+     }
+   
+    return(FLQuants(rec=rec, ssb=ssb))
   }
 ) # }}}
 

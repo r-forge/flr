@@ -223,10 +223,15 @@ setMethod('fmle',
       params[fixnm] <- fixed
       return(-1*(do.call(logl, args=c(params, data))))
     }
+    
+    # input data
+    alldata <- list()
+    for (i in datanm)
+      alldata[[i]] <- slot(object, i)
 
     # iterations
     if(seq.iter)
-      iter <- dim(slot(object, datanm[1]))[6]
+      iter <- dims(object)$iter
     else
       iter <- 1
 
@@ -250,10 +255,6 @@ setMethod('fmle',
       dimnames=list(parnm[!parnm%in%names(fixed)],parnm[!parnm%in%names(fixed)],
       iter=1:iter))
 
-    # input data
-    alldata <- list()
-    for (i in datanm)
-      alldata[[i]] <- slot(object, i)
 
     for (it in 1:iter)
     {
@@ -588,11 +589,11 @@ setMethod('summary', signature(object='FLModel'),
       print(slot(object, 'model'))
     if(is.null(slot(object, 'params')))
       cat("Parameters: EMPTY\n")
-    else if(length(dimnames(slot(object, 'params'))['iter']) == 1) {
+    else if(length(dimnames(slot(object, 'params'))[['iter']]) == 1) {
       cat("Parameters: \n")
         print(t(slot(object, 'params')@.Data), digits=4)
     } else {
-      cat("Parameters (median): \n")
+      cat("Parameters median(mad): \n")
       v1 <- apply(object@params@.Data, 1, median, na.rm=TRUE)
       v2 <- apply(object@params@.Data, 1, mad, na.rm=TRUE)	 
       v3 <- paste(format(v1,digits=5),"(", format(v2, digits=3), ")", sep="")
