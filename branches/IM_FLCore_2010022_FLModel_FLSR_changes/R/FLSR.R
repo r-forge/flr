@@ -175,7 +175,7 @@ setMethod("as.FLSR", signature(object="FLBiol"),
 
 # plot  {{{
 setMethod("plot", signature(x="FLSR", y="missing"),
-	function(x, main="Functional form", log.resid=FALSE)
+	function(x, main="Functional form", log.resid=FALSE, cex=0.8)
 	{
 		years <- as.numeric(dimnames(residuals(x))$year)
     scales <- list(y=list(rot=90), tck=c(1,0))
@@ -188,12 +188,12 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 		
 		# panel functions
 		srpanel <- function(x, y, ...) {
-			panel.xyplot(x, y, col='black', cex=0.8)
+			panel.xyplot(x, y, col='black', cex=cex)
 			panel.loess(x,y, col='blue', lty=4)
 			panel.abline(a=0, b=0, lty=2, col='gray60')
 		}
 		respanel <- function(x, y, ...) {
-			panel.xyplot(x, y, col='black', cex=0.8)
+			panel.xyplot(x, y, col='black', cex=cex)
       panel.lmline(x, y, ..., col='red')
 			panel.abline(a=0, b=0, lty=2, col='gray60')
 		}
@@ -213,7 +213,7 @@ setMethod("plot", signature(x="FLSR", y="missing"),
       scales=scales), split=c(1,1,2,3), more=TRUE)
 		# Add model line & lowess
 		trellis.focus("panel", 1, 1)
-    lpoints(x@ssb, x@rec, col='black', cex=0.6)
+    lpoints(x@ssb, x@rec, col='black', cex=cex)
     llines(lowess(x)$ssb, lowess(x)$rec, col='blue', lty=4)
 		trellis.unfocus()
 
@@ -225,7 +225,7 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 
     # 2. Residuals plotted against year
 		print(xyplot(formula(paste("resid~year", cond)), ylab='Residuals', xlab='',
-			data=resid, scales=scales, panel=srpanel,
+			data=resid, scales=scales, panel=srpanel, groups=iter,
       main='Residuals by year'), split=c(2,1,2,3), more=TRUE)
 
 		# 3. Residuals at time t vs. residuals at time t+1
@@ -248,7 +248,7 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 		print(qqmath(formula(paste("~resid", cond)), ylab='Residuals',
     xlab='Sample Quantiles', data=resid, scales=scales,
       panel = function(x, ...) {
-          panel.qqmath(x, ..., , col='gray40', cex=0.8)
+          panel.qqmath(x, ..., , col='gray40', cex=cex)
           panel.qqmathline(x, ..., col='red')
        }, main='Normal Q-Q Plot'), split=c(2,3,2,3), more=FALSE)
 		invisible()
@@ -261,8 +261,8 @@ setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter=
   function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x)[!is.na(ssb(x))])))
   {
     # output object
-    rec <- FLQuant(dimnames=dimnames(rec(x))[1:5], iter=dims(x)$iter, units=units(rec))
-    ssb <- FLQuant(dimnames=dimnames(ssb(x))[1:5], iter=dims(x)$iter, units=units(ssb))
+    rec <- FLQuant(dimnames=dimnames(rec(x))[1:5], iter=dims(x)$iter, units=units(rec(x)))
+    ssb <- FLQuant(dimnames=dimnames(ssb(x))[1:5], iter=dims(x)$iter, units=units(ssb(x)))
 
     for(i in seq(dims(x)$iter))
     {

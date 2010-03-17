@@ -974,3 +974,12 @@ setMethod('dimnames<-', signature(x='FLStock', value='list'),
     return(x)
   }
 ) # }}}
+
+# fapex {{{
+setMethod("fapex", signature(x="FLStock"),
+  function(x, ...)
+  {
+    return(apply(harvest(x), 2:6, max))
+  }
+)
+# }}}

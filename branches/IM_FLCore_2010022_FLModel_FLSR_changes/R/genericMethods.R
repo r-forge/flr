@@ -575,3 +575,7 @@ setGeneric("ab", function(x, model, ...)
 # sv
 setGeneric("sv", function(x, model, ...)
   standardGeneric("sv"))
+
+# fapex
+setGeneric("fapex", function(x, model, ...)
+  standardGeneric("fapex"))

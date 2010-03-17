@@ -299,21 +299,26 @@ setMethod('rSq', signature(obs='FLQuant',hat='FLQuant'),
 
 # loglAR1 {{{
 setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
-  function(obs, hat, sigma2=sigma(obs, hat) ^ 2, rho=0)
-  {
+  function(obs, hat, sigma2=sigma(obs, hat) ^ 2, rho=0){
     # calculates likelihood for AR(1) process
-    n <- length(obs)
-    s2 <- sum((obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])^2)
-    s1 <- (1-rho^2)*(obs[,1]-hat[,1])^2 + s2
+    n   <- dim(obs)[2]
+
+    rsdl<-(obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])
+    s2  <- sum(rsdl^2, na.rm=T)
+    s1  <-s2
+
+    if (!is.na(rsdl[,1]))
+      s1 <- s1+(1-rho^2)*rsdl[,1]^2
+    
+    n        <- length(obs[!is.na(obs)])
     sigma2.a <- (1-rho^2)*sigma2
-    res <- (log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
+    res      <- (log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
 
     if (!is.finite(res)) 
       res <- -1e100
 
     return(res)
-  }
-) # }}}
+  }) # }}}
 
 # SRModelName {{{
 SRModelName <- function(model)
