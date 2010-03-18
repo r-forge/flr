@@ -577,5 +577,9 @@ setGeneric("sv", function(x, model, ...)
   standardGeneric("sv"))
 
 # fapex
-setGeneric("fapex", function(x, model, ...)
+setGeneric("fapex", function(x, ...)
   standardGeneric("fapex"))
+
+# qmax
+setGeneric("parmax", function(x, ...)
+  standardGeneric("parmax"))

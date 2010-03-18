@@ -373,11 +373,9 @@ setMethod('sigma', signature(object='FLArray'),
    }
 ) # }}}
 
-# pmax, pmin {{{
-setMethod("pmax", signature("FLArray"),
+# parmax, parmin {{{
+setMethod("parmax", signature(x="FLArray"),
   function(x, ..., na.rm=TRUE) {
-    browser()
-    return(FLQuant(pmax(x@.Data,...),units=units(object)))
+    return(FLQuant(pmax(x@.Data,...),units=units(x)))
   }
-)
-# }}}
+) # }}}

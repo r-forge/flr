@@ -282,7 +282,7 @@ setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
 
 # rSq {{{
 setMethod('rSq', signature(obs='FLQuant',hat='FLQuant'),
-  function(obs,hat=rep(0,length(obj)))
+  function(obs, hat=rep(0,length(obs)))
   {
     ## calculates R squared
     mn   <-mean(obs)
