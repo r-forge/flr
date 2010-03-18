@@ -492,12 +492,12 @@ setMethod("Arith",
   function(e1, e2)
   {
     if(length(e2) == 1)
-      return(new(class(e1), callGeneric(c(e2), e1@.Data), units=units(e1)))
+      return(new(class(e1), callGeneric(e1@.Data, c(e2)), units=units(e1)))
     else if(dim(e2)[length(dim(e2))] == dim(e1)[length(dim(e1))] &&
           all(dim(e2)[-length(dim(e2))] == 1))
-      for(i in 1:20)
+      for(i in seq(dim(e1[6])))
       {
-        e1[,,,,,i] <- callGeneric(c(e2[,i]), e1[,,,,,i])
+        e1[,,,,,i] <- callGeneric(e1[,,,,,i], c(e2[,i]))
         return(e1)
       }
     else
