@@ -8,7 +8,7 @@
 # landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
   function(object){
-    .Call('landings_n', object, SRchar2code(SRModelName(object@model)),
+    .Call('landings_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
@@ -17,7 +17,7 @@ setMethod('landings.n', signature(object='FLBRP'),
 setMethod('discards.n', signature(object='FLBRP'),
   function(object)
   {
-   .Call('discards_n', object, SRchar2code(SRModelName(object@model)),
+   .Call('discards_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
@@ -26,7 +26,7 @@ setMethod('discards.n', signature(object='FLBRP'),
 setMethod('stock.n', signature(object='FLBRP'),
   function(object)
   {
-    .Call('stock_n', object, SRchar2code(SRModelName(object@model)),
+    .Call('stock_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
 ) # }}}
@@ -150,7 +150,7 @@ setMethod('ypr', signature(object='FLBRP'),
     params(object)<-FLPar(1)
     model( object)<-formula(rec~a)
     
-    res<-.Call("ypr", object, SRchar2code(SRModelName(object@model)),
+    res<-.Call("ypr", object, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
@@ -186,7 +186,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
        }
     
     res <- .Call("computeRefpts", object, refpts,
-      SRchar2code(SRModelName(object@model)),
+      SRNameCode(SRModelName(object@model)),
                   FLQuant(c(params(object)), dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
 
     return(res)
@@ -197,6 +197,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 setMethod('brp', signature(object='FLBRP'),
   function(object)
   {
+browser()
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
     # if > 1, they should be equal
@@ -209,18 +210,19 @@ setMethod('brp', signature(object='FLBRP'),
     iter <- max(iter)
     if(iter > 1){
       refpts <- propagate(refpts(object), iter)}
-    else{
-      refpts <- refpts(object)}
+    else
+      refpts <- refpts(object)
 
-   if ("virgin" %in% dimnames(refpts)$refpt){
-       refpts@.Data["virgin",,         ]<-as.numeric(NA)
-       refpts@.Data["virgin","harvest",]<-0}
+    if ("virgin" %in% dimnames(refpts)$refpt)
+    {
+      refpts@.Data["virgin",,         ] <- as.numeric(NA)
+      refpts@.Data["virgin","harvest",] <- 0
+    }
 
- print(object@model)
- print(SRModelName(object@model))
- print(SRchar2code(SRModelName(object@model)))
-
-    res <- .Call("brp", object, refpts, SRchar2code(SRModelName(object@model)),
+    # print(object@model)
+    # print(SRModelName(object@model))
+    # print(SRNameCode(SRModelName(object@model)))
+    res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
@@ -242,7 +244,7 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
        if (dims(object)$iter!= dims(object@params)$iter)
           stop("Iters in params don't match")
 
-    res <- .Call("hcrYield", object, SRchar2code(SRModelName(object@model)),
+    res <- .Call("hcrYield", object, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       fbar, PACKAGE = "FLBRP")
     
