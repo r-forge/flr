@@ -62,6 +62,7 @@ export(
 	"read.FLIndices",
 	"readFLStock",
 	"read.FLStock",
+  "readMFCL",
 	"ricker",
 	"rickerSV",
   "segreg",
