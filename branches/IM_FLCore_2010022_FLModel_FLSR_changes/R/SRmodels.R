@@ -330,6 +330,7 @@ SRModelName <- function(model)
       "a*ssb^b" = "cushing",
       "FLQuant(ifelse(ssb<=b,a*ssb,a*b))" = "segreg",
       "FLQuant(a,dimnames=dimnames(rec))" = "mean",
+      "a" = "mean",
       'abPars("bevholt",s=s,v=v,spr0=spr0)["a"]*ssb/(abPars("bevholt",s=s,v=v,spr0=spr0)["b"]+ssb)' = "bevholt",
       'abPars("ricker",s=s,v=v,spr0=spr0)["a"]*ssb*exp(-abPars("ricker",s=s,v=v,spr0=spr0)["b"]*ssb)' = "ricker",
       NULL))

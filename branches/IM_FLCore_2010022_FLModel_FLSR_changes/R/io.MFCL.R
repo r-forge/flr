@@ -1,4 +1,4 @@
-# io.MFCL - «Short one line description»
+# io.MFCL - Loading Multifan-CL results into FLR
 # io.MFCL
 
 # Copyright 2010 FLR Team <flr-team@flr-project.org>
@@ -7,10 +7,9 @@
 
 # Code inside these methods was taken from the getmfclstuff package 2.0.0
 # by Pierre Kleiber. Licensed under MIT license
-# http://www.opensource.org/licenses/mit-license.php
 # http://code.google.com/p/r4mfcl/
 
-# FLR functions
+# readMFCL {{{
 readMFCL <- function(repfile, parfile)
 {
   nreg <- getnreg(repfile)
@@ -70,9 +69,9 @@ readMFCL <- function(repfile, parfile)
   stock(stk)  <- computeStock(stk)
 
   return(stk)
-}
+} # }}}
 
-## getmfclstuff functions
+# getmfclstuff functions  {{{
 getqedlist<-function(plotrepfile="plot.rep"){
 ## List of catchability+effort dev. vectors by fishery
   dat <- getplotdat4("# Catch.+effort dev. by realization",plotrepfile)
@@ -245,4 +244,4 @@ scanpipe<-function (cmd, ...) {
     out <- scan(con, ...)
     close(con)
     
-    out}    
+    out}    # }}}

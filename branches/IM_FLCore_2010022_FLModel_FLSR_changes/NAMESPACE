@@ -68,6 +68,7 @@ export(
   "segreg",
 	"setCon",
   "shepherd",
+  "shepherdSV",
 	"sop",
 	"sr",
   "SRModelName",

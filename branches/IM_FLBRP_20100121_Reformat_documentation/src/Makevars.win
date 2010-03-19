@@ -1,5 +1,0 @@
-PKG_LIBS=$(R_HOME)/library/FLCore/libs/FLCore.dll
-PKG_CPPFLAGS=-I$(R_HOME)/library/FLash/include/
-COPTFLAG=-O0
-CXXOPTFLAG=-O0
-DEBUG=T

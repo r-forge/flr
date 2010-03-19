@@ -147,4 +147,75 @@ setMethod("computeD", signature(object="FLModel"),
      return(D)
   }) # }}}
 
+# gradient {{{
+# TODO: check and polish
+setMethod('gradient', signature(func='function', x='FLPar'),
+  function(func, x, method="Richardson", eps=1e-4, d=0.0001,
+      zero.tol=sqrt(.Machine$double.eps/7e-7), r=4, v=2, show.details=FALSE, ...)
+  {
+    # TODO: Should grad work along all params? Or only for one? How to select it?
+    # take data args
+    args <- list(...)
+    data <- args[names(args)%in%names(formals(func))]
+    # & params
+    params <- as.list(x)
+    names(params) <- dimnames(x)$params 
+
+    # foo: logl with altered param
+    foo <- function(...) {
+      args <- list(...)
+      -1 * do.call(func, c(params[!names(params)%in%names(args)], args, data))
+    }
+
+    # Code from Paul Gilbert's numDeriv package
+    # get logLik with input params
+    f <- -1 * foo()
+
+    # 
+    case1or3 <- length(x) == length(f)
+    if((1 != length(f)) & !case1or3)
+      stop("grad assumes a scalar real valued function.")
+  
+    # Richardson
+    if(method=="Richardson") {
+      
+      # number of variables.
+      n <- length(x)
+
+      #  first order derivatives are stored in the matrix a[k,i], 
+      #  where the indexing variables k for rows(1 to r), i for columns (1 to n),
+      #  r is the number of iterations, and n is the number of variables.
+      a <- matrix(NA, r, n) 
+      h <- abs(d*x) + eps * (abs(x) < zero.tol)
+      
+      # successively reduce h
+      for(k in 1:r)  {
+        if(case1or3)
+          a[k,] <- (func(x + h, ...) -  func(x - h, ...))/(2*h)
+        else for(i in 1:n) {
+          # some func are unstable near zero
+          if((k != 1) && (abs(a[(k-1),i]) < 1e-20))
+            a[k,i] <- 0 
+	        else
+            a[k,i] <- (func(x + h*(i==seq(n)), ...) - 
+	            func(x - h*(i==seq(n)), ...))/(2*h[i])
+        }
+        h <- h/v     # Reduced h by 1/v.
+        if(show.details) {
+          cat("\n","first order approximations", "\n")		
+          print(a, 12)
+        }
+      }
+      for(m in 1:(r - 1)) {	  
+        a <- (a[2:(r+1-m),,drop=FALSE]*(4^m)-a[1:(r-m),,drop=FALSE])/(4^m-1)
+        if(show.details & m!=(r-1) ) {
+    	  cat("\n","Richarson improvement group No. ", m, "\n") 	  
+    	  print(a[1:(r-m),,drop=FALSE], 12)
+  	    }
+      }
+      return(c(a))
+    }
+  }
+) # }}}
+
 
