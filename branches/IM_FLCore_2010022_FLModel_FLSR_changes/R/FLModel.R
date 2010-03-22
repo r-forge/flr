@@ -942,10 +942,24 @@ setMethod("profile", signature(fitted="FLModel"),
       which <- parnames[!parnames %in% fixnames]
     if(length(which) > 2)
         stop("surface only works over 2 parameters")
-
+    
+    # data
+    args <- list()
+    data <- names(formals(foo))
+    data <- data[data %in% slotNames(fitted)]
+    for(i in data)
+      args[i] <- list(slot(fitted, i))
+    
     # (1) create grid of param values for numeric range
     if(is.numeric(range) && length(range) == 1)
     {
+      # use initial is model has not been estimated
+      if(all(is.na(params)))
+      {
+        warning("model has not been fitted: initial values are used for profile range")
+        params[] <- unlist(do.call(initial(fitted), args))
+        plotfit <- FALSE
+      }
       for(i in which)
       {
         # steps for param[i]
@@ -972,13 +986,6 @@ setMethod("profile", signature(fitted="FLModel"),
     # col for logLik
     grid$logLik <- as.numeric(NA)
 
-    # data
-    args <- list()
-    data <- names(formals(foo))
-    data <- data[data %in% slotNames(fitted)]
-    for(i in data)
-      args[i] <- list(slot(fitted, i))
-    
     dots <- list(...)
     # calculate logLik for grid if no fitting
     if(identical(order(c(which, fixnames)), order(parnames)))
@@ -1004,10 +1011,13 @@ setMethod("profile", signature(fitted="FLModel"),
       for(i in which)
         cat(paste(i, " = ", format(grid[grid$logLik==max(grid$logLik),i], digits=5), " "))
       cat("\n")
-      cat(paste("logLik =", format(logLik(fitted), digits=5), " "))
-      for(i in which)
-        cat(paste(i, " = ", format(c(params(fitted)[i]), digits=5), " "))
-      cat("\n")
+      if(plotfit)
+      {
+        cat(paste("logLik =", format(logLik(fitted), digits=5), " "))
+        for(i in which)
+          cat(paste(i, " = ", format(c(params(fitted)[i]), digits=5), " "))
+        cat("\n")
+      }
     }
 
     # CIs
@@ -1021,7 +1031,8 @@ setMethod("profile", signature(fitted="FLModel"),
         do.call('image', c(list(x=profiled[[1]], y=profiled[[2]], z=surface,
           xlab=which[1], ylab=which[2]), dots[!names(dots) %in% names(formals(optim))]))
 
-        points(params[which[1]], params[which[2]], pch=19)
+        if(plotfit)
+          points(params[which[1]], params[which[2]], pch=19)
 
         do.call('contour', list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
           levels=cis, add=TRUE, labcex=0.8, labels=ci))
