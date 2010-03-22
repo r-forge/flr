@@ -933,6 +933,7 @@ setMethod("profile", signature(fitted="FLModel"),
     fixnames <- names(fixed)
     profiled <- list()
     grid <- list()
+    plotfit <- TRUE
 
     # HACK! clean up fixed list if elements are named vectors
     fixed <- lapply(fixed, function(x){ names(x) <- NULL; x})
