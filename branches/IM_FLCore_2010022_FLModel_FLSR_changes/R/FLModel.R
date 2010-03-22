@@ -924,7 +924,7 @@ setMethod("parscale", signature(object="FLModel"),
 # profile {{{
 setMethod("profile", signature(fitted="FLModel"),
   function(fitted, which, maxsteps=11, range=0.5, ci=c(0.25, 0.5, 0.75, 0.95),
-      plot=TRUE, fixed=list(), print=FALSE, ...)
+      plot=TRUE, fixed=list(), print=FALSE, control=list(trace=0), ...)
   {
     # vars
     foo <- logl(fitted)
@@ -991,8 +991,8 @@ setMethod("profile", signature(fitted="FLModel"),
       {
         fixed <- as.list(grid[i,which])
         names(fixed) <- which
-        grid[i, 'logLik'] <- do.call('fmle', c(list(object=fitted, fixed=fixed),
-          dots[names(dots) %in% names(formals(optim))]))@logLik
+        grid[i, 'logLik'] <- do.call('fmle', c(list(object=fitted, fixed=fixed,
+          control=control), dots[names(dots) %in% names(formals(optim))]))@logLik
       }
    
     surface <- tapply(grid$logLik, grid[,which], sum)
