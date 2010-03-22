@@ -978,7 +978,8 @@ setMethod("profile", signature(fitted="FLModel"),
     data <- data[data %in% slotNames(fitted)]
     for(i in data)
       args[i] <- list(slot(fitted, i))
-
+    
+    dots <- list(...)
     # calculate logLik for grid if no fitting
     if(identical(order(c(which, fixnames)), order(parnames)))
       for(i in seq(nrow(grid)))
@@ -989,8 +990,10 @@ setMethod("profile", signature(fitted="FLModel"),
       for(i in seq(nrow(grid)))
       {
         fixed <- as.list(grid[i,which]); names(fixed) <- which
-        grid[i, 'logLik'] <- fmle(fitted, fixed=fixed, ...)@logLik
+        grid[i, 'logLik'] <- do.call('fmle', c(list(object=fitted), fixed=fixed,
+          dots[names(dots) %in% names(formals(optim))]))@logLik
       }
+   
     
     surface <- tapply(grid$logLik, grid[,which], sum)
 
@@ -1016,7 +1019,7 @@ setMethod("profile", signature(fitted="FLModel"),
       if(length(which) == 2)
       {
         do.call('image', c(list(x=profiled[[1]], y=profiled[[2]], z=surface,
-          xlab=which[1], ylab=which[2]), list(...)))
+          xlab=which[1], ylab=which[2]), dots[!names(dots) %in% names(formals(optim))]))
 
         points(params[which[1]], params[which[2]], pch=19)
 
