@@ -345,7 +345,7 @@ setMethod('fmle',
         {
           if(det(out$hessian) != 0)
           {
-            tmphess <- try(solve(out$hessian))
+            tmphess <- try(solve(out$hessian), silent=TRUE)
             if(class(tmphess) =='try-error')
             {
               matrix(numeric(0), length(coef), length(coef), dimnames=list(names(coef),
