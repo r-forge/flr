@@ -165,8 +165,8 @@ setMethod('fmle',
 setMethod('fmle',
   signature(object='FLModel', start='ANY'),
   function(object, start, method='L-BFGS-B', fixed=list(),
-    control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), seq.iter=TRUE, autoParscale=FALSE,
+    control=list(trace=1), lower=rep(-Inf, dim(params(object))[1]),
+    upper=rep(Inf, dim(params(object))[1]), seq.iter=TRUE, autoParscale=FALSE,
     tiny_number=1e-6, relAutoParscale=TRUE, ...)
   {
     # TODO Check with FL
@@ -324,7 +324,7 @@ setMethod('fmle',
 
         control <- c(control, list(parscale=diff_logl))
       }
-      
+ 
       # TODO protect environment
       out <- do.call('optim', c(list(par=unlist(start), fn=loglfoo, method=method,
         hessian=TRUE, control=control, lower=lower, upper=upper, gr=gr, ...)))

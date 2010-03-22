@@ -257,7 +257,7 @@ setMethod("plot", signature(x="FLSR", y="missing"),
 )
 # }}}
 
-#lowess  {{{
+# lowess  {{{
 setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter='ANY'),
   function(x, f=2/3, iter=3, delta=0.01 * diff(range(ssb(x)[!is.na(ssb(x))])))
   {
@@ -285,8 +285,7 @@ setMethod("fmle", signature(object="FLSR", start="ANY"),
     control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
     upper=rep(Inf, dim(params(object))[2]), ...)
   {
-    res <- callNextMethod(object, start=start, fixed=fixed, method=method,
-        control=control, lower=lower, upper=upper, ...)
+    res <- callNextMethod()
     if(object@logerror)
       residuals(res) <- log(rec(res)) - log(fitted(res))
     return(res)
