@@ -76,6 +76,8 @@ setMethod("computeD", signature(object="FLModel"),
     
     # params
     x <- unlist(params)
+    if(any(is.na(x)))
+      x <- unlist(do.call(object@initial, data))
 
     # f0
     f0 <- do.call(logl(object), c(data, params))

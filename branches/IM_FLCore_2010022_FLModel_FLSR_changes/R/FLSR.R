@@ -281,9 +281,7 @@ setMethod('lowess', signature(x='FLSR', y='missing', f='ANY', delta='ANY', iter=
 
 # fmle {{{
 setMethod("fmle", signature(object="FLSR", start="ANY"),
-  function(object, start, method='L-BFGS-B', fixed=list(),
-    control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), ...)
+  function(object, start, ...)
   {
     res <- callNextMethod()
     if(object@logerror)
