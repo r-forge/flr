@@ -989,7 +989,7 @@ setMethod("profile", signature(fitted="FLModel"),
       for(i in seq(nrow(grid)))
       {
         fixed <- as.list(grid[i,which]); names(fixed) <- which
-        grid[i, 'logLik'] <- fmle(fitted, fixed=fixed)@logLik
+        grid[i, 'logLik'] <- fmle(fitted, fixed=fixed, ...)@logLik
       }
     
     surface <- tapply(grid$logLik, grid[,which], sum)

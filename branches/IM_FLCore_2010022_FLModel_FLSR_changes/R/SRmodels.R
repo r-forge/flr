@@ -283,7 +283,8 @@ setMethod('rSq', signature(obs='FLQuant',hat='FLQuant'),
 
 # loglAR1 {{{
 setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
-  function(obs, hat, rho=0){
+  function(obs, hat, rho=0)
+  {
     # calculates likelihood for AR(1) process
     n   <- dim(obs)[2]
     rsdl<-(obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])
