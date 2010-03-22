@@ -1030,11 +1030,10 @@ setMethod("profile", signature(fitted="FLModel"),
         points(params[which], logLik(fitted), pch=19)
       }
     }
-    else
-      if(length(which) == 2)
-        invisible(list(x=grid[,which[1]], y=grid[,which[2]], z=surface))
-      else if(length(which) == 1)
-        invisible(list(x=grid[which], y=grid['logLik']))
+    if(length(which) == 2)
+      invisible(list(x=grid[,which[1]], y=grid[,which[2]], z=surface))
+    else if(length(which) == 1)
+      invisible(list(x=grid[which], y=grid['logLik']))
   }
 ) # }}}
 
