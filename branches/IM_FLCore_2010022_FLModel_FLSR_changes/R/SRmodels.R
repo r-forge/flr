@@ -34,7 +34,7 @@ bevholt <- function()
   {
   ## log likelihood, assuming normal log.
   logl <- function(a, b, rec, ssb)
-      loglAR1(log(rec), log(a*ssb/(b+ssb)), sigma(log(rec), log(a*ssb/(b+ssb)))^2)
+      loglAR1(log(rec), log(a*ssb/(b+ssb)))
 
   ## initial parameter values
   initial <- structure(function(rec, ssb) {
@@ -57,7 +57,7 @@ bevholt <- function()
 segreg <- function()
 {
 	logl <- function(a, b, rec, ssb)
-    loglAR1(log(rec), log(ifelse(ssb<=b,a*ssb,a*b)), sigma(log(rec), log(ifelse(ssb<=b,a*ssb,a*b)))^2)
+    loglAR1(log(rec), log(ifelse(ssb<=b,a*ssb,a*b)))
 
   model <- rec ~ FLQuant(ifelse(ssb<=b,a*ssb,a*b))
 
@@ -75,7 +75,7 @@ segreg <- function()
 geomean<-function() 
     {
     logl <- function(a, rec)
-      loglAR1(log(rec), log(FLQuant(rep(a, length(rec)))), sigma(log(rec), log(FLQuant(rep(a, length(rec)))))^2)
+      loglAR1(log(rec), log(FLQuant(rep(a, length(rec)))))
     
     initial <- structure(function(rec) {
         return(list(a = exp(mean(log(rec), na.rm=TRUE))))
@@ -91,7 +91,7 @@ geomean<-function()
 shepherd <- function()
 {
   logl <- function(a,b,c,rec,ssb)
-      loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)), sigma(log(rec), log(a*ssb/(1+(ssb/b)^c)))^2)
+      loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)))
 
   initial <- structure(function(rec,ssb){
     c <- 2
@@ -117,7 +117,7 @@ shepherd <- function()
 cushing<-function()
 {
   logl <- function(a, b, rec, ssb)
-    loglAR1(log(rec), log(a*ssb^b), sigma(log(rec), log(a*ssb^b))^2)
+    loglAR1(log(rec), log(a*ssb^b))
 
   initial <- structure(function(rec, ssb)
   {
@@ -134,26 +134,12 @@ cushing<-function()
 }  # }}}
 
 # rickerSV  {{{
-rksv2ab <- function(s, v, spr0)
-{
-  b <- log(5.0*s)/(v*0.8)
-  a <- exp(b*v)/spr0
-  return(unlist(list(a=a, b=b)))
-}
-rkab2sv <- function(a,b,spr0)
-{
-  v <- log(spr0 * a)/b
-	s <- 0.2*exp(b*(v)*0.8)
-  return(unlist(list(s=s, v=v, spr0=spr0)))
-}
-
 rickerSV <- function()
 {
   logl <- function(s, v, spr0, rec, ssb)
   { 
     pars <- abPars('ricker', s=s, v=v, spr0=spr0)
-    loglAR1(log(rec), log(pars['a']*ssb*exp(-pars['b']*ssb)), sigma(log(rec),
-      log(pars['a']*ssb*exp(-pars['b']*ssb)))^2)
+    loglAR1(log(rec), log(pars['a']*ssb*exp(-pars['b']*ssb)))
   }
 
   initial <- structure(function(rec, ssb)
@@ -178,8 +164,7 @@ bevholtSV <- function()
   logl <- function(s, v, spr0, rec, ssb)
   {
     pars <- abPars('bevholt', s=s, v=v, spr0=spr0)
-    loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)), sigma(log(rec), log(pars['a']*
-      ssb/(pars['b']+ssb)))^2)
+    loglAR1(log(rec), log(pars['a']*ssb/(pars['b']+ssb)))
   }
 
   ## initial parameter values
@@ -207,8 +192,7 @@ shepherdSV <- function()
   logl <- function(s, v, spr0, c, rec, ssb)
   {
     pars <- abPars('shepherd', s=s, v=v, spr0=spr0, c=c)
-    loglAR1(log(rec), log(pars['a']*ssb/(1+(ssb/pars['b'])^c)), sigma(log(rec),
-      log(pars['a']*ssb/(1+(ssb/pars['b'])^c)))^2)
+    loglAR1(log(rec), log(pars['a']*ssb/(1+(ssb/pars['b'])^c)))
   }
 
   ## initial parameter values
@@ -299,26 +283,27 @@ setMethod('rSq', signature(obs='FLQuant',hat='FLQuant'),
 
 # loglAR1 {{{
 setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
-  function(obs, hat, sigma2=sigma(obs, hat) ^ 2, rho=0){
+  function(obs, hat, rho=0){
     # calculates likelihood for AR(1) process
     n   <- dim(obs)[2]
-
     rsdl<-(obs[,-1] - rho*obs[,-n] - hat[,-1] + rho*hat[,-n])
     s2  <- sum(rsdl^2, na.rm=T)
     s1  <-s2
 
     if (!is.na(rsdl[,1]))
       s1 <- s1+(1-rho^2)*rsdl[,1]^2
-    
+
+    sigma2   <-sigma(obs, hat)^2
     n        <- length(obs[!is.na(obs)])
     sigma2.a <- (1-rho^2)*sigma2
     res      <- (log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
 
-    if (!is.finite(res)) 
+    if (!is.finite(res))
       res <- -1e100
 
     return(res)
-  }) # }}}
+  }
+) # }}}
 
 # SRModelName {{{
 SRModelName <- function(model)
