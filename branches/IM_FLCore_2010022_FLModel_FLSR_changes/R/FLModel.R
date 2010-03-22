@@ -950,17 +950,19 @@ setMethod("profile", signature(fitted="FLModel"),
     data <- data[data %in% slotNames(fitted)]
     for(i in data)
       args[i] <- list(slot(fitted, i))
-    
+      
+    # use initial if model has not been estimated
+    if(all(is.na(params)))
+    {
+      params[] <- unlist(do.call(initial(fitted), args))
+      plotfit <- FALSE
+    }
+
     # (1) create grid of param values for numeric range
     if(is.numeric(range) && length(range) == 1)
     {
-      # use initial is model has not been estimated
-      if(all(is.na(params)))
-      {
+      if(!plotfit)
         warning("model has not been fitted: initial values are used for profile range")
-        params[] <- unlist(do.call(initial(fitted), args))
-        plotfit <- FALSE
-      }
       for(i in which)
       {
         # steps for param[i]
