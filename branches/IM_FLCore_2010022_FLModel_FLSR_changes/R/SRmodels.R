@@ -14,7 +14,7 @@
 ricker <- function()
 {
   logl <- function(a, b, rec, ssb)
-      loglAR1(log(rec), log(a*ssb*exp(-b*ssb)), sigma(log(rec), log(a*ssb*exp(-b*ssb)))^2)
+      loglAR1(log(rec), log(a*ssb*exp(-b*ssb)))
 
   initial <- structure(function(rec, ssb) {
 		# The function to provide initial values
@@ -293,7 +293,7 @@ setMethod('loglAR1', signature(obs='FLQuant', hat='FLQuant'),
     if (!is.na(rsdl[,1]))
       s1 <- s1+(1-rho^2)*rsdl[,1]^2
 
-    sigma2   <-sigma(obs, hat)^2
+    sigma2   <- sigma(obs, hat)^2
     n        <- length(obs[!is.na(obs)])
     sigma2.a <- (1-rho^2)*sigma2
     res      <- (log(1/(2*pi))-n*log(sigma2.a)+log(1-rho^2)-s1/(2*sigma2.a))/2
