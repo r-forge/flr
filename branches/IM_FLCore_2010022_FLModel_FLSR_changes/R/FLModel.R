@@ -963,7 +963,7 @@ setMethod("profile", signature(fitted="FLModel"),
         # checks all params to be profiled specified
         if(any(names(range) != which))
           stop("range not specified for parameters:", which[!which%in%names(range)])
-      profiled <- range
+      profiled <- lapply(range, sort)
     }
 
     # grid
@@ -997,9 +997,9 @@ setMethod("profile", signature(fitted="FLModel"),
     # print
     if(print)
     {
-      cat(paste("max(profile) =", format(logLik(fitted), digits=5), " "))
+      cat(paste("max(profile) =", format(max(grid$logLik), digits=5), " "))
       for(i in which)
-        cat(paste(i, " = ", format(grid[max(grid$logLik),i], digits=5), " "))
+        cat(paste(i, " = ", format(grid[grid$logLik==max(grid$logLik),i], digits=5), " "))
       cat("\n")
       cat(paste("logLik =", format(logLik(fitted), digits=5), " "))
       for(i in which)
@@ -1015,7 +1015,7 @@ setMethod("profile", signature(fitted="FLModel"),
     {
       if(length(which) == 2)
       {
-        do.call('image', c(list(x=sort(profiled[[1]]), y=sort(profiled[[2]]), z=surface,
+        do.call('image', c(list(x=profiled[[1]], y=profiled[[2]], z=surface,
           xlab=which[1], ylab=which[2]), list(...)))
 
         points(params[which[1]], params[which[2]], pch=19)
