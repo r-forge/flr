@@ -94,7 +94,7 @@ shepherd <- function()
       loglAR1(log(rec), log(a*ssb/(1+(ssb/b)^c)))
 
   initial <- structure(function(rec,ssb){
-    c <- 2
+    c <- 1
     x <- ssb^c
 		y <- ssb/rec
 

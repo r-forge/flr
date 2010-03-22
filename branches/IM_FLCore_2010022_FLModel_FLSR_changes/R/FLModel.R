@@ -277,7 +277,7 @@ setMethod('fmle',
       if(missing(start)) {
         # add call to @initial
         if(is.function(object@initial))
-          start <- do.call(object@initial, args=data[names(formals(object@initial))])
+         start <- do.call(object@initial, args=data[names(formals(object@initial))])
         else
           start <- formals(logl)[names(formals(logl))%in%parnm]
       }
