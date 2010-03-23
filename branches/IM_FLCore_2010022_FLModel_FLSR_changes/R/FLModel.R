@@ -15,6 +15,12 @@ validFLModel <- function(object)
     if(class(slot(object, i)) != class)
       return(paste('FLQuant/FLCohort slots in object should all be of the same class: ',
         i))
+  
+  # initial returns an FLPar
+  init <- do.call(initial(object), lapply(formals(initial(object)), function(x) x<-0.1))
+  if(!is.null(init) & !is(init, 'FLPar'))
+    return("initial function must return an 'FLPar'")
+
   return(TRUE)
 }
 setClass('FLModel',

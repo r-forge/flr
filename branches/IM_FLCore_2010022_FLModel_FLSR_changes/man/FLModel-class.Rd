@@ -32,7 +32,7 @@
 \item{model}{Model formula. \code{formula}.}
 \item{gr}{Function returning the gradient of the likelihood. \code{function}.}
 \item{logl}{Log-likelihood function. \code{function}.}
-\item{initial}{Function returning initial parameter values for the optimizer. \code{function}.}
+\item{initial}{Function returning initial parameter values for the optimizer, as an object of class \{FLPar}. \code{function}.}
 \item{params}{Estimated parameter values. \code{FLPar}.}
 \item{logLik}{Value of the log-likelihood. \code{logLik}.}
 \item{vcov}{Variance-covariance matrix. \code{array}.}
