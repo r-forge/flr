@@ -65,10 +65,21 @@ setMethod('FLPar', signature(object="array"),
 	
 # FLPar(missing, iter, param)
 setMethod('FLPar', signature(object="missing"),
-	function(params='a', iter=1, dimnames=list(params=params, iter=seq(iter)), units='NA')
+	function(params='a', iter=1, dimnames=list(params=params, iter=seq(iter)),
+      units='NA', ...)
 	{
-		res <- array(as.numeric(NA), dim=unlist(lapply(dimnames, length)),
-      dimnames=dimnames)
+    args <- list(...)
+    if(length(args) > 0)
+    {
+      len <- length(args[[1]])
+      res <- array(NA, dim=c(length(args),len), 
+        dimnames=list(params=names(args), iter=seq(len)))
+      for (i in seq(length(args)))
+        res[i,] <- args[[i]]
+    }
+    else
+      res <- array(as.numeric(NA), dim=unlist(lapply(dimnames, length)),
+        dimnames=dimnames)
 		return(FLPar(res, units=units, dimnames=dimnames(res)))
 	}
 )
