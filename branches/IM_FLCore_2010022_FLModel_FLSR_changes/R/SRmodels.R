@@ -19,7 +19,7 @@ ricker <- function()
   initial <- structure(function(rec, ssb) {
 		# The function to provide initial values
     res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
-    return(list(a=max(exp(res[1])), b=-max(res[2])))
+    return(FLPar(a=max(exp(res[1])), b=-max(res[2])))
 	},
   # lower and upper limits for optim()
 	lower=rep(1e-10, 2),
@@ -40,7 +40,7 @@ bevholt <- function()
   initial <- structure(function(rec, ssb) {
     a <- max(quantile(c(rec), 0.75, na.rm = TRUE))
     b <- max(quantile(c(rec)/c(ssb), 0.9, na.rm = TRUE))
-    return(list(a = a, b = a/b))
+    return(FLPar(a = a, b = a/b))
 	},
 
   ## bounds
@@ -63,7 +63,7 @@ segreg <- function()
 
   initial <- structure(function(rec, ssb)
   {
-    return(list(a=median(c(rec/ssb)), b=median(c(ssb))))
+    return(FLPar(a=median(c(rec/ssb)), b=median(c(ssb))))
   },
     lower=rep(0, 1e-7),
     upper=rep(Inf, 2))
@@ -78,7 +78,7 @@ geomean<-function()
       loglAR1(log(rec), log(FLQuant(rep(a, length(rec)))))
     
     initial <- structure(function(rec) {
-        return(list(a = exp(mean(log(rec), na.rm=TRUE))))
+        return(FLPar(a = exp(mean(log(rec), na.rm=TRUE))))
         }, 
         lower = c(1e-08), upper = rep(Inf))
     
@@ -103,7 +103,7 @@ shepherd <- function()
     a <- max(1/res[1])
     b <- max(b=1/((res[2]*a)^(1/c)))
 
-    return(list(a=a,b=b,c=c))},
+    return(FLPar(a=a,b=b,c=c))},
     
     lower = c(1e-08, 1e-08, 1),
     upper = c(1e02,  1e+08,10))
@@ -123,7 +123,7 @@ cushing<-function()
   {
     a <- mean(rec/ssb)
     b <- 1.0
-    return(list(a=a,b=b))
+    return(FLPar(a=a,b=b))
   },
   lower=c(0, 0.0001),
 	upper=c(Inf, 1))
@@ -147,7 +147,7 @@ rickerSV <- function()
     s <- 0.75
     spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
     v <-mean(as.vector(ssb), na.rm = TRUE)*2
-    return(list(s=s, v=v, spr0=spr0))
+    return(FLPar(s=s, v=v, spr0=spr0))
 	},
   ## bounds
   lower=c(1e-8, rep(1e-8, 2)),
@@ -173,7 +173,7 @@ bevholtSV <- function()
     s <- 0.75
     spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
     v <-mean(as.vector(ssb), na.rm = TRUE)*2
-    return(list(s=s, v=v, spr0=spr0))
+    return(FLPar(s=s, v=v, spr0=spr0))
 	},
   ## bounds
   lower=c(0.2, rep(10e-8, 2)),
@@ -201,7 +201,7 @@ shepherdSV <- function()
     s <- 0.75
     spr0 <- quantile(c(ssb/rec), prob = 0.9, rm.na = F, names=FALSE)
     v <-mean(as.vector(ssb), na.rm = TRUE)*2
-    return(list(s=s, v=v, spr0=spr0, c=1))
+    return(FLPar(s=s, v=v, spr0=spr0, c=1))
 	},
   ## bounds
   lower=c(0.2, rep(10e-8, 2), 1),
@@ -349,16 +349,6 @@ SRNameCode <- function(name)
   return(as.integer(code))
 } # }}}
 
-# svPars {{{
-svPars <- function(model, spr0, a, b=NULL, c=NULL, d=NULL)
-{
-  v <- spr2v(model, spr0, a, b, c, d)
-  s <- srr2s(model, ssb=v*.2, a=a, b=b, c=c, d=d) / srr2s(model, ssb=v, a=a,
-      b=b, c=c, d=d)
-  return(c(s=s, v=v, spr0=spr0))
-}
-# }}}
-
 # spr2v {{{
 spr2v <- function(model, spr, a=NULL, b=NULL, c=NULL, d=NULL)
 {
@@ -402,3 +392,13 @@ abPars <- function(model, s=NULL, v, spr0, c=NULL, d=NULL)
   res <- c(a=a, b=b)
   return(res[!is.null(res)])
 } # }}}
+
+# svPars {{{
+svPars <- function(model, spr0, a, b=NULL, c=NULL, d=NULL)
+{
+  v <- spr2v(model, spr0, a, b, c, d)
+  s <- srr2s(model, ssb=v*.2, a=a, b=b, c=c, d=d) / srr2s(model, ssb=v, a=a,
+      b=b, c=c, d=d)
+  return(c(s=s, v=v, spr0=spr0))
+}
+# }}}

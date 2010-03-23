@@ -272,12 +272,12 @@ setMethod('fmle',
         if(length(covarnm))
           data <- c(data, covar(object)[covarnm])
       }
-
       # start values
       if(missing(start)) {
         # add call to @initial
         if(is.function(object@initial))
-         start <- do.call(object@initial, args=data[names(formals(object@initial))])
+         start <- as(do.call(object@initial, args=data[names(formals(object@initial))]),
+           'list')
         else
           start <- formals(logl)[names(formals(logl))%in%parnm]
       }
@@ -553,7 +553,7 @@ setMethod('nls',
     # start values
     if(missing(start))
       if(is.function(formula@initial))
-        start <- do.call(formula@initial, args=data)[parnm]
+        start <- as(do.call(formula@initial, args=data)[parnm], 'list')
       else
         stop("No start values provided and no initial function in object")
 
@@ -892,7 +892,7 @@ setMethod("parscale", signature(object="FLModel"),
 
     # get start
     if(missing(start))
-      start <- do.call(initial(object), args)
+      start <- as(do.call(initial(object), args), 'list')
 
     # named vectors for logl plus/minus tiny_number and diff
     diff_logl <- logl_bump1 <- logl_bump2 <- unlist(start)
@@ -954,7 +954,7 @@ setMethod("profile", signature(fitted="FLModel"),
     # use initial if model has not been estimated
     if(all(is.na(params)))
     {
-      params[] <- unlist(do.call(initial(fitted), args))
+      params <- do.call(initial(fitted), args)
       plotfit <- FALSE
     }
 
