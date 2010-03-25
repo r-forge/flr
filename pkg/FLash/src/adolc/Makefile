@@ -22,7 +22,7 @@ library: lib
 
 %.o: %.c
 	@echo CC  $<
-	@${CC} ${HEADERS} ${ADOLC_CFLAGS} -c $<
+	@${CC} ${HEADERS} ${ADOLC_CFLAGS} -fPIC -c $<
 
 %.o: %.cpp
 	@echo CXX $<
