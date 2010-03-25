@@ -1,6 +1,6 @@
 useDynLib("FLAssess")
 import("FLCore")
-importFrom("graphics", "plot")
+#importFrom("graphics", "plot")
 exportClasses("FLAssess",
   "FLAssess.retro",
   "FLSepVPA.control",
