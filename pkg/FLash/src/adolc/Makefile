@@ -26,7 +26,7 @@ library: lib
 
 %.o: %.cpp
 	@echo CXX $<
-	@${CXX} ${HEADERS} ${ADOLC_CXXFLAGS} -c $<
+	@${CXX} ${HEADERS} ${ADOLC_CXXFLAGS} -fPIC -c $<
 
 LIB = ../adolc.a
 
