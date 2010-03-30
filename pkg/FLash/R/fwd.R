@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 13 Mar 2009 16:36
+# Last Change: 05 Mar 2010 15:56
 # $Id$
 
 ## fwd(FLStock)
@@ -79,7 +79,6 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
           stop("dim year mismatch in availability")
        }
 
-    ##x<-.Call("_fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]])
     x<-.Call("fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]], availability)
 
     if (is.numeric(x)) stop(x)

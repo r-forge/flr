@@ -424,3 +424,11 @@ setMethod("r", signature(m="FLBRP", fec="missing"),
     do.call('r', list(m=m(m), fec=mat(m), by=by, method=method))
 	}
 ) # }}}
+
+# sp {{{
+setMethod('sp', signature(stock='FLBRP', catch='missing'),
+	function(stock, rel=TRUE)
+  {
+    return(sp(ssb.obs(stock), catch.obs(stock), rel=rel))
+  }
+) # }}} 

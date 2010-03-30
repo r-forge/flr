@@ -1,3 +1,5 @@
-FLCore_HOME=`Rscript -e "cat(system.file('libs', package='FLCore'))"`
 
-PKG_LIBS=$(FLCore_HOME)/FLCore.so
+PKG_LIBS = $(shell $(R_HOME)/bin/R --slave -e 'cat(system.file("libs", package="FLCore"))')/FLCore.so
+
+
+

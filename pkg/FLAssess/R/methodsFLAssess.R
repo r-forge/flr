@@ -146,7 +146,6 @@ setMethod("+", signature(e1="FLAssess", e2="FLStock"),
     }
 )   # }}}
 
-
 # assess  {{{
 if (!isGeneric("assess"))
 	setGeneric("assess", function(control, ...)
