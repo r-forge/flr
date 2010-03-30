@@ -197,7 +197,6 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 setMethod('brp', signature(object='FLBRP'),
   function(object)
   {
-browser()
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
     # if > 1, they should be equal
@@ -419,4 +418,9 @@ setMethod('profit.hat', signature(object='FLBRP'),
   function(object) return(profit(object))
 ) # }}}
 
-
+# r {{{
+setMethod("r", signature(m="FLBRP", fec="missing"),
+	function(m, by = 'year', method = 'el',...) {
+    do.call('r', list(m=m(m), fec=mat(m), by=by, method=method))
+	}
+) # }}}
