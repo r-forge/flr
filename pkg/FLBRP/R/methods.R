@@ -222,7 +222,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 # brp  {{{
 setMethod('brp', signature(object='FLBRP'),
   function(object)
-  {
+  {browser()
     # check model is supported by brp
     if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
       stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
