@@ -8,6 +8,11 @@
 # landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
   function(object){
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     .Call('landings_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
@@ -17,6 +22,11 @@ setMethod('landings.n', signature(object='FLBRP'),
 setMethod('discards.n', signature(object='FLBRP'),
   function(object)
   {
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
    .Call('discards_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
@@ -26,6 +36,11 @@ setMethod('discards.n', signature(object='FLBRP'),
 setMethod('stock.n', signature(object='FLBRP'),
   function(object)
   {
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     .Call('stock_n', object, SRNameCode(SRModelName(object@model)),
               FLQuant(c(params(object)),dimnames=dimnames(params(object))))
   }
@@ -150,6 +165,11 @@ setMethod('ypr', signature(object='FLBRP'),
     params(object)<-FLPar(1)
     model( object)<-formula(rec~a)
     
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     res<-.Call("ypr", object, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
@@ -162,6 +182,12 @@ setMethod('ypr', signature(object='FLBRP'),
 setMethod('computeRefpts', signature(object='FLBRP'),
  function(object)
   {
+
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
     
@@ -197,6 +223,11 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 setMethod('brp', signature(object='FLBRP'),
   function(object)
   {
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
     # if > 1, they should be equal
@@ -217,10 +248,6 @@ setMethod('brp', signature(object='FLBRP'),
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
       refpts@.Data["virgin","harvest",] <- 0
     }
-
-    # print(object@model)
-    # print(SRModelName(object@model))
-    # print(SRNameCode(SRModelName(object@model)))
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
@@ -233,6 +260,11 @@ setMethod('brp', signature(object='FLBRP'),
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
   {
+    # check model is supported by brp
+    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
+      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
+        ")in FLBRP object can not be used by brp. See ?ab"))
+
     # check input fbar dims
     if(!identical(dim(fbar), dim(fbar(object))))
       stop("input fbar must be the same length as fbar(object)")
