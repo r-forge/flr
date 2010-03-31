@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 12 Mar 2009 14:56
+# Last Change: 31 Mar 2010 13:32
 # $Id$
 
 # as.FLSR {{{
@@ -11,8 +11,10 @@ setAs('FLBRP', 'FLSR',
   function(from)
 	{
 
-    FLSR(name=from@name, desc = "'rec' and 'ssb' slots obtained from a 'FLBRP'",
+    sr <- FLSR(name=from@name, desc = "created from a 'FLBRP' object",
       rec=rec.obs(from), ssb=ssb.obs(from))
+    model(sr) <- SRModelName(model(from))
+    params(sr) <- params(from)
     
     if(validObject(sr))
       return(sr)
