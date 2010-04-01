@@ -200,7 +200,7 @@ setMethod('computeRefpts', signature(object='FLBRP'),
     # extend refpts as needed
     iter <- max(iter)
     if(iter > 1){
-      refpts <- propagate(refpts(object), iter, fill.iter=F)
+      refpts <- propagate(refpts(object), iter, fill.iter=T)
       }
     else{
       refpts <- refpts(object)}
@@ -210,11 +210,10 @@ setMethod('computeRefpts', signature(object='FLBRP'),
        refpts["virgin",,]<-NA
        refpts["virgin","harvest",]<-0
        }
-    
+
     res <- .Call("computeRefpts", object, refpts,
       SRNameCode(SRModelName(object@model)),
                   FLQuant(c(params(object)), dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
-
     return(res)
   }
 ) # }}}
