@@ -1,7 +1,5 @@
 useDynLib("FLBRP")
 import("FLCore")
-importFrom("FLash",
-  "SRchar2code")
 exportClasses("FLBRP",
   "refpts")
 exportMethods(
