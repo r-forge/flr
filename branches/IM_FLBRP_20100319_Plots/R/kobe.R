@@ -57,6 +57,12 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
       if(any(dims[dims!=1] != max(dims[dims!=1])))
         stop("iters in input objects do not match")
 
+    #
+    if(dims['biomass'] > dims['harvest'])
+      harvest <- propagate(harvest, dims['biomass'], fill.iter=TRUE)
+    if(dims['biomass'] < dims['harvest'])
+      biomass <- propagate(biomass, dims['harvest'], fill.iter=TRUE)
+
     # reshape biomass & harvest if refpts has iters and they don't
     if(dims['refpts'] > 1 & dims['biomass'] == 1)
       biomass <- propagate(biomass, dims['refpts'], fill.iter=TRUE)
@@ -64,11 +70,9 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
       harvest <- propagate(harvest, dims['refpts'], fill.iter=TRUE)
 
     # indices
-    biomass <- propagate(sweep(biomass, 6, refpts[, 'ssb'], '/', check.margin=FALSE),
-        max(dims[1:2]), fill.iter=TRUE)
+    biomass <- sweep(biomass, 6, refpts[, 'ssb'], '/', check.margin=FALSE)
     mbiomass <- apply(biomass, 1:5, median)
-    harvest <- propagate(sweep(harvest, 6, refpts[, 'harvest'], '/', check.margin=FALSE),
-        max(dims[1:2]), fill.iter=TRUE)
+    harvest <- sweep(harvest, 6, refpts[, 'harvest'], '/', check.margin=FALSE)
     mharvest <- apply(harvest, 1:5, median)
 
     # limits
