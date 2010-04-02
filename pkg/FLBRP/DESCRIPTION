@@ -11,5 +11,4 @@ LinkingTo: FLCore,FLash
 Maintainer: Laurence T. Kell  <laurie.kell@iccat.int>
 License: GPL 2.0
 lazyLoad: Yes
-lazyData: Yes
-
+lazyData: No

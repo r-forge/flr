@@ -94,8 +94,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
 # FLBRP(object=FLStock, sr=missing) {{{
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
   function(object, model=formula(rec~a), params=FLPar(1, params='a'),
-    fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears, sel.nyears=fbar.nyears,
-    na.rm=TRUE, mean='arithmetic', ...)
+    fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears,
+    sel.nyears=fbar.nyears, na.rm=TRUE, mean='arithmetic', ...)
     {
     # dims & dimnames
     dims <- dims(object)

@@ -199,13 +199,13 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 
     # extend refpts as needed
     iter <- max(iter)
-    if(iter > 1){
-      refpts <- propagate(refpts(object), iter, fill.iter=T)
-      }
-    else{
-      refpts <- refpts(object)}
+    if(iter > 1 && dims(refpts(object))$iter == 1)
+      refpts <- propagate(refpts(object), iter, fill.iter=TRUE)
+    else if(iter > 1 && dims(refpts(object))$iter != iter)
+      stop("iters in refpts and object slots do not match")
+    else
+      refpts <- refpts(object)
     
-
     if ("virgin" %in% dimnames(refpts)$refpt){
        refpts["virgin",,]<-NA
        refpts["virgin","harvest",]<-0
@@ -221,11 +221,11 @@ setMethod('computeRefpts', signature(object='FLBRP'),
 # brp  {{{
 setMethod('brp', signature(object='FLBRP'),
   function(object)
-  {browser()
+  {
     # check model is supported by brp
     if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
       stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
-        ")in FLBRP object can not be used by brp. See ?ab"))
+        ") in FLBRP object can not be used by brp. See ?ab"))
 
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
@@ -237,8 +237,10 @@ setMethod('brp', signature(object='FLBRP'),
 
     # extend refpts as needed
     iter <- max(iter)
-    if(iter > 1){
-      refpts <- propagate(refpts(object), iter)}
+    if(iter > 1 && dims(refpts(object))$iter == 1)
+      refpts <- propagate(refpts(object), iter, fill.iter=TRUE)
+    else if(iter > 1 && dims(refpts(object))$iter != iter)
+      stop("iters in refpts and object slots do not match")
     else
       refpts <- refpts(object)
 
