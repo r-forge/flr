@@ -13,18 +13,37 @@ setGeneric('kobe', function(biomass, harvest, refpts, ...)
 setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="missing"),
     function(biomass, ...)
     {
-      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass), refpts=biomass@refpts)
+      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass), refpts=biomass@refpts,
+        ...)
     }
+) # }}}
+
+# kobe(FLQuant, FLQuant, list) {{{
+setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list"),
+  function(biomass, harvest, refpts, ...)
+  {
+     #
+      if(any(!names(refpts) %in% c('ssb', 'harvest')))
+        stop("refpts list must have elements named 'ssb' and 'harvest'")
+      res <- refpts(refpt='msy', nquanityt=c('ssb', 'harvest'))
+      res[,'ssb'] <- refpts$ssb
+      res[,'harvest'] <- refpts$harvest
+      kobe(biomass, harvest, res)
+  }
 ) # }}}
 
 # kobe(FLQuant, FLQuant, refpts) {{{
 setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts"),
-  function(biomass, harvest, refpts, xlab=expression(SSB:B[MSY]),
+  function(biomass, harvest, refpts, xlab=expression(SSB:SSB[MSY]),
       ylab=expression(F:F[MSY]), ...)
   {
-    #
-    biomass <- biomass / refpts['msy', 'ssb']
-    harvest <- harvest / refpts['msy', 'harvest']
+    # check refpts
+    if(dim(refpts)[1] > 1)
+      stop("kobe can only plot relative to a single reference point")
+    
+    # indices
+    biomass <- biomass / refpts[, 'ssb']
+    harvest <- harvest / refpts[, 'harvest']
 
     # limits
     xlim <- c(min(0.5, min(biomass)), max(1.5, max(biomass)))
