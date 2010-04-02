@@ -18,6 +18,15 @@ setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="missing"
     }
 ) # }}}
 
+# kobe(FLBRP) {{{
+setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="list"),
+    function(biomass, refpts, ...)
+    {
+      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass), refpts=refpts,
+        ...)
+    }
+) # }}}
+
 # kobe(FLQuant, FLQuant, list) {{{
 setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list"),
   function(biomass, harvest, refpts, ...)
@@ -25,10 +34,10 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list")
      #
       if(any(!names(refpts) %in% c('ssb', 'harvest')))
         stop("refpts list must have elements named 'ssb' and 'harvest'")
-      res <- refpts(refpt='msy', nquanityt=c('ssb', 'harvest'))
+      res <- refpts(refpt='msy', iter=max(unlist(lapply(refpts, length))))
       res[,'ssb'] <- refpts$ssb
       res[,'harvest'] <- refpts$harvest
-      kobe(biomass, harvest, res)
+      kobe(biomass, harvest, res, ...)
   }
 ) # }}}
 
@@ -41,9 +50,26 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
     if(dim(refpts)[1] > 1)
       stop("kobe can only plot relative to a single reference point")
     
+    # check dims
+    dims <- c(biomass=dim(biomass)[6], harvest=dim(harvest)[6], refpts=dim(refpts)[3])
+    # not all 1?
+    if(!sum(dims) == 3)
+      if(any(dims[dims!=1] != max(dims[dims!=1])))
+        stop("iters in input objects do not match")
+
+    # reshape biomass & harvest if refpts has iters and they don't
+    if(dims['refpts'] > 1 & dims['biomass'] == 1)
+      biomass <- propagate(biomass, dims['refpts'], fill.iter=TRUE)
+    if(dims['refpts'] > 1 & dims['harvest'] == 1)
+      harvest <- propagate(harvest, dims['refpts'], fill.iter=TRUE)
+
     # indices
-    biomass <- biomass / refpts[, 'ssb']
-    harvest <- harvest / refpts[, 'harvest']
+    biomass <- propagate(sweep(biomass, 6, refpts[, 'ssb'], '/', check.margin=FALSE),
+        max(dims[1:2]), fill.iter=TRUE)
+    mbiomass <- apply(biomass, 1:5, median)
+    harvest <- propagate(sweep(harvest, 6, refpts[, 'harvest'], '/', check.margin=FALSE),
+        max(dims[1:2]), fill.iter=TRUE)
+    mharvest <- apply(harvest, 1:5, median)
 
     # limits
     xlim <- c(min(0.5, min(biomass)), max(1.5, max(biomass)))
@@ -68,12 +94,12 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
     polygon(c(1, 1, parlim[2], parlim[2]), c(1, parlim[4], parlim[4], 1), col='orange')
 
     # points
-    lines(biomass, harvest)
-    points(biomass, harvest, pch=21, bg=gray(seq(0.9, 0.2, length=length(biomass))),
-        cex=1.5)
-    points(biomass[,lastyear], harvest[,lastyear], cex=1.5, col='white')
-    text(biomass[,lastyear]+biomass[,lastyear]*0.1, harvest[,lastyear], lastyear)
-    text(biomass[,firstyear]+biomass[,firstyear]*0.1, harvest[,firstyear], firstyear)
+    lines(mbiomass, mharvest)
+    points(biomass[,lastyear], harvest[,lastyear], cex=1, pch=21, bg='blue')
+    points(mbiomass, mharvest, pch=21, bg=gray(seq(0.9, 0.2, length=length(biomass))),
+      cex=1.5)
+    text(mbiomass[,lastyear]+mbiomass[,lastyear]*0.1, mharvest[,lastyear], lastyear)
+    text(mbiomass[,firstyear]+mbiomass[,firstyear]*0.1, mharvest[,firstyear], firstyear)
   }
 ) # }}}
 
