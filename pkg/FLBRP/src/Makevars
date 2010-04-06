@@ -1,1 +1,1 @@
-PKG_LIBS=$(R_HOME)/library/FLCore/libs/FLCore.so
+PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/R --slave -e 'cat(system.file("libs", package="FLCore"))')/FLCore.so
