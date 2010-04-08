@@ -123,7 +123,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       2:6, 'mean', na.rm=na.rm), "/")
     # 2. mean across fyears. All years are thus given equal weight
     scaling <- apply(scaling, c(1,3:6), foo)
-
+    
     # NEW FLBRP
     res <- new('FLBRP',
       # range
@@ -159,6 +159,10 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
       # profit.obs
       profit.obs = FLQuant(dimnames=snames),
+
+      # vcost & fcost
+      vcost=FLQuant(dimnames=dnames),
+      fcost=FLQuant(dimnames=dnames),
       
       # discards.sel & landings.sel
       discards.sel = scaling * apply(object@discards.n[,syears]/
