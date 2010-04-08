@@ -110,6 +110,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     snames <- dimnames(object@catch)
     dnames <- dimnames(object@catch.n)
     dnames[['year']] <- '1'
+    cnames <- snames
+    cnames[['year']] <- '1'
 
     # mean
     if(mean == 'arithmetic')
@@ -161,8 +163,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       profit.obs = FLQuant(dimnames=snames),
 
       # vcost & fcost
-      vcost=FLQuant(dimnames=dnames),
-      fcost=FLQuant(dimnames=dnames),
+      vcost=FLQuant(dimnames=cnames),
+      fcost=FLQuant(dimnames=cnames),
       
       # discards.sel & landings.sel
       discards.sel = scaling * apply(object@discards.n[,syears]/
