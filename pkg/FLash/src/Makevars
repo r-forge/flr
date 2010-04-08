@@ -2,7 +2,6 @@
 #  $Id$
 # PKG_CFLAGS=-Wunused -pedantic
 
-
 PKG_CPPFLAGS = -ggdb -I../inst/include
 PKG_CFLAGS = -g -0 -I../inst/include
 CXXFLAGS=-g -0

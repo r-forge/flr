@@ -16,6 +16,7 @@ exportMethods(
   "discards",
   "discards.hat",
   "kobe",
+  "kobeProb",
   "landings",
   "landings.hat",
   "stock",
