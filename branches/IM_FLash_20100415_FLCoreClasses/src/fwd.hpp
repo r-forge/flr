@@ -1,7 +1,6 @@
 #ifndef _INC_fwd
 #define _INC_fwd
 
-#include "flc_adolc.hpp"
 #include "flc.hpp"
 
 #define MaxFBar 2.0

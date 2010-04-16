@@ -3,10 +3,10 @@
 
 PKG_CPPFLAGS = -ggdb -I../inst/include
 PKG_CFLAGS = -g -0 -I../inst/include
-# PKG_CFLAGS=$(PKG_CFLAGS) -Wunused -pedantic
+# PKG_CFLAGS=$(PKG_CFLAGS) -Wunused -pedantic -dr
 CXXFLAGS=-g -0
 
-PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/R --slave -e 'library(FLCore); cat(system.file("libs", .Platform[["r_arch"]], "FLCore.so", package="FLCore"))')
+# PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/R --slave -e 'library(FLCore); cat(system.file("libs", .Platform[["r_arch"]], "FLCore.so", package="FLCore"))')
 
 MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf
 

@@ -1,7 +1,7 @@
 #ifndef _INC_FLashVPA
 #define _INC_FLashVPA
 
-#include "flc_adolc.hpp"
+#include "flc.hpp"
       
 #define VPA_TOL     1e-20
 #define SEPVPA_TOL  1e-40

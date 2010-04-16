@@ -1,7 +1,6 @@
 #ifndef _INC_fwdFLStock
 #define _INC_fwdFLStock
 
-#include "flc_adolc.hpp"
 #include "flc.hpp"
 //#include "FLCoreClasses_pointer.hpp"
 

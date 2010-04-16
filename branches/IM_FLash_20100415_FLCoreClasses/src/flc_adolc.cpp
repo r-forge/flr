@@ -1,4 +1,4 @@
-#include "flc_adolc.hpp"
+#include "flc.hpp"
 
 FLQuant_adolc::FLQuant_adolc(void)
    {
