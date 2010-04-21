@@ -187,6 +187,13 @@ setMethod('computeRefpts', signature(object='FLBRP'),
     if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
       stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
         ")in FLBRP object can not be used by brp. See ?ab"))
+   
+    # check needed slots are filled up
+    for(i in c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
+      'landings.wt','discards.wt', 'bycatch.wt','m','mat','harvest.spwn', 'm.spwn',
+      'availability','price'))
+      if(all(is.na(slot(object, i))))
+        stop("missing necessary information in slot ", i)
 
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
@@ -227,6 +234,13 @@ setMethod('brp', signature(object='FLBRP'),
       stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
         ") in FLBRP object can not be used by brp. See ?ab"))
 
+    # check needed slots are filled up
+    for(i in c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
+      'landings.wt','discards.wt', 'bycatch.wt','m','mat','harvest.spwn', 'm.spwn',
+      'availability'))
+      if(all(is.na(slot(object, i))))
+        stop("missing necessary information in slot ", i)
+
     # check dims in object and params
     iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
     # if > 1, they should be equal
@@ -244,11 +258,14 @@ setMethod('brp', signature(object='FLBRP'),
     else
       refpts <- refpts(object)
 
+    #
     if ("virgin" %in% dimnames(refpts)$refpt)
     {
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
       refpts@.Data["virgin","harvest",] <- 0
     }
+
+    #
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")

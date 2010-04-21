@@ -2,7 +2,7 @@
 # FLBRP/R/constructors.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
+# Maintainers: Laurence Kell, ICCAT & Santiago Cerviño, IEO
 # $Id$
 
 # FLBRP
@@ -55,12 +55,10 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     # range
     if(!'range' %in% names(args))
     {
-      if(exists('i'))
-      {
-        dims <- dims(args[[i]])
-        range <- list(min=dims$min, max=dims$max, minfbar=dims$min, maxfbar=dims$max,
-          plusgroup=dims$max)
-      }
+      dimsl <- dims(args[['landings.obs']])
+      dimsw <- dims(args[['mat']])
+      args[['range']] <- c(min=dimsw$min, max=dimsw$max, minfbar=dimsw$min,
+        maxfbar=dimsw$max, plusgroup=dimsw$max)
     }
   
     # resize: cost
@@ -210,27 +208,53 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
 # FLBRP(object=data.frame, sr=missing)  {{{
 setMethod('FLBRP', signature(object='data.frame', sr='missing'),
-  function(object, quant, ...)
+  function(object, quant, wide=TRUE, ...)
   {
-    # get quant
-    if(missing(quant))
-      quant <- names(object)[!names(object) %in% slotNames('FLBRP')]
-    if(length(quant) > 1)
-      stop("more than one column match for 'quant': ", quant)
-    
-    #
-    slots <- names(object)[!names(object) %in% quant]
-    res <- vector("list", length(slots))
-    names(res) <- slots
-
-    for(i in slots)
+    if(wide)
     {
-      data <- object[,c(quant, i)]
-      names(data)[2] <- 'data'
-      res[[i]] <- as.FLQuant(data)
+      # dimnames names
+      dnames <- names(object)[!names(object) %in% slotNames('FLBRP')]
+
+      # get quant
+      if(missing(quant))
+        quant <- dnames[!dnames %in% names(FLQuant())]
+      if(length(quant) > 1)
+        stop("more than one column match for 'quant': ", quant)
+    
+      #
+      slots <- names(object)[!names(object) %in% quant]
+      res <- vector("list", length(slots))
+      names(res) <- slots
+
+      for(i in slots)
+      {
+        data <- object[,c(dnames, i)]
+        names(data)[2] <- 'data'
+        res[[i]] <- as.FLQuant(data)
+      }
+
+      res <- do.call('FLBRP', c(res, list(...)))
+    }
+    else
+    {
+      #
+      res <- vector("list", length(slots))
+      slots <- as.character(unique(object$slot))
+      names(res) <- slots
+
+      #
+      for(i in slots)
+        res[[i]] <- as.FLQuant(object[object$slot==i,names(object)
+          [!names(object)%in%'slot']])
+
+      res <- do.call('FLBRP', c(FLQuants(res), list(...)))
+
     }
 
-    res <- do.call('FLBRP', c(FLQuants(res), list(...)))
+    # set some defaults
+    defaults <- c(discards.sel=0, bycatch.harvest=0, discards.wt=0, bycatch.wt=1)
+    for (i in names(defaults))
+      slot(res, i)[] <- defaults[i]
 
     return(res)
   }

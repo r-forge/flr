@@ -117,9 +117,11 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
 
 # kobeProb
 # kobeProb(FLBRP)  {{{
-setMethod('kobeProb', signature(biomass='FLQuant', harvest='FLQuant', refpts='refpts'),
-  function(biomass, harvest, refpts, xlab='probability', ylab='', lwd=1.5, ...)
+setMethod('kobeProb', signature(biomass='FLBRP', harvest='missing', refpts='missing'),
+  function(biomass, ylab='probability', xlab='', lwd=1.5, ...)
   {
+    kobeProb(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass),
+      refpts=biomass@refpts['msy',], xlab=xlab, ylab=ylab, lwd=lwd, ...)
   }
 ) # }}}
 
