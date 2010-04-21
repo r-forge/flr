@@ -12,56 +12,77 @@ setGeneric('FLBRP', function(object,sr, ...)
 # FLBRP(object='missing', sr='missing') {{{
 setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
-    fbar=FLQuant(seq(0, 4, 0.04)))
+    fbar=FLQuant(seq(0, 4, 0.04), quant='age'))
   {
-    args <- list(...)
-
-    res <- do.call(new, c(list(Class='FLBRP', model=model, params=params, fbar=fbar),
-      args))
+    args <- c(list(...), list(model=model, params=params, fbar=fbar))
+    
+    # quant
+    qname <- quant(args[[1]])
+    
     # resize: years
-    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs', 'stock.obs','profit.obs')
+    slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
+      'stock.obs','profit.obs')
+
     # find slots not provided as argument
     empty <- !slots %in% names(args)
+  
     # if any of them given, use for sizing
-    if(any(empty == FALSE))
-      for(i in slots[empty])
-        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+    if(any(!empty))
+      dnames <- dimnames(args[[slots[!empty][1]]])
+    else
+      dnames <- dimnames(FLQuant(quant=qname))
 
-    # warn: slots to dissapear
-    # c('stock.n', 'landings.n', 'discards.n', 'harvest')
+    for(i in slots[empty])
+      args[[i]] <- FLQuant(dimnames=dnames)
 
     # resize: ages
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
       'availability', 'price')
+    
     # find slots not provided as argument
     empty <- !slots %in% names(args)
+  
     # if any of them given, use for sizing
-    if(any(empty == FALSE))
-      for(i in slots[empty])
-        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+    if(any(!empty))
+      dnames <- dimnames(args[[slots[!empty][1]]])
+    else
+      dnames <- dimnames(FLQuant(quant=qname))
+
+    for(i in slots[empty])
+      args[[i]] <- FLQuant(dimnames=dnames)
 
     # range
     if(!'range' %in% names(args))
     {
       if(exists('i'))
       {
-        dims <- dims(slot(res, i))
+        dims <- dims(args[[i]])
         range <- list(min=dims$min, max=dims$max, minfbar=dims$min, maxfbar=dims$max,
           plusgroup=dims$max)
-        slot(res, 'range') <- unlist(range)
+        args[['range']] <- unlist(range)
       }
     }
   
     # resize: cost
     slots <- c('vcost', 'fcost')
+
     # find slots not provided as argument
     empty <- !slots %in% names(args)
+  
     # if any of them given, use for sizing
-    if(any(empty == FALSE))
-      for(i in slots[empty])
-        slot(res, i) <- FLQuant(dimnames=dimnames(slot(res, slots[!empty][1])))
+    if(any(!empty))
+      dnames <- dimnames(args[[slots[!empty][1]]])
+    else
+      dnames <- dimnames(FLQuant(quant=qname))
 
+    for(i in slots[empty])
+      args[[i]] <- FLQuant(dimnames=dnames)
+
+    # refpts
+    do.call(new, c(list('FLBRP'), args))
+
+    # set some 0 or 1 defaults
     if (!("discards.wt"     %in% names(args))) discards.wt    (res)[]<-0
     if (!("discards.sel"    %in% names(args))) discards.sel   (res)[]<-0
     if (!("bycatch.harvest" %in% names(args))) bycatch.harvest(res)[]<-0
