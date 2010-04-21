@@ -79,16 +79,8 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     for(i in slots[empty])
       args[[i]] <- FLQuant(dimnames=dnames)
 
-    # refpts
-    do.call(new, c(list('FLBRP'), args))
-
-    # set some 0 or 1 defaults
-    if (!("discards.wt"     %in% names(args))) discards.wt    (res)[]<-0
-    if (!("discards.sel"    %in% names(args))) discards.sel   (res)[]<-0
-    if (!("bycatch.harvest" %in% names(args))) bycatch.harvest(res)[]<-0
-    if (!("bycatch.wt"      %in% names(args))) bycatch.wt     (res)[]<-0
-    if (!("availability"    %in% names(args))) availability   (res)[]<-1
-
+    res <- do.call(new, c(list('FLBRP'), args))
+    
     return(res)
 
   }
@@ -212,6 +204,34 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     args <- list(...)
     for (i in names(args))
       slot(res, i) <- args[[i]]
+
+    return(res)
+  }
+) # }}}
+
+# FLBRP(object=data.frame, sr=missing)  {{{
+setMethod('FLBRP', signature(object='data.frame', sr='missing'),
+  function(object, quant, ...)
+  {
+    # get quant
+    if(missing(quant))
+      quant <- names(object)[!names(object) %in% slotNames('FLBRP')]
+    if(length(quant) > 1)
+      stop("more than one column match for 'quant': ", quant)
+    
+    #
+    slots <- names(object)[!names(object) %in% quant]
+    res <- vector("list", length(slots))
+    names(res) <- slots
+
+    for(i in slots)
+    {
+      data <- object[,c(quant, i)]
+      names(data)[2] <- 'data'
+      res[[i]] <- as.FLQuant(data)
+    }
+
+    res <- do.call('FLBRP', c(FLQuants(res), list(...)))
 
     return(res)
   }
