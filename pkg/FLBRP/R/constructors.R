@@ -60,7 +60,6 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
         dims <- dims(args[[i]])
         range <- list(min=dims$min, max=dims$max, minfbar=dims$min, maxfbar=dims$max,
           plusgroup=dims$max)
-        args[['range']] <- unlist(range)
       }
     }
   
