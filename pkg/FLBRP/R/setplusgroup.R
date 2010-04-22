@@ -3,9 +3,10 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 25 Feb 2009 15:47
+# Last Change: 22 Apr 2010 11:29
 # $Id$
 
+# setPlusGroup  {{{
 setMethod('setPlusGroup', signature(x='FLBRP'),
   function(x, plusgroup)
     {
@@ -30,6 +31,9 @@ setMethod('setPlusGroup', signature(x='FLBRP'),
         slot(x,i)[ac(newages),] <-slot(x,i)[ac(oldage),]
        }
 
+    range(x, 'max') <- plusgroup
+    range(x, 'plusgroup') <- plusgroup
+
     return(x)
   }
-)
+) # }}}
