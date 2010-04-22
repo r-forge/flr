@@ -2,7 +2,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 22 Apr 2010 17:28
+# Last Change: 22 Apr 2010 17:48
 # $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
@@ -269,10 +269,10 @@ plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            ver <- refpts(x)[,"ssb",]
-            ver <- ver[!is.na(ver)]
-            for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
+            slope <- refpts(x)[,"rec",]/refpts(x)[,"ssb",]
+            slope <- slope[!is.na(slope)]
+            for(i in seq(length(slope)))
+     	        abline(a=0,b=slope[i], lty=2, col=cols[3])
 			      points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols[3],cex=1.2)
             }
 
