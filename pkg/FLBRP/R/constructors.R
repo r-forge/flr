@@ -14,10 +14,15 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04), quant='age'))
   {
-    args <- c(list(...), list(model=model, params=params, fbar=fbar))
+    args <- list(...)
     
     # quant
-    qname <- quant(args[[1]])
+    if(length(args) > 1)
+      qname <- quant(args[[1]])
+    else
+      qname <- 'age'
+    
+    args <- c(args, list(model=model, params=params, fbar=fbar))
     
     # resize: years
     slots <- c('fbar.obs', 'landings.obs', 'discards.obs', 'rec.obs', 'ssb.obs',
@@ -34,7 +39,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
 
     for(i in slots[empty])
       args[[i]] <- FLQuant(dimnames=dnames)
-
+    
     # resize: ages
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
@@ -77,9 +82,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
       args[[i]] <- FLQuant(dimnames=dnames)
 
     res <- do.call(new, c(list('FLBRP'), args))
-    
     return(res)
-
   }
 ) # }}}
 
