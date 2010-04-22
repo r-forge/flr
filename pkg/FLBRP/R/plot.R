@@ -2,7 +2,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 21 Jan 2010 18:17
+# Last Change: 22 Apr 2010 17:28
 # $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
@@ -60,7 +60,10 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
            {
-           points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"harvest",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
      		   points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[3],cex=1.2)
      		   }
 
@@ -88,7 +91,10 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            points(refpts(x)[,"harvest",],refpts(x)[,"rec",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"harvest",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
 			      points(refpts(x)[,"harvest",],refpts(x)[,"rec",],pch=19,col=cols[3],cex=1.2)
             }
 
@@ -170,7 +176,10 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            points(refpts(x)[,"harvest",],refpts(x)[,"yield",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"harvest",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
 			      points(refpts(x)[,"harvest",],refpts(x)[,"yield",],pch=19,col=cols[3],cex=1.2)
             }
 
@@ -198,7 +207,10 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            points(refpts(x)[,"harvest",],refpts(x)[,"ssb",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"harvest",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
      	      points(refpts(x)[,"harvest",],refpts(x)[,"ssb",],pch=19,col=cols[3],cex=1.2)
             }
 
@@ -226,7 +238,10 @@ plot.y.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            points(refpts(x)[,"ssb",],refpts(x)[,"yield",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"ssb",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
 			      points(refpts(x)[,"ssb",],refpts(x)[,"yield",],pch=19,col=cols[3],cex=1.2)
             }
 
@@ -254,7 +269,10 @@ plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols[1],cex=1.5)
+            ver <- refpts(x)[,"ssb",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[3])
 			      points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols[3],cex=1.2)
             }
 
