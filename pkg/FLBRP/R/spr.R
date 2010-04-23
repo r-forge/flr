@@ -32,7 +32,7 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
   {
     params(ssb)<-FLPar(1)
     model(ssb)<-formula(rec~a)
-    fbar(ssb) <- FLQuant(0)
+    fbar(ssb) <- FLQuant(0, quant=quant(fbar(ssb)))
     
     res <- .Call("spr", ssb, SRNameCode(SRModelName(ssb@model)),
       FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))),
