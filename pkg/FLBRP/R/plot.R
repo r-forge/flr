@@ -2,26 +2,33 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 23 Apr 2010 09:41
+# Last Change: 23 Apr 2010 09:46
 # $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
-p.<-  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "yield.ssb", "profit.harvest", "profit.ssb", ""),cols=rainbow(dim(refpts(x))[1]),obs=FALSE,refpts=TRUE,ts="missing",...){
+  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "yield.ssb",
+    "profit.harvest", "profit.ssb", ""), cols=rainbow(dim(refpts(x))[1]),
+    obs=FALSE,refpts=TRUE,ts="missing",...)
+  {
+    lim.h=c(0, ifelse(all(is.na(fbar(x)[fbar(x)>0])), NA, max(fbar(x), na.rm=TRUE)))
+    lim.y=c(0, ifelse(all(is.na(yield(x)[yield(x)>0])), NA, max(yield(x), na.rm=TRUE)))
+    lim.p=c(0, ifelse(all(is.na(profit(x)[profit(x)>0])), NA, max(profit(x), na.rm=TRUE)))
+    lim.s=c(0, ifelse(all(is.na(ssb(x)[ssb(x)>0])), NA, max(ssb(x), na.rm=TRUE)))
+    lim.r=c(0, ifelse(all(is.na(rec(x)[ssb(x)>0])), NA, max(rec(x), na.rm=TRUE)))
 
-      lim.h=c(0, ifelse(all(is.na(fbar(  x)[fbar(  x)>0])), NA,    max(fbar(  x), na.rm=TRUE)))
-      lim.y=c(0, ifelse(all(is.na(yield( x)[yield( x)>0])), NA,    max(yield( x), na.rm=TRUE)))
-      lim.p=c(0, ifelse(all(is.na(profit(x)[profit(x)>0])), NA,    max(profit(x), na.rm=TRUE)))
-      lim.s=c(0, ifelse(all(is.na(ssb(   x)[ssb(   x)>0])), NA,    max(ssb(   x), na.rm=TRUE)))
-      lim.r=c(0, ifelse(all(is.na(rec(   x)[ssb(   x)>0])), NA,    max(rec(   x), na.rm=TRUE)))
-
-      if (obs)
-         {
-         if (length(fbar.obs(x))  > 0 && !all(is.na(fbar.obs(  x)))) lim.h=c(0, max(c(fbar.obs(x),   lim.h), na.rm=TRUE))
-         if (length(profit.obs(x))> 0 && !all(is.na(profit.obs(x)))) lim.p=c(0, max(c(profit.obs(x), lim.p), na.rm=TRUE))
-         if (length(yield.obs(x)) > 0 && !all(is.na(yield.obs( x)))) lim.y=c(0, max(c(yield.obs(x),  lim.y), na.rm=TRUE))
-         if (length(ssb.obs(x))   > 0 && !all(is.na(ssb.obs(   x)))) lim.s=c(0, max(c(ssb.obs(x),    lim.s), na.rm=TRUE))
-         if (length(rec.obs(x))   > 0 && !all(is.na(rec.obs(   x)))) lim.r=c(0, max(c(rec.obs(x),    lim.r), na.rm=TRUE))
-         }
+    if (obs)
+    {
+      if (length(fbar.obs(x))  > 0 && !all(is.na(fbar.obs(  x))))
+        lim.h=c(0, max(c(fbar.obs(x),   lim.h), na.rm=TRUE))
+      if (length(profit.obs(x))> 0 && !all(is.na(profit.obs(x))))
+        lim.p=c(0, max(c(profit.obs(x), lim.p), na.rm=TRUE))
+      if (length(yield.obs(x)) > 0 && !all(is.na(yield.obs( x))))
+        lim.y=c(0, max(c(yield.obs(x),  lim.y), na.rm=TRUE))
+      if (length(ssb.obs(x)) > 0 && !all(is.na(ssb.obs(   x))))
+        lim.s=c(0, max(c(ssb.obs(x),    lim.s), na.rm=TRUE))
+      if (length(rec.obs(x)) > 0 && !all(is.na(rec.obs(   x))))
+        lim.r=c(0, max(c(rec.obs(x),    lim.r), na.rm=TRUE))
+     }
 
       if (!missing(ts))
           {
@@ -346,126 +353,3 @@ plotBeer=function(v){
   		text(xmid,ymid,labels=c(paste("+",abs(v))),cex=.5+abs(v)*2)
       }
     }
-
-##### Tapas is the Kobe plot and Rasta is the time series summary of the p() of being in a kobe quadrant
-##### Kobematrix is a set of overlaoded methods to produce Kode plots and variants by a range of differeing objects
-
-## Exported method
-#setMethod("plot", signature(x="FLBRP", y="FLStock"),
-
-## Internal function that calls Tapas2 to make Kobe plot
-#plotTapasFLBRPFLStock<-function(x,y,yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
-
-## Internal function that makes the Kobe plot
-#plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
-
-## Internal function that calls Rasta2
-#plotRastaFLBRPFLStock<-function(x,y,title=""){
-
-## Internal function that makes the Kobe summary of P() of eing in a Kobe quadrant over time
-#plotRasta2<-function(ssbTrk,fbrTrk,title){
-
-
-setMethod("plot", signature(x="FLBRP", y="FLStock"),
-    function(x,y,type="tapas",yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE){
-    if (type=="tapas")
-       plotTapasFLBRPFLStock(x,y,yr=yr,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
-    else if (type=="rasta")
-       plotRastaFLBRPFLStock(x,y)
-    else stop("type has to be 'rasta' or 'tapas'")
-    })
-
-
-plotTapasFLBRPFLStock<-function(x,y,yr=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
-    {
-    x     <-refpts(x)["msy",,]
-    y     <-window(y,start=range(y,"minyear"),end=range(y,"maxyear"))
-
-    ssbPts<-ssb( y)/c(x[,"ssb",    ])
-    fbrPts<-fbar(y)/c(x[,"harvest",])
-
-    ssbTrk<-quantile(ssbPts,probs=0.5)
-    fbrTrk<-quantile(fbrPts,probs=0.5)
-
-    if (!is.null(yr)){
-       ssbTrk<-FLQuants(window(ssbTrk,end  =yr),
-                        window(ssbTrk,start=yr))
-
-       fbrTrk<-FLQuants(window(fbrTrk,end  =yr),
-                        window(fbrTrk,start=yr))
-       }
-    else{
-       ssbTrk<-FLQuants(ssbTrk)
-       fbrTrk<-FLQuants(fbrTrk)
-       }
-
-    ssbPts<-ssbPts[,ac(range(y,"maxyear"))]
-    fbrPts<-fbrPts[,ac(range(y,"maxyear"))]
-
-    plotTapas2(ssbTrk,fbrTrk,ssbPts=ssbPts,fbrPts=fbrPts,title=title,biCol=biCol,xlab=xlab,ylab=ylab,maxX=maxX,maxY=maxY,axs=axs)
-    }
-
-plotRastaFLBRPFLStock<-function(x,y,title=""){
-    x<-refpts(x)["msy",,]
-
-    ssbTrk<-ssb( y)/c(x[,"ssb",    ])
-    fbrTrk<-fbar(y)/c(x[,"harvest",])
-
-    plotRasta2(ssbTrk,fbrTrk,title=title)
-    }
-
-plotRasta2<-function(ssbTrk,fbrTrk,title){
-    red<-FLQuant(0,dimnames=dimnames(ssbTrk))
-    grn<-red
-    ylw<-red
-
-    red[ssbTrk< 1 & fbrTrk> 1]<-1
-    grn[ssbTrk>=1 & fbrTrk<=1]<-1
-    ylw[red   ==0 & grn   ==0]<-1
-
-#    xyplot(data~year,groups=qname,data=lapply(FLQuants(green=green,red=red,yellow=yellow),function(x) apply(x,2,mean)),
-#              col=c("green","red","yellow"),lwd=4,type="l",xlab="Year",ylab="Probability")
-    plot( apply(red,2,mean)[,,drop=T]~dimnames(red)$year,col="red",   lwd=4,type="l",xlab="Year",ylab="Probability",ylim=c(0,1))
-    lines(apply(grn,2,mean)[,,drop=T]~dimnames(grn)$year,col="green", lwd=4)
-    lines(apply(ylw,2,mean)[,,drop=T]~dimnames(ylw)$year,col="yellow",lwd=4)
-    }
-
-plotTapas2<-function(x,y,ssbPts=NULL,fbrPts=NULL,title="",biCol=c("white","blue"),xlab=expression(SSB:B[MSY]),ylab=expression(F:F[MSY]),maxX=NULL,maxY=NULL,axs=TRUE)
-    {
-    fish.pg<-function(maxX,maxY)
-        {
-        polygon(x=c(-0.5,1,1,-0.5),            y=c(1.0,1.0,maxY+.5,maxY+.5),    col="red2")
-        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(-0.5,-0.5,1.0,1.0),          col="lightgreen")
-        polygon(x=c(-0.5,1,1,-0.5),            y=c(-0.5,-0.5,1.0,1.0),          col="lightgoldenrod1")
-        polygon(x=c(1.0,maxX+0.5,maxX+0.5,1.0),y=c(1.0,1.0,maxY+.5,maxY+.5),    col="lightgoldenrod1")
-        }
-
-    maxX.<-max(unlist(lapply(x,max)),ssbPts,na.rm=T)
-    if (is.null(maxX))
-       maxX<-maxX.
-
-    maxY.<-max(unlist(lapply(y,max)),fbrPts,na.rm=T)
-    if (is.null(maxY))
-       maxY<-maxY.
-
-    cols<-gray(0:length(x) / length(x))
-
-    plot(y[[1]]~x[[1]], xlim=c(0,maxX),ylim=c(0,maxY),xlab=xlab,ylab=ylab,main=paste(title),axes=axs)
-    fish.pg(maxX,maxY)
-    abline(h=1.0,v=1,col="grey")
-    lines(y[[1]]~x[[1]], col=cols, type="l", lwd=2)
-    
-    if (!is.null(ssbPts) & !is.null(fbrPts))
-    if (dims(ssbPts)$iter==dims(ssbPts)$iter && dims(ssbPts)$iter>5){
-       t.  <-bivariateOrder(cbind(fbrPts,ssbPts))
-       col.<-rep(biCol,each=as.integer(length(t.)/length(biCol)))
-       points(c(fbrPts[,,,,,t.])~c(ssbPts[,,,,,t.]), col=col.,pch=19,cex=0.75)
-       lines(y[[1]]~x[[1]]) #, col=cols,lwd=2)
-       }
-
-    if (length(x)==length(y) & length(y)>1)
-    for (i in 1:length(y)) 
-       lines(x[[i]],y[[i]],col=cols[i],lwd=2)
-    }
-
-
