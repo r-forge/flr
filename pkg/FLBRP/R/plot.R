@@ -2,11 +2,11 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 22 Apr 2010 17:48
+# Last Change: 23 Apr 2010 09:41
 # $Id$
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
-p.<-  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "yield.ssb", "profit.harvest", "profit.ssb", ""),cols=c(1, 2, 8, 5, 6, 10, 12),obs=FALSE,refpts=TRUE,ts="missing",...){
+p.<-  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "yield.ssb", "profit.harvest", "profit.ssb", ""),cols=rainbow(dim(refpts(x))[1]),obs=FALSE,refpts=TRUE,ts="missing",...){
 
       lim.h=c(0, ifelse(all(is.na(fbar(  x)[fbar(  x)>0])), NA,    max(fbar(  x), na.rm=TRUE)))
       lim.y=c(0, ifelse(all(is.na(yield( x)[yield( x)>0])), NA,    max(yield( x), na.rm=TRUE)))
@@ -53,7 +53,7 @@ p.<-  function(x, y, type=c("all", "yield.harvest", "ssb.harvest", "rec.ssb", "y
 
 plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(fbar(x),profit.hat(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(fbar(x),profit.hat(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="Fishing Mortality",
                ylab="profit",
                main="Equilibrium profit v F")
@@ -63,8 +63,8 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
             ver <- refpts(x)[,"harvest",]
             ver <- ver[!is.na(ver)]
             for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
-     		   points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols[3],cex=1.2)
+     	        abline(v=ver[i], lty=2, col=cols[i])
+     		   points(refpts(x)[,"harvest",],refpts(x)[,"profit",],pch=19,col=cols,cex=1.2)
      		   }
 
          if (obs)
@@ -84,7 +84,7 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
       plot.r.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(fbar(x), rec(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(fbar(x), rec(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="Fishing Mortality",
                ylab="Recruits",
                main="Equilibrium Recruits v F")
@@ -94,8 +94,8 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
             ver <- refpts(x)[,"harvest",]
             ver <- ver[!is.na(ver)]
             for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
-			      points(refpts(x)[,"harvest",],refpts(x)[,"rec",],pch=19,col=cols[3],cex=1.2)
+     	        abline(v=ver[i], lty=2, col=cols[i])
+			      points(refpts(x)[,"harvest",],refpts(x)[,"rec",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
@@ -115,15 +115,18 @@ plot.p.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
 plot.p.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(ssb(x), profit(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(ssb(x), profit(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="SSB",
                ylab="profit",
                main="Equilibrium profit v SSB")
 
          if (refpts)
             {
-            points(refpts(x)[,"ssb",],refpts(x)[,"profit",],pch=19,col=cols[1],cex=1.5)
-   			    points(refpts(x)[,"ssb",],refpts(x)[,"profit",],pch=19,col=cols[3],cex=1.2)
+            ver <- refpts(x)[,"ssb",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[i])
+   			    points(refpts(x)[,"ssb",],refpts(x)[,"profit",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
@@ -146,20 +149,30 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
      par.mfrow<-par()$mfrow
 
 		 if (all(is.na(profit.hat(x)))){
-			 par(mfrow=c(2,2))
+       l <- layout(matrix(c(1, 2, 3, 4, 5, 5), ncol=2, byrow=T), widths=c(1,1),
+           heights=c(4,4,1))
+       par(mar = c(2,2,2,2))
 			 plot.s.h(x,lim.s,lim.h,cols,refpts,obs,ts)
 			 plot.r.s(x,lim.r,lim.s,cols,refpts,obs,ts)
 			 plot.y.h(x,lim.y,lim.h,cols,refpts,obs,ts)
 			 plot.y.s(x,lim.y,lim.s,cols,refpts,obs,ts)
+       plot(0, type='n', axes=FALSE)
+       legend('center', '(x,y)', dimnames(refpts(x))[[1]], col=cols, pch=19, bty='n',
+           cex=1.2, ncol=dim(refpts(x))[1])
 			 }
      else {
-			 par(mfrow=c(3,2))
+       l <- layout(matrix(c(1, 2, 3, 4, 5, 6, 7, 7), ncol=2, byrow=T), widths=c(1,1),
+           heights=c(3,3,3,1))
+       par(mar = c(2,2,2,2))
 			 plot.s.h(x,lim.s,lim.h,cols,refpts,obs,ts)
 			 plot.r.s(x,lim.r,lim.s,cols,refpts,obs,ts)
 			 plot.y.h(x,lim.y,lim.h,cols,refpts,obs,ts)
 			 plot.y.s(x,lim.y,lim.s,cols,refpts,obs,ts)
 			 plot.p.h(x,lim.p,lim.h,cols,refpts,obs,ts)
 			 plot.p.s(x,lim.p,lim.s,cols,refpts,obs,ts)
+       plot(0, type='n', axes=FALSE)
+       legend('center', '(x,y)', dimnames(refpts(x))[[1]], col=cols, pch=19, bty='n',
+           cex=1.2, ncol=dim(refpts(x))[1])
 			 }
 
 		 invisible()
@@ -169,7 +182,7 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
 
  		plot.y.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(fbar(x),yield(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(fbar(x),yield(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="Fishing Mortality",
                  ylab="Yield",
                main="Equilibrium Yield v F")
@@ -179,8 +192,8 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
             ver <- refpts(x)[,"harvest",]
             ver <- ver[!is.na(ver)]
             for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
-			      points(refpts(x)[,"harvest",],refpts(x)[,"yield",],pch=19,col=cols[3],cex=1.2)
+     	        abline(v=ver[i], lty=2, col=cols[i])
+			      points(refpts(x)[,"harvest",],refpts(x)[,"yield",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
@@ -200,7 +213,7 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
 
  	plot.s.h<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(fbar(x), ssb(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(fbar(x), ssb(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="Fishing Mortality",
                ylab="SSB",
                main="Equilibrium SSB v F")
@@ -210,8 +223,8 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
             ver <- refpts(x)[,"harvest",]
             ver <- ver[!is.na(ver)]
             for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
-     	      points(refpts(x)[,"harvest",],refpts(x)[,"ssb",],pch=19,col=cols[3],cex=1.2)
+     	        abline(v=ver[i], lty=2, col=cols[i])
+     	      points(refpts(x)[,"harvest",],refpts(x)[,"ssb",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
@@ -231,7 +244,7 @@ plot.all<-function(x,lim.h,lim.y,lim.p,lim.s,lim.r,cols,refpts,obs,ts)
 
 plot.y.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(ssb(x), yield(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(ssb(x), yield(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="SSB",
                ylab="Yield",
                main="Equilibrium Yield v SSB")
@@ -241,8 +254,8 @@ plot.y.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
             ver <- refpts(x)[,"ssb",]
             ver <- ver[!is.na(ver)]
             for(i in seq(length(ver)))
-     	        abline(v=ver[i], lty=2, col=cols[3])
-			      points(refpts(x)[,"ssb",],refpts(x)[,"yield",],pch=19,col=cols[3],cex=1.2)
+     	        abline(v=ver[i], lty=2, col=cols[i])
+			      points(refpts(x)[,"ssb",],refpts(x)[,"yield",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
@@ -262,7 +275,7 @@ plot.y.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
 plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
          {
-         plot(ssb(x), rec(x), xlim=xlim, ylim=ylim, type="l",col=cols[1],
+         plot(ssb(x), rec(x), xlim=xlim, ylim=ylim, type="l",col='black',
                xlab="SSB",
                ylab="Recruits",
                main="Equilibrium Recruits v SSB")
@@ -272,8 +285,8 @@ plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
             slope <- refpts(x)[,"rec",]/refpts(x)[,"ssb",]
             slope <- slope[!is.na(slope)]
             for(i in seq(length(slope)))
-     	        abline(a=0,b=slope[i], lty=2, col=cols[3])
-			      points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols[3],cex=1.2)
+     	        abline(a=0,b=slope[i], lty=2, col=cols[i])
+			      points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols,cex=1.2)
             }
 
          if (obs)
