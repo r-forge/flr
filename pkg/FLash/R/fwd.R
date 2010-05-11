@@ -2,7 +2,7 @@
 # FLash/R/fwd.R
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Finlay Scott, Cefas
-# Last Change: 05 Mar 2010 15:56
+# Last Change: 11 May 2010 13:33
 # $Id$
 
 ## fwd(FLStock)
@@ -22,7 +22,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     if (!validObject(ctrl))
        stop("ctrl not valid")
 
-    yrs<-as.numeric(sort(unique(ctrl@target[,"year"])))
+    yrs <- sort(as.numeric(as.character(unique(ctrl@target[, "year"])))) 
 
     ## check years
     ## years in ctrl have to be in order
