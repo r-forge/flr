@@ -1,1 +1,1 @@
-PKG_LIBS = $(shell $(R_HOME)/bin/Rterm.exe --slave -e 'cat(system.file("libs", package="FLCore"))')/FLCore.so
+PKG_LIBS = $(shell $(R_HOME)/bin/Rterm.exe --slave -e 'cat(system.file("libs", package="FLCore"))')/FLCore.dll
