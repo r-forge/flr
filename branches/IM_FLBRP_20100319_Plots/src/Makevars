@@ -1,1 +1,0 @@
-PKG_LIBS=$(R_HOME)/library/FLCore/libs/FLCore.so
