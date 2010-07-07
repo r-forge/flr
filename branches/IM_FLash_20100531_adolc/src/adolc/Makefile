@@ -4,12 +4,12 @@ ADOLC_CXXFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_VERSION=1 -DADOLC_SUBVE
 ADOLC_CFLAGS= -DHAVE_MALLOC=1 -DHAVE_REALLOC=1 -DADOLC_VERSION=1 -DADOLC_SUBVERSION=9 -DADOLC_PATCHLEVEL=0
 
 ADCOBJS=adalloc.o malloc.o \
-	adouble.o avector.o convolut.o fortutils.o forward_partx.o \
+	adouble.o convolut.o fortutils.o forward_partx.o \
 	fos_forward.o fos_reverse.o fov_forward.o fov_reverse.o \
 	hos_forward.o hos_ov_reverse.o hos_reverse.o \
 	hov_forward.o hov_reverse.o hov_wk_forward.o \
-	interfaces.o interfacesf.o \
-	taputil.o taputilc.o tayutil.o tayutilc.o zos_forward.o
+	interfaces.o interfacesf.o\
+	zos_forward.o
 DRVOBJS=drivers/drivers.o drivers/driversf.o drivers/odedrivers.o \
 	drivers/odedriversf.o drivers/taylor.o
 SPAOBJS=sparse/int_forward_s.o sparse/int_forward_t.o \

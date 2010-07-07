@@ -35,29 +35,23 @@
                  ov  : over vector (forward)
                  ti  : Taylor input
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
+  
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040414 kowarz: adapted to configure - make - make install
-          20031218 andrea: hos_forward_partx
-          20020730 olvo:   allowing input of higher order adjoints
-                           (hos_ti_reverse & hov_ti_reverse)
-          20010719 andrea: forward vector modes with keep
-                           (hov_wk_forward & hos_ov_reverse)  
 ----------------------------------------------------------------------------*/
 #if !defined(ADOLC_INTERFACES_H)
 #define ADOLC_INTERFACES_H 1
 
-#include "common.h"
-#include "sparse/sparse.h"
+#include <common.h>
+
+#if defined(SPARSE)
+#include <sparse/sparsedrivers.h>
+#include <sparse/sparse_fo_rev.h>
+#endif
 
 /****************************************************************************/
 /****************************************************************************/
@@ -189,7 +183,7 @@ BEGIN_C_DECLS
 /*                                                                      ZOS */
 /* zos_forward(tag, m, n, keep, x[n], y[m])                                 */
 /* (defined in uni5_for.mc)                                                 */
-ADOLC_DLL_EXPORT int zos_forward(short,int,int,int,double*,double*);
+ADOLC_DLL_EXPORT int zos_forward(short,int,int,int,const double*,double*);
 
 /* zos_forward_nk(tag, m, n, x[n], y[m])                                    */
 /* (no keep, defined in uni5_for.c, but not supported in ADOL-C 1.8)        */
@@ -243,7 +237,9 @@ ADOLC_DLL_EXPORT fint hos_forward_(
 /* fov_forward(tag, m, n, p, x[n], X[n][p], y[m], Y[m][p])                  */
 /* (defined in uni5_for.mc)                                                 */
 ADOLC_DLL_EXPORT int fov_forward(
-    short, int,int,int,double*,double**,double*,double**);
+    short, int,int,int,const double*,double**,double*,double**);
+ADOLC_DLL_EXPORT int fov_offset_forward(
+    short, int,int,int,int,double*,double**,double*,double**);
 
 /* now pack the arrays into vectors for Fortran calling                     */
 ADOLC_DLL_EXPORT fint fov_forward_(
@@ -281,6 +277,57 @@ ADOLC_DLL_EXPORT int hov_wk_forward(
 /* now pack the arrays into vectors for Fortran calling                     */
 ADOLC_DLL_EXPORT fint hov_wk_forward_(
     fint*,fint*,fint*,fint*,fint*,fint*,fdouble*,fdouble*,fdouble*,fdouble*);
+
+/****************************************************************************/
+/*                                                    BIT PATTERN UTILITIES */
+/*--------------------------------------------------------------------------*/
+/*                                                            INT_FOR, SAFE */
+/* int_forward_safe(tag, m, n, p, X[n][p], Y[m][p])                         */
+
+ADOLC_DLL_EXPORT int int_forward_safe
+(short, int, int, int, unsigned long int**, unsigned long int**);
+
+
+/*--------------------------------------------------------------------------*/
+/*                                                           INT_FOR, TIGHT */
+/* int_forward_tight(tag, m, n, p, x[n], X[n][p], y[m], Y[m][p])            */
+
+ADOLC_DLL_EXPORT int int_forward_tight
+(short, int, int, int, const double*, unsigned long int**, double*, unsigned long int**);
+
+/****************************************************************************/
+/*                                                   INDEX DOMAIN UTILITIES */
+/*--------------------------------------------------------------------------*/
+/*                                                            INDOPRO, SAFE */
+/* indopro_forward_safe(tag, m, n, p, x[n], *Y[m])                          */
+
+ADOLC_DLL_EXPORT int indopro_forward_safe
+(short, int, int, const double*, unsigned int**);
+
+
+/*--------------------------------------------------------------------------*/
+/*                                                           INDOPRO, TIGHT */
+/* indopro_forward_tight(tag, m, n,  x[n], *Y[m])                           */
+
+ADOLC_DLL_EXPORT int indopro_forward_tight
+(short, int, int, const double*, unsigned int**);
+
+/****************************************************************************/
+/*                                         NONLINEAR INDEX DOMAIN UTILITIES */
+/*--------------------------------------------------------------------------*/
+/*                                                            INDOPRO, SAFE */
+/* nonl_ind_forward_safe(tag, m, n, p, x[n], *Y[m])                          */
+
+ADOLC_DLL_EXPORT int nonl_ind_forward_safe
+(short, int, int, const double*, unsigned int**);
+
+
+/*--------------------------------------------------------------------------*/
+/*                                                           INDOPRO, TIGHT */
+/* nonl_ind_forward_tight(tag, m, n,  x[n], *Y[m])                           */
+
+ADOLC_DLL_EXPORT int nonl_ind_forward_tight
+(short, int, int, const double*, unsigned int**);
 
 /****************************************************************************/
 /*                                                             REVERSE MODE */
@@ -353,6 +400,23 @@ ADOLC_DLL_EXPORT int hov_ti_reverse(
 /* now pack the arrays into vectors for Fortran calling      */
 ADOLC_DLL_EXPORT fint hov_ti_reverse_(
     fint*,fint*,fint*,fint*,fint*,fdouble*,fdouble*);
+
+/****************************************************************************/
+/*                                                    BIT PATTERN UTILITIES */
+/*--------------------------------------------------------------------------*/
+/*                                                           INT_REV, TIGHT */
+/* int_reverse_tight(tag, m, n, q, U[q][m], Z[q][n])                        */
+
+ADOLC_DLL_EXPORT int int_reverse_tight
+(short, int, int, int, unsigned long int**, unsigned long int**);
+
+
+/*--------------------------------------------------------------------------*/
+/*                                                            INT_REV, SAFE */
+/* int_reverse_safe(tag, m, n, q, U[q][m], Z[q][n])                         */
+
+ADOLC_DLL_EXPORT int int_reverse_safe
+(short, int, int, int, unsigned long int**, unsigned long int**);
 
 END_C_DECLS
 

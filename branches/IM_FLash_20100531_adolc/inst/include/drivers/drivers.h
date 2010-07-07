@@ -6,27 +6,18 @@
            (with C and C++ callable interfaces including Fortran 
             callable versions).
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040416 kowarz: adapted to configure - make - make install
-          20030303 andrea: new hess_mat(..), new hessian2(..)
-          20000228 olvo:   corrected comment at lagra_hess_vec
-          19981130 olvo:   newly created from adutilsc.h
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 #if !defined(ADOLC_DRIVERS_DRIVERS_H)
 #define ADOLC_DRIVERS_DRIVERS_H 1
 
-#include "../common.h"
+#include <common.h>
 
 BEGIN_C_DECLS
 
@@ -42,14 +33,20 @@ ADOLC_DLL_EXPORT fint function_(fint*,fint*,fint*,fdouble*,fdouble*);
 /*--------------------------------------------------------------------------*/
 /*                                                                 gradient */
 /* gradient(tag, n, x[n], g[n])                                             */
-ADOLC_DLL_EXPORT int gradient(short,int,double*,double*);
+ADOLC_DLL_EXPORT int gradient(short,int,const double*,double*);
 ADOLC_DLL_EXPORT fint gradient_(fint*,fint*,fdouble*,fdouble*);
 
 /*--------------------------------------------------------------------------*/
 /*                                                                 jacobian */
 /* jacobian(tag, m, n, x[n], J[m][n])                                       */
-ADOLC_DLL_EXPORT int jacobian(short,int,int,double*,double**);
+ADOLC_DLL_EXPORT int jacobian(short,int,int,const double*,double**);
 ADOLC_DLL_EXPORT fint jacobian_(fint*,fint*,fint*,fdouble*,fdouble*);
+
+/*--------------------------------------------------------------------------*/
+/*                                                           large_jacobian */
+/* large_jacobian(tag, m, n, k, x[n], y[m], J[m][n])                        */
+ADOLC_DLL_EXPORT int large_jacobian(short,int,int,int,double*,double*,double**);
+ADOLC_DLL_EXPORT fint large_jacobian_(fint*,fint*,fint*,fint*,fdouble*,fdouble*,fdouble*);
 
 
 /*--------------------------------------------------------------------------*/
@@ -87,7 +84,7 @@ ADOLC_DLL_EXPORT fint hess_vec_(fint*,fint*,fdouble*,fdouble*,fdouble*);
 
 /*--------------------------------------------------------------------------*/
 /*                                                           hessian_matrix */
-/* hess_mat(tag, n, q, x[n], V[n][q], W[q][n])                              */
+/* hess_mat(tag, n, q, x[n], V[n][q], W[n][q])                              */
 ADOLC_DLL_EXPORT int hess_mat(short,int,int,double*,double**,double**);
 ADOLC_DLL_EXPORT fint hess_mat_(fint*,fint*,fint*,
                                 fdouble*,fdouble**,fdouble**);

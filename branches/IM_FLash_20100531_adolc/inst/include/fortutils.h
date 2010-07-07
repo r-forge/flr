@@ -4,26 +4,19 @@
  Revision: $Id$
  Contents: Internal tools to handle Fortran arrays
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040423 kowarz: adapted to configure - make - make install
-          19981130 olvo:   newly created from driversc.c
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 
 #if !defined(ADOLC_FORTUTILS_H)
 #define ADOLC_FORTUTILS_H 1
 
-#include "common.h"
+#include <common.h>
 
 /****************************************************************************/
 /*                                                         Now the C THINGS */

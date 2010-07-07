@@ -7,30 +7,12 @@
            system; they are intended to be tweeked by users and local
            maintainence personal.
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20030306 andrea: introduce EPS
-          20030305 andrea: introduce TBUFNUM
-          20030304 andrea: change default allocation from malloc to calloc
-          20000214 olvo:   The defininition of the macro USE_CALLOC
-                           forces the ADOL-C allocation routines
-                           to use 'calloc' instead of 'malloc'.
-                           This may help in case of problems with
-                           uninitialized memory as reported by Andreas
-                           Waechter from CMU.
-          19981130 olvo:   Fortran types
-          19981030 olvo:   bufsize --> BUFSIZE & TBUFSIZE
-          19980723 olvo:   new: DIAG_OUT as standard output  
-                           FNAME3   as vs output
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
                            
 ----------------------------------------------------------------------------*/
 
@@ -38,12 +20,14 @@
 #define ADOLC_USRPARMS_H 1
 
 /*--------------------------------------------------------------------------*/
-/* Buffer size for tapes */
-#define BUFSIZE    65536 /* 16384 or  524288  */
+/* Buffer sizes */
+#define OBUFSIZE  65536 /* 16384 or  524288  */
+#define LBUFSIZE  65536 /* 16384 or  524288  */
+#define VBUFSIZE  65536 /* 16384 or  524288  */
 
 /*--------------------------------------------------------------------------*/
 /* Buffer size for temporary Taylor store */
-#define TBUFSIZE   65536 /* 16384 or  524288  */
+#define TBUFSIZE  65536 /* 16384 or  524288  */
 
 /*--------------------------------------------------------------------------*/
 /* Number of temporary Taylor stores*/
@@ -51,7 +35,7 @@
 
 /*--------------------------------------------------------------------------*/
 /* ADOL-C data types */
-#define locint     unsigned int
+#define locint     unsigned int                /* ensure locint is unsigned */
 #define revreal    double
 
 /*--------------------------------------------------------------------------*/
@@ -75,12 +59,22 @@
 /****************************************************************************/
 /* Standard output used for diagnostics by ADOL-C,                          */
 /* e.g. stdout or stderr or whatever file identifier                        */
-#define DIAG_OUT stdout
+#define DIAG_OUT stderr
 
 /*--------------------------------------------------------------------------*/
 /* Use 'calloc' instead of 'malloc' in ADOL-C allocation routines. If you   */
 /* have any trouble with uninitialized memory, then define ADOLC_USE_CALLOC.*/
 #define ADOLC_USE_CALLOC 1
+
+/*--------------------------------------------------------------------------*/
+/* Constants used by the checkpointing part (revolve) */
+#define ADOLC_CHECKUP 1000
+#define ADOLC_REPSUP 1000
+
+/*--------------------------------------------------------------------------*/
+/* Maximal size (Bytes) of a block to be written with fwrite or read with   */
+/* fread  --- power of 2 > 8 preferable ;-) ---                             */
+#define ADOLC_IO_CHUNK_SIZE 1073741824
 
 /*--------------------------------------------------------------------------*/
 #endif

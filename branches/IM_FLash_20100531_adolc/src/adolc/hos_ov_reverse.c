@@ -4,19 +4,11 @@
  Revision: $Id$
  Contents: hos_ov_reverse (higher-order-scalar reverse mode on vectors)
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040417 kowarz: adapted to configure - make - make install
-          20030304 andrea: first version
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 

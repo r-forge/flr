@@ -4,29 +4,18 @@
  Revision: $Id$
  Contents: Allocation of arrays of doubles in several dimensions 
  
- Copyright (c) 2003
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
  
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040423 kowarz: adapted to configure - make - make install
-          20000310 olvo:   removed superflous semicola
-          19990622 olvo:   myfree routines & special identity 
-                           allocations (2n-1-vectors) 
-                           (MOSTLY INLINED)
-          19981130 olvo:   newly created.
- 
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
+
 ----------------------------------------------------------------------------*/
 #if !defined (ADOLC_ADALLOC_H)
 #define ADOLC_ADALLOC_H 1
 
-#include "common.h"
+#include <common.h>
 
 /****************************************************************************/
 /*                                                         Now the C THINGS */
@@ -46,6 +35,20 @@ ADOLC_DLL_EXPORT void myfree3(double ***);
 /*                                          SPECIAL IDENTITY REPRESENTATION */
 ADOLC_DLL_EXPORT double   **myallocI2(int);
 ADOLC_DLL_EXPORT void myfreeI2(int, double**);
+
+ADOLC_DLL_EXPORT unsigned int * myalloc1_uint(int);
+
+ADOLC_DLL_EXPORT unsigned long int *  myalloc1_ulong(int);
+ADOLC_DLL_EXPORT unsigned long int ** myalloc2_ulong(int, int);
+
+
+/****************************************************************************/
+/*                              INTEGER VARIANT FOR BIT PATTERN PROPAGATION */
+
+ADOLC_DLL_EXPORT void myfree1_uint(unsigned int*);
+
+ADOLC_DLL_EXPORT void myfree1_ulong(unsigned long int *);
+ADOLC_DLL_EXPORT void myfree2_ulong(unsigned long int **);
 
 END_C_DECLS
 

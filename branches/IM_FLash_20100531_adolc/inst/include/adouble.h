@@ -1,48 +1,21 @@
-/*----------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
  ADOL-C -- Automatic Differentiation by Overloading in C++
- File:     adouble.h
+
  Revision: $Id$
  Contents: adouble.h contains the basis for the class of adouble
            included here are all the possible functions defined on
            the adouble class.  Notice that, as opposed to ealier versions,
            both the class adub and the class adouble are derived from a base
            class (badouble).  See below for further explanation.
- 
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
-  
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20041110 kowarz: tapeless (scalar/vector) forward version added
-          20040423 kowarz: adapted to configure - make - make install
-          20000107 olvo:   iostream.h instaed of stream.h  
-          19991210 olvo:   checking the changes
-          19991122 olvo:   new op_codes eq_plus_prod eq_min_prod
-                           for  y += x1 * x2
-                           and  y -= x1 * x2  
-          19981201 olvo:   last check: 
-                           - taputil things changed, includes 
-          19980820 olvo:   new comparison strategy & some inlines
-          19980709 olvo:   modified sign operators
- 
-----------------------------------------------------------------------------*/
 
-/****************************************************************************/
-/*
-  NOTICE that the purpose of the class adub is merely to avoid the 
-  generation and recording of an extra return adouble for each elementary 
-  operation and function call. The same result can be achieved much
-  more elegantly with GNUs named return variables, which would also 
-  achieve the desired last in first out pattern for adouble construction 
-  and destruction.
-*/
-/****************************************************************************/
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
+  
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
+ 
+---------------------------------------------------------------------------*/
 
 #if !defined(ADOLC_ADOUBLE_H)
 #define ADOLC_ADOUBLE_H 1
@@ -61,8 +34,7 @@ using std::cerr;
 using std::ostream;
 using std::istream;
 
-#include "common.h"
-#include "taputil.h"
+#include <common.h>
 
 /* NOTICE: There are automatic includes at the end of this file! */
 
@@ -87,10 +59,7 @@ using std::istream;
 class adouble;
 class adub;
 class badouble;
-class badoublev;
-class adoublev;
 class adubv;
-class along;
 /* class doublev;  that's history */
 
 /*--------------------------------------------------------------------------*/
@@ -106,7 +75,7 @@ double ADOLC_DLL_EXPORT fmax( const double &x, const double &y );
 /****************************************************************************/
 /*                                                           CLASS BADOUBLE */
 
-/*
+/**
    The class badouble contains the basic definitions for 
    the arithmetic operations, comparisons, etc. 
    This is a basic class from which the adub and adouble are 
@@ -139,10 +108,16 @@ public:
     /*------------------------------------------------------------------------*/
     badouble& operator >>= ( double& );                        /* Assignments */
     badouble& operator <<= ( double );
+    void declareIndependent ();
+    void declareDependent ();
     badouble& operator = ( double );
     badouble& operator = ( const badouble& );
     badouble& operator = ( const adub& );
-    double value() const;
+    double getValue() const;
+    inline double value() {
+        return getValue();
+    }
+    void setValue ( const double );
     /* badouble& operator = ( const adouble& );
        !!! olvo 991210: was the same as badouble-assignment */
 
@@ -234,9 +209,11 @@ public:
     friend ADOLC_DLL_EXPORT adub sinh  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub cosh  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub tanh  ( const badouble& );
+#if defined(ATRIG_ERF)
     friend ADOLC_DLL_EXPORT adub asinh ( const badouble& );
     friend ADOLC_DLL_EXPORT adub acosh ( const badouble& );
     friend ADOLC_DLL_EXPORT adub atanh ( const badouble& );
+#endif
 
     friend ADOLC_DLL_EXPORT adub fabs  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub ceil  ( const badouble& );
@@ -259,10 +236,6 @@ public:
             const adouble &arg1, const adouble &arg2 );
     friend ADOLC_DLL_EXPORT void condassign( adouble &res, const adouble &cond,
             const adouble &arg );
-    friend ADOLC_DLL_EXPORT void condassign( along &res, const adouble &cond,
-            const adouble &arg1, const adouble &arg2 );
-    friend ADOLC_DLL_EXPORT void condassign( along &res, const adouble &cond,
-            const adouble &arg );
 };
 
 
@@ -280,9 +253,6 @@ public:
 
 class ADOLC_DLL_EXPORT adub:public badouble {
     friend ADOLC_DLL_EXPORT class adouble;
-    /* added Sep/01/96 */
-    friend ADOLC_DLL_EXPORT class asub;
-    friend ADOLC_DLL_EXPORT class along;
 protected:
     adub( locint lo ):badouble(lo) {};
     adub( void ):badouble(0) {
@@ -341,9 +311,11 @@ public:
     friend ADOLC_DLL_EXPORT adub sinh  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub cosh  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub tanh  ( const badouble& );
+#if defined(ATRIG_ERF)
     friend ADOLC_DLL_EXPORT adub asinh ( const badouble& );
     friend ADOLC_DLL_EXPORT adub acosh ( const badouble& );
     friend ADOLC_DLL_EXPORT adub atanh ( const badouble& );
+#endif
 
     friend ADOLC_DLL_EXPORT adub fabs  ( const badouble& );
     friend ADOLC_DLL_EXPORT adub ceil  ( const badouble& );
@@ -360,15 +332,7 @@ public:
     friend ADOLC_DLL_EXPORT adub frexp ( const badouble&, int* );
     friend ADOLC_DLL_EXPORT adub erf   ( const badouble& );
 
-    /*--------------------------------------------------------------------------*/
-    /* vector operations (friends) */
-    friend ADOLC_DLL_EXPORT adub operator*( const badoublev&, double* );
-    friend ADOLC_DLL_EXPORT adub operator*( double*, const badoublev& );
-    friend ADOLC_DLL_EXPORT adub operator*( const badoublev&, const badoublev& );
-
-#ifdef overwrite
     ~adub();
-#endif
 };
 
 
@@ -381,10 +345,8 @@ public:
      address is freed.
 */
 class ADOLC_DLL_EXPORT adouble:public badouble {
-    friend ADOLC_DLL_EXPORT class along;
 public:
     adouble( const adub& );
-    adouble( const along& );
     adouble( const adouble& );
     adouble( void );
     adouble( double );
@@ -395,85 +357,13 @@ public:
     badouble& operator++( void );
     badouble& operator--( void );
     /*   inline double value(); */
-#ifdef overwrite
     ~adouble();
-#endif
 
     adouble& operator = ( double );
     adouble& operator = ( const badouble& );
     /* adouble& operator = ( const adouble& );
        !!! olvo 991210 was the same as badouble-assignment */
     adouble& operator = ( const adub& );
-};
-
-/****************************************************************************/
-/*                                                               CLASS ASUB */
-class ADOLC_DLL_EXPORT asub:public badouble {
-    locint base,
-    offset;
-public:
-    asub( locint start, locint index );
-#ifdef overwrite
-    ~asub();
-#endif
-    asub& operator <<= ( double );
-    asub& operator =   ( double );
-    /* asub& operator =   ( const adub& );
-       !!! olvo 991210 is the same as normal assignment */
-    asub& operator =   ( const badouble& );
-    /* added Sep/01/96 */
-    /* olvo 991210 seems to be a provisional version */
-    asub& operator =   ( const asub& );
-    asub& operator +=  ( double );
-    asub& operator +=  ( const badouble& );
-    asub& operator -=  ( double x );
-    asub& operator -=  ( const badouble& );
-    asub& operator *=  ( double x );
-    asub& operator *=  ( const badouble& );
-    asub& operator /=  ( double x );
-    asub& operator /=  ( const badouble& );
-    /* adub prevents postfix operators to occur on the left
-       side of an assignment which would not work  */
-    adub operator++( int );
-    adub operator--( int );
-    asub& operator++( void );
-    asub& operator--( void );
-};
-
-
-/****************************************************************************/
-/*                                                              CLASS ALONG */
-/* The class along was originally designed for the sole purpose of
-   allowing subscripting operations with computable ON THE TAPE.
-   The current definition refers to badouble, i.e. it is a 
-   floating point class. The current constuction allows to 
-   use alongs in the same way as adoubles. Especially adubs can 
-   can be used as subscripts, i.e. the results of "active computations".
-   This useful because people want to compute the indices on the tape.
-   Notice, that along does NOT perform integer arithmetic. 
-   This is the major disadvantage of the current along. */
-class ADOLC_DLL_EXPORT along:public badouble {
-    friend ADOLC_DLL_EXPORT class adouble;
-public:
-    along( const adub& );
-    along( const along& );
-    along( void );
-    along( int );
-#ifdef overwrite
-    ~along();
-#endif
-    along& operator = ( int );
-    /* along& operator = ( const adouble& );
-       !!! olvo 991210 is the same as badouble-assignment */
-    along& operator = ( const badouble& );
-    along& operator = ( const along& );
-    along& operator = ( const adub& );
-    /* adub prevents postfix operators to occur on the left
-       side of an assignment which would not work  */
-    adub operator++( int );
-    adub operator--( int );
-    along&  operator++( void );
-    along&  operator--( void );
 };
 
 
@@ -572,19 +462,22 @@ inline adub operator / (const badouble& x, double coval) {
 }
 
 /****************************************************************************/
-/*                                                        AUTOMTIC INCLUDES */
-#include "avector.h" /* active vector classes */
-
-/****************************************************************************/
 /* tapeless implementation                                                  */
 /****************************************************************************/
 #else
 
+namespace adtl {
+
 #if defined(NUMBER_DIRECTIONS)
-static unsigned int numdir=NUMBER_DIRECTIONS;
+extern int ADOLC_numDir;
+#define ADOLC_TAPELESS_UNIQUE_INTERNALS int adtl::ADOLC_numDir = NUMBER_DIRECTIONS;
+#if !defined(DYNAMIC_DIRECTIONS)
 #  define ADVAL                adval[NUMBER_DIRECTIONS]
+#else
+#  define ADVAL                *adval;
+#endif
 #  define ADVAL_TYPE           const double *
-#  define FOR_I_EQ_0_LT_NUMDIR for (unsigned int _i=0; _i<numdir; ++_i)
+#  define FOR_I_EQ_0_LT_NUMDIR for (int _i=0; _i < ADOLC_numDir; ++_i)
 #  define ADVAL_I              adval[_i]
 #  define ADV_I                adv[_i]
 #  define V_I                  v[_i]
@@ -597,15 +490,6 @@ static unsigned int numdir=NUMBER_DIRECTIONS;
 #  define V_I                  v
 #endif
 
-namespace adtl {
-
-#if defined(NUMBER_DIRECTIONS)
-void setNumDir(const unsigned int p) {
-    if (p>NUMBER_DIRECTIONS) numdir=NUMBER_DIRECTIONS;
-    else numdir=p;
-}
-#endif
-
 inline double fmin( const double &x, const double &y ) {
     if (x<y) return x;
     else return y;
@@ -616,7 +500,7 @@ inline double fmax( const double &x, const double &y ) {
     else return y;
 }
 
-inline const double makeNaN() {
+inline double makeNaN() {
 #if defined(non_num)
     double a,b;
     a=non_num;
@@ -630,86 +514,89 @@ inline const double makeNaN() {
 class adouble {
 public:
     // ctors
-    inline adouble() {}
+    inline adouble();
     inline adouble(const double v);
     inline adouble(const double v, ADVAL_TYPE adv);
     inline adouble(const adouble& a);
+#if defined(DYNAMIC_DIRECTIONS)
+    inline ~adouble();
+#endif
 
     /*******************  temporary results  ******************************/
     // sign
-    inline const adouble operator - () const;
-    inline const adouble operator + () const;
+    inline adouble operator - () const;
+    inline adouble operator + () const;
 
     // addition
-    inline const adouble operator + (const double v) const;
-    inline const adouble operator + (const adouble& a) const;
+    inline adouble operator + (const double v) const;
+    inline adouble operator + (const adouble& a) const;
     inline friend
-    const adouble operator + (const double v, const adouble& a);
+    adouble operator + (const double v, const adouble& a);
 
     // substraction
-    inline const adouble operator - (const double v) const;
-    inline const adouble operator - (const adouble& a) const;
+    inline adouble operator - (const double v) const;
+    inline adouble operator - (const adouble& a) const;
     inline friend
-    const adouble operator - (const double v, const adouble& a);
+    adouble operator - (const double v, const adouble& a);
 
     // multiplication
-    inline const adouble operator * (const double v) const;
-    inline const adouble operator * (const adouble& a) const;
+    inline adouble operator * (const double v) const;
+    inline adouble operator * (const adouble& a) const;
     inline friend
-    const adouble operator * (const double v, const adouble& a);
+    adouble operator * (const double v, const adouble& a);
 
     // division
-    inline const adouble operator / (const double v) const;
-    inline const adouble operator / (const adouble& a) const;
+    inline adouble operator / (const double v) const;
+    inline adouble operator / (const adouble& a) const;
     inline friend
-    const adouble operator / (const double v, const adouble& a);
+    adouble operator / (const double v, const adouble& a);
 
     // inc/dec
-    inline const adouble operator ++ ();
-    inline const adouble operator ++ (int);
-    inline const adouble operator -- ();
-    inline const adouble operator -- (int);
+    inline adouble operator ++ ();
+    inline adouble operator ++ (int);
+    inline adouble operator -- ();
+    inline adouble operator -- (int);
 
     // functions
-    inline friend const adouble tan(const adouble &a);
-    inline friend const adouble exp(const adouble &a);
-    inline friend const adouble log(const adouble &a);
-    inline friend const adouble sqrt(const adouble &a);
-    inline friend const adouble sin(const adouble &a);
-    inline friend const adouble cos(const adouble &a);
-    inline friend const adouble asin(const adouble &a);
-    inline friend const adouble acos(const adouble &a);
-    inline friend const adouble atan(const adouble &a);
+    inline friend adouble tan(const adouble &a);
+    inline friend adouble exp(const adouble &a);
+    inline friend adouble log(const adouble &a);
+    inline friend adouble sqrt(const adouble &a);
+    inline friend adouble sin(const adouble &a);
+    inline friend adouble cos(const adouble &a);
+    inline friend adouble asin(const adouble &a);
+    inline friend adouble acos(const adouble &a);
+    inline friend adouble atan(const adouble &a);
 
-    inline friend const adouble atan2(const adouble &a, const adouble &b);
-    inline friend const adouble pow(const adouble &a, double v);
-    inline friend const adouble pow(const adouble &a, const adouble &b);
-    inline friend const adouble pow(double v, const adouble &a);
-    inline friend const adouble log10(const adouble &a);
+    inline friend adouble atan2(const adouble &a, const adouble &b);
+    inline friend adouble pow(const adouble &a, double v);
+    inline friend adouble pow(const adouble &a, const adouble &b);
+    inline friend adouble pow(double v, const adouble &a);
+    inline friend adouble log10(const adouble &a);
 
-    inline friend const adouble sinh (const adouble &a);
-    inline friend const adouble cosh (const adouble &a);
-    inline friend const adouble tanh (const adouble &a);
+    inline friend adouble sinh (const adouble &a);
+    inline friend adouble cosh (const adouble &a);
+    inline friend adouble tanh (const adouble &a);
 #if defined(ATRIG_ERF)
-    inline friend const adouble asinh (const adouble &a);
-    inline friend const adouble acosh (const adouble &a);
-    inline friend const adouble atanh (const adouble &a);
+    inline friend adouble asinh (const adouble &a);
+    inline friend adouble acosh (const adouble &a);
+    inline friend adouble atanh (const adouble &a);
 #endif
-    inline friend const adouble fabs (const adouble &a);
-    inline friend const adouble ceil (const adouble &a);
-    inline friend const adouble floor (const adouble &a);
-    inline friend const adouble fmax (const adouble &a, const adouble &b);
-    inline friend const adouble fmax (double v, const adouble &a);
-    inline friend const adouble fmax (const adouble &a, double v);
-    inline friend const adouble fmin (const adouble &a, const adouble &b);
-    inline friend const adouble fmin (double v, const adouble &a);
-    inline friend const adouble fmin (const adouble &a, double v);
-    inline friend const adouble ldexp (const adouble &a, const adouble &b);
-    inline friend const adouble ldexp (const adouble &a, const double v);
-    inline friend const adouble ldexp (const double v, const adouble &a);
-    inline friend const double frexp (const adouble &a, int* v);
+    inline friend adouble fabs (const adouble &a);
+    inline friend adouble ceil (const adouble &a);
+    inline friend adouble floor (const adouble &a);
+    inline friend adouble fmax (const adouble &a, const adouble &b);
+    inline friend adouble fmax (double v, const adouble &a);
+    inline friend adouble fmax (const adouble &a, double v);
+    inline friend adouble fmin (const adouble &a, const adouble &b);
+    inline friend adouble fmin (double v, const adouble &a);
+    inline friend adouble fmin (const adouble &a, double v);
+    inline friend adouble ldexp (const adouble &a, const adouble &b);
+    inline friend adouble ldexp (const adouble &a, const double v);
+    inline friend adouble ldexp (const double v, const adouble &a);
+    inline friend double frexp (const adouble &a, int* v);
 #if defined(ATRIG_ERF)
-    inline friend const adouble erf (const adouble &a);
+    inline friend adouble erf (const adouble &a);
 #endif
 
 
@@ -784,24 +671,46 @@ private:
 };
 
 /*******************************  ctors  ************************************/
+adouble::adouble() {
+#if defined(DYNAMIC_DIRECTIONS)
+    adval = new double[ADOLC_numDir];
+#endif
+}
+
 adouble::adouble(const double v) : val(v) {
+#if defined(DYNAMIC_DIRECTIONS)
+    adval = new double[ADOLC_numDir];
+#endif
     FOR_I_EQ_0_LT_NUMDIR
-    ADVAL_I=0.0;
+    ADVAL_I = 0.0;
 }
 
 adouble::adouble(const double v, ADVAL_TYPE adv) : val(v) {
+#if defined(DYNAMIC_DIRECTIONS)
+    adval = new double[ADOLC_numDir];
+#endif
     FOR_I_EQ_0_LT_NUMDIR
     ADVAL_I=ADV_I;
 }
 
 adouble::adouble(const adouble& a) : val(a.val) {
+#if defined(DYNAMIC_DIRECTIONS)
+    adval = new double[ADOLC_numDir];
+#endif
     FOR_I_EQ_0_LT_NUMDIR
     ADVAL_I=a.ADVAL_I;
 }
 
+/*******************************  dtors  ************************************/
+#if defined(DYNAMIC_DIRECTIONS)
+adouble::~adouble() {
+    delete[] adval;
+}
+#endif
+
 /*************************  temporary results  ******************************/
 // sign
-const adouble adouble::operator - () const {
+adouble adouble::operator - () const {
     adouble tmp;
     tmp.val=-val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -809,16 +718,16 @@ const adouble adouble::operator - () const {
     return tmp;
 }
 
-const adouble adouble::operator + () const {
+adouble adouble::operator + () const {
     return *this;
 }
 
 // addition
-const adouble adouble::operator + (const double v) const {
+adouble adouble::operator + (const double v) const {
     return adouble(val+v, adval);
 }
 
-const adouble adouble::operator + (const adouble& a) const {
+adouble adouble::operator + (const adouble& a) const {
     adouble tmp;
     tmp.val=val+a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -826,16 +735,16 @@ const adouble adouble::operator + (const adouble& a) const {
     return tmp;
 }
 
-const adouble operator + (const double v, const adouble& a) {
+adouble operator + (const double v, const adouble& a) {
     return adouble(v+a.val, a.adval);
 }
 
 // subtraction
-const adouble adouble::operator - (const double v) const {
+adouble adouble::operator - (const double v) const {
     return adouble(val-v, adval);
 }
 
-const adouble adouble::operator - (const adouble& a) const {
+adouble adouble::operator - (const adouble& a) const {
     adouble tmp;
     tmp.val=val-a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -843,7 +752,7 @@ const adouble adouble::operator - (const adouble& a) const {
     return tmp;
 }
 
-const adouble operator - (const double v, const adouble& a) {
+adouble operator - (const double v, const adouble& a) {
     adouble tmp;
     tmp.val=v-a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -852,7 +761,7 @@ const adouble operator - (const double v, const adouble& a) {
 }
 
 // multiplication
-const adouble adouble::operator * (const double v) const {
+adouble adouble::operator * (const double v) const {
     adouble tmp;
     tmp.val=val*v;
     FOR_I_EQ_0_LT_NUMDIR
@@ -860,7 +769,7 @@ const adouble adouble::operator * (const double v) const {
     return tmp;
 }
 
-const adouble adouble::operator * (const adouble& a) const {
+adouble adouble::operator * (const adouble& a) const {
     adouble tmp;
     tmp.val=val*a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -868,7 +777,7 @@ const adouble adouble::operator * (const adouble& a) const {
     return tmp;
 }
 
-const adouble operator * (const double v, const adouble& a) {
+adouble operator * (const double v, const adouble& a) {
     adouble tmp;
     tmp.val=v*a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -877,7 +786,7 @@ const adouble operator * (const double v, const adouble& a) {
 }
 
 // division
-const adouble adouble::operator / (const double v) const {
+adouble adouble::operator / (const double v) const {
     adouble tmp;
     tmp.val=val/v;
     FOR_I_EQ_0_LT_NUMDIR
@@ -885,7 +794,7 @@ const adouble adouble::operator / (const double v) const {
     return tmp;
 }
 
-const adouble adouble::operator / (const adouble& a) const {
+adouble adouble::operator / (const adouble& a) const {
     adouble tmp;
     tmp.val=val/a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -893,7 +802,7 @@ const adouble adouble::operator / (const adouble& a) const {
     return tmp;
 }
 
-const adouble operator / (const double v, const adouble& a) {
+adouble operator / (const double v, const adouble& a) {
     adouble tmp;
     tmp.val=v/a.val;
     FOR_I_EQ_0_LT_NUMDIR
@@ -902,12 +811,12 @@ const adouble operator / (const double v, const adouble& a) {
 }
 
 // inc/dec
-const adouble adouble::operator ++ () {
+adouble adouble::operator ++ () {
     ++val;
     return *this;
 }
 
-const adouble adouble::operator ++ (int) {
+adouble adouble::operator ++ (int) {
     adouble tmp;
     tmp.val=val++;
     FOR_I_EQ_0_LT_NUMDIR
@@ -915,12 +824,12 @@ const adouble adouble::operator ++ (int) {
     return tmp;
 }
 
-const adouble adouble::operator -- () {
+adouble adouble::operator -- () {
     --val;
     return *this;
 }
 
-const adouble adouble::operator -- (int) {
+adouble adouble::operator -- (int) {
     adouble tmp;
     tmp.val=val--;
     FOR_I_EQ_0_LT_NUMDIR
@@ -929,84 +838,84 @@ const adouble adouble::operator -- (int) {
 }
 
 // functions
-const adouble tan(const adouble& a) {
+adouble tan(const adouble& a) {
     adouble tmp;
     double tmp2;
-    tmp.val=::tan(a.val);
-    tmp2=::cos(a.val);
+    tmp.val=ADOLC_MATH_NSP::tan(a.val);
+    tmp2=ADOLC_MATH_NSP::cos(a.val);
     tmp2*=tmp2;
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble exp(const adouble &a) {
+adouble exp(const adouble &a) {
     adouble tmp;
-    tmp.val=::exp(a.val);
+    tmp.val=ADOLC_MATH_NSP::exp(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp.val*a.ADVAL_I;
     return tmp;
 }
 
-const adouble log(const adouble &a) {
+adouble log(const adouble &a) {
     adouble tmp;
-    tmp.val=::log(a.val);
+    tmp.val=ADOLC_MATH_NSP::log(a.val);
     FOR_I_EQ_0_LT_NUMDIR
-    if (a.val>0 || a.val==0 && a.ADVAL_I>=0) tmp.ADVAL_I=a.ADVAL_I/a.val;
+      if ((a.val>0 || a.val==0) && a.ADVAL_I>=0) tmp.ADVAL_I=a.ADVAL_I/a.val;
     else tmp.ADVAL_I=makeNaN();
     return tmp;
 }
 
-const adouble sqrt(const adouble &a) {
+adouble sqrt(const adouble &a) {
     adouble tmp;
-    tmp.val=::sqrt(a.val);
+    tmp.val=ADOLC_MATH_NSP::sqrt(a.val);
     FOR_I_EQ_0_LT_NUMDIR
-    if (a.val>0 || a.val==0 && a.ADVAL_I>=0) tmp.ADVAL_I=a.ADVAL_I/tmp.val/2;
+      if ((a.val>0 || a.val==0) && a.ADVAL_I>=0) tmp.ADVAL_I=a.ADVAL_I/tmp.val/2;
     else tmp.ADVAL_I=makeNaN();
     return tmp;
 }
 
-const adouble sin(const adouble &a) {
+adouble sin(const adouble &a) {
     adouble tmp;
     double tmp2;
-    tmp.val=::sin(a.val);
-    tmp2=::cos(a.val);
+    tmp.val=ADOLC_MATH_NSP::sin(a.val);
+    tmp2=ADOLC_MATH_NSP::cos(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I;
     return tmp;
 }
 
-const adouble cos(const adouble &a) {
+adouble cos(const adouble &a) {
     adouble tmp;
     double tmp2;
-    tmp.val=::cos(a.val);
-    tmp2=-::sin(a.val);
+    tmp.val=ADOLC_MATH_NSP::cos(a.val);
+    tmp2=-ADOLC_MATH_NSP::sin(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I;
     return tmp;
 }
 
-const adouble asin(const adouble &a) {
+adouble asin(const adouble &a) {
     adouble tmp;
-    tmp.val=::asin(a.val);
-    double tmp2=::sqrt(1-a.val*a.val);
+    tmp.val=ADOLC_MATH_NSP::asin(a.val);
+    double tmp2=ADOLC_MATH_NSP::sqrt(1-a.val*a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble acos(const adouble &a) {
+adouble acos(const adouble &a) {
     adouble tmp;
-    tmp.val=::acos(a.val);
-    double tmp2=-::sqrt(1-a.val*a.val);
+    tmp.val=ADOLC_MATH_NSP::acos(a.val);
+    double tmp2=-ADOLC_MATH_NSP::sqrt(1-a.val*a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble atan(const adouble &a) {
+adouble atan(const adouble &a) {
     adouble tmp;
-    tmp.val=::atan(a.val);
+    tmp.val=ADOLC_MATH_NSP::atan(a.val);
     double tmp2=1+a.val*a.val;
     tmp2=1/tmp2;
     if (tmp2!=0)
@@ -1018,9 +927,9 @@ const adouble atan(const adouble &a) {
     return tmp;
 }
 
-const adouble atan2(const adouble &a, const adouble &b) {
+adouble atan2(const adouble &a, const adouble &b) {
     adouble tmp;
-    tmp.val=::atan2(a.val, b.val);
+    tmp.val=ADOLC_MATH_NSP::atan2(a.val, b.val);
     double tmp2=a.val*a.val;
     double tmp3=b.val*b.val;
     double tmp4=tmp3/(tmp2+tmp3);
@@ -1033,65 +942,65 @@ const adouble atan2(const adouble &a, const adouble &b) {
     return tmp;
 }
 
-const adouble pow(const adouble &a, double v) {
+adouble pow(const adouble &a, double v) {
     adouble tmp;
-    tmp.val=::pow(a.val, v);
-    double tmp2=v*::pow(a.val, v-1);
+    tmp.val=ADOLC_MATH_NSP::pow(a.val, v);
+    double tmp2=v*ADOLC_MATH_NSP::pow(a.val, v-1);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I;
     return tmp;
 }
 
-const adouble pow(const adouble &a, const adouble &b) {
+adouble pow(const adouble &a, const adouble &b) {
     adouble tmp;
-    tmp.val=::pow(a.val, b.val);
-    double tmp2=b.val*::pow(a.val, b.val-1);
-    double tmp3=::log(a.val)*tmp.val;
+    tmp.val=ADOLC_MATH_NSP::pow(a.val, b.val);
+    double tmp2=b.val*ADOLC_MATH_NSP::pow(a.val, b.val-1);
+    double tmp3=ADOLC_MATH_NSP::log(a.val)*tmp.val;
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I+tmp3*b.ADVAL_I;
     return tmp;
 }
 
-const adouble pow(double v, const adouble &a) {
+adouble pow(double v, const adouble &a) {
     adouble tmp;
-    tmp.val=::pow(v, a.val);
-    double tmp2=tmp.val*::log(v);
+    tmp.val=ADOLC_MATH_NSP::pow(v, a.val);
+    double tmp2=tmp.val*ADOLC_MATH_NSP::log(v);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I;
     return tmp;
 }
 
-const adouble log10(const adouble &a) {
+adouble log10(const adouble &a) {
     adouble tmp;
-    tmp.val=::log10(a.val);
-    double tmp2=::log((double)10)*a.val;
+    tmp.val=ADOLC_MATH_NSP::log10(a.val);
+    double tmp2=ADOLC_MATH_NSP::log((double)10)*a.val;
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble sinh (const adouble &a) {
+adouble sinh (const adouble &a) {
     adouble tmp;
-    tmp.val=::sinh(a.val);
-    double tmp2=::cosh(a.val);
+    tmp.val=ADOLC_MATH_NSP::sinh(a.val);
+    double tmp2=ADOLC_MATH_NSP::cosh(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I*tmp2;
     return tmp;
 }
 
-const adouble cosh (const adouble &a) {
+adouble cosh (const adouble &a) {
     adouble tmp;
-    tmp.val=::cosh(a.val);
-    double tmp2=::sinh(a.val);
+    tmp.val=ADOLC_MATH_NSP::cosh(a.val);
+    double tmp2=ADOLC_MATH_NSP::sinh(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I*tmp2;
     return tmp;
 }
 
-const adouble tanh (const adouble &a) {
+adouble tanh (const adouble &a) {
     adouble tmp;
-    tmp.val=::tanh(a.val);
-    double tmp2=::cosh(a.val);
+    tmp.val=ADOLC_MATH_NSP::tanh(a.val);
+    double tmp2=ADOLC_MATH_NSP::cosh(a.val);
     tmp2*=tmp2;
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
@@ -1099,27 +1008,27 @@ const adouble tanh (const adouble &a) {
 }
 
 #if defined(ATRIG_ERF)
-const adouble asinh (const adouble &a) {
+adouble asinh (const adouble &a) {
     adouble tmp;
-    tmp.val=::asinh(a.val);
-    double tmp2=::sqrt(a.val*a.val+1);
+    tmp.val=ADOLC_MATH_NSP_ERF::asinh(a.val);
+    double tmp2=ADOLC_MATH_NSP::sqrt(a.val*a.val+1);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble acosh (const adouble &a) {
+adouble acosh (const adouble &a) {
     adouble tmp;
-    tmp.val=::acosh(a.val);
-    double tmp2=::sqrt(a.val*a.val-1);
+    tmp.val=ADOLC_MATH_NSP_ERF::acosh(a.val);
+    double tmp2=ADOLC_MATH_NSP::sqrt(a.val*a.val-1);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
     return tmp;
 }
 
-const adouble atanh (const adouble &a) {
+adouble atanh (const adouble &a) {
     adouble tmp;
-    tmp.val=::atanh(a.val);
+    tmp.val=ADOLC_MATH_NSP_ERF::atanh(a.val);
     double tmp2=1-a.val*a.val;
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=a.ADVAL_I/tmp2;
@@ -1127,9 +1036,9 @@ const adouble atanh (const adouble &a) {
 }
 #endif
 
-const adouble fabs (const adouble &a) {
+adouble fabs (const adouble &a) {
     adouble tmp;
-    tmp.val=::fabs(a.val);
+    tmp.val=ADOLC_MATH_NSP::fabs(a.val);
     int as=0;
     if (a.val>0) as=1;
     if (a.val<0) as=-1;
@@ -1146,23 +1055,23 @@ const adouble fabs (const adouble &a) {
             return tmp;
 }
 
-const adouble ceil (const adouble &a) {
+adouble ceil (const adouble &a) {
     adouble tmp;
-    tmp.val=::ceil(a.val);
+    tmp.val=ADOLC_MATH_NSP::ceil(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=0.0;
     return tmp;
 }
 
-const adouble floor (const adouble &a) {
+adouble floor (const adouble &a) {
     adouble tmp;
-    tmp.val=::floor(a.val);
+    tmp.val=ADOLC_MATH_NSP::floor(a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=0.0;
     return tmp;
 }
 
-const adouble fmax (const adouble &a, const adouble &b) {
+adouble fmax (const adouble &a, const adouble &b) {
     adouble tmp;
     double tmp2=a.val-b.val;
     if (tmp2<0) {
@@ -1185,7 +1094,7 @@ const adouble fmax (const adouble &a, const adouble &b) {
 return tmp;
 }
 
-const adouble fmax (double v, const adouble &a) {
+adouble fmax (double v, const adouble &a) {
     adouble tmp;
     double tmp2=v-a.val;
     if (tmp2<0) {
@@ -1208,7 +1117,7 @@ const adouble fmax (double v, const adouble &a) {
 return tmp;
 }
 
-const adouble fmax (const adouble &a, double v) {
+adouble fmax (const adouble &a, double v) {
     adouble tmp;
     double tmp2=a.val-v;
     if (tmp2<0) {
@@ -1231,7 +1140,7 @@ const adouble fmax (const adouble &a, double v) {
 return tmp;
 }
 
-const adouble fmin (const adouble &a, const adouble &b) {
+adouble fmin (const adouble &a, const adouble &b) {
     adouble tmp;
     double tmp2=a.val-b.val;
     if (tmp2<0) {
@@ -1254,7 +1163,7 @@ const adouble fmin (const adouble &a, const adouble &b) {
 return tmp;
 }
 
-const adouble fmin (double v, const adouble &a) {
+adouble fmin (double v, const adouble &a) {
     adouble tmp;
     double tmp2=v-a.val;
     if (tmp2<0) {
@@ -1277,7 +1186,7 @@ const adouble fmin (double v, const adouble &a) {
 return tmp;
 }
 
-const adouble fmin (const adouble &a, double v) {
+adouble fmin (const adouble &a, double v) {
     adouble tmp;
     double tmp2=a.val-v;
     if (tmp2<0) {
@@ -1300,27 +1209,29 @@ const adouble fmin (const adouble &a, double v) {
 return tmp;
 }
 
-const adouble ldexp (const adouble &a, const adouble &b) {
+adouble ldexp (const adouble &a, const adouble &b) {
     return a*pow(2.,b);
 }
 
-const adouble ldexp (const adouble &a, const double v) {
-    return a*::pow(2.,v);
+adouble ldexp (const adouble &a, const double v) {
+    return a*ADOLC_MATH_NSP::pow(2.,v);
 }
 
-const adouble ldexp (const double v, const adouble &a) {
+adouble ldexp (const double v, const adouble &a) {
     return v*pow(2.,a);
 }
 
-const double frexp (const adouble &a, int* v) {
-    return ::frexp(a.val, v);
+double frexp (const adouble &a, int* v) {
+    return ADOLC_MATH_NSP::frexp(a.val, v);
 }
 
 #if defined(ATRIG_ERF)
-const adouble erf (const adouble &a) {
+adouble erf (const adouble &a) {
     adouble tmp;
-    tmp.val=::erf(a.val);
-    double tmp2=2.0/::sqrt(::acos(-1.0))*::exp(-a.val*a.val);
+    tmp.val=ADOLC_MATH_NSP_ERF::erf(a.val);
+    double tmp2 = 2.0 /
+        ADOLC_MATH_NSP_ERF::sqrt(ADOLC_MATH_NSP::acos(-1.0)) *
+        ADOLC_MATH_NSP_ERF::exp(-a.val*a.val);
     FOR_I_EQ_0_LT_NUMDIR
     tmp.ADVAL_I=tmp2*a.ADVAL_I;
     return tmp;
@@ -1501,13 +1412,24 @@ void adouble::setADValue(const unsigned int p, const double v) {
 }
 #  endif
 
+#if defined(NUMBER_DIRECTIONS)
+static void setNumDir(const unsigned int p) {
+#if !defined(DYNAMIC_DIRECTIONS)
+    if (p>NUMBER_DIRECTIONS) ADOLC_numDir=NUMBER_DIRECTIONS;
+    else ADOLC_numDir=p;
+#else
+    ADOLC_numDir = p;
+#endif
+}
+#endif
+
 /*******************  i/o operations  ***************************************/
 ostream& operator << ( ostream& out, const adouble& a) {
     out << "Value: " << a.val;
 #if !defined(NUMBER_DIRECTIONS)
     out << " ADValue: ";
 #else
-out << " ADValues (" << numdir << "): ";
+    out << " ADValues (" << ADOLC_numDir << "): ";
 #endif
     FOR_I_EQ_0_LT_NUMDIR
     out << a.ADVAL_I << " ";
@@ -1542,7 +1464,7 @@ while (c!=')' && !in.eof());
     while (c!=')' && !in.eof());
     return in;
 }
-};
+}
 
 /****************************************************************************/
 #endif /* ADOLC_TAPELESS */

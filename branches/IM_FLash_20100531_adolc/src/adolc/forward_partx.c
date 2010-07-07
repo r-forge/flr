@@ -4,24 +4,16 @@
  Revision: $Id$
  Contents: 
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040423 kowarz: adapted to configure - make - make install
-                   andrea: new created
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 
-#include "adalloc.h"
-#include "interfaces.h"
+#include <adalloc.h>
+#include <interfaces.h>
 
 BEGIN_C_DECLS
 

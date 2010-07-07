@@ -184,7 +184,8 @@ bool fwd::run(SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs)
             int NIters=0;
 	         while (norm(r,n) > 1e-10 && NIters++<50)
 	            {
-	            jac_solv(_tag,n,indep,r,0,2);
+                // jac_solv(_tag,n,indep,r,0,2);
+            jac_solv(_tag,n,indep,r,2);
 
 	            for (i=0; i<n; i++)
 		             indep[i] -= r[i];	   

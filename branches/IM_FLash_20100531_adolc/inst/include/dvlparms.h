@@ -6,21 +6,12 @@
            These parameters are intended for use by the developers and 
            maintainers of ADOL-C to specify library wide definitions.
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          19991122 olvo:  version 1.8.5
-          19990816 olvo:  version 1.8.4
-          19990310 olvo:  version 1.8.2
-          19981130 olvo:  last check
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 
@@ -29,20 +20,20 @@
 
 /*--------------------------------------------------------------------------*/
 /* File names for the tapes */
-#define FNAME3     "_adolc-vs_tape"
-#define FNAME2     "_adolc-rl_tape."
-#define FNAME1     "_adolc-in_tape."
-#define FNAME      "_adolc-op_tape."
+#define ADOLC_TAYLORS_NAME    "ADOLC-Taylors_"
+#define ADOLC_VALUES_NAME     "ADOLC-Values_"
+#define ADOLC_LOCATIONS_NAME  "ADOLC-Locations_"
+#define ADOLC_OPERATIONS_NAME "ADOLC-Operations_"
 
-/*--------------------------------------------------------------------------*/
-/* Standard output used for diagnostics by ADOL-C, e.g. stdout or stderr or */
-/* whatever file identifier */
-#define DIAG_OUT stdout
+/****************************************************************************/
+/* Tells ADOL-C which name space offers the mathematical functions          */
+#define ADOLC_MATH_NSP std
+/* For error function with gcc compiler                                     */
+#define ADOLC_MATH_NSP_ERF 
 
 /*--------------------------------------------------------------------------*/
 /* TAPE IDENTIFICATION (ADOLC & version check) */
 #define statSpace   22
-#define statSize    11
 #define adolcIDSize  5
 /* NOTE: adolcIDSize + statSize <= statSpace required! */
 

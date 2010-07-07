@@ -3,47 +3,66 @@
  File:     malloc.h
  Revision: $Id$
  Contents: malloc replacements for not gnu compatible malloc system functions
- 
- Copyright (c) 2005
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
-History:
-         20050617 kowarz: initial version
- 
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
+  
 ----------------------------------------------------------------------------*/
 
 #if !defined(ADOLC_MALLOC_H)
-#  define ADOLC_MALLOC_H 1
+#   define ADOLC_MALLOC_H 1
 
-#if defined(HAVE_CONFIG_H)
-#  include "config.h"
-#endif
+#   if defined(ADOLC_INTERNAL)
+#       if defined(HAVE_CONFIG_H)
+#           include <config.h>
 
-#include <stddef.h>
+#           undef ADOLC_NO_MALLOC
+#           undef ADOLC_NO_REALLOC
+#           if !defined(HAVE_MALLOC)
+#               define ADOLC_NO_MALLOC 1
+#           else
+#               if (HAVE_MALLOC == 0)
+#                   define ADOLC_NO_MALLOC 1
+#               endif /* HAVE_MALLOC == 0 */
+#           endif /* HAVE_MALLOC */
+#           if !defined(HAVE_REALLOC)
+#               define ADOLC_NO_REALLOC 1
+#           else
+#               if (HAVE_REALLOC == 0)
+#                   define ADOLC_NO_REALLOC 1
+#               endif /* HAVE_REALLOC == 0 */
+#           endif /* HAVE_REALLOC */
 
-#if defined(ADOLC_DLL)
-#	define ADOLC_DLL_EXPORT __declspec(dllexport)
-#else
-#	define ADOLC_DLL_EXPORT
-#endif
+#           if defined(ADOLC_NO_MALLOC)
+#               include <stddef.h>
+#               if defined(__cplusplus)
+                    extern "C" {
+#               endif /* __cplusplus */
+#               undef rpl_malloc
+#               undef rpl_calloc
+                extern void *rpl_malloc(size_t);
+                extern void *rpl_calloc(size_t, size_t);
+#               if defined(__cplusplus)
+                    }
+#               endif /* __cplusplus */
+#           endif /* ADOLC_NO_MALLOC */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+#           if defined(ADOLC_NO_REALLOC)
+#               include <stddef.h>
+#               if defined(__cplusplus)
+                    extern "C" {
+#               endif /* __cplusplus */
+#               undef rpl_realloc
+                extern void *rpl_realloc(void *, size_t);
+#               if defined(__cplusplus)
+                    }
+#               endif /* __cplusplus */
+#           endif /* ADOLC_NO_REALLOC */
 
-    ADOLC_DLL_EXPORT void *rpl_malloc(size_t);
-    ADOLC_DLL_EXPORT void *rpl_calloc(size_t, size_t);
-    ADOLC_DLL_EXPORT void *rpl_realloc(void *, size_t);
-
-#if defined(__cplusplus)
-}
-#endif
-
+#       endif /* HAVE_CONFIG_H */
+#   endif /* ADOLC_INTERNAL */
 #endif /* ADOLC_MALLOC_H */

@@ -4,30 +4,17 @@
  Revision: $Id$
  Contents: Genuine C++ Interfaces to ADOL-C forward & reverse calls.
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040423 kowarz: adapted to configure - make - make install
-          19990715 olvo:   performance tuning
-          19981201 olvo:   newly created from interfaces.C
-          19981126 olvo:   last check (p's & q's) 
-          19980818 olvo:   new: double* myalloc(int)
-          19980731 olvo:   debugging
-          19980729 olvo:   bigger ec
-          19980727 olvo:   ec in reverse U[m][p] ---> U[p][m]
+ This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
  
 ----------------------------------------------------------------------------*/
 
-#include "interfaces.h"
-#include "adalloc.h"
+#include <interfaces.h>
+#include <adalloc.h>
 
 /****************************************************************************/
 /*                                                                   MACROS */

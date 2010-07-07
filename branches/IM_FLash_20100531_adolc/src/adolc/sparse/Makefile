@@ -1,7 +1,7 @@
 HEADERS=-I../../../inst/include
 
-SPAOBJS=int_forward_s.o int_forward_t.o	int_reverse_s.o int_reverse_t.o \
-	jacutils.o sparse.o sparsedrivers.o	graph_hess.o graph_jac.o hessutils.o
+SPAOBJS=../int_forward_s.o ../int_forward_t.o	../int_reverse_s.o ../int_reverse_t.o \
+	../sparse.o sparsedrivers.o	sparse_fo_rec.o ../graph_hess.o ../graph_jac.o ../hessutils.o
 
 %.o: %.c
 	@echo CC  $<

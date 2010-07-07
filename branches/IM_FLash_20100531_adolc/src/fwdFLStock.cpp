@@ -688,7 +688,8 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
               {
               function(_Tape,n,n,indep,r);
 
-              jac_solv(_Tape,n,indep,r,0,2);
+                // jac_solv(_tag,n,indep,r,0,2);
+              jac_solv(_Tape,n,indep,r,2);
 
               for (i=0; i<n; i++)
                   indep[i] -= r[i];	   

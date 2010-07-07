@@ -5,28 +5,18 @@
  Contents: Easy to use drivers for optimization and nonlinear equations
            (Implementation of the Fortran callable interfaces).
  
- Copyright (c) 2004
-               Technical University Dresden
-               Department of Mathematics
-               Institute of Scientific Computing
+ Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
+               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
   
- This file is part of ADOL-C. This software is provided under the terms of
- the Common Public License. Any use, reproduction, or distribution of the
- software constitutes recipient's acceptance of the terms of this license.
- See the accompanying copy of the Common Public License for more details.
- 
- History:
-          20040416 kowarz: adapted to configure - make - make install
-          20000228 olvo:   corrected comment at lagra_hess_vec
-          19981130 olvo:   newly created from old wersion (which was splitted)
-          19981126 olvo:   last check (p's & q's)
-          19981020 olvo:   deleted debug messages in tensor
- 
+This file is part of ADOL-C. This software is provided as open source.
+ Any use, reproduction, or distribution of the software constitutes 
+ recipient's acceptance of the terms of the accompanying license file.
+  
 ----------------------------------------------------------------------------*/
-#include "drivers/drivers.h"
-#include "interfaces.h"
-#include "adalloc.h"
-#include "fortutils.h"
+#include <drivers/drivers.h>
+#include <interfaces.h>
+#include <adalloc.h>
+#include <fortutils.h>
 
 #include <math.h>
 
@@ -44,7 +34,8 @@ fint function_(fint* ftag,
                fdouble* fargument,
                fdouble* fresult) {
     int rc= -1;
-    int tag=*ftag, m=*fm,  n=*fn;
+    short tag= (short) *ftag;
+    int m=*fm,  n=*fn;
     double* argument = myalloc1(n);
     double* result = myalloc1(m);
     spread1(n,fargument,argument);
@@ -63,7 +54,8 @@ fint gradient_(fint* ftag,
                fdouble* fargument,
                fdouble* fresult) {
     int rc= -1;
-    int tag=*ftag, n=*fn;
+    short tag= (short) *ftag;
+    int n=*fn;
     double* argument=myalloc1(n);
     double* result=myalloc1(n);
     spread1(n,fargument,argument);
@@ -85,7 +77,8 @@ fint vec_jac_(fint* ftag,
               fdouble* flagrange,
               fdouble* frow) {
     int rc= -1;
-    int tag=*ftag, m=*fm, n=*fn, repeat=*frepeat;
+    short tag= (short) *ftag;
+    int m=*fm, n=*fn, repeat=*frepeat;
     double* argument = myalloc1(n);
     double* lagrange = myalloc1(m);
     double* row = myalloc1(n);
@@ -108,7 +101,8 @@ fint jacobian_(fint* ftag,
                fdouble *fargument,
                fdouble *fjac) {
     int rc= -1;
-    int tag=*ftag, depen=*fdepen, indep=*findep;
+    short tag= (short) *ftag;
+    int depen=*fdepen, indep=*findep;
     double** Jac = myalloc2(depen,indep);
     double* argument = myalloc1(indep);
     spread1(indep,fargument,argument);
@@ -130,7 +124,8 @@ fint jac_vec_(fint* ftag,
               fdouble* ftangent,
               fdouble* fcolumn) {
     int rc= -1;
-    int tag=*ftag, m=*fm, n=*fn;
+    short tag= (short) *ftag;
+    int m=*fm, n=*fn;
     double* argument = myalloc1(n);
     double* tangent = myalloc1(n);
     double* column = myalloc1(m);
@@ -152,8 +147,9 @@ fint hess_vec_(fint* ftag,
                fdouble *fargument,
                fdouble *ftangent,
                fdouble *fresult) {
-    int rc= -1;
-    int tag=*ftag, n=*fn;
+    int   rc= -1;
+    short tag= (short) *ftag;
+    int   n=*fn;
     double *argument = myalloc1(n);
     double *tangent = myalloc1(n);
     double *result = myalloc1(n);
@@ -177,7 +173,8 @@ fint hessian_(fint* ftag,
                             upper half of this matrix remains unchanged */
 {
     int rc= -1;
-    int tag=*ftag, n=*fn;
+    short tag= (short) *ftag;
+    int n=*fn;
     double** H = myalloc2(n,n);
     double* x = myalloc1(n);
     spread1(n,fx,x);
@@ -200,7 +197,8 @@ fint lagra_hess_vec_(fint* ftag,
                      fdouble *flagrange,
                      fdouble *fresult) {
     int rc=-1;
-    int tag=*ftag, m=*fm, n=*fn;
+    short tag= (short) *ftag;
+    int m=*fm, n=*fn;
     double *argument = myalloc1(n);
     double *tangent = myalloc1(n);
     double *lagrange = myalloc1(m);
