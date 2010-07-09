@@ -7,7 +7,7 @@
 # $Id:  $
 
 # kobe
-# kobe(FLBRP) {{{
+# kobe(FLBRP, missing, missing) {{{
 setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="missing"),
     function(biomass, ...)
     {
@@ -35,6 +35,8 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list")
       res <- refpts(refpt='msy', iter=max(unlist(lapply(refpts, length))))
       res[,'ssb'] <- refpts$ssb
       res[,'harvest'] <- refpts$harvest
+      
+     # call kobe(FLQuant, FLQuant, refpts)
       kobe(biomass, harvest, res, ...)
   }
 ) # }}}
@@ -114,6 +116,18 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
     }
   }
 ) # }}}
+
+# kobe(data.frame, missing, list)
+setMethod("kobe", signature(biomass="data.frame", harvest="missing", refpts="list"),
+   function(biomass, refpts, ...)
+   {
+     ssb <- FLQuant(biomass$ssb, dimnames=list(age="all", year=biomass$year))
+     harvest <- FLQuant(biomass$harvest, dimnames=list(age="all", year=biomass$year))
+
+     kobe(ssb, harvest, refpts=refpts, ...)
+    
+   }
+)
 
 # kobeProb
 # kobeProb(FLBRP)  {{{
