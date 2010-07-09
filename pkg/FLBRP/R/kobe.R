@@ -121,7 +121,15 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
 setMethod("kobe", signature(biomass="data.frame", harvest="missing", refpts="list"),
    function(biomass, refpts, ...)
    {
-     ssb <- FLQuant(biomass$ssb, dimnames=list(age="all", year=biomass$year))
+     # check df names
+     if(any(!names(biomass) %in% c("year", "biomass", "ssb", "harvest")))
+       stop("data.frame must have names 'year', 'ssb/biomass' and 'harvest'")
+     if(all(c("biomass", "ssb") %in% names(biomass)))
+       stop("columns named 'biomass' and 'ssb' are both present in data.frame")
+
+     # select biomass or ssb
+     ssb <- FLQuant(biomass[,names(biomass) %in% c("biomass", "ssb")],
+         dimnames=list(age="all", year=biomass$year))
      harvest <- FLQuant(biomass$harvest, dimnames=list(age="all", year=biomass$year))
 
      kobe(ssb, harvest, refpts=refpts, ...)
