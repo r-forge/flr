@@ -18,7 +18,8 @@ ADCOBJS= adalloc.o malloc.o adouble.o \
                        hos_reverse.o hos_ov_reverse.o hov_reverse.o \
                        forward_partx.o \
                        externfcts.o checkpointing.o \
-                       fixpoint.o fov_offset_forward.o revolve.o
+		       fov_offset_forward.o revolve.o \
+                       #fixpoint.o 
 DRVOBJS= drivers/drivers.o drivers/driversf.o drivers/odedrivers.o drivers/odedriversf.o drivers/taylor.o
 
 library: lib
@@ -43,4 +44,3 @@ clean:
 		@-rm -f $(LIB)
 		@-rm -f $(ADCOBJS)
 		@make -C drivers -f Makefile clean
-		@make -C tapedoc -f Makefile clean
