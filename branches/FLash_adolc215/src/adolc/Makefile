@@ -1,4 +1,4 @@
-HEADERS=-I../../inst/include -I./
+HEADERS=-I../../inst/include -I../adolc
 # Added adolc directory as include
 # This is so uni5_for.c is found (it is included by lots of files e.g. zos_forward.c)
 
