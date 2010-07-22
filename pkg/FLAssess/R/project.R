@@ -185,13 +185,13 @@ ssb.constraint  <-  function(stock, sr, ssb, years){
       for (j in seq(iters)) {
 
       if(any(is.element(all.vars(model(sr)),"ssb")))       
-        rec <- predict(sr, ssb=ssb(stock)[,ac(i-1)],,,,j)  #if a stock recruit function exists
+        rec <- predict(sr, ssb=ssb(stock)[,ac(i-1),,,,j])  #if a stock recruit function exists
 
       if(!any(is.element(all.vars(model(sr)),"ssb")))       
         rec <- predict(sr)                               #if no srr
 
-      if(!is.na(stock.n(stock)[1,ac(i)]))                  # if rec value given in stock object already
-        rec <- stock.n(stock)[1,ac(i)]
+      if(!is.na(stock.n(stock)[1,ac(i),,,,j]))                  # if rec value given in stock object already
+        rec <- stock.n(stock)[1,ac(i),,,,j]
 
       if(any(harvest.spwn(stock)[,ac(i),,,,j] > 0)){
         n  <- c(rec,stock.n(stock)[,ac(i),,,,j])
