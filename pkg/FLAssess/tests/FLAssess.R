@@ -11,6 +11,7 @@ tagTest("FLAssess testing ...")
 # Test constructor
 checkRun(new('FLAssess'))
 # There is no public constructor.  FLAssess objects get created after an assessment.
+checkRun(FLAssess())
 
 # To test - there is no test FLAssess object so use a VPA object instead
 data(ple4)
