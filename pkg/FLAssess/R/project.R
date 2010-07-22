@@ -17,7 +17,7 @@ control.check <- function(stock, control, years) {
 # function to retrieve the discards partition information from the discards.n slot
 get.dp <- function(stock, years) {
 
-    dp        <- discards.n(stock)[,ac(years)]  #landings.n(stock)[,ac(years)]/catch.n(stock)[,ac(years)]
+    dp                  <- discards.n(stock)[,ac(years)]  #landings.n(stock)[,ac(years)]/catch.n(stock)[,ac(years)]
     dp[is.na(dp)]       <- 0     # ie. where 0/0 - discards and catch = 0
     dp[is.infinite(dp)] <- 1     # ie. where 2/0 - discards true and catch zero
     
