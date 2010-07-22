@@ -52,6 +52,12 @@ if (!isGeneric("projectControl")) {
 		value
 	})}  
 
+setMethod("projectControl", signature(object='missing'),
+     function(...){
+        return(new('projectControl'))
+     }
+)
+
 setMethod("projectControl", signature(object="data.frame"),
  projectControl.<-function(object,effort=NULL,trgtArray=NULL,effArray=NULL,...){
 
