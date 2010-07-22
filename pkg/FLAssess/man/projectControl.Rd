@@ -23,7 +23,7 @@ In the example provided below a 5 year projection is conducted for the period 20
 data(ple4)
 ple4.stf <- stf(ple4, 5)
 ple4.sr  <- sr(as.FLSR(ple4,model=geomean))
-ctrl     <- projectControl(data.frame(year=2002:2006, 
+ctrl     <- projectControl(data.frame(year=2009:2013, 
                                       val=c(250000, 80000, 60000, 0.4, 0.5), 
                                       quantity=c('ssb','catch','landings','f','f')))
 res      <- project(ple4.stf, ctrl, ple4.sr)
