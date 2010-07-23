@@ -3,17 +3,17 @@ import("FLCore")
 exportClasses("FLAssess",
   "FLAssess.retro",
   "FLSepVPA.control",
-  "FLSP",
+#  "FLSP",
   "FLVPA",
   "projectControl")
 export("assess",
   "FLSepVPA.control",
   "projectControl",
-  "pellatom",
-  "PellaTom",
-  "pellatom_calcQ",
-  "PellaTom_calcQ",
-  "pellatom_calcSigma",
+#  "pellatom",
+#  "PellaTom",
+#  "pellatom_calcQ",
+#  "PellaTom_calcQ",
+#  "pellatom_calcSigma",
   "retro")
 exportMethods(
   "+",
@@ -36,7 +36,7 @@ exportMethods(
   "stf",
   "summary",
   "VPA",
-  "FLSP",
+#  "FLSP",
   "FLAssess",
   "fmle",
   "Z")

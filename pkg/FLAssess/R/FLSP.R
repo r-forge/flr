@@ -6,52 +6,52 @@
 # $Id$
 
 # class FLSP {{{
-setClass('FLSP', representation(
-  'FLModel',
-  catch='FLQuant',
-  index='FLQuant',
-  mpar='numeric',
-  delta='numeric')
-) # }}}
+#setClass('FLSP', representation(
+#  'FLModel',
+#  catch='FLQuant',
+#  index='FLQuant',
+#  mpar='numeric',
+#  delta='numeric')
+#) # }}}
 
 # FLSP()	{{{
-setGeneric('FLSP', function(model, ...)
-		standardGeneric('FLSP'))
-
-setMethod('FLSP', signature(model='ANY'),
-  function(model, ...)
-    return(FLModel(model, ..., class='FLSP')))
-
-setMethod('FLSP', signature(model='missing'),
-	function(...)
-		return(FLModel(formula(NULL), ..., class='FLSP'))) # }}}
-
+#setGeneric('FLSP', function(model, ...)
+#		standardGeneric('FLSP'))
+#
+#setMethod('FLSP', signature(model='ANY'),
+#  function(model, ...)
+#    return(FLModel(model, ..., class='FLSP')))
+#
+#setMethod('FLSP', signature(model='missing'),
+#	function(...)
+#		return(FLModel(formula(NULL), ..., class='FLSP'))) # }}}
+#
 # ************** Accessors **************************************
 # Accesors  {{{
-setMethod('catch', signature(object='FLSP'),
-  function(object)
-    return(object@catch)
-)
-setMethod('catch<-', signature(object='FLSP', value='FLQuant'),
-  function(object, value)
-  {
-    object@catch <- value
-    return(object)
-  }
-)
+#setMethod('catch', signature(object='FLSP'),
+#  function(object)
+#    return(object@catch)
+#)
+#setMethod('catch<-', signature(object='FLSP', value='FLQuant'),
+#  function(object, value)
+#  {
+#    object@catch <- value
+#    return(object)
+#  }
+#)
 
-setMethod('index', signature(object='FLSP'),
-  function(object)
-    return(object@index)
-)
-setMethod('index<-', signature(object='FLSP', value='FLQuant'),
-  function(object, value)
-  {
-    object@index <- value
-    return(object)
-  }
-)
-# }}}
+#setMethod('index', signature(object='FLSP'),
+#  function(object)
+#    return(object@index)
+#)
+#setMethod('index<-', signature(object='FLSP', value='FLQuant'),
+#  function(object, value)
+#  {
+#    object@index <- value
+#    return(object)
+#  }
+#)
+## }}}
 
 # ***********	PellaTom with estimated Q ************
 # PellaTom {{{
@@ -147,163 +147,160 @@ if (!isGeneric("biomass"))
 	setGeneric("biomass", function(object, ...)
     	standardGeneric("biomass"))
 
-    # Just calculates and returns the biomass
-setMethod('biomass', signature(object='FLSP'),
-  function(object) {
-      #browser()
-    dm <- dimnames(object@catch)
-    biomass <- FLQuant(object@delta,dimnames=dm)
-    # Mixing Quants and Pars is fairly ugly
-    for(y in 2:length(dm$year))
-	# Pretty ugly with either as.numeric or sweeps
-	#biomass[,y] <- biomass[,y-1] + as.numeric(object@params["r",] / (object@mpar-1)) * biomass[,y-1] * (1 - (biomass[,y-1] / as.numeric(object@params["K",])) ^ (object@mpar-1)) - object@catch[,y-1]
-	biomass[,y]<-biomass[,y-1] + sweep(biomass[,y-1],6,object@params["r",]/(object@mpar-1),"*") * (1 - sweep(biomass[,y-1], 6, object@params["K",],"/")^(object@mpar-1)) - object@catch[,y-1]
-    biomass[biomass <= 0] <- 1e-9
-    return(biomass)})
-    # }}}
+#    # Just calculates and returns the biomass
+#setMethod('biomass', signature(object='FLSP'),
+#  function(object) {
+#      #browser()
+#    dm <- dimnames(object@catch)
+#    biomass <- FLQuant(object@delta,dimnames=dm)
+#    # Mixing Quants and Pars is fairly ugly
+#    for(y in 2:length(dm$year))
+#	# Pretty ugly with either as.numeric or sweeps
+#	#biomass[,y] <- biomass[,y-1] + as.numeric(object@params["r",] / (object@mpar-1)) * biomass[,y-1] * (1 - (biomass[,y-1] as.numeric(object@params["K",])) ^ (object@mpar-1)) - object@catch[,y-1]
+#	biomass[,y]<-biomass[,y-1] + sweep(biomass[,y-1],6,object@params["r",]/(object@mpar-1),"*") * (1 - sweep(biomass[,y-1], 6, object@params["K",],"/")^(object@mpar-1)) - object@catch[,y-1]
+#    biomass[biomass <= 0] <- 1e-9
+#    return(biomass)})
+#    # }}}
 
 # harvest rate {{{
-if (!isGeneric("harvest.rate"))
-	setGeneric("harvest.rate", function(object, ...)
-    	standardGeneric("harvest.rate"))
-setMethod('harvest.rate', signature(object='FLSP'),
-  function(object)
-    return(catch(object) / biomass(object)))
+#if (!isGeneric("harvest.rate"))
+#	setGeneric("harvest.rate", function(object, ...)
+#    	standardGeneric("harvest.rate"))
+#setMethod('harvest.rate', signature(object='FLSP'),
+#  function(object)
+#    return(catch(object) / biomass(object)))
 # }}}
 
 # plot {{{
-setMethod('plot', signature(x='FLSP', y='missing'),
-  function(x, y, ...)
-  {
-    # new trellis device
-    trellis.device(new=FALSE)
-    trellis.par.set(list(layout.heights = list(bottom.padding = -0.5,
-      axis.xlab.padding = 0.5, xlab = -0.5), layout.widths = list(left.padding = -0.5,
-      right.padding = -0.5, ylab.axis.padding = -0.5)))
-
-    # upper plots data: biomass and residuals
-    data <- FLQuants(biomass=biomass(x), residuals=residuals(x))
-
-    print(xyplot(data~year|qname, data=data, scales=list(relation='free'),
-      panel=function(x, y, ...)
-      {
-        if(panel.number() == 1)
-          panel.xyplot(x, y, col='black', type='b', cex=0.8, pch=19)
-        else if (panel.number() == 2)
-        {
-			    panel.xyplot(x, y, col='gray40', cex=0.8)
-          panel.loess(x,y, col='red')
-	    		panel.abline(a=0, b=0, lty=2, col='blue')
-        }
-		  }, xlab="", ylab=""), 
-      split=c(1,1,1,2), more=TRUE)
-
-    # panel function for lowe panel: index vs. fitted
-    pfun <- function(x, y, groups, subscripts,...)
-    {
-      panel.grid(h=-1, v=2)
-      panel.xyplot(x[groups=='index'], y[groups=='index'], type='b', pch=19, col='black')
-      panel.xyplot(x[groups=='fitted'], y[groups=='fitted'], type='smooth', lwd=2, 
-        col='red')
-      panel.xyplot(x[groups=='fitted'], y[groups=='fitted'], type='b', lwd=1, lty=2,
-        col='black', pch=1)
-    }
-
-    # data for lower panel
-    data <- FLQuants(index=index(x), fitted=fitted(x))
-
-    print(xyplot(index+fitted~year, data=model.frame(data), panel=pfun,
-      scales=list(relation='free'), xlab="", ylab="",
-      key=list(text=list(lab='index'),
-          points=list(pch=19),
-          text=list(lab='fitted'),
-          points=list(pch=1))
-       #   vp = viewport(x = unit(0.5, "npc"), y = unit(0.95, "npc")),
-      ),
-      split=c(1,2,1,2), more=FALSE)
-
-    
-
-  }
-) # }}}
+#setMethod('plot', signature(x='FLSP', y='missing'),
+#  function(x, y, ...)
+#  {
+#    # new trellis device
+#    trellis.device(new=FALSE)
+#    trellis.par.set(list(layout.heights = list(bottom.padding = -0.5,
+#      axis.xlab.padding = 0.5, xlab = -0.5), layout.widths = list(left.padding = -0.5,
+#      right.padding = -0.5, ylab.axis.padding = -0.5)))
+#
+#    # upper plots data: biomass and residuals
+#    data <- FLQuants(biomass=biomass(x), residuals=residuals(x))
+#
+#    print(xyplot(data~year|qname, data=data, scales=list(relation='free'),
+#      panel=function(x, y, ...)
+#      {
+#        if(panel.number() == 1)
+#          panel.xyplot(x, y, col='black', type='b', cex=0.8, pch=19)
+#        else if (panel.number() == 2)
+#        {
+#			    panel.xyplot(x, y, col='gray40', cex=0.8)
+#          panel.loess(x,y, col='red')
+#	    		panel.abline(a=0, b=0, lty=2, col='blue')
+#        }
+#		  }, xlab="", ylab=""), 
+#      split=c(1,1,1,2), more=TRUE)
+#
+#    # panel function for lowe panel: index vs. fitted
+#    pfun <- function(x, y, groups, subscripts,...)
+#    {
+#      panel.grid(h=-1, v=2)
+#      panel.xyplot(x[groups=='index'], y[groups=='index'], type='b', pch=19, col='black')
+#      panel.xyplot(x[groups=='fitted'], y[groups=='fitted'], type='smooth', lwd=2, 
+#        col='red')
+#      panel.xyplot(x[groups=='fitted'], y[groups=='fitted'], type='b', lwd=1, lty=2,
+#        col='black', pch=1)
+#    }
+#
+#    # data for lower panel
+#    data <- FLQuants(index=index(x), fitted=fitted(x))
+#
+#    print(xyplot(index+fitted~year, data=model.frame(data), panel=pfun,
+#      scales=list(relation='free'), xlab="", ylab="",
+#      key=list(text=list(lab='index'),
+#          points=list(pch=19),
+#          text=list(lab='fitted'),
+#          points=list(pch=1))
+#       #   vp = viewport(x = unit(0.5, "npc"), y = unit(0.95, "npc")),
+#      ),
+#      split=c(1,2,1,2), more=FALSE)
+#  }
+#) # }}}
 
 # assess  {{{
-setMethod("assess", signature(control="FLSP"),
-   function(control, ...)
-   fmle(control)
-) # }}}
+#setMethod("assess", signature(control="FLSP"),
+#   function(control, ...)
+#   fmle(control)
+#) # }}}
 
 # merge {{{
-setMethod("merge", signature(x="FLStock", y="FLSP"),
-  function(x, y, ...)
-  {
-    quant <- quant(stock(x))
-    dnx <- dimnames(stock(x))
-    dny <- dimnames(y@stock.n)
+#setMethod("merge", signature(x="FLStock", y="FLSP"),
+#  function(x, y, ...)
+#  {
+#    quant <- quant(stock(x))
+#    dnx <- dimnames(stock(x))
+#    dny <- dimnames(y@stock.n)
+#
+#    # check dimensions match
+#    if(!all.equal(dnx[-2], dny[-2]))
+#      stop("Mismatch in dimensions: only year can differ between stock and assess")
+#
+#    # same plusgroup
+#    if(x@range['plusgroup'] != x@range['plusgroup'])
+#      stop("Mismatch in plusgroup: x and y differ")
+#
+#    # year ranges match?
+#    if(!all(dny[['year']] %in% dnx[['year']]))
+#    {
+#      years <- as.numeric(unique(c(dnx$year, dny$year)))
+#      x <- window(x, start=min(years), end=max(years))
+#      y <- window(y, start=min(years), end=max(years))
+#    }
+#    
+#    x <- transform(x, desc=paste(x@desc, "+ FLAssess:", y@name),
+#      stock.n=y@stock.n, harvest=y@harvest)
+#    x <- transform(x, range=c(unlist(dims(x)[c('min', 'max', 'plusgroup',
+#      'minyear', 'maxyear')]), x@range[c('minfbar', 'maxfbar')]))
+#        
+#    return(x)
+#  }
+#)   # }}}
 
-    # check dimensions match
-    if(!all.equal(dnx[-2], dny[-2]))
-      stop("Mismatch in dimensions: only year can differ between stock and assess")
-
-    # same plusgroup
-    if(x@range['plusgroup'] != x@range['plusgroup'])
-      stop("Mismatch in plusgroup: x and y differ")
-
-    # year ranges match?
-    if(!all(dny[['year']] %in% dnx[['year']]))
-    {
-      years <- as.numeric(unique(c(dnx$year, dny$year)))
-      x <- window(x, start=min(years), end=max(years))
-      y <- window(y, start=min(years), end=max(years))
-    }
-    
-    x <- transform(x, desc=paste(x@desc, "+ FLAssess:", y@name),
-      stock.n=y@stock.n, harvest=y@harvest)
-    x <- transform(x, range=c(unlist(dims(x)[c('min', 'max', 'plusgroup',
-      'minyear', 'maxyear')]), x@range[c('minfbar', 'maxfbar')]))
-        
-    return(x)
-  }
-)   # }}}
-
-# Overload fmle for FLSP.  Includes autoscaling routine.  Not sure it helps a lot
-setMethod('fmle',
-  signature(object='FLSP', start='ANY'),
-  function(object, start, autosc = FALSE, method='L-BFGS-B', fixed=list(),
-    control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
-    upper=rep(Inf, dim(params(object))[2]), ...)
-  {
-	# Scale parameters so that a unit change in param results in a unit change of objective function
-	# So get crude estimate of diffs at the inital values and use that for the scaling
-	# This means that the scaling is dependent on the inital values.
-    if (autosc == TRUE)
-    {
-	    #browser()
-	    LLpars <- start
-	    LLpars[["mpar"]] <- object@mpar
-	    LLpars[["delta"]] <- object@delta
-	    LLpars[["catch"]] <- object@catch
-	    LLpars[["index"]] <- object@index
-	    MyLogL <- logl(object)
-		LLinit <- do.call("MyLogL",LLpars)
-		LLs <- unlist(start)
-		tiny_number <- 1 + 1e-10
-		for (i in 1:length(start))
-		{
-			LLpars_temp <- LLpars
-			LLpars_temp[[i]] <- LLpars_temp[[i]] * tiny_number
-			LLs[i] <- do.call("MyLogL",LLpars_temp)
-		}
-		dLLs <- (LLs - LLinit) / (unlist(start) * (tiny_number-1))
-		scaling <- abs(1/dLLs)
-		#print(scaling)
-		# Pretty sure I don't need to sort the order as they are named
-		control[["parscale"]] <- scaling
-	}
-	# Call fmle for FLModel
-	callNextMethod(object, start, method, fixed, control, lower, upper, ...)
-	}
-)
+## Overload fmle for FLSP.  Includes autoscaling routine.  Not sure it helps a lot
+#setMethod('fmle',
+#  signature(object='FLSP', start='ANY'),
+#  function(object, start, autosc = FALSE, method='L-BFGS-B', fixed=list(),
+#    control=list(trace=1), lower=rep(-Inf, dim(params(object))[2]),
+#    upper=rep(Inf, dim(params(object))[2]), ...)
+#  {
+#	# Scale parameters so that a unit change in param results in a unit change of objective function
+#	# So get crude estimate of diffs at the inital values and use that for the scaling
+#	# This means that the scaling is dependent on the inital values.
+#    if (autosc == TRUE)
+#    {
+#	    #browser()
+#	    LLpars <- start
+#	    LLpars[["mpar"]] <- object@mpar
+#	    LLpars[["delta"]] <- object@delta
+#	    LLpars[["catch"]] <- object@catch
+#	    LLpars[["index"]] <- object@index
+#	    MyLogL <- logl(object)
+#		LLinit <- do.call("MyLogL",LLpars)
+#		LLs <- unlist(start)
+#		tiny_number <- 1 + 1e-10
+#		for (i in 1:length(start))
+#		{
+#			LLpars_temp <- LLpars
+#			LLpars_temp[[i]] <- LLpars_temp[[i]] * tiny_number
+#			LLs[i] <- do.call("MyLogL",LLpars_temp)
+#		}
+#		dLLs <- (LLs - LLinit) / (unlist(start) * (tiny_number-1))
+#		scaling <- abs(1/dLLs)
+#		#print(scaling)
+#		# Pretty sure I don't need to sort the order as they are named
+#		control[["parscale"]] <- scaling
+#	}
+#	# Call fmle for FLModel
+#	callNextMethod(object, start, method, fixed, control, lower, upper, ...)
+#	}
+#)
 
 
 

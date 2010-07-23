@@ -1,7 +1,12 @@
 % $Id: projectControl.Rd $
 \name{projectControl}
-\docType{methods}
+\docType{class}
 \alias{projectControl}
+\alias{projectControl-class}
+\alias{projectControl-methods}
+\alias{projectControl,data.frame-method}
+\alias{projectControl,missing-method}
+
 \title{control object for the project method for FLStock objects}
 \description{
 	A control object for the project method for projecting FLStock objects.

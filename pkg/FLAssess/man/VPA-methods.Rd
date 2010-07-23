@@ -12,11 +12,11 @@ The method returns an object of class \code{FLVPA} class.  This extends the \cod
 the \code{FLVPA} class currently has the same slots as the \code{FLAssess} class and does not add new ones.
 Objects can be created by calls of the form \code{new("FLVPA", ...)} or by calling the \code{\link{VPA}} function.
 
-The other arguments to \code{VPA} are
+The other arguments to \code{VPA} are \describe{
 \item{fratio}{ A \code{numeric} with default "missing"}
 \item{fit.plusgroup}{ A \code{Boolean} with default TRUE}
 \item{desc}{ A \code{character} string which appended to the desc slot of the object}
-
+}
 For the sake of speed, most of the calculations are carried out in C.
 }
 \section{Generic function}{

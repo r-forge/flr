@@ -2,6 +2,10 @@
 \name{project}
 \docType{methods}
 \alias{project}
+\alias{project-methods}
+\alias{project,FLStock,projectControl,FLSR-method}
+\alias{project,FLStock,missing,FLSR-method}
+
 \title{projection method for FLStock objects}
 \description{
 	A method for projecting FLStock objects.

@@ -2,6 +2,10 @@
 \name{FLAssess}
 \docType{class}
 \alias{FLAssess-class}
+\alias{FLAssess}
+\alias{FLAssess-methods}
+\alias{FLAssess,missing-method}
+\alias{FLAssess,FLQuant-method}
 \alias{show,FLAssess-method}
 \alias{units,FLAssess-method}
 \alias{units<-,FLAssess,list-method}
@@ -61,49 +65,45 @@
 
 \section{Slots}{
   \describe{
-    \item{\code{name}:}{A character string give name of stock.}
-    \item{\code{desc}:}{Whatever you want.}
-    \item{\code{harvest}:}{An FLQuant that contains estimated fishing mortlaity-at-age.}
-
-    \item{\code{catch.n}:}{An FLQuant that contains estimated catch numbers-at-age.}
-    \item{\code{stock.n}:}{An FLQuant that contains estimated stock numbers-at-age.}
-    \item{\code{harvest}:}{An FLQuant that contains estimated fishing mortlaity-at-age.}
-
-    \item{\code{index.name}:}{A vector containing names for the FLIndexs}
-    \item{\code{index.range}:}{A list containing ranges for the FLIndexs}
-    \item{\code{index}:}{A list of FLQuants, corresponding to the index values used when fitting.}
-    \item{\code{index.hat}:}{A list of FLQuants, corresponding to the fitted index values.}
-    \item{\code{index.res}:}{A list of FLQuants, corresponding to the index residuals.}
-    \item{\code{index.var}:}{A list of FLQuants, corresponding to the variances of index values in fitting.}    
+    \item{name:}{A character string give name of stock.}
+    \item{desc:}{Whatever you want.}
+    \item{range:}{A named vector specifying the range of the object.}
+    \item{catch.n:}{An FLQuant that contains estimated catch numbers-at-age.}
+    \item{stock.n:}{An FLQuant that contains estimated stock numbers-at-age.}
+    \item{harvest:}{An FLQuant that contains estimated fishing mortlaity-at-age.}
+    \item{index.name:}{A vector containing names for the FLIndexs}
+    \item{index.range:}{A list containing ranges for the FLIndexs}
+    \item{index:}{A list of FLQuants, corresponding to the index values used when fitting.}
+    \item{index.hat:}{A list of FLQuants, corresponding to the fitted index values.}
+    \item{index.res:}{A list of FLQuants, corresponding to the index residuals.}
+    \item{index.var:}{A list of FLQuants, corresponding to the variances of index values in fitting.}    
   }
 }
 
-\section{Methods}{
+\section{Methods}{\describe{
 
-Summarise contents:
-    \item{\link{summary}:}{ Returns a list with a vector for each dimension
-    in the object, which contains the levels of each dimension.}
+%Summarise contents:
+    \item{\link{summary}:}{ Returns a list, with a vector for each dimension in the object, that contains the levels of each dimension.}
     \item{\link{show}:}{ Prints the given object.}
-Plots:
-  \item{\link{plot}:}{Plots stock.n against index}
-Update FLstock:
-  \item{+:}{Updates a FLStock with stock.n and harvest estimates from
-  an FLAssess object}
-  \item{merge:}{Updates a FLStock with stock.n and harvest estimates from
-  an FLAssess object}
-  \item{\link{update}:}{Updates a FLStock with stock.n, catch.n & harvest estimates}
-Stock Assessment methods:
-  \item{\link{SepVPA}:}{Separable VPA}
-  \item{\link{VPA}:}{Virtual Population Analysis}
-%  \item{\link{ASPM}:}{Age Structured Production Model}
-}
+    \item{\link{plot}:}{Plots stock.n against index}
 
-\author{Laurence Kell}
+    \item{+:}{Updates a FLStock with stock.n and harvest estimates from an FLAssess object}
+    \item{merge:}{Updates a FLStock with stock.n and harvest estimates from an FLAssess object}
+    \item{\link{update}:}{Updates a FLStock with stock.n, catch.n & harvest estimates}
+%Stock Assessment methods:
+    \item{\link{SepVPA}:}{Separable VPA}
+    \item{\link{VPA}:}{Virtual Population Analysis}
+%   \item{\link{ASPM}:}{Age Structured Production Model}
+}}
+
+\author{FLR Team}
 \seealso{
     \code{FLIndices-class},
     \code{FLStock-class}
 }
 \examples{
+   # see the Methods help pages for specific examples  
+
 }
 \keyword{classes}
 \keyword{methods}
