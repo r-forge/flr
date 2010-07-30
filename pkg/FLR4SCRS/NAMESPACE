@@ -1,0 +1,30 @@
+importFrom("ggplot2",
+  "ggplot")
+import("FLCore")
+export(
+  "readVPA2Boot")
+exportMethods(
+	"+",
+	"-",
+	"/",
+	"*",
+	"computeSel",
+	"expand",
+  "FLQuants<-",
+  "setPlusGroup",
+  "sel<-",
+  "wt<-",
+  "computeSel",
+  "discardsSel",
+	"diags",
+  "ggplot",
+  "pgAge",
+	"plotDiags",
+  "quantCumSum",
+  "landingsSel",
+  "sopCorrect",
+  "survivors",
+  "tep",
+  "vonB",
+  "vonBMass",
+  "z")
