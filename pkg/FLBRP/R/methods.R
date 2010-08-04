@@ -179,51 +179,11 @@ setMethod('ypr', signature(object='FLBRP'),
 ) # }}}
 
 # computeRefpts {{{
-setMethod('computeRefpts', signature(object='FLBRP'),
- function(object)
-  {
-
-    # check model is supported by brp
-    if(!SRNameCode(SRModelName(model(object))) %in% seq(1,6))
-      stop(paste("FLSR model (", SRNameCode(SRModelName(model(object))),
-        ")in FLBRP object can not be used by brp. See ?ab"))
-   
-    # check needed slots are filled up
-    for(i in c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
-      'landings.wt','discards.wt', 'bycatch.wt','m','mat','harvest.spwn', 'm.spwn',
-      'availability','price'))
-      if(all(is.na(slot(object, i))))
-        stop("missing necessary information in slot ", i)
-
-    # check dims in object and params
-    iter <- c(dims(object)$iter, length(dimnames(params(object))$iter))
-    
-    # if > 1, they should be equal
-    if(all(iter > 1))
-      if(iter[1] != iter[2])
-        stop('iter in FLQuant slots and params do not match, ',
-          paste(iter, collapse=' vs. '))
-
-    # extend refpts as needed
-    iter <- max(iter)
-    if(iter > 1 && dims(refpts(object))$iter == 1)
-      refpts <- propagate(refpts(object), iter, fill.iter=TRUE)
-    else if(iter > 1 && dims(refpts(object))$iter != iter)
-      stop("iters in refpts and object slots do not match")
-    else
-      refpts <- refpts(object)
-    
-    if ("virgin" %in% dimnames(refpts)$refpt){
-       refpts["virgin",,]<-NA
-       refpts["virgin","harvest",]<-0
-       }
-
-    res <- .Call("computeRefpts", object, refpts,
-      SRNameCode(SRModelName(object@model)),
-                  FLQuant(c(params(object)), dimnames=dimnames(params(object))), PACKAGE = "FLBRP")
-    return(res)
-  }
-) # }}}
+setMethod('computeRefpts', signature(object='FLBRP'), function(object){
+	refpts(brp(FLBRP(object))
+	}
+)
+# }}}
 
 # brp  {{{
 setMethod('brp', signature(object='FLBRP'),
