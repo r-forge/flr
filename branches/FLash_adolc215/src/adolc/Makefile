@@ -36,6 +36,25 @@ LIB = ../adolc.a
 
 lib: $(LIB)
 
+# target ... : prerequiite
+# <tab>   rules
+# #       ...
+
+# Go down the dependency tree
+# LIB is the adolc.a is an archive file that holds all the ADOLC object files (have not been linked yet)
+# To make LIB, requires all the ADCOBJS object files
+# To make the *.o files requires the *.c or *.cpp file and the appropriate rule (CC HEADERS FLAGS)
+# With that prerequisite fulfilled we go to the first rule for making LIB:
+#	make the Makefile in the drivers folder.
+#	what are the -C and -f flags: -f specifies the name of the Makefile, -C change to directory
+#	what is the library argument? target? make executes the Makefile to update the target, here library
+#	so maybe it only recompiles the driver object files if they have changed from what is in library, which is LIB, the archive?
+# That rule makes all the DRVOBJS object files
+# Second rule then stitches the object files together to make LIB archive file
+# $AR is ar - archive. So the second rule just archives the ADCOBJS and DRVOBJS object files into adolc.a
+# what is the -rucs argument? AR is ar (on Linux anyway - see /usr/local/lib/R/etc)
+# -r insert into member, u only insert if newer than existin, s write object file index into archive, c create the archive
+
 $(LIB): $(ADCOBJS)
 	@make -C drivers -f Makefile library
 	@${AR} -rucs $(LIB) ${ADCOBJS} ${DRVOBJS}
