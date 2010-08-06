@@ -37,7 +37,7 @@ PKG_LIBS = $(FLCORE_LIB) $(ADOLC_LIB)
 # calls the subclean routine first
 # so all files get compiled everytime - seems a tad excessive
 $(ADOLC_LIB): 
-	$(MAKE) -C $(ADOLC_DIR)
+	$(MAKE) -C $(ADOLC_DIR) library
 
 # This seems to install the package OK.
 # But does the package work?
