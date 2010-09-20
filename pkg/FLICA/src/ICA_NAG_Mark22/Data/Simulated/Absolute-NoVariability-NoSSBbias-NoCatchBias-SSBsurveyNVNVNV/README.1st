@@ -1,0 +1,9 @@
+This simulation setup are:
+ - number of iteration is 100
+ - F varies between 0.15 and 0.3 according to a uniform distribution 
+ - M is constant, fixed to 0.15 
+ - the recruitment is re-sampled from the last ICA (2003) stock assessment estimations
+ - the gear selectivity is fixed throught time at an ad hoc value
+ - SSB varies randomly around the simulated value with SD taken from D. Beare's simulations ? FALSE
+ - Added variability to the fishing mortality via var/cov matrix ? FALSE
+ - Is the variable fishing mortality applied only to the catch (measurement error) ? FALSE
