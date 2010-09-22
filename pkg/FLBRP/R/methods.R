@@ -180,7 +180,7 @@ setMethod('ypr', signature(object='FLBRP'),
 
 # computeRefpts {{{
 setMethod('computeRefpts', signature(object='FLBRP'), function(object){
-	refpts(brp(FLBRP(object))
+	refpts(brp(FLBRP(object)))
 	}
 )
 # }}}
