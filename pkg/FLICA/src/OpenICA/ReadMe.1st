@@ -1,0 +1,38 @@
+# CREATED: 
+# MODIFIED: 24 Sept. 2010
+
+Install CERNLIB
+---------------
+
+	- on ubuntu: sudo aptitude update
+	             sudo aptitude install cernlib
+
+Compile the PORT library
+------------------------
+
+On yosemite (Ubuntu lucid lynx, LTS 10.04)
+cd /usr/local/lib/port3
+
+(as root)
+make clean
+make mfiles
+make
+
+Compile ICA
+-----------
+make
+make clean
+
+PRACTICAL WAY TO EXECUTE ICA.exe
+--------------------------------
+
+./ICA.exe < /home/mkienzle/Programs/PERL/ICAsettings.txt
+
+CONTENT
+-------
+
+This file describe the modification brought to the original ICA program (/home/kienzlem/Programs/Fortran/ICA/OriginalSource) in order to compile it on Linux.
+
+1) Uppercase/Lowercase: change the name on the include so that it match the name of the file including the case.
+
+

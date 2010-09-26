@@ -1,0 +1,135 @@
+SUMMARY OF THE MAIN CHANGES BETWEEN ICA1_1 and ICA1_3
+======================================================
+
+K. Patterson
+November 1996
+
+
+(1) ICA1 and ICA2 are now combined in a single programme, which
+    also runs more than twice as fast.
+
+(2) The maximum age and year range, and the maximum number of
+    fleets are now made implementation - dependent. Simply
+    change the 'maxage, maxyear, maxfleet ' etc parameters 
+    in the 'indat.inc' file and recompile.
+
+(3) The file of additional stock and recruit data is not now read. It
+    is assumed that the new version can be run for all years necessary
+    and so the option of adding on extra data shouldn't be needed.
+
+(4) The 'ICA' and 'ICAGVS' models are combined in one programme. The
+    user can choose between
+        - Single, conventional selection pattern
+        - Two selection vectors, fitted over different time periods with
+          an abrupt change between them
+        - constant selection up to user-specified year y, then linear change in
+          selection with time up to last year of analysis
+
+(5) Three levels of detail available in the 'ICA.OUT' file:
+        Summary : Only F, N and model diagnostics ( for quick runs )
+        Full: as summary, but all input data also printed 
+              (for documentation of final run)
+        Extended : As full, but weighting matrices and all model 
+                   fitted values also printed. (for exploring problems)
+
+(6) The user can specify any width for the output file between 80 and 500 
+        characters. The tables are reformatted to fit the chosen width,
+        so the table format can be arranged to suit users preferences about
+        portrait or landscape tables, font size etc.
+
+(7) Use of exponential notation ( .9999E+99 ) is mostly avoided by using    
+        an automatic rescaling algorithm that jumps in 10**3 and prints
+        a footnote with the tables. Catchabilities are always
+        printed in exponential notation because they can take a very wide
+        range of very small values (An alternative would be to print
+        log catchabilities, but that would be inconsistent with the
+        other parameters). Missing values are printed with asterisks.
+
+(8) Parameters are printed together with the following values:
+        Coefficient of variation (s.d. of log parameter)
+        + and - 95% confidence limits
+        + and - standard deviation (as in version 1.2)
+        Mean of parameter distribution (Parameter * exp.(variance/2)
+
+(9) Character strings used to label the surveys in the input files are
+        now also read and used to label the output files.
+
+(10) A main title for the stock is read from the index file and is used
+        to label the output file.   
+
+(11) A minor error in the calculation of the distribution statistics has
+        been corrected. There was one degree of freedom too many in
+        the calculations.
+
+(12) The 'probability of chi-square' item was confusing and has been 
+        replaced with a 'significance ' item,  which is simply 1-P
+        and can be treated conventionally (eg reject survey if 
+        significance greater than 0.05)
+
+(13) The programme outputs flat ASCII files in lowestoft format holding
+        the Fs and the Ns in files:
+                ICA.F
+                ICA.N
+
+(14) The programme no longer produces the file ICA.RES which held the        
+     observed and expected values for all data. Instead, the following 
+     are written:
+                Predicted catches     : ICACN.PRD  (Lowestoft format)
+                Catch residuals       : ICACN.RES          "
+                Predicted ages survey : ICAASURV.PRD       "
+                Aged survey residuals : ICAASURV.RES  (Reeves format)
+                Predicted SSB survey  : ICABSURV.PRD  (RCT format)
+                SSB Survey residuals  : ICABSURV.RES  (RCT format)
+     Note that file ICAASURV.RES can also be read and graphed by the
+     programme <RESPLOT> written by D. Calder.
+
+(15) The programme writes a '.SEN' file which provides an input to
+     a sensitivity analysis programme 'WGFRANS' written by R. Cook.
+
+(16) All variables and data are now held in double precision, and the 
+     convergence criterion has been tightened from 0.5% to 0.05% change in
+     SSQ between VPA/Model fit iterations). In practice this means that
+     identical fits with ICA1_2 and ICA1_3 may find slightly different
+     minima, but the difference is of the order of 0.1% in the fitted
+     parameters.
+
+(17) A global double-precision missing value code is defined in the
+     'indat.inc' include file and is used throughout
+
+(18) The 'ICAVIEW' has been modified so that 
+        a - it recognises whether 1 or 2 selection patterns are fitted,
+                and draws graphs appropriately
+        b - it always draws the catchability graphs with the origin at
+                zero X and zero Y
+
+(19) Filenames used are defined as character constants in the 'indat.inc'
+       include file
+
+(20) The programmes writes an Aberdeen Summary file, ICA.SUM, assuming
+        that all catches are human consumption catches. This can be plotted
+        using David Calder's 'Trenplot' programme, and provides direct input
+        to programmes by R. Cook
+
+(21) The calculation of the plus-group has been changed. It is now calcualted
+         assuming F on the plus-group equals F on the oldes true age,
+         except for the case where the catch in the plus group is zero or 
+         missing in which case the N from the previous age and year is
+         brought forwards.
+
+(22) For unknown reasons, the calls to system time and date do not work
+         on my system. Rather than remove them they are commented out
+         until the problem can be solved.
+         The programme prints 'Task completed in ****' as a reminder
+         to fix this.
+
+(23) As this version is intended to be implementation-independent it is
+         distributed as source code only. I have compiled it successfully
+         as a Microsoft Fortran v 5.1 QuickWin application, and as
+         a Microsoft Fortran Powerstation 32-bit extended DOS application.
+
+(24) The 'trenplot' and 'resplot' programmes and documentation are
+         available from P. Kunzlik at the Marine Laboratory.
+
+       
+
+

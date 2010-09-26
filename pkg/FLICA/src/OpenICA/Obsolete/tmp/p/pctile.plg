@@ -1,0 +1,116 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: pctile - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Kienzlem\LOCALS~1\Temp\RSP109.tmp" with contents
+[
+/check:bounds /compile_only /debug:full /nologo /traceback /warn:argument_checking /warn:nofileopt /module:"Debug/" /object:"Debug/" /pdbfile:"Debug/DF60.PDB" 
+"L:\Programs\Fortran\ICA\Source\a\ICA.F90"
+]
+<h3>Output Window</h3>
+Compiling Fortran...
+L:\Programs\Fortran\ICA\Source\a\ICA.F90
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(1) : Error: Syntax error, found INTEGER_CONSTANT '9000000' when expecting one of: ( : % . = =>
+      WINAPP 9000000,9000000 
+-------------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(1) : Error: A specification statement cannot appear in the executable section.
+      WINAPP 9000000,9000000 
+-------------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(9) : Error: A specification statement cannot appear in the executable section.
+      Use MSWIN32
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(10) : Error: A specification statement cannot appear in the executable section.
+      Use CLRWIN
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(12) : Error: A specification statement cannot appear in the executable section.
+      implicit none                                                                                                                 
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(13) : Error: A specification statement cannot appear in the executable section.
+      character*1 dummy
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(14) : Error: A specification statement cannot appear in the executable section.
+      integer tscan
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(15) : Error: A specification statement cannot appear in the executable section.
+      external tscan
+------^
+L:\Programs\Fortran\ICA\Source\a\ICA.F90(16) : Error: A specification statement cannot appear in the executable section.
+      character*77 text(1)
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(9) : Error: A specification statement cannot appear in the executable section.
+      integer maxage, maxsurvey, maxyear, maxbsurv, maxdata, maxparm, maxiters
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(10) : Error: A specification statement cannot appear in the executable section.
+      double precision missing
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(12) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxage=20)  ! maximum no of ages including + gp
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(13) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxyear=60) ! maximum no of years in analysis
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(14) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxsurvey=15) ! maximum no of age-structured surveys
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(15) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxbsurv=5)  ! maximum number of SSB surveys
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(16) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxdata=2500) ! maximum no of observations 2500
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(17) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxparm=150) ! maximum no of parameters
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(18) : Error: A specification statement cannot appear in the executable section.
+      parameter (maxiters=2000) ! maximum iterations in uncertainty eval.
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(19) : Error: A specification statement cannot appear in the executable section.
+      parameter (missing = -99.0d0) ! missing value code
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(23) : Error: A specification statement cannot appear in the executable section.
+      Integer firstage, lastage, firstyear, lastyear     ! range of the catch at age data
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(24) : Error: A specification statement cannot appear in the executable section.
+      Integer fage(maxsurvey), lage(maxsurvey), &
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(26) : Error: A specification statement cannot appear in the executable section.
+      Integer fbyear, lbyear                             ! first and last years of the SSB surveys
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(27) : Error: A specification statement cannot appear in the executable section.
+      integer nageix                                     ! number of age-structured surveys (max is 5)
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(28) : Error: A specification statement cannot appear in the executable section.
+      Double precision Timing(maxsurvey)                         ! Timing of each of the age-structured surveys in fractions of a year
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(29) : Error: A specification statement cannot appear in the executable section.
+      integer nssbix                                     ! Number of SSB surveys (max is 3)
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(30) : Error: A specification statement cannot appear in the executable section.
+      double precision CN(maxyear,maxage ), NM(maxyear,maxage )              ! Catch Number and Natural Mortality
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(31) : Error: A specification statement cannot appear in the executable section.
+      double precision SW(maxyear,maxage ), MO(maxyear,maxage ), &
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(33) : Error: A specification statement cannot appear in the executable section.
+      double precision PF, PM                            ! Proportions of F and M before spawning
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(34) : Error: A specification statement cannot appear in the executable section.
+      double precision AINDEX(maxsurvey,maxyear,maxage )                               ! Age structured survey data indexed as (survey, year, age)
+------^
+L:\Programs\Fortran\ICA\Source\a\indat.inc(35) : Error: A specification statement cannot appear in the executable section.
+      double precision BINDEX(maxbsurv,maxyear)                                  ! SSB survey data indexed as (survey, year)
+------^
+(2216) : Severe: Too many errors, exiting
+Error executing df.exe.
+
+
+
+<h3>Results</h3>
+ICA.OBJ - 30 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

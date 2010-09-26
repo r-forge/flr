@@ -1,0 +1,22 @@
+ lo icp4m99
+ lo np_io
+ lo readblk
+ lo srr
+ lo readpro
+ lo c:\a\parmset.obj
+ lo c:\a\stats.obj
+ lo c:\a\out.obj
+ lo c:\a\io_win.obj
+ lo c:\a\pctile.obj
+ lo c:\a\cvpa1.obj
+ lo c:\a\wtab.obj
+ lo c:\a\object.obj
+ lo c:\nagfl17d\lib\naglib.lib
+ file
+
+
+
+
+
+
+

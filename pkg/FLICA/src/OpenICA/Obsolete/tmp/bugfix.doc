@@ -1,0 +1,15 @@
+
+ 7 July 1999
+
+ Problem
+ =======   ICA crashes with message "Subscript 1 of text (value 31) is out of
+           range (1:30) (file c:\a\io_win.f90).
+           Happens when over 10 age-structured indices used.
+
+ Solution
+ ========
+            In routine DisplayWts in ICA2_90, variable TEXT redefined with size 100 and
+            parameter TextSize ( = 100) passed to windows display routine    
+
+
+----------------------------------------------------------------------------------------------

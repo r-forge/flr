@@ -1,0 +1,27 @@
+
+Modifications to ICA and ICP after April 1998
+
+August 1998:
+
+(1)  New variable 'UpdatePopulations' added to 'INDAT.INC' common block.
+This is used to speed up the Bayes MCMC calculations. When a consditional
+probability calculation does NOT need the Ns and Fs to be recalcualted
+(e.g. when sampling catchabilities or variances) then the variable is
+used to switch off the cohort calculations.
+
+Change affects: MC.F90
+                OBJECT.F90
+                INDAT.INC
+
+
+(2) Error found in passing parameters from ICA to ICP in thecase that there
+is one SSB index but no age-structured index. If this happens the programme
+loses the QBparm parameter which flags the catchability model type
+
+Correction made to      WBLK.F90
+                        ReadBLK.F90
+
+
+
+
+

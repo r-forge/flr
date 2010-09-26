@@ -1,0 +1,7 @@
+CONTENT
+-------
+
+This file describe the modification brought to the original ICA program (/home/kienzlem/Programs/Fortran/ICA/OriginalSource) in order to compile it on Linux.
+
+1) Uppercase/Lowercase: change the name on the include so that it match the name of the file including the case.
+
