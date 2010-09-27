@@ -1,21 +1,22 @@
-# This is ica.mak makefile
+# This is a makefile to compile OpenICA
 # USAGE: make; make clean
-# CREATED 15 July 2007
-# MODIFIED 25 Sept 2010
+# CREATED  15 July 2007
+# MODIFIED 27 Sept 2010
 # AUTHOR marco.kienzle@gmail.com
+
+# BACKGROUND this version of ICA uses MINUIT from CERN libraries
 
 # PURPOSE: compile ICA under linux
 #ifort is the INTEL fortran compiler
 
 # Library to use
-# LIBS = -L/usr/libexec/CERNLIB/2005/lib/  -lmathlib -lpacklib -lkernlib -L/usr/local/lib/port3 -lport -L/usr/local/lib/MinPack -lminpack
-LIBS = -L/usr/local/lib/cernlib -lmathlib -lpacklib -lkernlib -L/usr/local/lib/port3 -lport -L/usr/lib -lminpack
+LIBS = -L/usr/local/lib/cernlib -lmathlib -lpacklib -lkernlib
 
 # Those symbols are from the GNU fortran runtime system
-#OPTS = -L/usr/lib -lg2c
+#OPTS = -L/usr/lib -lg3c
  
-ica: ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o MinuitObject.o covar.o SRR.o SHRINK.o BY.o KP4.o
-	ifort -o ICA.exe src/ICA2_90.F90 ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o MinuitObject.o covar.o SRR.o SHRINK.o BY.o KP4.o $(LIBS) $(OPTS)
+ica: ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o covar.o SRR.o SHRINK.o BY.o KP4.o
+	ifort -o OpenICA.exe src/ICA2_90.F90 ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o covar.o SRR.o SHRINK.o BY.o KP4.o $(LIBS) $(OPTS)
 
 ICA.o : src/ICA.F90
 	ifort -c src/ICA.F90
@@ -56,9 +57,6 @@ WBLK.o : src/WBLK.F90
 object.o : src/object.f90
 	ifort -c src/object.f90
 
-MinuitObject.o : src/MinuitObject.f90
-	ifort -c src/MinuitObject.f90
-
 covar.o : src/covar.f
 	ifort -c src/covar.f
 
@@ -76,6 +74,6 @@ KP4.o : src/KP4.F90
 
 clean:
 	rm -f *.o
-	cp ICA.exe /home/mkienzle/bin/.
+	cp OpenICA.exe /home/mkienzle/bin/.
 
 # end of makefile.

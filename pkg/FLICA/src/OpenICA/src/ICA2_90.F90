@@ -24,7 +24,7 @@
 ! MK - July 2007: the DN2F minimization function from PORT library has never produced the 
 !                 exact same results than e04fyf from the NAG library. Therefore it was replaced
 !                 by the lmdif1 subroutine from the MINPACK library.
-
+! MK - End of 2007: finally NAG was replaced by MINUIT from cernlib
 ! /////////////////////// TO DO /////////////////////////////////////////                                                           
 !   create a routine that replace the Report for displaying the diagnostic of the fit                                                                                                                                
 ! ///////////////////////////////////////////////////////////////////////                                                                                                                                   
@@ -87,9 +87,9 @@
       Include "LABELS.INC"                                                                                                          
       Include "MESSAGE1.INC"                                                                                                       
 
-! externAL SUBROUTINES
+! Externalal SUBROUTINES
      
-     external LSFUN, LSFUN1, DN2F, INUTILE, OBJECTIVEFCN, minuitobj, covar
+     external OBJECTIVEFCN, covar
 
 !      DEFINE global variables
        COMMON/global_int/nodats,noparms;
@@ -378,28 +378,28 @@ zero=0
 
 !------ SETTING UP THE PARAMETER FOR THE DN2F MINIMIZATION FUNCTION
 
-          UI(1) = 50
+!          UI(1) = 50
 !	  IV(1) = 0 ! RUN THE OPTIMIZATION WITH DEFAULT VALUES
 
 !------ CONTROLS FOR THE MINIZATION ALGORITHM
 
-	   CALL DIVSET(1, IV,LIV,LV,V)
+!	   CALL DIVSET(1, IV,LIV,LV,V)
 
 !------	PRINTING CONTROLS
 
-	   IV(19) = 0
-	   IV(14) = 1
-	   IV(21) = 0 ! Turn all printing off: comment to have the covariance matrix and the diagnostic array printed
+!	   IV(19) = 0
+!	   IV(14) = 1
+!	   IV(21) = 0 ! Turn all printing off: comment to have the covariance matrix and the diagnostic array printed
 
 !------ FURTHER SETTINGS
 
-	   V(38)  = 1.0
-	   IV(16) = 0
+!	   V(38)  = 1.0
+!	   IV(16) = 0
 
-	   IV(18) = 10 ! MAX NUMBER OF ITERATION, DEFAULT=150
+!	   IV(18) = 10 ! MAX NUMBER OF ITERATION, DEFAULT=150
 
 !------   Request the Hessian to be the product of the Jacobian (this matter for the var/cov matrix)
-	   IV(15) = 3
+!	   IV(15) = 3
 
 
 !  ------------------------- FOLLOWING LOOP IS THE ACTUAL MODEL FITTING FOR GIVEN WEIGHTS                                           
@@ -431,9 +431,9 @@ zero=0
 !	  SSQ = 2*V(10)                    ! DN2F minimises 0.5 * LSFUN ^ 2
 
 info=1
-	write(*,*) 'Calling lmdif1'
-call lmdif1(LSFUN1, noparms, nodats, params, fvec, tol, info, iw, wa, lwa)
-         Full = .true.                                              !------------------------ but recalculate the full VPA afterwar
+!	write(*,*) 'Calling lmdif1'
+!call lmdif1(LSFUN1, noparms, nodats, params, fvec, tol, info, iw, wa, lwa)
+!         Full = .true.                                              !------------------------ but recalculate the full VPA afterwar
 
 !          DN2F COMPUTE THE VAR/COV MATRIX AND STORES THE RESULTS IN ARRAY V
 !           call DN2F(nodats,noparms,params,LSFUN,IV,LIV,LV,V,UI,UR,INUTILE) !-------- PORT minimization routine: fit the separable model           
@@ -441,7 +441,7 @@ call lmdif1(LSFUN1, noparms, nodats, params, fvec, tol, info, iw, wa, lwa)
 !DEBUG	write(*,*) 'Parameters', Params
 
 !          write(*,*) 'CALLING LSFUN1 ..' ! To debug	
-	write(*,*) 'I am just before call LSFUN1 for 2nd time'
+!	write(*,*) 'I am just before call LSFUN1 for 2nd time'
 
 !	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
 !          Call LSFUN1(nodats, Noparms, Params, Resids)        
@@ -466,7 +466,7 @@ call lmdif1(LSFUN1, noparms, nodats, params, fvec, tol, info, iw, wa, lwa)
 
 
         enddo                                                                                                                       
-write(*,*) 'WARNING: LMDIF return INFO =', info
+!write(*,*) 'WARNING: LMDIF return INFO =', info
 
 
 !!!!!! AN ATTEMPT TO USE PORT
@@ -1169,6 +1169,6 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
 ! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! +++++ INUTILE is a dummy subroutine required for the DN2F minimization routine from the PORT library +++++
 ! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      SUBROUTINE INUTILE
-      RETURN
-      END
+!      SUBROUTINE INUTILE
+!      RETURN
+!      END

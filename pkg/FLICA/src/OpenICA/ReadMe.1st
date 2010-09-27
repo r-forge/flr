@@ -1,5 +1,14 @@
-# CREATED: 
-# MODIFIED: 24 Sept. 2010
+# CREATED: January 2005
+# MODIFIED: 27 Sept. 2010
+# AUTHOR: marco.kienzle@gmail.com
+
+Open source ICA
+---------------
+
+The fortran code of ICA released by K. Patterson has always been open source, as any science endeavour should be. Version 1.4 w made sevearal call to the NAG library (nag.co.uk), a closed source library, which prevented the release of ICA v. 1.4w into an open source package.
+
+In order to include ICA into the Fishery Library in R, a group of scientists (M. Kienzle, L. Kell) decided to replace the call to the NAG library with calls to a public domain library. They chose cernlib (http://cernlib.web.cern.ch/cernlib/) for the quality of software they provide, in particular for the minimization function known as MINUIT developed by F. James (http://wwwasdoc.web.cern.ch/wwwasdoc/minuit/minmain.html).
+
 
 Install CERNLIB
 ---------------
@@ -7,29 +16,20 @@ Install CERNLIB
 	- on ubuntu: sudo aptitude update
 	             sudo aptitude install cernlib
 
-Compile the PORT library
-------------------------
-
-On yosemite (Ubuntu lucid lynx, LTS 10.04)
-cd /usr/local/lib/port3
-
-(as root)
-make clean
-make mfiles
-make
-
-Compile ICA
------------
+Compile ICA using instruction in makefile
+-----------------------------------------
 make
 make clean
+
 
 PRACTICAL WAY TO EXECUTE ICA.exe
 --------------------------------
 
-./ICA.exe < /home/mkienzle/Programs/PERL/ICAsettings.txt
+./OpenICA.exe < /home/mkienzle/Programs/PERL/ICAsettings.txt
 
-CONTENT
--------
+
+Modification to ICA v. 1.4 w to obtain OpenICA
+----------------------------------------------
 
 This file describe the modification brought to the original ICA program (/home/kienzlem/Programs/Fortran/ICA/OriginalSource) in order to compile it on Linux.
 
