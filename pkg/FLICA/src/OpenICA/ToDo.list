@@ -1,0 +1,14 @@
+# CREATED: January 2005
+# MODIFIED: 27 Sept. 2010
+# AUTHOR: marco.kienzle@gmail.com
+
+To do list
+----------
+
+0. Follow the instruction about how to release the code under GPL (see http://www.gnu.org/licenses/gpl-howto.html) 
+1. clean the code until only the essential lines are present
+2. adopt a consistent scheme for naming files and variable
+3. create a website that document OpenICA and tests
+4. comment the code
+5. contact a group of professional user of ICA to check that OpenICA does provide the same results on their particular case study than the version they are currently using
+

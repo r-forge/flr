@@ -1,0 +1,7 @@
+\paragraph{Shared library} if you get the following error message after executing ica.exe: 
+                        error while loading shared libraries: 
+                        libimf.so: cannot open shared object file: 
+                        no such file or directory.
+
+                        you can solve this problem by searching where the libimf.so file is on your system (using as root the command find / -iname *libimf.so*). As root, put the path to this file in the /etc/ld.so.conf and run /sbin/ldconfig.
+

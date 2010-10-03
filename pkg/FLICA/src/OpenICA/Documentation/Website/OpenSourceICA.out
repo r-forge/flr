@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}
+\BOOKMARK [1][-]{section.2}{License}{}
+\BOOKMARK [1][-]{section.3}{Test}{}
+\BOOKMARK [2][-]{subsection.3.1}{Results of the tests for those who can't wait}{section.3}
+\BOOKMARK [2][-]{subsection.3.2}{Detailed results of the tests}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Datasets with no random variability \(no stochasticity\) fitted as absolute}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Datasets with no random variability \(no stochasticity\) fitted as relative}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Datasets with random variability \(stochasticity\) fitted as relative}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.4}{Datasets with random variability \(2\) fitted as absolute}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.5}{Datasets with random variability \(3\) fitted as relative}{subsection.3.2}
+\BOOKMARK [1][-]{section.4}{Download}{}
+\BOOKMARK [2][-]{subsection.4.1}{Source}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.1.1}{How to compile the source}{subsection.4.1}
+\BOOKMARK [2][-]{subsection.4.2}{Binaries}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Linux}{subsection.4.2}
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Windows}{subsection.4.2}
+\BOOKMARK [1][-]{section.5}{Known problems}{}
+\BOOKMARK [2][-]{subsection.5.1}{with Unix/Linux}{section.5}
+\BOOKMARK [1][-]{section.6}{Tips}{}
+\BOOKMARK [2][-]{subsection.6.1}{Unix/Linux tips}{section.6}

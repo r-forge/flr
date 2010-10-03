@@ -1,19 +1,17 @@
-# This is a makefile to compile OpenICA
+# This is ica.mak makefile
 # USAGE: make; make clean
-# CREATED  15 July 2007
-# MODIFIED 27 Sept 2010
+# CREATED 15 July 2007
+# MODIFIED 2 Oct 2010
 # AUTHOR marco.kienzle@gmail.com
-
-# BACKGROUND this version of ICA uses MINUIT from CERN libraries
 
 # PURPOSE: compile ICA under linux
 #ifort is the INTEL fortran compiler
 
 # Library to use
-LIBS = -L/usr/local/lib/cernlib -lmathlib -lpacklib -lkernlib
+LIBS = -L/usr/local/lib/cernlib -lmathlib -lpacklib -lkernlib -L/usr/lib -lminpack
 
 # Those symbols are from the GNU fortran runtime system
-#OPTS = -L/usr/lib -lg3c
+#OPTS = -L/usr/lib -lg2c
  
 ica: ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o covar.o SRR.o SHRINK.o BY.o KP4.o
 	ifort -o OpenICA.exe src/ICA2_90.F90 ICA.o pctile.o IN.o OUT.o WTAB.o stats.o PARMSET.o IO_DOS.o SEPVPA.o CONVPA.o CVPA1.o WBLK.o object.o covar.o SRR.o SHRINK.o BY.o KP4.o $(LIBS) $(OPTS)

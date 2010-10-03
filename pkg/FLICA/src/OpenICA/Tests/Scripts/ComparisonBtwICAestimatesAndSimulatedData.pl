@@ -22,8 +22,7 @@ if($help){print "OPTION: this program need the path of the directory containing 
           exit();}
 
 
-$DataPath = "/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/ModifiedSource/Data/Simulated/$DirPath";
-#$NewVersionPath = "/home/mkienzle/Websites/OpenSourceICA/OpenSourceICA/test/datasets/ICAv1.4x/$DirPath";
+$DataPath = "/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICA/Data/Simulated/$DirPath";
 
 # Get the number of subdirectories
 $SubDirNb=`tree -d $DataPath | grep directories`; chomp($SubDirNb); $SubDirNb =~ /(\d{1,5})\sdirectories/;
@@ -43,14 +42,10 @@ print R "simulated.recruitment <- read.table(file = paste(\"$DataPath/\",i,\"/si
 print R "simulated.ssb <- read.table(file = paste(\"$DataPath/\",i,\"/simulated.ssb\", sep = \"\"), skip = 2, header = TRUE)\n";
 print R "simulated.tsb <- read.table(file = paste(\"$DataPath/\",i,\"/simulated.TSB\", sep = \"\"), skip = 1)\n";
 
-#print R "new<-read.ica(paste(\"$NewVersionPath/\",i,\"\/ica.out\",sep=\"\"))\n";
-
 print R "all.ica.data <- ica.data\$data\n";
 print R "all.simulated.rec <- simulated.recruitment[simulated.recruitment\$year %in% 1972:2002, \"number\"] * 1e-3\n";
 print R "all.simulated.ssb <- simulated.ssb\$INDEX\n";
 print R "all.simulated.tsb <- simulated.tsb\$V2\n";
-
-#print R "newdata<-new\$data\n";
 
 print R "}\n";
 
@@ -67,12 +62,9 @@ print R "all.simulated.tsb <- c(all.simulated.tsb, simulated.tsb\$V2)\n";
 
 print R "}\n";
 
-#print R "print(ica.datadata)\n";
-#print R "print(newdata)\n";
-
 # COMPARE THE RECRUITMENT
 print R "ps.options(horizontal=FALSE, onefile=FALSE, paper=\"special\", width=8, height=6)\n";
-print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/ModifiedSource/Tests/Results/$DirPath/$ICAVersionTested/comparison-recruitment.ps\", onefile=FALSE)\n";
+print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICA/Tests/Results/$DirPath/comparison-recruitment.ps\", onefile=FALSE)\n";
 
 print R "print(dim(all.ica.data))\n";
 print R "print(length(all.simulated.rec))\n";
@@ -85,7 +77,7 @@ print R "dev.off()\n";
 
 # # COMPARE THE TSB
 print R "ps.options(horizontal=FALSE, onefile=FALSE, paper=\"special\", width=8, height=6)\n";
-print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/ModifiedSource/Tests/Results/$DirPath/$ICAVersionTested/comparison-tsb.ps\", onefile=FALSE)\n";
+print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICA/Tests/Results/$DirPath/comparison-tsb.ps\", onefile=FALSE)\n";
 
 print R "plot(all.ica.data[,2], all.simulated.tsb,xlab=\"Open ICA estimates\",ylab=\"Simulated\", las=1)\n";
 print R "title(\"Total stock biomass\")\n";
@@ -95,7 +87,7 @@ print R "dev.off()\n";
 
 # COMPARE THE SSB
 print R "ps.options(horizontal=FALSE, onefile=FALSE, paper=\"special\", width=8, height=6)\n";
-print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/ModifiedSource/Tests/Results/$DirPath/$ICAVersionTested/comparison-ssb.ps\", onefile=FALSE)\n";
+print R "postscript(\"/home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICA/Tests/Results/$DirPath/comparison-ssb.ps\", onefile=FALSE)\n";
 
 print R "plot(all.ica.data[,3], all.simulated.ssb,xlab=\"Open ICA estimates\",ylab=\"Simulated\", las=1)\n";
 print R "title(\"Spawning stock biomass\")\n";

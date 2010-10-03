@@ -1,0 +1,4 @@
+For those of you who are using Unix/Linux, it is possible to store the settings of an ICA-model in a file and redirect its content to the prompt. This method saves you from entering manually a model settings which is very useful during simulation studies involving large number of ICA fits. To try this by yourself, download this \htmladdnormallink{zipped archive (.tar.gz)}{./Examples/UsingICAsettings.tar.gz} that contains a set of ICA input and setting files.  Make sure you have previously compiled or obtained a copy of OpenICA executable that works on your Linux computer. Make sure that OpenICA is in your PATH ({\it i.e.} that OpenICA.exe will execute when entered at the prompt, no matter where you stand in the filesystem tree). Move to the directory where you extracted the archive previously downloaded and type the following command in a terminal console 
+
+\begin{verbatim}  OpenICA.exe < ICAsettings.txt > ica.log; \end{verbatim}
+

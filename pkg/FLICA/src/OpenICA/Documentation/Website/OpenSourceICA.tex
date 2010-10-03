@@ -1,0 +1,46 @@
+% Do not edit unless you know what you are doing
+% latex2html -noreuse OpenSourceICA.tex
+
+\documentclass[12pt]{article}
+\usepackage{natbib,html,graphics,epsfig}
+
+\begin{document}
+
+\title{Open Source version of ICA}
+%\author{Marco Kienzle}
+\maketitle
+
+\section{Introduction} \input{introduction.tex}
+
+\section{License} \input{license.tex}
+
+\section{Test} \input{test.tex}
+
+\section{Download} \input{./Download.tex}
+
+\section{Known problems}
+	\subsection{with Unix/Linux} \input{unixTroubleShooting.tex}
+
+\section{Tips}
+
+         \subsection{Unix/Linux tips} \input{unixtips.tex}
+
+\bibliography{/home/mkienzle/Bibliography/Biblio}
+\bibliographystyle{plainnat}
+
+%Some \htmlref{sets of data}{table:dataresponsible} are accessible only to authorized users. The first step is to request this right by contacting the responsible authority. Be aware that this step may take up to several weeks.\\
+
+%\section{}
+
+%If the PgSQL client application is installed locally, you can simply type {\tt psql -h servername -d dbname -U username} \\
+
+% read the \htmladdnormallink{documentation}{http://www.postgresql.org/docs} specific for the version of the softare you use. The version of PostGreSQL is displayed by the command {\tt psql -V} \ typed at the prompt of a Unix machine having this software is installed. 
+%Direct access to a database from within a statistical software is very useful for scientist that need to analyse raw data. Here we present the method to link \htmladdnormallink{R}{http://cran.r-project.org/} to PostGreSQL using the \htmladdnormallink{RPgSQL package}{http://rpgsql.sourceforge.net} (Note that this package is no longer maintained in favor of \htmladdnormallink{Rdbi}{http://rdbi.sourceforge.net}). We assume that R and the approriate packages have been installed on your local machine. \\ 
+
+%\begin{verbatim}
+%> library(RPgSQL) 
+%> db.connect(host="sea.marlab.ac.uk",dbname="Physico-Chemical", user="username")
+%Connected to database "ibts" on "pclnx3" 
+%\end{verbatim} \noindent
+
+\end{document}
