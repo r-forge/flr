@@ -125,7 +125,7 @@
 !                    WRITEBLOCK : Write all programme variables to a temporary file                                                 
 !                                                                                                                                   
 !                    UNIT 'OBJECT'                                                                                                  
-!                    LSFUN1 : The objective function                                                                                
+!                    LSFUN : The objective function                                                                                
 !                                                                                                                                   
 !                    UNIT 'SRR'                                                                                                     
 !                    ReadDAT   : Read any estimates of stock and recruit prior to the main data set                                 
@@ -152,7 +152,7 @@
 !     main output file           ICA.OUT        WRITE        READER      TABLEOUT                                                   
 !     file for graphic programme ICA.VIE        WRITE        READER      TABLEOUT                                                   
 !     all data and parameters    ICA.TMP        WRITE        WRITEBLOCK  WRITEBLOCK                                                 
-!     residuals                  ICA.RES        WRITE        OBJECT      LSFUN1                                                     
+!     residuals                  ICA.RES        WRITE        OBJECT      LSFUN                                                     
 !     stock-recruit params       ICA.SRR        WRITE        SRR         WRITESRRFFILE                                              
 !                                                                                                                                   
 ! =========================================================================================                                         
@@ -450,12 +450,12 @@
                                                                                                                                     
 !   Run the objective function to test                                                                                              
                                                                                                                                     
-!      write(*,*) 'CAll to LSFUN1'   
-	write(*,*) 'I am just before call LSFUN1 for 3rd time'
+!      write(*,*) 'CAll to LSFUN'   
+	write(*,*) 'I am just before call LSFUN for 3rd time'
 !	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!      CALL LSFUN1(Nxdata,NxParm, Xbest, Resids)                                                         CALL LSFUN1(NxParm, Nxdata, Resids, Xbest)                                                                                     
+!      CALL LSFUN(Nxdata,NxParm, Xbest, Resids)                                                         CALL LSFUN1(NxParm, Nxdata, Resids, Xbest)                                                                                     
 
-!      write(*,*) 'CAll to LSFUN1 OK' 
+!      write(*,*) 'CAll to LSFUN OK' 
       SSQ=0d0
       do i=1,Nxdata                                                                                                                 
         SSQ= SSQ+Resids(i)*Resids(i)                                                                                                
@@ -781,7 +781,7 @@ enddo
 !TO BE REPLACED        endif
 
 
-        call LSFUN1(NxData, NxParm, Z, FC)
+        call LSFUN(NxData, NxParm, Z, FC)
 
 !        call Tableout(1) ! to test
 

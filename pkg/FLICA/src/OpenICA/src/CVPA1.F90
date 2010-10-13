@@ -344,7 +344,7 @@
 !                                                                                                                                   
 !     Populations in endyear will be used to initiate the VPA.                                                                      
 !                                                                                                                                   
-!     CVPA2 is called by LSFUN1; CVPA is called by CONVPA                                                                           
+!     CVPA2 is called by LSFUN; CVPA is called by CONVPA                                                                           
 !                                                                                                                                   
 !                                                                                                                                   
 !                                                                                                                                   

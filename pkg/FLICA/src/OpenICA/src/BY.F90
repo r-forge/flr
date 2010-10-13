@@ -10,7 +10,7 @@
 !
 !     This routine does the ICA Bayesian MCMC by ARS
 !
-!            Functions calls:    FUNCT1, similar to LSFUN1 but returns -ve loglikleihood
+!            Functions calls:    FUNCT1, similar to LSFUN but returns -ve loglikleihood
 !                                FUNCT2, a null function for unifom priors
 
 !                                MCOptions, chooses the burn-in, thin and chain length
@@ -186,7 +186,7 @@
      writeout=.false.
 !	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
 !     call LSFun1(nxdata,nparm,X,FC)
-     call LSFun1(nparm,nxdata,FC,X)
+     call LSFun(nparm,nxdata,FC,X)
 
      oldlh =0d0
      do i=1,Nxdata

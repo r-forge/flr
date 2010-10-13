@@ -24,9 +24,7 @@
 ! MK - July 2007: the DN2F minimization function from PORT library has never produced the 
 !                 exact same results than e04fyf from the NAG library. Therefore it was replaced
 !                 by the lmdif1 subroutine from the MINPACK library.
-
-! /////////////////////// TO DO /////////////////////////////////////////                                                           
-!   create a routine that replace the Report for displaying the diagnostic of the fit                                                                                                                                
+! MK - Oct 2010: modified to use only CERN library, in particular MINUIT routines
 ! ///////////////////////////////////////////////////////////////////////                                                                                                                                   
 !          Program Description:                                                                                                     
 !          ====================                                                                                                     
@@ -61,14 +59,10 @@
 !                         CalcStats              calculates variances etc.                                                          
                                                                                                                                     
 !                         DisplayWts             display the survey index weights on screen                                         
-!                         LSFUN1                 objective function, calculates residual vector for                                 
-!                                                  given parameter vector. Also, if writeout = true then                            
-!                                                  the residuals are written to a file ICA.RES. If Full = true                      
-!                                                  then a conventional VPA is calculated for all the years of data.                 
-! OBSOLETE                         E04FDF                 NAG routine to minimise sums of squares                                            
-! OBSOLETE                         E04YCF                 NAG routine to approximate variance-covariance matrix                              
-!                         DN2F                   PORT routine to solve non-linear least square problem
-!                                                and calculate the variance-covariance matrix                                                                                                           
+!                         LSFUN                  objective function, calculates residual vector for                                 
+!                                                given parameter vector. Also, if writeout = true then                            
+!                                                the residuals are written to a file ICA.RES. If Full = true                      
+!                                                then a conventional VPA is calculated for all the years of data.                 
 ! OBSOLETE BUT NOT REPLACED                       Report                 display NAG diagnostics of fit                                                     
 !                         WriteVCV               write variance-covariance matrix to file (Modified by MK)                                           
 !                         TableOut               Write output and data transfer file                                                
@@ -87,22 +81,15 @@
       Include "LABELS.INC"                                                                                                          
       Include "MESSAGE1.INC"                                                                                                       
 
-! externAL SUBROUTINES
+! External SUBROUTINES
      
-     external LSFUN, LSFUN1, INUTILE, OBJECTIVEFCN, minuitobj, covar
+     external LSFUN,  OBJECTIVEFCN, covar
 
 !      DEFINE global variables
        COMMON/global_int/nodats,noparms;
                                                                                                                  
 !     Local variables                                                                                                               
                                                                                                                                     
-! added for NAG call E04FYF in place of old E04FDF (01 Dec. 2004)
-!
-      integer IUSER(1)
-      real    USER(1)
-
-! end of addidtion
-
       character*5 ytext                                                                                                             
       character*9 ntext                                                                                                             
       character*76 Text(5)                                                                                                          
@@ -110,10 +97,10 @@
       integer  i, ii, j, ik, iage   
       character*1 dummy                                                                                                             
       integer age, index                                                                                                            
-!      double precision params(maxparm)                                      ! Fitted parameters, as passed to E04 routines         
-double precision params(46)
+      double precision params(maxparm)                                      ! Fitted parameters, as passed to E04 routines         
+!double precision params(46)
       double precision ssq, SSQOld, endsq                                   ! ssq for anova table                        
-      integer liw, lw, ifail                                   ! Workspace for E0f routines  
+     integer liw, lw, ifail                                   ! Workspace for E0f routines  
 !integer iw(maxdata)                           
       integer  nv, ns, job, ifaily                                          ! used in e04YCF call                                       
       double precision cj(maxparm)                                          ! not used; reqd for e04YCF syntax                     
@@ -136,24 +123,6 @@ double precision params(46)
       integer shrinkyrs                                                 ! number of years to shrink to                              
       integer tscan                                                     ! The tscan function replaces Microsoft 'SCAN'         
 
-! DEFINING THE WORKSPACE VARIABLE THE DN2F MINIMIZATION FUNCTION (PORT library)
-
-      INTEGER LIV,LV, UI(1) 	       
-      PARAMETER (LV = 105+maxparm*(maxdata+2*maxparm+17)+2*maxdata)
-	  PARAMETER (LIV = 82+maxparm)  
-	  INTEGER IV(LIV)
-	  DOUBLE PRECISION V(LV)
-	  REAL UR(1)
-
-
-! DEFINING THE WORKSPACE VARIABLE FOR LMDIF1 - MINPACK MINIMIZATION FUNCTION
-INTEGER lwa
-
-DOUBLE PRECISION fvec(nxdata), wa(nxdata * nxparm + 5 * nxparm + nxdata)
-INTEGER info, iw(nxparm), iwa(nxparm)
-DOUBLE PRECISION tol
-PARAMETER (tol=1.0D-14)
-
 ! DEFINING THE WORKSPACE FOR MINUIT
 integer ierflg
 integer ARGLIS(4), zero
@@ -174,10 +143,6 @@ zero=0
       write(*,*) 'Start of ICA2'
       nodats = nxdata
       noparms = nxparm          
-
-! Initialize lwa is a positive integer, a parameter of lmdif1 algorithm from the MINPACK library
-      lwa= nxdata * nxparm + 5 * nxparm + nxdata
-
 
 
 !DEBUG      write(*,*) 'nodats is', nodats
@@ -374,122 +339,51 @@ zero=0
 ! ----------------------------------------------------------------------                                                            
 ! ------------------------------------- CALCULATE STARTING RESIDUALS                                                                
 ! ----------------------------------------------------------------------                                                            
-                                                                                                                                  !  ------------------------- FOLLOWING LOOP IS THE ACTUAL MODEL FITTING FOR GIVEN WEIGHTS                                           
-	write(*,*) 'I am just before call LSFUN1 for 1st time'
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!        Call LSFUN1(nodats, Noparms, Params, Resids)                                                                                
-        Call LSFUN1(Noparms, nodats, Resids, Params)                                                                                
+                                                                                                                                    
+!  ------------------------- FOLLOWING LOOP IS THE ACTUAL MODEL FITTING FOR GIVEN WEIGHTS                                           
+        Call LSFUN(Noparms, nodats, Resids, Params)                                                                                
         endsq = 0d0                                                                                                                 
         do i = 1, nodats                                                                                                            
           endsq = endsq+Resids(i)*Resids(i)                                                                                         
         enddo                                                                                                                       
-!!!!!!!!!!!!!!!!!!!! ATTEMPT TO USE MINPACK
+
         SSQOld = 1d0                                      ! ----------arbitrary to make sure it starts                              
         SSQ = endsq                                       ! ----------SSQ from starting position estimated by prior fit             
         do while ( dabs(SSQ-SSQOld)/SSQOld .gt. 0.0005d0) ! --------- Keep going until the SSQ changes by less than 0.05%           
-!
-          write(*,*) 'MINPACK Minimising SSQ ----> ', SSQ         ! --------- for debugging                                                 
+
+! write(*,*) 'Minimum SSQ ----> ', SSQ         ! --------- for debugging                                                 
+
           SSQOld = SSQ                                                                                                              
-!          ifail = 1                                                  !------------------------ needed to keep going; see NAG routine
+
           Full = .false.
 !write(*,*) nodats, noparms, SSQ, params(1), params(2) ! DEBUG
 !DEBUG          write(*,*) nodats, noparms, SSQ, liw, lw, ifail            !------------------------ don't recalculate the full VPA in eac
 
-!          call e04fdf(nodats, noparms,params,SSQ,iw,liw,wk,lw,ifail) !------- NAG routine Pre mark 19 : fit the separable model            !          call e04fyf(nodats, noparms,LSFUN,params,SSQ,wk,lw,IUSER,USER,ifail) !------- NAG routine mark 19: fit the separable model    
-
-!          DN2F COMPUTE THE VAR/COV MATRIX AND STORES THE RESULTS IN ARRAY V
-!           call DN2F(nodats,noparms,params,LSFUN,IV,LIV,LV,V,UI,UR,INUTILE) !-------- PORT minimization routine: fit the separable model             
-!          write(*,*) 'SSQ --- > ', 2*V(10) ! DN2F minimises 0.5 * LSFUN ^ 2
-!	  SSQ = 2*V(10)                    ! DN2F minimises 0.5 * LSFUN ^ 2
-
-info=1
-	write(*,*) 'Calling lmdif1'
-call lmdif1(LSFUN1, noparms, nodats, params, fvec, tol, info, iw, wa, lwa)
          Full = .true.                                              !------------------------ but recalculate the full VPA afterwar
 
-!          DN2F COMPUTE THE VAR/COV MATRIX AND STORES THE RESULTS IN ARRAY V
-!           call DN2F(nodats,noparms,params,LSFUN,IV,LIV,LV,V,UI,UR,INUTILE) !-------- PORT minimization routine: fit the separable model           
+!DEBUG	write(*,*) 'I am just before call LSFUN for 2nd time'
 
-!DEBUG	write(*,*) 'Parameters', Params
-
-!          write(*,*) 'CALLING LSFUN1 ..' ! To debug	
-	write(*,*) 'I am just before call LSFUN1 for 2nd time'
-
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!          Call LSFUN1(nodats, Noparms, Params, Resids)        
-          Call LSFUN1(Noparms, nodats, Resids, Params)        
+          Call LSFUN(Noparms, nodats, Resids, Params)        
 
 ! RECALCULATE THE SSQ
-
        endsq = 0d0                                                                                                                 
-
 
         do i = 1, nodats                                                                                                            
           endsq = endsq+Resids(i)*Resids(i)                                                                                         
         enddo                                                                                     
+
 ! Old and new SSQ
  
             SSQOld = SSQ
             SSQ = endsq
 
-!DEBUG write(*,*) 'MINPACK Old SSQ is ', SSQOld
-!DEBUG write(*,*) 'MINPACK new SSQ is ', SSQ
-!DEBUG write(*,*) 'MINPACK Condition ', dabs(SSQ-SSQOld)/SSQOld
+!DEBUG write(*,*) 'Old SSQ is ', SSQOld
+!DEBUG write(*,*) 'new SSQ is ', SSQ
+!DEBUG write(*,*) 'Condition ', dabs(SSQ-SSQOld)/SSQOld
 
 
         enddo                                                                                                                       
-write(*,*) 'WARNING: LMDIF return INFO =', info
-
-
-!!!!!! AN ATTEMPT TO USE PORT
-!
-!        SSQOld = 1d0                                      ! ----------arbitrary to make sure it starts                              
-!        SSQ = endsq                                       ! ----------SSQ from starting position estimated by prior fit             
-!        do while ( dabs(SSQ-SSQOld)/SSQOld .gt. 0.0005d0) ! --------- Keep going until the SSQ changes by less than 0.05%           
-
-!          write(*,*) 'Minimising SSQ ----> ', SSQ         ! --------- for debugging                                                 
-!          SSQOld = SSQ                                                                                                              
-!          ifail = 1                                                  !------------------------ needed to keep going; see NAG routine
-!          Full = .false.
-!write(*,*) nodats, noparms, SSQ, params(1), params(2) ! DEBUG
-!DEBUG          write(*,*) nodats, noparms, SSQ, liw, lw, ifail            !------------------------ don't recalculate the full VPA in eac
-
-!          call e04fdf(nodats, noparms,params,SSQ,iw,liw,wk,lw,ifail) !------- NAG routine Pre mark 19 : fit the separable model            !          call e04fyf(nodats, noparms,LSFUN,params,SSQ,wk,lw,IUSER,USER,ifail) !------- NAG routine mark 19: fit the separable model    
-
-!          DN2F COMPUTE THE VAR/COV MATRIX AND STORES THE RESULTS IN ARRAY V
-!           call DN2F(nodats,noparms,params,LSFUN,IV,LIV,LV,V,UI,UR,INUTILE) !-------- PORT minimization routine: fit the separable model             
-!          write(*,*) 'PORT SSQ --- > ', 2*V(10) ! DN2F minimises 0.5 * LSFUN ^ 2
-!	  SSQ = 2*V(10)                    ! DN2F minimises 0.5 * LSFUN ^ 2
-!
-!          Full = .true.                                              !------------------------ but recalculate the full VPA afterwar
-!
-!	write(*,*) 'Parameters', Params
-
-!          write(*,*) 'CALLING LSFUN1 ..' ! To debug	
-!          Call LSFUN1(nodats, Noparms, Params, Resids)        
-
-! RECALCULATE THE SSQ
-
-!       endsq = 0d0                                                                                                                 
-!
-!
-!       do i = 1, nodats                                                                                                            
-!          endsq = endsq+Resids(i)*Resids(i)                                                                                         
-!       enddo                                                                                     
-! Old and new SSQ
-! 
-!            SSQOld = SSQ
-!            SSQ = endsq
-!
-!write(*,*) 'Old SSQ is ', SSQOld
-!write(*,*) 'new SSQ is ', SSQ
-!write(*,*) 'Condition ', dabs(SSQ-SSQOld)/SSQOld
-
-!        enddo                                                                                                                       
-!
-!           write(*,*) 'PORT Minimisation routine finished with code', IV(1)
-!	   CALL Report(IV(1)) ! Report any failure of the minimization algorithm
-        
+!DEBUG write(*,*) 'WARNING: LMDIF return INFO =', info
 
 
 !!!!! ATTEMPT TO USE MINUIT
@@ -542,46 +436,6 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
 !      THE COMMAND BELOW CREATES A DISCREPANCY IN THE NUMBER OF PARAMETERS!      CALL MNEXCM(OBJECTIVEFCN, 'MINOS' , ARGLIS, 0, IERFLG,0)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! kienzlem: 10/05/2005: THIS IS OBSOLETE BECAUSE DN2F COMPUTES THE VAR/COV MATRIX TOGETHER WITH THE PARAMETER ESTIMATES
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! MODEL HAS BEEN FITTED: NOW THE VAR-COVAR MATRIX ESTIMATE                                                                          
-!                      See NAG Documentation to explain this                                                                        
-!                                                                                                                                   
-!                                                                                                                                   
-!c estimate the uncertainties in parameters
-!       call fiterr(LSFUN1, nodats, noparms, lenfvc, mvarys, fvect,
-!    $      ftemp, fjac, alpha, iprint, nerstp, xvarys,
-!     $      delta, correl, ier, ibadx)
-! 
-!      write(*,*) 'Computing covariance matrix. Please wait'                                                                        
-
-!!!!!!! COMPUTING THE CO-VARIANCE MATRIX WITH MINPACK
-!!!!! IT SEEMS THAT YOU CANNOT COMPUTE FOR MORE THAN 8 PARAMETERS 
-
-! NOT ENOUGH FOR ICA
-
-!      write(*,*) 'The number of data is ', nxdata               
-!      write(*,*) 'The number of paramters is ', nxparm               
-!      write(*,*) 'The dimension of wa is ', lwa               
-
-
-!      call covar(n,wa,m,iwa,tol,wa(4*n+1))
-!      call covar(9,wa,nxparm,iwa,tol,wa(4*nxdata+1))
-                                                                          !       write(*,*) 'Computing covariance matrix is over'
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-!       NS = 6*noparms + 2*nodats + nodats*noparms + 1 +                 &                                                           
-!             max0(1, (noparms*(noparms-1))/2)                                                                                       
-!        nv = ns + noparms                                                                                                           
-!                                                                                                                                    
-!       ifaily = 1                                                                                                                   
-!       job = -1                                                                                                                     
-!                                                                                                                                    
-!       call e04ycf(job, nodats, noparms, ssq, wk(ns), wk(nv), noparms,  &                                                           
-!       cj, wk2, ifaily)                                                                                                             
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                                                                                                                    
                                                                                                                                     
 ! --------------------------------------- display the NAG diagnostic message                                                        
                                                                                                                                     
@@ -644,53 +498,11 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
 
                                                                                                                                     
 !-------------------- Model HAS BEEN FITTED AND VCV ESTIMATED                                                   
-                                                                                                                                    
-      Call WriteVCV(V, LV, IV(26) , noparms)  !-------------- write var-covar matrix to file
 !OBSOLETE      Call WriteVCV(Wk, lw, nv, noparms)  !-------------- write var-covar matrix to file                                            
-                                                                                                                                    
-                                                                                                                                    
-! TRANSFORM THE 1D ARRAY V INTO A 2D ARRAY VCV
-! DN2F returns a triangle matrix 
-! with variances in position 1, 3, 6, 10, 15, etc...                                                                                                                                    
 
-      do i = 1, noparms                                                                                                             
-       do j=1, noparms
-	   if(i >= j) then 
-		VCV(i,j) = V(IV(26) + (i-1)*i/2 + (j-1))
-       else
-	    VCV(i,j) = V(IV(26) + (j-1)*j/2 + (i-1))
-		endif
-         enddo                                                                                                                     
-      enddo                                                                                                                         
-
-!-------------------------------------------------------- CALCULATE THE PARAMETER S.D.s                                             
-!      do i = 1, noparms       ! --------------------- see NAG routine documentation for the way in which the VCV matrix             
-!          Var1 = Wk(nv+(i-1)+((i-1)*noparms))   !---- stored in the Wk workspace vector                                             
-
-	ii = IV(26) - 1
-	DO 10 i = 1, Noparms
-	ii = ii + i
-    Var1 = V(ii)
-
-!TEST	WRITE (*, *) 'VAR ', V(ii)
-          if (Var1 .gt. 0d0) then                                                                                                   
-            Var1 = dsqrt(Var1)                                                                                                      
-          else                                                                                                                      
-            Var1 = 0d0                                                                                                              
-           write(*,*) 'Negative variance error in ICA2.'                                                                            
-          endif                                                                                                                     
-          XHigh(i) = Xbest(i) + Var1                                                                                                
-          XLow(i)  = Xbest(i) - Var1                                                                                                 
-
-10	CONTINUE			
-!      enddo                                                                                                                         
-                                                                                                                                    
-!      write(*,*) 'CVs calculated OK'                                                                                               
-                                                                                                                                    
-																																	                                                                                                                                    
-      !------------------------- To reduce the number of arithmetical operations in                                                 
-      !                          the minimisation, the weights are stored as the square roots of                                    
-      !                          the weights. They must be detransformed before printing.                                           
+!------------------------- To reduce the number of arithmetical operations in                                                 
+!                          the minimisation, the weights are stored as the square roots of                                    
+!                          the weights. They must be detransformed before printing.                                           
                                                                                                                                     
                                                                                                                                     
       do index=1,nssbix                                                                                                             
@@ -1084,24 +896,8 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
       return                                                                                                                        
       end  ! of routine UpdateWts                                                                                                   
                                                                                                                                     
-! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++                                                          
-
-      SUBROUTINE LSFUN(M,N,XC,NF,FVECC,LTY,TY,UF) 
-      INTEGER M, N, LTY, NF
-      DOUBLE PRECISION XC(N)
-      DOUBLE PRECISION FVECC(M), TY(LTY,2) 
-      EXTERNAL UF
-	write(*,*) 'I AM IN THE SUBROUTINE LSFUN'	
-
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!       CALL LSFUN1(M,N,XC,FVECC) 
-      CALL LSFUN1(N,M,FVECC, XC) 
-
-      RETURN 
-      END
-
-
-!!!!!!!!!! MINUIT OBJECTIVE FUNCTION
+! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++                                                      ! Encapsulate the objective function LSFUN in a suitable subroutine for MINUIT
+! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
       SUBROUTINE OBJECTIVEFCN(NPAR,GIN,F,X,IFLAG,FUTIL)
 
@@ -1121,10 +917,7 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
 !write(*,*) 'the value of the parameters is ', X
 !write(*,*) 'the value of the residuals ', F
 
-!SUBROUTINE FCN(NPAR,GRAD,FVAL,XVAL,IFLAG,FUTIL)
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!      CALL LSFUN1(M,NPAR,X,F) 
-      CALL LSFUN1(NPAR,nodats,GIN,X) 
+      CALL LSFUN(NPAR,nodats,GIN,X) 
 
 ! Compute the Sum of Sqare to return to MINUIT
      F = 0d0                                                                                                                   
@@ -1138,9 +931,4 @@ write(*,*) 'BEFORE SETTING THE PRINT LEVEL'
 
       RETURN 
       END
-! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! +++++ INUTILE is a dummy subroutine required for the DN2F minimization routine from the PORT library +++++
-! ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      SUBROUTINE INUTILE
-      RETURN
-      END
+

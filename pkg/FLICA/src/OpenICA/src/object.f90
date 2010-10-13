@@ -1,9 +1,9 @@
 !     /////////////////////////////////////////////////////////////////                                                            
-
-! M.K.: the position of the first 2 arguments were swaped to make MINUIT call possible                                                                                                              !       Subroutine LSFUN1(M,Nparm, AP, FC)
+!     Objective function 
                      
-      Subroutine LSFUN1(Nparm,M, FC, AP)
+      Subroutine LSFUN(Nparm,M, FC, AP)
 
+! M.K.: positions of first 2 arguments of LSFUN were swapped to make MINUIT call possible                                           !ORIGINAL       Subroutine LSFUN(M,Nparm, AP, FC)
                                                                                            
 !     //////////////////////////////////////////////////////////////////                                                           
                                                                                                                                    
@@ -38,9 +38,9 @@
       logical UseRecr                                                                                                              
       double precision QK                                                                                                          
                                                                                                                                    
-!     __________________EXECUTABLE CODE OF LSFUN1_______________________                                                           
+!     __________________EXECUTABLE CODE OF LSFUN_______________________                                                           
                                                                                                                                    
-!      write(*,*) 'CALLING LSFUN1 ..'                                                                                              
+!      write(*,*) 'CALLING LSFUN ..'                                                                                              
                                                                                                                                    
       parmno = 0                                                                                                                   
       i = 0                                                                                                                        
@@ -439,14 +439,14 @@
 
 !Ndata = nodats;                                                                                                                                   
       if (parmno .ne. Nparm) then                                                                                                  
-            write(*,*) 'Here I am LSFUN 1 : No of parameters is wrong ',parmno,   &                                                          
+            write(*,*) 'Here I am LSFUN : No of parameters is wrong ',parmno,   &                                                          
              Nparm                                                                                                                 
             pause                                                                                                                  
       endif                                                                                                                        
                                                                                                                                    
                                                                                                                                    
       if (Ndata .ne. M) then                                                                                                       
-            write(*,*) 'Here I am LSFUN 1 : No of data is wrong ',Ndata,M                                                                    
+            write(*,*) 'Here I am LSFUN : No of data is wrong ',Ndata,M                                                                    
             pause                                                                                                                  
       endif                                                                                                                        
                                                                                                                                    
@@ -454,8 +454,8 @@
       do j=1,M                                                                                                                    
         ssq = ssq+(FC(j)*FC(j))                                                                                                   
       enddo                                                               
-!DEBUG write(*,*) 'The value of the residuals 1 in LSFUN1 ', FC(1)                                                        
-!       write(*,*) 'At the end of LSFUN1: SSQ --> ',SSQ                                                                                                  
+!DEBUG write(*,*) 'The value of the residuals 1 in LSFUN ', FC(1)                                                        
+!       write(*,*) 'At the end of LSFUN: SSQ --> ',SSQ                                                                                                  
                                                                                                                                    
                                                                           9000  format(A1)                                                                                                                   
 9010  format(I2,1X,I4,1X,I2,1X,2(F15.10,1X))                                                                                       
@@ -463,7 +463,7 @@
 9016  format(I4,1X,I4,1X,2(F15.10,1X))                                                                                             
                                                                                                                                    
       return                                                                                                                       
-      end  ! of subroutine LSFUN1 (objective function)                                                                             
+      end  ! of subroutine LSFUN (objective function)                                                                             
                                                                                                                                    
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++                                                            
                                                                                                                                    

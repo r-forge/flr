@@ -1,14 +1,11 @@
-# CREATED: January 2005
-# MODIFIED: 27 Sept. 2010
-# AUTHOR: marco.kienzle@gmail.com
+# CREATED ON  13 Oct 2010
+# MODIFIED ON 13 Oct 2010
+# AUTHOR marco.kienzle@gmail.com
 
-To do list
-----------
+# PURPOSE list all modification that should be done
 
-0. Follow the instruction about how to release the code under GPL (see http://www.gnu.org/licenses/gpl-howto.html) 
-1. clean the code until only the essential lines are present
-2. adopt a consistent scheme for naming files and variable
-3. create a website that document OpenICA and tests
-4. comment the code
-5. contact a group of professional user of ICA to check that OpenICA does provide the same results on their particular case study than the version they are currently using
+1. create a routine that replace the Report for displaying the diagnostic of the fit
+2. get an output of the variance-covariance matrix
+3. the size of the parameter vector is currently fixed to 46, it has to be made variable to suit any model
+
 

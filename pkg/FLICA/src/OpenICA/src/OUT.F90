@@ -28,7 +28,7 @@
 !     the ICAVIEW programme, but which is also useful for passing data to                                                           
 !     spreadsheets etc.                                                                                                             
 !                                                                                                                                   
-!     Program calls:      LSFUN1     (objective function, in order to calcualte residuals)                                          
+!     Program calls:      LSFUN     (objective function, in order to calcualte residuals)                                          
 !                          CALCSTATS  (calculates statistics of residuals)                                                          
 !     The reason for putting these two calls in an output routine is that                                                           
 !     it makes the routine more flexible; it can be called from many different                                                      
