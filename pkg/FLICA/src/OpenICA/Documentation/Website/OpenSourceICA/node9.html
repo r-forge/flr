@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Source</TITLE>
-<META NAME="description" CONTENT="Source">
+<TITLE>Deterministic datasets, fitting surveys as relative measurements of SSB</TITLE>
+<META NAME="description" CONTENT="Deterministic datasets, fitting surveys as relative measurements of SSB">
 <META NAME="keywords" CONTENT="OpenSourceICA">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,60 +18,138 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="OpenSourceICA.css">
 
-<LINK REL="next" HREF="node11.html">
 <LINK REL="previous" HREF="node8.html">
-<LINK REL="up" HREF="node8.html">
+<LINK REL="up" HREF="node7.html">
 <LINK REL="next" HREF="node10.html">
 </HEAD>
 
 <BODY bgcolor="C6B5DE" text="000000">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html135"
+<A NAME="tex2html138"
   HREF="node10.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
  SRC="/usr/share/latex2html/icons/next.png"></A> 
-<A NAME="tex2html133"
-  HREF="node8.html">
+<A NAME="tex2html136"
+  HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
  SRC="/usr/share/latex2html/icons/up.png"></A> 
-<A NAME="tex2html127"
+<A NAME="tex2html132"
   HREF="node8.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
  SRC="/usr/share/latex2html/icons/prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html136"
-  HREF="node10.html">How to compile the</A>
-<B> Up:</B> <A NAME="tex2html134"
-  HREF="node8.html">Download</A>
-<B> Previous:</B> <A NAME="tex2html128"
-  HREF="node8.html">Download</A>
+<B> Next:</B> <A NAME="tex2html139"
+  HREF="node10.html">Download</A>
+<B> Up:</B> <A NAME="tex2html137"
+  HREF="node7.html">Detailed tests results</A>
+<B> Previous:</B> <A NAME="tex2html133"
+  HREF="node8.html">Deterministic datasets, fitting surveys</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00041000000000000000">
-Source</A>
-</H2>
+<H4><A NAME="SECTION00032220000000000000">
+Deterministic datasets, fitting surveys as relative measurements of SSB</A>
+</H4>
 
 <P>
-The source can be downloaded from <A NAME="tex2html12"
-  HREF="./src">here</A>
-<P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+This dataset was developed to test ICA version 1.4 w (<A
+ HREF="node20.html#kieTR05">Kienzle and Simmonds, 2005</A>): it estimated its paramaters with a precision inferior to 0.01%. 
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html137"
-  HREF="node10.html">How to compile the source</A>
-</UL>
-<!--End of Table of Child-Links-->
-<BR><HR>
+<P>
+The tests were performed using 10 sets of data that simulated a fishery occuring between 1972 and 2002 (31 years). The total number of TSB, SSB and recruitment values estimated by OpenICA and compared in the figures below were 310. To create the simulated dataset, recruitment values were resampled from the 2002 WGMHSA official ICA run which was a set of 29 recruitment values.
+
+<P>
+This set of data was used to check OpenICA (ICA version 1.4x) estimates of Spawning Stock Biomass (SSB), Total Stock Biomass (TSB), recruitment and fishing mortality. The results are shown below.
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="69"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure:</STRONG>
+Comparison of the Spawning Stock Biomass estimates from Open ICA (version 1.4x) against parameters used to simulate data. NB: the line correspond to y=x.</CAPTION>
+<TR><TD><IMG
+ WIDTH="599" HEIGHT="443" BORDER="0"
+ SRC="img4.png"
+ ALT="\begin{figure}\begin{center}
+\fbox{
+\epsfig{width=5in,file=/home/mkienzle/CSI...
+...as-NoCatchBias-SSBsurveyNVNVNV/comparison-ssb.ps}
+}
+\end{center}
+\end{figure}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="75"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure:</STRONG>
+Comparison of the Total Stock Biomass estimates from Open ICA (version 1.4x) against parameters used to simulate data. NB: the line correspond to y=x.</CAPTION>
+<TR><TD><IMG
+ WIDTH="599" HEIGHT="443" BORDER="0"
+ SRC="img5.png"
+ ALT="\begin{figure}\begin{center}
+\fbox{
+\epsfig{width=5in,file=/home/mkienzle/CSI...
+...s-NoCatchBias-SSBsurveyNVNVNV/comparison-tsb.ps}
+}
+\end{center}
+\end{figure}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="81"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure:</STRONG>
+Comparison of the recruitment estimates from Open ICA (version 1.4x) against parameters used to simulate data. NB: the line correspond to y=x.</CAPTION>
+<TR><TD><IMG
+ WIDTH="599" HEIGHT="443" BORDER="0"
+ SRC="img6.png"
+ ALT="\begin{figure}\begin{center}
+\fbox{
+\epsfig{width=5in,file=/home/mkienzle/CSI...
+...hBias-SSBsurveyNVNVNV/comparison-recruitment.ps}
+}
+\end{center}
+\end{figure}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html138"
+  HREF="node10.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html136"
+  HREF="node7.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html132"
+  HREF="node8.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html139"
+  HREF="node10.html">Download</A>
+<B> Up:</B> <A NAME="tex2html137"
+  HREF="node7.html">Detailed tests results</A>
+<B> Previous:</B> <A NAME="tex2html133"
+  HREF="node8.html">Deterministic datasets, fitting surveys</A></DIV>
+<!--End of Navigation Panel-->
 <ADDRESS>
 <A HREF="mailto:marco.kienzle@gmail.com">Marco Kienzle</A><BR><STRONG>
 
-2010-10-13</STRONG>
+2010-10-14</STRONG>
 </ADDRESS>
 </BODY>
 </HTML>

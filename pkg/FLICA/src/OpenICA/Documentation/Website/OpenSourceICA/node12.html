@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Linux</TITLE>
-<META NAME="description" CONTENT="Linux">
+<TITLE>How to compile the source</TITLE>
+<META NAME="description" CONTENT="How to compile the source">
 <META NAME="keywords" CONTENT="OpenSourceICA">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -26,45 +26,66 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY bgcolor="C6B5DE" text="000000">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html161"
+<A NAME="tex2html171"
   HREF="node13.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
  SRC="/usr/share/latex2html/icons/next.png"></A> 
-<A NAME="tex2html159"
+<A NAME="tex2html169"
   HREF="node11.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
  SRC="/usr/share/latex2html/icons/up.png"></A> 
-<A NAME="tex2html155"
+<A NAME="tex2html165"
   HREF="node11.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
  SRC="/usr/share/latex2html/icons/prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html162"
-  HREF="node13.html">Known problems</A>
-<B> Up:</B> <A NAME="tex2html160"
-  HREF="node11.html">Binaries</A>
-<B> Previous:</B> <A NAME="tex2html156"
-  HREF="node11.html">Binaries</A>
+<B> Next:</B> <A NAME="tex2html172"
+  HREF="node13.html">Binaries</A>
+<B> Up:</B> <A NAME="tex2html170"
+  HREF="node11.html">Source</A>
+<B> Previous:</B> <A NAME="tex2html166"
+  HREF="node11.html">Source</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00042100000000000000">
-Linux</A>
-</H3>
+<H3><A NAME="SECTION00041100000000000000">
+How to compile the source</A>
+</H3>          To compile this version of OpenICAMINUIT, it is necessary to install the <A NAME="tex2html14"
+  HREF="http://www.cern.ch/cernlib">CERN</A>
+program library.
 
 <P>
-Binaries were compiled on Ubuntu Lucid Lynx (10.04 LTS) using the INTEL fortran compiler.
-                    Click <A NAME="tex2html17"
-  HREF="./bin/Ubuntu10.04/OpenICAMINUIT.exe">here</A>
-to download it.
+
+<UL>
+<LI>On Linux, 
+
+<P>
+OpenICAMINUIT was compiled using the <A NAME="tex2html15"
+  HREF="http://www.intel.com/software/products/compilers/flin/">Intel fortran compiler</A>. Instructions to install this compiler on Ubuntu are <A NAME="tex2html16"
+  HREF="http://ubuntuforums.org/showthread.php?t=179589">available</A>. The command to install cernlib on Ubuntu is: <PRE> sudo apt-get install cernlib
+</PRE>
+
+<P>
+A <A NAME="tex2html17"
+  HREF="./src/makefile">makefile</A>
+is provided to compile OpenICAMINUIT. Editing this file might be required to customize the PATH of the library to your particular system. 
+           To compile the source code, use the following command <PRE> make
+</PRE> <PRE> make clean
+</PRE>
+
+<P>
+</LI>
+</UL>
+
+<P>
 
 <P>
 <BR><HR>
 <ADDRESS>
 <A HREF="mailto:marco.kienzle@gmail.com">Marco Kienzle</A><BR><STRONG>
 
-2010-10-13</STRONG>
+2010-10-14</STRONG>
 </ADDRESS>
 </BODY>
 </HTML>

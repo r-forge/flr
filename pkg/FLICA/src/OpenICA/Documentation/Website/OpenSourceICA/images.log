@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.9.19)  13 OCT 2010 13:15
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.9.19)  14 OCT 2010 14:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -127,11 +127,11 @@ s Graphic file (type eps)
 
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Abs
 olute-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-ssb.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 151--152
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 153--154
  [] 
  []
 
-l2hSize :figure36:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure45:291.81248pt::0.0pt::349.0pt.
 [1
 
 
@@ -143,11 +143,11 @@ s Graphic file (type eps)
 
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Abs
 olute-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-tsb.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 163--164
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 165--166
  [] 
  []
 
-l2hSize :figure42:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure51:291.81248pt::0.0pt::349.0pt.
 [2
 
 
@@ -159,11 +159,11 @@ itment.ps Graphic file (type eps)
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Abs
 olute-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-recruitmen
 t.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 175--176
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 177--178
  [] 
  []
 
-l2hSize :figure48:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure57:291.81248pt::0.0pt::349.0pt.
 [3
 
 
@@ -174,11 +174,11 @@ s Graphic file (type eps)
 
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Rel
 ative-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-ssb.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 188--189
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 190--191
  [] 
  []
 
-l2hSize :figure56:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure65:291.81248pt::0.0pt::349.0pt.
 [4
 
 
@@ -189,11 +189,11 @@ s Graphic file (type eps)
 
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Rel
 ative-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-tsb.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 200--201
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 202--203
  [] 
  []
 
-l2hSize :figure62:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure71:291.81248pt::0.0pt::349.0pt.
 [5
 
 
@@ -205,11 +205,11 @@ itment.ps Graphic file (type eps)
 </home/mkienzle/CSIRO/cmar_projects/Fortran/ICA/OpenICAMINUIT/Tests/Results/Rel
 ative-NoVariability-NoSSBbias-NoCatchBias-SSBsurveyNVNVNV/comparison-recruitmen
 t.ps>
-Overfull \hbox (26.98323pt too wide) in paragraph at lines 212--213
+Overfull \hbox (26.98323pt too wide) in paragraph at lines 214--215
  [] 
  []
 
-l2hSize :figure68:291.81248pt::0.0pt::349.0pt.
+l2hSize :figure77:291.81248pt::0.0pt::349.0pt.
 [6
 
 
