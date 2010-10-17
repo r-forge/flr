@@ -11,10 +11,10 @@
       !                                                                                                                             
                                                                                                                                     
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "SRR.INC"
-      include 'MESSAGE1.INC'
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "SRR.inc"
+      include 'message1.inc'
                                                                                                                                     
 !     ------------------------LOCAL VARIABLES--------------------------                                                             
       integer age, year, iage, iyear,  fch, ioerr, i, index                                                                         

@@ -1,23 +1,21 @@
 !     /////////////////////////////////////////////////////////////////                                                            
-!     Objective function 
-                     
-      Subroutine LSFUN(Nparm,M, FC, AP)
-
-! M.K.: positions of first 2 arguments of LSFUN were swapped to make MINUIT call possible                                           !ORIGINAL       Subroutine LSFUN(M,Nparm, AP, FC)
-                                                                                           
+                                                                                                                                   
+       Subroutine LSFUN1(Nparm,M, FC, AP)
+                                                                                                                                   
 !     //////////////////////////////////////////////////////////////////                                                           
                                                                                                                                    
                                                                                                                                    
 !     GENERAL PURPOSE OBJECTIVE FUNCTION                                                                                           
                                                                                                                                    
-      Include "INDAT.INC"                                                                                                          
-      Include "SEPMODEL.INC"                                                                                                       
-      Include "PREDIC.INC"                                                                                                         
-      Include "SRR.INC"                                                                                                            
+      Include "indat.inc"                                                                                                          
+      Include "sepmodel.inc"                                                                                                       
+      Include "predic.inc"                                                                                                         
+      Include "SRR.inc"                                                                                                            
 
 !      DEFINE global variables
        COMMON/global_int/nodats,noparms;
-                                                                                                  !     local variables                                                                                                              
+                                                                                                                                   
+!     local variables                                                                                                              
                                                                                                                                    
       integer m,nparm                                                                                                              
       integer ndata                                                                                                                
@@ -38,14 +36,17 @@
       logical UseRecr                                                                                                              
       double precision QK                                                                                                          
                                                                                                                                    
-!     __________________EXECUTABLE CODE OF LSFUN_______________________                                                           
+!     __________________EXECUTABLE CODE OF LSFUN1_______________________                                                           
                                                                                                                                    
-!      write(*,*) 'CALLING LSFUN ..'                                                                                              
+                                                                                                                                   
+!      write(*,*) 'CALLING LSFUN1 ..'                                                                                              
+                                                                                                                                   
                                                                                                                                    
       parmno = 0                                                                                                                   
       i = 0                                                                                                                        
                                                                                                                                    
 !     Copy the parameters out of AP                                                                                                
+                                                                                                                                   
 !     Separable model parameters                                                                                                   
                                                                                                                                    
       do i = 1, nysep                                                                                                              
@@ -79,8 +80,10 @@
         enddo                                                                                                                      
       endif  ! two selection patterns                                                                                              
                                                                                                                                    
-!     First do the separable VPA                                                                                                   
-!     Initialise edges of the predicted population matrix                                                                         
+!     first do the separable VPA                                                                                                   
+                                                                                                                                   
+!      Initialise edges of the predicted population matrix                                                                         
+                                                                                                                                   
 !     Nos at age in last year of the separable analysis                                                                            
                                                                                                                                    
       do age= firstage, lastage-1                                                                                                  
@@ -422,48 +425,38 @@
         parmno = parmno+2                                                                                                          
       endif ! fitting a stock-recruit relation                                                                                     
 173   format (I2, 1X, 3(E25.16,1X))                                                                                                
+   
+
+!write(*,*) 'in object.f90 Noparms equal ', noparms
+!write(*,*) 'in object.f90 Nparm equal ', Nparm
+                                                                                                                                
                                                                                                                                    
-!write(*,*) 'Noparms equal ', noparms
-!write(*,*) 'Nparm equal ', Nparm
-
-!      if (Nparm .eq. 0) then 
-!         Nparm = noparms 
-!      endif
-
-!write(*,*) 'nodats equal ', nodats
-!write(*,*) 'M ', M
-
-!      if (M .eq. 0) then 
-!         M = nodats 
-!      endif
-
-!Ndata = nodats;                                                                                                                                   
       if (parmno .ne. Nparm) then                                                                                                  
-            write(*,*) 'Here I am LSFUN : No of parameters is wrong ',parmno,   &                                                          
+            write(*,*) 'LSFUN 1 : No of parameters is wrong ',parmno,   &                                                          
              Nparm                                                                                                                 
             pause                                                                                                                  
       endif                                                                                                                        
                                                                                                                                    
                                                                                                                                    
       if (Ndata .ne. M) then                                                                                                       
-            write(*,*) 'Here I am LSFUN : No of data is wrong ',Ndata,M                                                                    
+            write(*,*) 'LSFUN 1 : No of data is wrong ',Ndata,M                                                                    
             pause                                                                                                                  
       endif                                                                                                                        
                                                                                                                                    
-     ssq = 0d0                                                                                                                   
-      do j=1,M                                                                                                                    
-        ssq = ssq+(FC(j)*FC(j))                                                                                                   
-      enddo                                                               
-!DEBUG write(*,*) 'The value of the residuals 1 in LSFUN ', FC(1)                                                        
-!       write(*,*) 'At the end of LSFUN: SSQ --> ',SSQ                                                                                                  
+!      ssq = 0d0                                                                                                                   
+!      do j=1,M                                                                                                                    
+!        ssq = ssq+(FC(j)*FC(j))                                                                                                   
+!      enddo                                                                                                                       
+!       write(*,*) 'SSQ --> ',SSQ                                                                                                  
                                                                                                                                    
-                                                                          9000  format(A1)                                                                                                                   
+                                                                                                                                   
+9000  format(A1)                                                                                                                   
 9010  format(I2,1X,I4,1X,I2,1X,2(F15.10,1X))                                                                                       
 9015  format(I4,1X,I2,1X,5(F15.10,1X))                                                                                             
 9016  format(I4,1X,I4,1X,2(F15.10,1X))                                                                                             
                                                                                                                                    
       return                                                                                                                       
-      end  ! of subroutine LSFUN (objective function)                                                                             
+      end  ! of subroutine LSFUN1 (objective function)                                                                             
                                                                                                                                    
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++                                                            
                                                                                                                                    

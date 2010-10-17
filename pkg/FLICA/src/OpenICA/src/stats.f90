@@ -33,11 +33,11 @@
 !                                                                                                                                   
 !                                                                                                                                   
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "STATS.INC"                                                                                                           
-      Include "PREDIC.INC"                                                                                                          
-      Include "SRR.INC"                                                                                                             
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "stats.inc"                                                                                                           
+      Include "predic.inc"                                                                                                          
+      Include "SRR.inc"                                                                                                             
       logical weighted                                                                                                              
                                                                                                                                     
                                                                                                                                     

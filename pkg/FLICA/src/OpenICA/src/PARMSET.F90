@@ -44,10 +44,10 @@
 !                                                                                                                                   
 !                                                                                                                                   
       implicit none                                                                                                                 
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "SRR.INC"                                                                                                             
-      Include "LABELS.INC"                                                                                                          
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "SRR.inc"                                                                                                             
+      Include "labels.inc"                                                                                                          
                                                                                                                                     
                                                                                                                                     
 !     Local variables                                                                                                               
@@ -61,7 +61,7 @@
       double precision ascale(maxsurvey), bscale(maxbsurv)                                                                          
       integer tscan ! function                                                                                                      
                                                                                                                                     
-      include "MESSAGE1.INC"                                                                                                        
+      include "message1.inc"                                                                                                        
                                                                                                                                     
                                                                                                                                     
 !     __________________EXECUTABLE CODE OF PARMSET______________________                                                            
@@ -71,17 +71,14 @@
       MinLambda = 0.0001d0                                                                                                          
 
       NySep=6
-
+                                                                                                                                    
       call Screen_in_i(HK(1,language),NySep,MaxSep,3,Language)                                                                      
-
-!	write(*,*) 'Here is the value of Nysep', NySep, '****'
-!       Call Add2LogFilei(NySep, Ica_log)
 
       Refage= firstage+3
 
       call Screen_in_i(HK(2,Language), Refage, lastage-3, firstage+1    &                                                           
       ,Language)                                                                                                                    
-                                                                                                                                   
+
       dummy=KO(1,Language)
       call Screen_in_a(HK(3,Language),dummy,KO(1,language),Language)                                                                
                                                                                                                                     
@@ -406,7 +403,7 @@
 ! /////////////////////////////////////////////////////////////////////                                                             
                                                                                                                                     
       integer pw, min, max                                                                                                          
-      include 'MESSAGE1.INC'                                                                                                        
+      include 'message1.inc'                                                                                                        
                                                                                                                                     
       CAll SCREEN_IN_I(HK(41,Language),pw, max,min,Language)                                                                        
                                                                                                                                     

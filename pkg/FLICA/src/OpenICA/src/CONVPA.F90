@@ -12,8 +12,8 @@
 !                                                                                                                                   
                                                                                                                                     
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
                                                                                                                                     
 !     LOCAL VARIABLES                                                                                                               
                                                                                                                                     

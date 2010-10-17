@@ -29,8 +29,8 @@
 !     which have been adjusted for zero and missing vlaues.                                                                         
 !                                                                                                                                   
 !                                                                                                                                   
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
                                                                                                                                     
 !     LOCAL VARIABLES                                                                                                               
                                                                                                                                     
@@ -344,12 +344,12 @@
 !                                                                                                                                   
 !     Populations in endyear will be used to initiate the VPA.                                                                      
 !                                                                                                                                   
-!     CVPA2 is called by LSFUN; CVPA is called by CONVPA                                                                           
+!     CVPA2 is called by LSFUN1; CVPA is called by CONVPA                                                                           
 !                                                                                                                                   
 !                                                                                                                                   
 !                                                                                                                                   
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
                                                                                                                                     
 !     LOCAL VARIABLES                                                                                                               
                                                                                                                                     
@@ -540,7 +540,7 @@
 !     Calculates the SSB in a given year from fitted populations,                                                                   
 !                    at the time of spawning.                                                                                       
 !                                                                                                                                   
-      Include "INDAT.INC"                                                                                                           
+      Include "indat.inc"                                                                                                           
                                                                                                                                     
                                                                                                                                     
 !     Local variables                                                                                                               
@@ -657,7 +657,7 @@
                                                                                                                                     
 !        Calculate Sum-Of-Products                                                                                                  
                                                                                                                                     
-       Include "INDAT.INC"                                                                                                          
+       Include "indat.inc"                                                                                                          
        integer iyear, iage                                                                                                          
                                                                                                                                     
        do iyear = 1, lastyear-firstyear+1                                                                                           

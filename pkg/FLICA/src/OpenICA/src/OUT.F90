@@ -13,13 +13,13 @@
 !/////////////////////////////////////////////////////////////////////////                                                          
       implicit none                                                                                                                 
 																    
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "STATS.INC"                                                                                                           
-      Include "SRR.INC"                                                                                                             
-      Include "LABELS.INC"                                                                                                          
-      Include "PREDIC.INC"                                                                                                          
-      Include "MESSAGE1.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "stats.inc"                                                                                                           
+      Include "SRR.inc"                                                                                                             
+      Include "labels.inc"                                                                                                          
+      Include "predic.inc"                                                                                                          
+      Include "message1.inc"                                                                                                        
 																    
 !                                                                                                                                   
 !     This is the principal output generating routine. Two files are created,                                                       
@@ -28,7 +28,7 @@
 !     the ICAVIEW programme, but which is also useful for passing data to                                                           
 !     spreadsheets etc.                                                                                                             
 !                                                                                                                                   
-!     Program calls:      LSFUN     (objective function, in order to calcualte residuals)                                          
+!     Program calls:      LSFUN1     (objective function, in order to calcualte residuals)                                          
 !                          CALCSTATS  (calculates statistics of residuals)                                                          
 !     The reason for putting these two calls in an output routine is that                                                           
 !     it makes the routine more flexible; it can be called from many different                                                      
@@ -513,11 +513,11 @@
 																    
 ! ///////////////////////////////////////////////////////////////////////                                                           
 																    
-      include "INDAT.INC"                                                                                                           
-      include "LABELS.INC"                                                                                                          
-      include "SEPMODEL.INC"                                                                                                        
-      include "PREDIC.INC"                                                                                                          
-      include "MESSAGE1.INC"                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "labels.inc"                                                                                                          
+      include "sepmodel.inc"                                                                                                        
+      include "predic.inc"                                                                                                          
+      include "message1.inc"                                                                                                        
       integer tlen                                                                                                                  
       character*77 text, Underscore                                                                                                 
       character*5 ytext                                                                                                             
@@ -783,10 +783,10 @@
 																    
 ! /////////////////////////////////////////////////////////////////////////                                                         
 																    
-      include "INDAT.INC"                                                                                                           
-      include "LABELS.INC"                                                                                                          
-      include "SEPMODEL.INC"                                                                                                        
-      include "MESSAGE1.INC"                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "labels.inc"                                                                                                          
+      include "sepmodel.inc"                                                                                                        
+      include "message1.inc"                                                                                                        
       integer tlen                                                                                                                  
       character*77 text, Title                                                                                                      
       character*5 ytext                                                                                                             
@@ -911,11 +911,11 @@
 																    
 ! //////////////////////////////////////////////////////////////////                                                                
 																    
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include "LABELS.INC"                                                                                                          
-      include "SRR.INC"                                                                                                             
-      include "MESSAGE1.INC"                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include "labels.inc"                                                                                                          
+      include "SRR.inc"                                                                                                             
+      include "message1.inc"                                                                                                        
       integer tlen                                                                                                                  
       character*77 text                                                                                                             
       character*5 ytext                                                                                                             
@@ -1238,8 +1238,8 @@
 																    
 ! //////////////////////////////////////////////////////////////////                                                                
 																	   
-	Include "INDAT.INC"                                                                                                                
-	Include "SEPMODEL.INC"                                                                                                             
+	Include "indat.inc"                                                                                                                
+	Include "sepmodel.inc"                                                                                                             
 																    
 	double precision OutItem(7), CV                                                                                                    
 	integer Nparm, i                                                                                                                   
@@ -1273,11 +1273,11 @@
 																    
 ! ///////////////////////////////////////////////////////////////////////                                                           
 																    
-      include "INDAT.INC"                                                                                                           
-      include "LABELS.INC"                                                                                                          
-      include "PREDIC.INC"                                                                                                          
-      include "SEPMODEL.INC"                                                                                                        
-      include "MESSAGE1.INC"                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "labels.inc"                                                                                                          
+      include "predic.inc"                                                                                                          
+      include "sepmodel.inc"                                                                                                        
+      include "message1.inc"                                                                                                        
 																    
       integer fch,pwidth, cwidth, year, iyear, syear, iage                                                                          
       integer tlen                                                                                                                  
@@ -1385,12 +1385,12 @@
 !     Generates the Lowestoft-format output and survey resids etc.                                                                  
 !                                                                                                                                   
 !                                                                                                                                   
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "STATS.INC"                                                                                                           
-      Include "SRR.INC"                                                                                                             
-      Include "LABELS.INC"                                                                                                          
-      Include "PREDIC.INC"                                                                                                          
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "stats.inc"                                                                                                           
+      Include "SRR.inc"                                                                                                             
+      Include "labels.inc"                                                                                                          
+      Include "predic.inc"                                                                                                          
 																    
       integer iyear, iage,  year                                                                                                    
       character*132 Title                                                                                                           
@@ -1572,8 +1572,8 @@
 ! ///////////////////////////////////////////////////////////////////////                                                           
 !     write out data in Stuart's "fleet" format                                                                                     
 																    
-       Include "INDAT.INC"                                                                                                          
-       Include "LABELS.INC"                                                                                                         
+       Include "indat.inc"                                                                                                          
+       Include "labels.inc"                                                                                                         
        double precision data(maxsurvey,maxyear,maxage)                                                                              
        character* (*) filename, Title                                                                                               
        integer fch, iyear, iage, index                                                                                              
@@ -1614,8 +1614,8 @@
 																    
 ! /////////////////////////////////////////////////////////////////////////                                                         
 																    
-      include "INDAT.INC"                                                                                                           
-      include "LABELS.INC"                                                                                                          
+      include "indat.inc"                                                                                                           
+      include "labels.inc"                                                                                                          
 																    
 																    
       integer  fch, year, index                                                                                                     
@@ -1679,12 +1679,12 @@
 ! //////////////////////////////////////////////////////////////////////                                                            
                                                                                                                                     
       implicit none                                                                                                                 
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "STATS.INC"                                                                                                           
-      Include "SRR.INC"                                                                                                             
-      Include "PREDIC.INC"                                                                                                          
-      Include "MESSAGE1.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "stats.inc"                                                                                                           
+      Include "SRR.inc"                                                                                                             
+      Include "predic.inc"                                                                                                          
+      Include "message1.inc"                                                                                                        
       character*77 Text(15)                                                                                                         
       character*5 ytext                                                                                                             
                                                                                                                                     
@@ -1768,12 +1768,12 @@
                                                                                                                                     
 ! ------------------ Write the analysis of variance table to file                                                                   
                                                                                                                                     
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include "STATS.INC"                                                                                                           
-      include "LABELS.INC"                                                                                                          
-      include "SRR.INC"                                                                                                             
-      include "MESSAGE1.INC"                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include "stats.inc"                                                                                                           
+      include "labels.inc"                                                                                                          
+      include "SRR.inc"                                                                                                             
+      include "message1.inc"                                                                                                        
                                                                                                                                     
       integer fch, sumdf, sumparm, sumdata, table, iage                                                                             
       double precision sumvar, sumssq, SSQ                                                                                          

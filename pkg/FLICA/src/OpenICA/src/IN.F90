@@ -31,9 +31,9 @@
       integer inf  ! input file number                                                                                              
 																    
 																    
-      Include "INDAT.INC"                                                                                                           
-      Include "LABELS.INC"                                                                                                          
-      include "MESSAGE1.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "labels.inc"                                                                                                          
+      include "message1.inc"                                                                                                        
 																    
 																    
 !     ____________L O C A L ____V A R I A B L E S_____________________                                                              
@@ -73,11 +73,17 @@
       Text(3)= '                         Integrated Catch at Age Analysis' 
       Text(4)= '                         --------------------------------' 
       Text(5)= ' ' 
-      Text(6)= ' Version 1.4 x (Open source ICA: all call to NAG removed)'    
+      Text(6)= '                                 Version 1.4 x '    
       Text(7)='                              '    
-      Text(8)=' created by K.R.Patterson (FRS - Aberdeen - Scotland) on 24 August 1999 '   
-      Text(9)=' modified by M. Kienzle (CSIRO - Australia) on 26 September 2010 '
-      text(10) = ' Type * to change language '
+      Text(8)='                                 K.R.Patterson  '   
+      Text(9)='                          Fisheries Research Services' 
+      Text(10)='                               Marine Laboratory   '  
+      Text(11)='                                    Aberdeen           ' 
+      Text(12) =' '
+      Text(13)='                                  Modified by M. Kienzle '
+      Text(14)='                                  17 Oct. 2010'
+      Text(15)=' '
+      text(16) = ' Type * to change language '
 
 																    
       Call  SCREEN_OUT_A(Text,30,15)                                                                                                
@@ -108,10 +114,7 @@
 	     Call Screen_out_a(Text,30,1)                                                                                                  
 	  endif                                                                                                                            
 	endif                                                                                                                              
-      enddo                  
-
-! kienzlem (27 Oct 2005) - attempt to complete the ica.log file
-	Call Add2LogFile(indexname, Ica_log)                                                                                            
+      enddo                                                                                                                         
 																    
 ! ------------ Read the datafile names in sequence                                                                                  
 																    
@@ -253,8 +256,8 @@
 !                                                                                                                                   
 !                                                                                                                                   
 																    
-      Include "INDAT.INC"                                                                                                           
-      Include "LABELS.INC"                                                                                                          
+      Include "indat.inc"                                                                                                           
+      Include "labels.inc"                                                                                                          
 																    
 																    
 !     Local  Vars                                                                                                                   
@@ -271,7 +274,7 @@
       character*78 Text(3)                                                                                                          
       character*5 ytext                                                                                                             
 																    
-      Include 'MESSAGE1.INC'                                                                                                        
+      Include 'message1.inc'                                                                                                        
 																    
 !                                                                                                                                   
 !      FileName    :  Name of the file holding indices of SSB                                                                       
@@ -410,9 +413,9 @@
 !     Reads an age-structured index file                                                                                            
 !                                                                                                                                   
 !                                                                                                                                   
-      Include "INDAT.INC"                                                                                                           
-      Include "LABELS.INC"                                                                                                          
-      include "MESSAGE1.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "labels.inc"                                                                                                          
+      include "message1.inc"                                                                                                        
 																    
 																    
 !     Local variables                                                                                                               
@@ -569,7 +572,7 @@
       double precision Matrix(maxyear,maxage)                                                                                       
       integer ioerr, dummy1, dummy2, lyy, inf, datatype,year,age                                                                    
 																    
-      include 'MESSAGE1.INC'                                                                                                        
+      include 'message1.inc'                                                                                                        
 																    
       inf=12                                                                                                                        
 																    
@@ -669,10 +672,10 @@
       !                                                                                                                             
 																    
       implicit none                                                                                                                 
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "SRR.INC"                                                                                                             
-      Include 'MESSAGE1.INC'
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
+      Include "SRR.inc"                                                                                                             
+      Include 'message1.inc'
 
 !     ------------------------LOCAL VARIABLES--------------------------                                                             
       integer age, iage, fch, ioerr,  index, idummy, year,iyear,i                                                                   

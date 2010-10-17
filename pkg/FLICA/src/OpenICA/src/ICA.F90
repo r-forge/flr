@@ -9,32 +9,30 @@
 !      Use MSWIN32
 !      Use CLRWIN
 
-      implicit none                                                                                                                 
+      implicit none    
 
 !      DEFINE global variables
-       COMMON/global_int/nodats,noparms;
+!       COMMON/global_int/nodats,noparms;
 
-	integer nodats,noparms
-
+!	integer nodats,noparms
+                                                                                                             
       character*1 dummy
       integer tscan
       external tscan
-      
       character*77 text(1)
 
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include "LABELS.INC"                                                                                                          
-      include "STATS.INC"                                                                                                           
-      include "PREDIC.INC"                                                                                                          
-      include "MESSAGE1.INC"
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include "labels.inc"                                                                                                          
+      include "stats.inc"                                                                                                           
+      include "predic.inc"                                                                                                          
+      include "message1.inc"
       double precision X(maxparm), VCV(Maxparm,maxparm)
-
-
       include "message2.inc"
 
-      call SOutputWindow('ICA 1.4 x',Ica_log)     ! Set up the output window
 
+
+      call SOutputWindow('ICA 1.4 w',Ica_log)     ! Set up the output window
       language=1
       RecalculatePopulations=.true.
 !      goto 100
@@ -125,7 +123,7 @@
 !                    WRITEBLOCK : Write all programme variables to a temporary file                                                 
 !                                                                                                                                   
 !                    UNIT 'OBJECT'                                                                                                  
-!                    LSFUN : The objective function                                                                                
+!                    LSFUN1 : The objective function                                                                                
 !                                                                                                                                   
 !                    UNIT 'SRR'                                                                                                     
 !                    ReadDAT   : Read any estimates of stock and recruit prior to the main data set                                 
@@ -152,7 +150,7 @@
 !     main output file           ICA.OUT        WRITE        READER      TABLEOUT                                                   
 !     file for graphic programme ICA.VIE        WRITE        READER      TABLEOUT                                                   
 !     all data and parameters    ICA.TMP        WRITE        WRITEBLOCK  WRITEBLOCK                                                 
-!     residuals                  ICA.RES        WRITE        OBJECT      LSFUN                                                     
+!     residuals                  ICA.RES        WRITE        OBJECT      LSFUN1                                                     
 !     stock-recruit params       ICA.SRR        WRITE        SRR         WRITESRRFFILE                                              
 !                                                                                                                                   
 ! =========================================================================================                                         
@@ -164,12 +162,12 @@
 !      Use MSWIN32
 !      Use CLRWIN
 
-      Include "INDAT.INC"
-      Include "SEPMODEL.INC"                                                                                                        
-      Include "STATS.INC"                                                                                                           
-      Include "SRR.INC"                                                                                                             
-      Include "PREDIC.INC"                                                                                                          
-      Include "MESSAGE1.INC"                                                                                                        
+      Include "indat.inc"
+      Include "sepmodel.inc"                                                                                                        
+      Include "stats.inc"                                                                                                           
+      Include "SRR.inc"                                                                                                             
+      Include "predic.inc"                                                                                                          
+      Include "message1.inc"                                                                                                        
                                                                                                                                     
                                                                                                                                     
 !     ----------------------                                                                                                        
@@ -191,6 +189,7 @@
       External Sepres                                                                                                               
       integer Noparm, Lastsel1, lastsel2, lastparm                                                                                  
       logical UseRec ! Whether there is an index of forthcoming recruitment                                                         
+                                                                                                                                    
                                                                                                                                     
                                                                                                                                     
 !                                                                                                                                   
@@ -450,12 +449,9 @@
                                                                                                                                     
 !   Run the objective function to test                                                                                              
                                                                                                                                     
-!      write(*,*) 'CAll to LSFUN'   
-	write(*,*) 'I am just before call LSFUN for 3rd time'
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!      CALL LSFUN(Nxdata,NxParm, Xbest, Resids)                                                         CALL LSFUN1(NxParm, Nxdata, Resids, Xbest)                                                                                     
-
-!      write(*,*) 'CAll to LSFUN OK' 
+!      write(*,*) 'CAll to LSFUN1'   
+      CALL LSFUN1(NxParm, Nxdata, Resids, Xbest)                                                                                     
+!      write(*,*) 'CAll to LSFUN1 OK' 
       SSQ=0d0
       do i=1,Nxdata                                                                                                                 
         SSQ= SSQ+Resids(i)*Resids(i)                                                                                                
@@ -610,8 +606,8 @@
 !                                                                                                                                   
 !                                                                                                                                   
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
                                                                                                                                     
                                                                                                                                     
                                                                                                                                     
@@ -662,24 +658,22 @@
 !   Estimate uncertainty by parametric bootstrap.
 !
 !
-      !Use MSWIN32
-      !Use CLRWIN
+!      Use MSWIN32
+!      Use CLRWIN
 
       implicit none                                                                                                                 
                                                                                                                                     
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include "LABELS.INC"                                                                                                          
-      include "STATS.INC"                                                                                                           
-      include "PREDIC.INC"                                                                                                          
-      include "MESSAGE1.INC"
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include "labels.inc"                                                                                                          
+      include "stats.inc"                                                                                                           
+      include "predic.inc"                                                                                                          
+      include "message1.inc"
 
 
 
-      double precision eps, X(maxparm), VCV(maxparm,maxparm), Z(maxparm)
-	  real rX(NxParm), rZ(NxParm), rVCV(NxParm,NxParm), CMAT(NxParm,NxParm)
+      double precision eps, Z(maxparm), VCV(maxparm,maxparm),X(maxparm)
       double precision R ( (maxparm+1)*(maxparm+2)/2  )
-
 !      double precision G05DDF
       integer NR,IFail,Its,iyear,iage
 
@@ -687,13 +681,12 @@
       double precision MBAL, MbalMin,MbalMax
       character*1 dummy
       character*80 text(2)
-      integer itsToRun,Imin,i, j, ic, age
+      integer itsToRun,Imin,i, ic, age
       integer N_percentiles, nmax,nmin
 
       integer tscan
 
       external tscan
-      EXTERNAL CORSET, CORGEN
 
       parameter(nmax=10)
       parameter(Imin=100)
@@ -735,53 +728,31 @@
       EPS= 0.09d0/dble(NXparm)
       ic =maxparm
 
-!OBSOLETE      call G05EAF(X, NxParm, VCV, IC, EPS, R, NR, IFail)
+!      call G05EAF(X, NxParm, VCV, IC, EPS, R, NR, IFail)
 
-!	convert the double precision value in VCV into single precision in rVCV
-do i = 1, NxParm
-	do j = 1, NxParm
-	rVCV(i,j) = real(VCV(i,j),4)
-!TEST write(*,*) 'rVCV in the bootstrap subroutine', rVCV(i,j)
-!TEST write(*,*) 'VCV in the bootstrap subroutine', VCV(i,j)
-	enddo
-enddo
+      if (Ifail .ne. 0) then
+        write(Text(1), '(I2)') IFAIL
+        Call ConCat(Text(1), HW(19,Language), Text(1))
+        Call Screen_out_a(Text(1),10,1)
 
-CALL CORSET(rVCV,CMAT, NxParm)
+      endif
 
-!TO BE REPLACED      if (Ifail .ne. 0) then
-!TO BE REPLACED        write(Text(1), '(I2)') IFAIL
-!TO BE REPLACED        Call ConCat(Text(1), HW(19,Language), Text(1))
-!TO BE REPLACED        Call Screen_out_a(Text(1),10,1)
-!TO BE REPLACED
-!TO BE REPLACED      endif
+
 
       full = .true.
 
       do ITS = 1, ItsToRun
-        write(*,*) Its
- 
-!OBSOLETE        Call G05EZF(Z,NxParm, R, NR, Ifail)
+!        write(*,*) Its
+!        Call G05EZF(Z,NxParm, R, NR, Ifail)
 
-CALL CORGEN(CMAT,rZ,NxParm) 
-
-do i = 1,NxParm
-
-Z(i) = real(rZ(i),8) ! transform the randomly generate single precision value into a double precision
-Z(i) = X(i) + Z(i)   ! 
-!TEST write(*,*) 'Random value generated by CORGEN', rZ(i)
-!TEST write (*,*) 'Random value generated by G05EZF', Z(i)
-enddo
-
-!        write(*,*) (Z(i),i=1,NxParm)
-
-!TO BE REPLACED        if (Ifail .ne. 0) then
-!TO BE REPLACED          write(Text(1), '(I2)') IFAIL
-!TO BE REPLACED          Call ConCat(Text(1), HW(20,Language), Text(1))
-!TO BE REPLACED          Call Screen_out_a(Text(1),10,1)
-!TO BE REPLACED        endif
+        if (Ifail .ne. 0) then
+          write(Text(1), '(I2)') IFAIL
+          Call ConCat(Text(1), HW(20,Language), Text(1))
+          Call Screen_out_a(Text(1),10,1)
+        endif
 
 
-        call LSFUN(NxData, NxParm, Z, FC)
+        call LSFUN1(NxData, NxParm, Z, FC)
 
 !        call Tableout(1) ! to test
 
@@ -822,8 +793,8 @@ enddo
 
 ! /////////////////////////////////////////////////////////////////////////
       implicit none
-      include 'INDAT.INC'
-      include 'SEPMODEL.INC'
+      include 'indat.inc'
+      include 'sepmodel.inc'
       integer iyear, fch, i, age
       double precision Stock(maxyear), MeanF(maxyear), calcssb,Z(maxparm)
       external calcssb
@@ -876,7 +847,7 @@ enddo
 
 ! ////////////////////////////////////////////////////////////////////////
        implicit none
-       include 'INDAT.INC'
+       include 'indat.inc'
 
        integer ItsToRun, mcfile
        double precision MBAL

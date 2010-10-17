@@ -728,7 +728,7 @@
 !                                                                                                                                   
 !                                                                                                                                   
 !                                                                                                                                   
-      include 'MESSAGE1.INC'                                                                                                        
+      include 'message1.inc'                                                                                                        
       integer ioerr                                                                                                                 
       character*40 filename                                                                                                         
       character*80 text(1)                                                                                                          
@@ -749,6 +749,8 @@
       return                                                                                                                        
       end                                                                                                                           
 																    
+																    
+																    
 ! //////////////////////////////////////////////////////////////////
 
       Subroutine SOutputWindow(Title, InfileName)
@@ -760,71 +762,18 @@
       Character*(*) Title, InfileName
 
 !
-! kienzlem (26 Oct 2005): this needs function needs to be created because 
-!                         ica.log doesn't contain anything for the moment
-!
-
-      open(outf, file = InfileName, status='unknown')            
-
-      write(outf,*) Title	                                                                                                  
-
-      close(outf)               ! Terminates creation of the file                                                                    
-
+ 
       return
       end
 
-! //////////////////////////////////////////////////////////////////
 
-      Subroutine Add2LogFile(TextAddition, InfileName)
-
-! ///////////////////////////////////////////////////////////////////
-
-!
-! kienzlem (26 Oct 2005): below is a quick fix routine to output the user input values
-!
-
-      Character*(*) TextAddition, InfileName
-
-      open(outf, file = InfileName, access = 'append', status='unknown')            
-
-      write(outf,*) TextAddition
-
-      close(outf)               ! Terminates creation of the file                                                                    
-
-
-     return
-      end
-
-! //////////////////////////////////////////////////////////////////
-
-      Subroutine Add2LogFilei(Inumber, InfileName)
-
-! ///////////////////////////////////////////////////////////////////
-
-!
-! kienzlem (26 Oct 2005): below is a quick fix routine to output the user input values
-!
-
-      Character*(*) InfileName
-	
-      INTEGER Inumber
-
-      open(outf, file = InfileName, access = 'append', status='unknown')            
-
-      write(outf,*) Inumber
-
-      close(outf)               ! Terminates creation of the file                                                                    
-
-
-     return
-      end
 
 !////////////////////////////////////////////////////////////////////////
 
       Subroutine WinCodes
 
 !//////////////////////////////////////////////////////////////////////////
-      include 'MESSAGE1.INC'
+      include 'message1.inc'
 
       CAll WinConvert(HK,45,4)                                                                                                     
       Call WinConvert(H,30,4)                                                                                                      
@@ -845,7 +794,7 @@
       Subroutine DOSCodes
 
 !//////////////////////////////////////////////////////////////////////////
-      include 'MESSAGE1.INC'
+      include 'message1.inc'
 
       CAll DOSConvert(HK,45,4)                                                                                                     
       Call DOSConvert(H,30,4)                                                                                                      

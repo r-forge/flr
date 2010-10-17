@@ -27,8 +27,8 @@
 !                                                                                                                                   
 !                                                                                                                                   
       implicit none                                                                                                                 
-      INCLUDE "INDAT.INC"                                                                                                           
-      INCLUDE "SRR.INC"                                                                                                             
+      INCLUDE "indat.inc"                                                                                                           
+      INCLUDE "SRR.inc"                                                                                                             
                                                                                                                                     
                                                                                                                                     
       double precision X(maxyear), Y(maxyear)                                                                                       
@@ -107,8 +107,8 @@
                                                                                                                                     
 ! //////////////////////////////////////////////////////////////////////                                                            
                                                                                                                                     
-      INCLUDE "INDAT.INC"                                                                                                           
-      INCLUDE "SRR.INC"                                                                                                             
+      INCLUDE "indat.inc"                                                                                                           
+      INCLUDE "SRR.inc"                                                                                                             
                                                                                                                                     
                                                                                                                                     
       integer i, nodata, year                                                                                                       
@@ -156,8 +156,8 @@
                                                                                                                                     
 ! ////////////////////////////////////////////////////////////////////////                                                          
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SRR.INC"                                                                                                             
+      Include "indat.inc"                                                                                                           
+      Include "SRR.inc"                                                                                                             
                                                                                                                                     
                                                                                                                                     
       Double Precision Stock(maxyear), Recruits(maxyear)                                                                            

@@ -364,8 +364,8 @@
 !     Generates an input file for sensitivity analysis programme                                                                    
                                                                                                                                     
                                                                                                                                     
-      Include "INDAT.INC"                                                                                                           
-      Include "SEPMODEL.INC"                                                                                                        
+      Include "indat.inc"                                                                                                           
+      Include "sepmodel.inc"                                                                                                        
                                                                                                                                     
       integer fch, i, iyear, age, Nparm, iage, iyear2,yy,year                                                                       
       character*6 xc, lastxc                                                                                                        
@@ -617,9 +617,9 @@
                                                                                                                                     
 ! ////////////////////////////////////////////////////////////////////////                                                          
                                                                                                                                     
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include "LABELS.INC"                                                                                                          
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include "labels.inc"                                                                                                          
                                                                                                                                     
       integer iyear, iage, age                                                                                                      
       character* (*) filename                                                                                                       

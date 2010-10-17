@@ -15,7 +15,7 @@
       character*1 response                                                                                                          
       integer tscan                                                                                                                 
       
-      include 'MESSAGE1.INC'
+      include 'message1.inc'
 
       response=KW(3,language)
       Call Screen_in_a(HW(25,language),response,KW(3,language),         &  
@@ -104,7 +104,7 @@
                                                                                                                                     
 !///////////////////////////////////////////////////////////////////////                                                            
                                                                                                                                     
-      include "INDAT.INC"
+      include "indat.inc"
       
 !                                                                                                                                   
 !    NP - no of percentiles                                                                                                         
@@ -193,7 +193,7 @@
 !     Reads an .MC file, sorts iterations and creates .PBY file                                                                     
 !                                                                                                                                   
        implicit none                                                                                                                
-       include 'INDAT.INC'                                                                                                          
+       include 'indat.inc'                                                                                                          
 
        character*(*) Infile, OutFile, Title                                                                                         
        logical Calc_RISK                                                                                                            
@@ -303,7 +303,7 @@
 !      for catch and discards                                                                                                       
 !                                                                                                                                   
        implicit none                                                                                                                
-       include 'INDAT.INC'                                                                                                          
+       include 'indat.inc'                                                                                                          
 
        character*(*) Infile, OutFile1, Outfile2, Title                                                                              
        integer NoPercentiles, PSize, YtPro

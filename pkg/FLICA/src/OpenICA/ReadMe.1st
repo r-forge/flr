@@ -1,38 +1,19 @@
-# CREATED: January 2005
-# MODIFIED: 24 Sept. 2010
+# CREATED ON  15 Oct 2010
+# MODIFIED ON 15 Oct 2010
+# AUTHOR Marco.Kienzle@gmail.com
 
-Install CERNLIB
----------------
+# PURPOSE create a version of ICA that does not use NAG
 
-	- on ubuntu: sudo aptitude update
-	             sudo aptitude install cernlib
+BACKGROUND
+----------
 
-Compile the PORT library
-------------------------
+At this stage, we are capable of replacing the NAG minimization subroutine by MINUIT from CERNLIB: the tests showed that we get the exact same result as the last compiled version of ICA (version 1.4 w). Many attempts were made since 2004 to achieve this results. As a consequence the resulting code is loaded with useless modifications that we do not wish to leave in it. Therefore, I decided to start from the original files and do only the necessary modification made to obtain a fonctional version of ICA that does not require the NAG library.
 
-On yosemite (Ubuntu lucid lynx, LTS 10.04)
-cd /usr/local/lib/port3
-
-(as root)
-make clean
-make mfiles
-make
-
-Compile ICA
------------
-make
-make clean
-
-PRACTICAL WAY TO EXECUTE ICA.exe
---------------------------------
-
-./ICA.exe < /home/mkienzle/Programs/PERL/ICAsettings.txt
-
-CONTENT
--------
-
-This file describe the modification brought to the original ICA program (/home/kienzlem/Programs/Fortran/ICA/OriginalSource) in order to compile it on Linux.
-
-1) Uppercase/Lowercase: change the name on the include so that it match the name of the file including the case.
-
-
+MODIFICATIONS TO THE ORGINAL PROGRAM
+------------------------------------
+1. Convert all file from dos format to the unix one, using fromdos on Ubuntu.
+2. Windows specific syntax were commented out because ICA was compiled using a Linux machine.
+   For example: WINAPP 9000000,9000000; Use MSWIN32; Use CLRWIN
+3. Linux is case sensitive while Windows isn't (correct me if I am wrong), so I changed the names of all files to be lower case. 
+4. removed call to NAG subroutines (e04fdf, e04ycf, g05eaf and g05ezf)
+5. swap the position of argument of subroutine LSFUN1 to conform to MINUIT requirement 

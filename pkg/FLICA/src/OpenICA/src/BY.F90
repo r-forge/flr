@@ -10,7 +10,7 @@
 !
 !     This routine does the ICA Bayesian MCMC by ARS
 !
-!            Functions calls:    FUNCT1, similar to LSFUN but returns -ve loglikleihood
+!            Functions calls:    FUNCT1, similar to LSFUN1 but returns -ve loglikleihood
 !                                FUNCT2, a null function for unifom priors
 
 !                                MCOptions, chooses the burn-in, thin and chain length
@@ -18,9 +18,9 @@
 
 
      IMPLICIT NONE
-     include 'INDAT.INC'
-     include 'SEPMODEL.INC'
-     include 'MESSAGE1.INC'
+     include 'indat.inc'
+     include 'sepmodel.inc'
+     include 'message1.inc'
 
      integer ithin, iburn, maxits, ierr, j, ribs, jj, i, k, nxp, MaxVPAParm
      double precision OldLH, Xprior, Xupper(maxparm), Xlower(maxparm), X2(mAXPARM),work(maxparm),X(maxparm)
@@ -143,7 +143,7 @@
 
       implicit none
 
-      include 'MESSAGE1.INC'
+      include 'message1.inc'
       integer maxit,ithin,iburn
       integer min, max
 
@@ -175,8 +175,8 @@
 
 ! /////////////////////////////////////////////////////////////////////
      implicit none
-     include 'INDAT.INC'
-     include 'SEPMODEL.INC'
+     include 'indat.inc'
+     include 'sepmodel.inc'
 
      double precision X(Maxparm), FC(maxdata), OldLH
      integer i, nparm
@@ -184,10 +184,7 @@
      full =.true.
 
      writeout=.false.
-!	M.K.: swap the order of the first 2 arguments to enable MINUIT TO WORK
-!     call LSFun1(nxdata,nparm,X,FC)
-     call LSFun(nparm,nxdata,FC,X)
-
+     call LSFun1(nxdata,nparm,X,FC)
      oldlh =0d0
      do i=1,Nxdata
        oldlh=oldlh+FC(i)*FC(i)

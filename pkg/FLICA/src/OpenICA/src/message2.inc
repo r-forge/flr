@@ -790,15 +790,15 @@
       HM(26,3)='Lambda pour stock-recrutement '                                                                                    
       HM(26,4)='Vekting for bestand-rekruttering '                                                                                 
                                                                                                                                    
-      HM(27,1)=' DN2F : No error reported. '                                                                                     
-      HM(27,2)=' DN2F : Sin error. '                                                                                             
-      HM(27,3)=' DN2F : Sans erreur.'                                                                                            
-      HM(27,4)=' DN2F : Uten feil.'                                                                                              
+      HM(27,1)=' E04FDF : No error reported. '                                                                                     
+      HM(27,2)=' E04FDF : Sin error. '                                                                                             
+      HM(27,3)=' E04FDF : Sans erreur.'                                                                                            
+      HM(27,4)=' E04FDF : Uten feil.'                                                                                              
                                                                                                                                    
-      HM(28,1)= ' DN2F : Minimisation unsuccessful.'                                                                             
-      HM(28,2)= ' DN2F : No se pudo hacer el ajuste. '                                                                           
-      HM(28,3)= ' DN2F : La minimisation n''as pas ‚t‚ possible.'                                                                
-      HM(28,4)= ' DN2F : Minimum ble ikke funnet.'                                                                               
+      HM(28,1)= ' E04FDF : Minimisation unsuccessful.'                                                                             
+      HM(28,2)= ' E04FDF : No se pudo hacer el ajuste. '                                                                           
+      HM(28,3)= ' E04FDF : La minimisation n''as pas ‚t‚ possible.'                                                                
+      HM(28,4)= ' E04FDF : Minimum ble ikke funnet.'                                                                               
                                                                                                                                    
       HM(29,1)=' E04YCF : No error reported. '                                                                                     
       HM(29,2)=' E04YCF : Sin error. '                                                                                             

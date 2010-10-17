@@ -25,9 +25,9 @@
 !      Last updated 13 January at 1700                                                                                              
 !                                                                                                                                   
 !                                                                                                                                   
-      include "INDAT.INC"                                                                                                           
-      include "SEPMODEL.INC"                                                                                                        
-      include 'MESSAGE1.INC'                                                                                                        
+      include "indat.inc"                                                                                                           
+      include "sepmodel.inc"                                                                                                        
+      include 'message1.inc'                                                                                                        
                                                                                                                                     
       double precision Wk(lw)         ! the variance-covariance matrix in linear form, returned by E04YCF                           
       integer nv, shrinkyr            ! nv is used to index the WK array; see NAG routine documentaion;                             
