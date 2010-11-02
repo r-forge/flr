@@ -19,10 +19,8 @@ setMethod("z", signature("FLQuant"), function(object, agerng="missing", ...){
 
 # important note: agerng is defined by the dimnames so it should be
 # the names of the ages not their position on the array
-
 	# check that quant is age or quant
 	if(!(quant(object) %in% c("age", "quant"))) stop("Quant must be \"age\" or \"quant\".")
-
 	if(!missing(...)){
 		logr.obj <- logr(object, ...)
 		logcc.obj <- logcc(object, ...)

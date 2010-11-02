@@ -24,7 +24,8 @@ SEXP updateFLComp(SEXP Rdbname, SEXP Rname, SEXP Rstmt, SEXP Rvalue, SEXP Rdims,
 SEXP selectSlotFLComp(SEXP Rname, SEXP Rdbname, SEXP Rslot);
 SEXP selectFLComp(SEXP Rname, SEXP Rdbname);
 SEXP selectFromFLComp(SEXP Rname, SEXP Rdbname, SEXP Rselect);
-SEXP selectFromSlotFLComp(SEXP Rdbname, SEXP Rname, SEXP Rslot, SEXP Rselect, SEXP RdimSelect, SEXP Rquant);
+SEXP selectFromSlotFLComp(SEXP Rdbname, SEXP Rname, SEXP Rslot, SEXP Rselect,
+    SEXP RdimSelect, SEXP Rquant);
 
 /* methods.c */
 SEXP sqliteVersion(void);

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 23 Sep 2010 16:38
+# Last Change: 11 Oct 2010 10:19
 # $Id$
 
 # as.FLSR {{{

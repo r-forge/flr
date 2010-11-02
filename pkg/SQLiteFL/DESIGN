@@ -38,4 +38,4 @@ DESIGN of SQLIteFL
 
 - iter<-: INSERT INTO data WHERE (iter=iter)
 
-- propagate: INSERT INTO data WHERE (iter=i)
+- propagate: INSERT INTO data (slot,quant,year,unit,season,area,iter,data) SELECT slot,quant,year,unit,season,area,i,NA FROM data;

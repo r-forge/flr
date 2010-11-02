@@ -259,3 +259,62 @@ SEXP dimsFLComp(SEXP Rdbname, SEXP Rname)
 	UNPROTECT(3);
 	return (Rval);
 } /* }}} */
+
+/* Function SEXP propagateFLComp(SEXP Rdbname, SEXP Rname, SEXP Riter) {{{ */
+SEXP propagateFLComp(SEXP Rdbname, SEXP Rname, SEXP Riter)
+{
+
+	SEXP Rval;
+	PROTECT(Rval = allocVector(VECSXP, 1));
+
+  int rc;
+  sqlite3 *db;
+  sqlite3_stmt *stmt;
+  const char *tail;
+  char *sql;
+
+  /* OPEN */
+  rc = sqlite3_open(CHAR(STRING_ELT(Rdbname, 0)), &db);
+  /* Can db be opened? */
+  if(rc != SQLITE_OK) {
+    Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+    UNPROTECT(2);
+    return (Rval);
+  }
+
+  /*INSERT INTO data (slot,quant,year,unit,season,area,iter,data) SELECT slot,quant,year,unit,season,area,i,NA FROM data; */
+  sql = sqlite3_mprintf("SELECT year, unit, season, area, iter FROM \"%q_slots\";", CHAR(STRING_ELT(Rname, 0)));
+  rc = sqlite3_prepare(db, sql, -1, &stmt, &tail);
+  /* Can quant SELECT statement be prepared? */
+  if(rc != SQLITE_OK) {
+    Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    UNPROTECT(3);
+    return (Rval);
+  }
+  rc = sqlite3_step(stmt);
+  /* Can quant SELECT statement be run? */
+  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    Rprintf("%s", "HERE");
+    Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    UNPROTECT(3);
+    return (Rval);
+  }
+
+  
+  
+  /* FINALIZE stmt */
+  rc = finalizeAllstmt(db);
+
+  /* CLOSE */
+  rc = sqlite3_close(db);
+  if(rc != SQLITE_OK) {
+    Rprintf("%s", sqlite3_errmsg(db));
+  }
+
+	UNPROTECT(1);
+	return (Rval);
+} /* }}} */
