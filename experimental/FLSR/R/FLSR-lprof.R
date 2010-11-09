@@ -5,7 +5,6 @@ setGeneric("lprof", function(object, ...){
 setMethod('lprof',
   signature(object='FLSR'),
     function(object, params, plot=TRUE, solution=TRUE, scaling=c("rel","rel"),parscale=NULL,CI=c(.5,.75,.9,.95),xlab=NULL,ylab=NULL,...){
-
       ## function to get parameter coordinate system
       getScale<-function(x,pars){
           if (is.null(names(x))){
@@ -58,7 +57,6 @@ setMethod('lprof',
 
     ## 2D profile
     } else if (length(pars) == 2){
-
       scaling<-getScale(scaling,pars)
 
       #if ("start" %in% names(formals(lprof))) .start<-start else
@@ -115,7 +113,7 @@ setMethod('lprof',
          .CI<-logLik(object)-qchisq(CI,2)
          if (is.null(xlab)) xlab=pars[1]
          if (is.null(ylab)) ylab=pars[2]
-
+browser()
          image(  plotGrid,ylab=ylab, xlab=xlab) #, breaks=CI,col=rainbow(length(CI)-1))
          contour(plotGrid,  levels=.CI,add=T, col="grey",  lwd=2, labels=CI)
 

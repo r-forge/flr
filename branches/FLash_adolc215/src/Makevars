@@ -66,10 +66,10 @@ clean: subclean
 # Current makefile creates an archive of .o files
 
 
-#OBJECTS = FLashDLL.o FLash-VPA.o flc.o flc_adolc.o flquant_pointer.o fwd.o fwdFLStock.o
+OBJECTS = FLashDLL.o FLash-VPA.o flc.o flc_adolc.o flquant_pointer.o fwd.o fwdFLStock.o
 ##FLASHSOURCE = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
-#all: $(SHLIB)
-#$(SHLIB): OBJECTS
+all: $(SHLIB)
+  $(SHLIB): OBJECTS
 
 #PKG_CPPFLAGS = -fPIC -I../inst/include
 #PKG_CFLAGS = -fPIC -I../inst/include

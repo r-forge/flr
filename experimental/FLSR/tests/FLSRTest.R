@@ -168,7 +168,8 @@ model(nsher)<-srModel("bevholt",ll="lognorm")
 nshBH<-fmle(nsher)
 plot(nshBH)
 
-model(nsher)<-srModel("bevholt",ll="normar1")
+model(nsher)<-
+srModel("bevholt",ll="normar1")
 nshBH<-fmle(nsher)
 plot(nshBH)
 ########################################################################################################################

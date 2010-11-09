@@ -50,10 +50,10 @@
 
 /*--------------------------------------------------------------------------*/
 /* interfaces to SPARSE package */
-#if defined(SPARSE)
+/*#if defined(SPARSE)
 #include <sparse/sparsedrivers.h>
 #include <sparse/sparse_fo_rev.h>
-#endif
+#endif*/
 
 /*--------------------------------------------------------------------------*/
 /* tape and value stack utilities */

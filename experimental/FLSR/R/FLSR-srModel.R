@@ -25,6 +25,23 @@ initialOps<-c("a",    "v,spr0=spr0",
 initialOps<-t(array(initialOps,c(2,11),list(arg=c("ab","sv"),srr=c("mean","bevholt","ricker","cushing","segreg","shepherd","dersh","pellat","bevholtD","rickerD","shepherdD"))))
 
 #### Calculates SSB as a function of SPR
+spr2ssb <- function(model, params)
+{
+  call <- switch(as.character(model)[3],
+    # bevholt
+    "a * ssb/(b + ssb)" = expression(a*spr-b),
+    # ricker
+    "a * ssb * exp(-b * ssb)" = expression(log(a*spr)/b),
+    # cushing
+    "a * ssb^b" = expression((1/(a*spr))^(1/(b-1))),
+    # shepherd
+    "a * ssb/(1 + (ssb/b)^c)" = expression(b*(a*spr-1)^(1/c)),
+    )
+  FLPar(eval(call, params), params='ssb', iter=max(unlist(lapply(params, length))))
+}
+
+spr2ssb(model(nsher), c(as(params(nsher), 'list'), spr=0.6))
+
 sprFunc<-function(type,spr,a=NULL,b=NULL,c=NULL,d=NULL){
       # SSB as function of ssb/rec
       switch(type,
