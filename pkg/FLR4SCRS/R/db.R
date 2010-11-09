@@ -1,16 +1,19 @@
-nd<-function(x) names(dimnames(x))
+setGeneric('reFac', function(x, ...)
+	standardGeneric('reFac'))
 
-ac    <-function(x) as.character(x)
-a2df  <-function(x) data.frame(expand.grid(dimnames(x)),val=c(x))
-
-reFac<-function(x){
+setMethod("reFac", signature(x="data.frame"),
+ function(x){
 
   for (i in names(x))
       if (is(x[,i],"factor"))
          x[,i]<-factor(x[,i])
 
-   return(x)}
+   return(x)})
 
+setGeneric('latLon', function(x, ...)
+	standardGeneric('latLon'))
+
+setMethod("latLon", signature(x="data.frame"),
 latLon<-function(x){
 
   x$lat<-x$lat + switch(x$square,
@@ -34,10 +37,14 @@ latLon<-function(x){
    x[x$quad %in% 3:4, "lon"]<--x[x$quad %in% 3:4, "lon"]
    x[x$quad %in% 2:3, "lat"]<--x[x$quad %in% 2:3, "lat"]
 
-   return(x)}
+   return(x)})
 
 
-month<-function(x){
+setGeneric('iccatMonth', function(x, ...)
+	standardGeneric('iccatMonth'))
+
+setMethod("iccatMonth", signature(x="numeric"),
+function(x){
   x <-pmax(0,x)
 
   fn<-function(x) switch(ac(x),
@@ -50,6 +57,4 @@ month<-function(x){
                          "19"= 9,
                          x)
 
-  sapply(x,fn)}
-
-
+  sapply(x,fn)})

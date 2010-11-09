@@ -75,9 +75,9 @@ setMethod("wt<-", signature(object="FLStock", value="FLQuant"),
 	function(object, ..., value) {
 
 		stock.wt(   object)<-recycleFLQuantOverYrs(stock.wt(   object),value)
-    catch.wt(   object)<-recycleFLQuantOverYrs(catch.wt(   object),value)
-    discards.wt(object)<-recycleFLQuantOverYrs(discards.wt(object),value)
-    landings.wt(object)<-recycleFLQuantOverYrs(landings.wt(object),value)
+		catch.wt(   object)<-recycleFLQuantOverYrs(catch.wt(   object),value)
+		landings.wt(object)<-recycleFLQuantOverYrs(landings.wt(object),value)
+		discards.wt(object)<-recycleFLQuantOverYrs(discards.wt(object),value)
 
 		return(object)})
 

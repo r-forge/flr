@@ -3,10 +3,10 @@ library(FLAssess)
 library(FLash)
 
 #### Data
-load("C:/Stuff/Publications/SCRS/BFT-fwd/Data/bftE.RData")
-source("C:/Stuff/FLR/pkg/FLipper/R/flpar.R")
+load("c:\\Stuff\\FLR\\pkg\\FLR4SCRS\\Data\\bftE.RData")
+source("C:\\Stuff\\FLR\\pkg\\FLR4SCRS\\R\\flpar.R")
 
-vB=FLPar(Linf=318.85,K=0.093,t0=-0.97-.5,a=1.96e-8,b=3.0092)
+vB  =c(Linf=318.85,K=0.093,t0=-0.97-.16667,a=1.96e-8,b=3.0092)
 
 #### 3 different stock objects #################################################
 ## i) as VPA                                                                   #

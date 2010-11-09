@@ -35,27 +35,33 @@ setMethod("orderFLPar", signature(e1="FLPar",   e2="FLCohort"), function(e1,e2) 
 setMethod("orderFLPar", signature(e1="FLCohort",e2="FLPar"),    function(e1,e2) orderPar(e2,e1))
 
 #### FLQuant ###################################################################
-setMethod("+", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "+"))
-setMethod("-", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "-"))
-setMethod("*", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "*"))
-setMethod("/", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "/"))
-setMethod("^", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "^"))
+setMethod("+", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) FLQuant(sweep(e2, orderFLPar(e1,e2), e1, "+")))
+setMethod("+", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) FLQuant( e2+e1))
 
-setMethod("+", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) e2+e1)
-setMethod("-", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) e2-e1)
-setMethod("*", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) e2*e1)
-setMethod("/", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) e2/e1)
-setMethod("^", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) e2^e1)
+setMethod("-", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) FLQuant(sweep(e2, orderFLPar(e1,e2), e1, "-")))
+setMethod("-", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) FLQuant(-e2+e1))
+
+setMethod("*", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) FLQuant(sweep(e2, orderFLPar(e1,e2), e1, "*")))
+setMethod("*", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) FLQuant( e2*e1))
+
+setMethod("/", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) FLQuant(sweep(e2, orderFLPar(e1,e2), e1, "/")))
+setMethod("/", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) FLQuant(e2*(1/e1)))
+
+setMethod("^", signature(e1="FLQuant",e2="FLPar"),   function(e1, e2) FLQuant(sweep(e2, orderFLPar(e1,e2), e1, "^")))
+setMethod("^", signature(e1="FLPar",  e2="FLQuant"), function(e1, e2) FLQuant(exp(e2*log(e1))))
 
 #### FLCohort ##################################################################
-setMethod("+", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "+"))
-setMethod("-", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "-"))
-setMethod("*", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "*"))
-setMethod("/", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "/"))
-setMethod("^", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2) sweep(e2, orderFLPar(e1,e2), e1, "^"))
+setMethod("+", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2)  FLCohort(sweep(e2, orderFLPar(e1,e2), e1, "+")))
+setMethod("+", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2)  FLCohort(e2+e1))
 
-setMethod("+", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2) e2+e1)
-setMethod("-", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2) e2-e1)
-setMethod("*", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2) e2*e1)
-setMethod("/", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2) e2/e1)
-setMethod("^", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2) e2^e1)
+setMethod("-", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2)  FLCohort(sweep(e2, orderFLPar(e1,e2), e1, "-")))
+setMethod("-", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2)  FLCohort(-e2+e1))
+
+setMethod("*", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2)  FLCohort(sweep(e2, orderFLPar(e1,e2), e1, "*")))
+setMethod("*", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2)  FLCohort(e2*e1))
+
+setMethod("/", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2)  FLCohort(sweep(e2, orderFLPar(e1,e2), e1, "/")))
+setMethod("/", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2)  FLCohort(e2*(1/e1)))
+
+setMethod("^", signature(e1="FLPar",   e2="FLCohort"), function(e1, e2)  FLCohort(sweep(e2, orderFLPar(e1,e2), e1, "^")))
+setMethod("^", signature(e1="FLCohort",e2="FLPar"),    function(e1, e2)  FLCohort(exp(e2*log(e1))))

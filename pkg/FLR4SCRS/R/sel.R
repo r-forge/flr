@@ -27,4 +27,5 @@ setMethod('computeSel', signature(x='FLStock'),
 
       return(FLQuants("harvest"   =h,
                       "landings.n"=l,
-                      "discards.n"=d))})
+                      "discards.n"=d,
+                      "catch.n"   =FLQuant(1,dimnames=dimnames(h))))})
