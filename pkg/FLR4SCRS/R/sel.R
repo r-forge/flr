@@ -29,3 +29,16 @@ setMethod('computeSel', signature(x='FLStock'),
                       "landings.n"=l,
                       "discards.n"=d,
                       "catch.n"   =FLQuant(1,dimnames=dimnames(h))))})
+
+setGeneric("sel<-", function(object,value){
+	standardGeneric("sel<-")})
+setMethod("sel<-", signature(object="FLStock", value="FLQuants"),
+	function(object, value) {
+
+   harvest(   object)<-recycleFLQuantOverYrs(harvest(   object),value[["harvest"]])
+   catch.n(   object)[]<-NA
+   discards.n(object)<-recycleFLQuantOverYrs(discards.n(object),value[["discards.n"]])
+   landings.n(object)<-recycleFLQuantOverYrs(landings.n(object),value[["landings.n"]])
+
+   return(object)})
+

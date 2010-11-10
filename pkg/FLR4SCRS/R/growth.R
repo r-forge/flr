@@ -387,3 +387,52 @@ setMethod("schnuteMass", signature(data="numeric", params="missing"),
 
 
 
+##### Inverse growth curve
+#### Growth
+setGeneric('invVonB', function(object, params, ...)
+  standardGeneric('invVonB'))
+setMethod("invVonB", signature(object="numeric", params="FLPar"),
+   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
+setMethod("invVonB", signature(object="FLQuant", params="FLPar"),
+   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
+setMethod("invVonB", signature(object="FLCohort", params="FLPar"),
+   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
+setMethod("invVonB", signature(object="FLQuant",params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA) {
+      params<-FLPar(Linf=Linf,K=K,t0=t0)
+      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
+setMethod("invVonB", signature(object="FLCohort",params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA) {
+      params<-FLPar(Linf=Linf,K=K,t0=t0)
+      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
+setMethod("invVonB", signature(object="numeric",params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA) {
+      params<-FLPar(Linf=Linf,K=K,t0=t0)
+      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
+
+setGeneric('invVonBMass', function(object, params, ...)
+  standardGeneric('invVonBMass'))
+setMethod("invVonBMass", signature(object="FLQuant", params="FLPar"),
+   function(object,params) invVonB((object/params["a"])^(1.0/params["b"]),params))
+setMethod("invVonBMass", signature(object="FLCohort", params="FLPar"),
+   function(object,params) invVonB((object/params["a"])^(1.0/params["b"]),params))
+setMethod("invVonBMass", signature(object="numeric", params="FLPar"),
+   function(object,params) invVonB(c((object/params["a"])^(1.0/params["b"])),params))
+setMethod("invVonBMass", signature(object="FLQuant", params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
+      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+
+      return((object/params["a"])^(1.0/params["b"]))})
+setMethod("invVonBMass", signature(object="FLCohort", params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
+      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+
+      return((object/params["a"])^(1.0/params["b"]))})
+setMethod("invVonBMass", signature(object="numeric", params="missing"),
+   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
+      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+
+      return(invVonB(c(object/params["a"])^(1.0/params["b"]),params))})
+
+#      return(params["a"]*invVonB(object,params)^params["b"])})
+
