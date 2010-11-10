@@ -16,3 +16,4 @@ admbOut<-function(x,file){
   for (i in 2:length(x)){
     cat(x[[i]],file=file,append=TRUE)
     cat("\n",file=file,append=TRUE)}}
+

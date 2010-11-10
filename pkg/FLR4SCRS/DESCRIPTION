@@ -2,11 +2,12 @@ Package: FLR4SCRS
 Title: R utilities for ICCAT SCRS
 Version: 0.1
 Date: 2010 July
-Author: Laurence T. Kell
+Author: Laurie Kell <Laurie.Kell@iccat.int>
 Description: Adds methods to FLR needed for tuna stock assessment
 Depends: methods, R(>= 2.10.0), ggplot2, FLCore, FLash, FLBRP, gam
 Maintainer: Laurie Kell <Laurie.Kell@iccat.int>
 License: GPL 2
-Collate: admb.R ageLenWt.R brpByYr.R decade.R db.R FAverages.R FLBRP.R flpar.R growth.R ioVPA2Box.R lifeHist.R ogives.R pgAge.R rndWlkFn.R sel.R setFwd.R setPlusGroup.R slotMethods.R srr.R tep.R utilities.R
+Collate: admb.R ageLenWt.R brpByYr.R decade.R db.R FAverages.R FLBRP.R flpar.R growth.R ioVPA2Box.R lifeHist.R ogives.R pgAge.R rndWlkFn.R sel.R setFwd.R setPlusGroup.R slotMethods.R srr.R tep.R utilities.R diags.R ggplot.R plotDiags.R readVPA2Boot.R vonB.R
 LazyLoad: Yes
 LazyData: No
+
