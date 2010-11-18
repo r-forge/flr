@@ -1,0 +1,244 @@
+\documentclass{beamer}% usefull options [handout]
+\usepackage{graphicx}
+\usepackage{wrapfig}
+%\useoutertheme{infolines}
+%\usetheme[height=7mm]{Rochester}
+\usetheme{default}% other nice themes Hannover, CambridgeUS 
+%\usecolortheme{dove}
+%\usefonttheme{structuresmallcapsserif}
+%\setbeamertemplate{items}[ball]
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+%\setbeamertemplate{navigation symbols}{}
+
+\title[Introduction to FLCore]{An Introduction to the FLCore package}
+\author{FLR Core Team}
+
+\begin{document}
+
+%\frame{\titlepage}
+
+%\section[Outline]{}
+%\frame{\tableofcontents}
+
+
+\section{Introduction}
+
+%************ Frame 1***********************
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents[pausesections]
+\end{frame}
+
+
+\section{Inside FLCore}
+%************ Frame 10***********************
+\begin{frame}
+  \frametitle{FLCore}
+What's inside FLCore?
+      \begin{itemize}
+	 \item<2-> FLQuant - basic class
+	 \item<3-> FLStock - fish stock
+	 \item<4-> FLBiol - biological population
+	 \item<5-> FLModel - model class
+	 \item<6-> FLSR - stock-recruitment relationships
+	 \item<7-> FLIndex - survey indices
+	 \item<8-> FLFleet - fleet (includes FLCatch and FLMetier)
+	 \item<9-> FLlst - list classes (FLFleets, FLStocks, FLIndices etc.)
+      \end{itemize}
+\end{frame}
+%************ Frame 11***********************
+\begin{frame}
+  \frametitle{FLQuant}
+Essentially a six dimensional array used to store data of a particular type (e.g. catch numbers).\newline
+
+Dimensions are:
+      \begin{enumerate}
+	 \item<2-> User defined (age, length etc.)
+	 \item<3-> Year
+	 \item<4-> Unit (substocks, male/female)
+	 \item<5-> Season
+	 \item<6-> Area
+	 \item<7-> Iter
+      \end{enumerate}
+\end{frame}
+%***************************************
+\begin{frame}[containsverbatim]
+
+  \frametitle{FLQuant - example}
+
+% is ampersand necessary
+%@ 
+%<<sample-fn>>=
+<<results=hide,echo=FALSE>>=
+library(FLCore)
+data(ple4)
+test.quant <- window(landings.n(ple4),start=1995, end = 2001)
+@
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+test.quant
+dim(test.quant)
+@ %def 
+}}
+
+\end{frame}
+%***********************************
+\begin{frame}[containsverbatim]
+
+  \frametitle{FLQuant - example contd.}
+
+
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+dimnames(test.quant)
+@ %def 
+}}
+
+\end{frame}
+
+%************ Frame 12***********************
+%\begin{frame}[containsverbatim]
+%  \frametitle{FLStock - contd}
+%Represents a fish stock and comprises a number of slots.
+%{\tiny{
+%<<results=verbatim,echo=TRUE>>=
+%showClass("FLStock")
+%@ %def 
+%}}
+%\end{frame}
+
+%************ Frame 12***********************
+\begin{frame}[containsverbatim]
+  \frametitle{FLStock}
+Represents a fish stock and comprises a number of slots.
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+summary(ple4)
+@ %def 
+}}
+\end{frame}
+
+%************ Frame 12***********************
+\begin{frame}[containsverbatim]
+  \frametitle{FLBiol}
+Represents a biological population
+<<results=hide,echo=FALSE>>=
+test.biol <- as.FLBiol(ple4)
+@ %def 
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+summary(test.biol)
+@ %def 
+}}
+\end{frame}
+%************ Frame 12***********************
+\begin{frame}[containsverbatim]
+  \frametitle{FLIndex}
+Represents a index (e.g. index of abundance from a survey)
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+data(ple4.index)
+summary(ple4.index)
+@ %def 
+}}
+
+
+
+\end{frame}
+
+%************ Frame 14***********************
+\begin{frame}
+  \frametitle{FLFleet}
+A more complicated class with three levels: Fleet, Metier and Catch
+   \begin{center}
+      \includegraphics[width=1\textwidth]{FLFleet.png}
+   \end{center}
+\end{frame}
+
+%************ Frame 14***********************
+%\begin{frame}[containsverbatim]
+%  \frametitle{FLSR}
+%Class for fitting stock-recruitment relationships.  Extends FLModel.
+%{\tiny{
+%<<results=verbatim,echo=TRUE>>=
+%showClass("FLSR")
+%@ %def 
+%}}
+%\end{frame}
+%
+%************ Frame 14***********************
+\begin{frame}[containsverbatim]
+  \frametitle{FLSR}
+Class for fitting stock-recruitment relationships.  Extends FLModel.
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+data(nsher)
+summary(nsher)
+@ %def 
+}}
+\end{frame}
+
+%********************************************
+%\begin{frame}
+%  \frametitle{FLR and plots}
+%      \begin{itemize}
+%	 \item plot and lattice plots
+%	 \item FLEDA
+%      \end{itemize}
+%\end{frame}
+%********************************************
+\begin{frame}[plain]
+  \frametitle{The FLSR plot}
+%@ 
+%<<FLSR,echo=F,fig=T>>=
+%plot(nsher)
+%@ %def 
+   \begin{center}
+      \includegraphics[width=1\textwidth]{FLSR_plot.png}
+   \end{center}
+\end{frame}
+
+%A more complicated class with three levels: Fleet, Metier and Catch
+%   \begin{center}
+%      \includegraphics[width=1\textwidth]{/home/fas00/Work/Courses/Bergen/Presentation/fleet/FLFleet.png}
+%   \end{center}
+%********************************************
+%\begin{frame}[plain]
+%  \frametitle{FLEDA}
+%@ 
+%<<results=hide,echo=FALSE>>=
+%library(FLEDA)
+%ple4sex.spay <- spay(catch.n(ple4sex))
+%# fine tune 
+%ttl <- list(label="Standardized catch proportion at age for Plaice in IV", cex=1)
+%yttl <- list(label="age", cex=0.8)
+%xttl <- list(cex=0.8)
+%ax <- list(cex=0.7)
+%@
+%%\end{frame}
+%
+%%\begin{frame}[plain]
+%<<bubbles,echo=F,fig=T>>=
+%# plot
+%print(bubbles(age~year|unit, ple4sex.spay,  main=ttl, ylab=yttl, xlab=xttl, scales=ax, bub.scale=5))
+%@ %def 
+%\end{frame}
+%
+%************ Frame 15***********************
+\begin{frame}
+  \frametitle{Slot accessors}
+      \begin{itemize}
+	 \item<2-> Try to avoid using @ to access slots
+	 \item<3-> Use accessors instead
+	 \item<4-> e.g. landings.n(stock) not stock@landings.n
+	 \item<5-> Protects against internal changes
+	 \item<6-> e.g. catch slots removed from FLCatch
+	 \item<7-> But accessor catch() still works
+      \end{itemize}
+\end{frame}
+\end{document}
+
