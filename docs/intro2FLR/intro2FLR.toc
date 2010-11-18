@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.07pt}
+\beamer@sectionintoc {1}{Introduction}{1}{0}{1}
+\beamer@sectionintoc {2}{Philosophy of FLR}{26}{0}{2}
+\beamer@sectionintoc {3}{What is FLR?}{39}{0}{3}
+\beamer@sectionintoc {4}{Design of FLR}{48}{0}{4}
+\beamer@sectionintoc {5}{What's next ?}{71}{0}{5}
