@@ -1,0 +1,22 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=2cm,bmargin=1.5cm,lmargin=2cm,rmargin=3cm}
+\begin{document}
+\SweaveOpts{engine=R}
+
+\title{FLEDA HowTo}
+\author{Ernesto Jardim <ernesto@ipimar.pt>\\
+Manuela Azevedo <mazevedo@ipimar.pt\\
+IPIMAR, Av.Brasilia, 1449-006 Lisboa}
+\date{}
+\maketitle
+jjjj
+<<print=TRUE>>=
+require(FLEDA)
+data(ple4)
+data(ple4sex)
+data(ple4.index)
+data(ple4.indices)
+@
+\end{document}
+
