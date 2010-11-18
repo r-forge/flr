@@ -175,7 +175,7 @@ FLR uses object oriented programming
 \begin{frame}
   \frametitle{MSE - The Lego block approach}
    \begin{center}
-      \includegraphics[width=1\textwidth]{/home/fas00/Work/Courses/Bergen/Presentation/MSE/MSE.png}
+      \includegraphics[width=1\textwidth]{MSE.png}
    \end{center}
 \end{frame}
 %************ Frame 9***********************
@@ -183,7 +183,7 @@ FLR uses object oriented programming
    \frametitle{FLR Packages}
    \begin{center}
 % Need to redo this figure
-      \includegraphics[width=1\textwidth]{/home/fas00/Work/Courses/Bergen/Presentation/FLPackages/FLCore2.png}
+      \includegraphics[width=1\textwidth]{FLCore2.png}
    \end{center}
 \end{frame}
 %*********** Frame ***********************
@@ -321,7 +321,7 @@ summary(ple4.index)
   \frametitle{FLFleet}
 A more complicated class with three levels: Fleet, Metier and Catch
    \begin{center}
-      \includegraphics[width=1\textwidth]{/home/fas00/Work/Courses/Bergen/Presentation/fleet/FLFleet.png}
+      \includegraphics[width=1\textwidth]{FLFleet.png}
    \end{center}
 \end{frame}
 
@@ -364,7 +364,7 @@ summary(nsher)
 %plot(nsher)
 %@ %def 
    \begin{center}
-      \includegraphics[width=1\textwidth]{/home/fas00/Work/Courses/Bergen/Presentation/FLSR_plot.png}
+      \includegraphics[width=1\textwidth]{FLSR_plot.png}
    \end{center}
 \end{frame}
 
