@@ -1,13 +1,17 @@
 \documentclass{beamer}% usefull options [handout]
 \usepackage{graphicx}
+\usepackage{amsmath}
 %\usepackage{wrapfig}
 %\useoutertheme{infolines}
 \usetheme{default}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
-%\usecolortheme{dove}
-%\usefonttheme{structuresmallcapsserif}
+\usecolortheme{beetle}% other options "dove"
+\usefonttheme{structuresmallcapsserif}
 \setbeamertemplate{items}[triangle] % other options "circle", "ball", "square"
 %\setbeamertemplate{blocks}[rounded][shadow=true]
-%\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme[height=20pt]{sidebar}
+%\setbeamercolor{normal text}{fg=white,bg=black}% inverted black background white foreground
+\setbeamercolor*{palette sidebar secondary}{fg=white}
 
 %************ Title & Author ***********************
 \title[Introduction to FLR]{Introduction to FLR}
@@ -23,8 +27,12 @@
 %*******************************************
 \begin{frame}[plain]
 \titlepage
+\begin{flushright}
+	\includegraphics[width=0.1\textwidth]{cc.png}
+\end{flushright}
 \end{frame}
 
+%*******************************************
 \begin{frame}
 \frametitle{Outline}
 \tableofcontents[pausesections]
@@ -157,9 +165,9 @@ FLR is distributed with an \textbf{open source} license and encourages all packa
 \begin{frame}
 \frametitle{GNU project (http://gnu.org)}
 	\begin{center}
-		\textrm{{\footnotesize{"Free software is a matter of liberty, not price."}}}\newline\newline
-		\textbf{free = free speech}\newline\newline
-		\textbf{free != free beer}\newline\newline
+		\textrm{{\footnotesize{"Free software is a matter of liberty, not price."}}}\newline\newline\newline
+		\textbf{\huge{free = free speech}}\newline\newline
+		\textbf{\huge{free != free beer}}\newline\newline
 	\end{center}
 \end{frame}
 
@@ -196,8 +204,7 @@ FLR is a \textbf{collaborative development project}, where distinct scientists w
 \begin{frame}
   \frametitle{Cut the crap, what is FLR?}
 	\begin{center}
-		\textbf{A working environment}\newline\newline
-		\textbf{for quantitative fisheries analysis in R!}
+		\large{\textbf{A working environment for quantitative fisheries analysis in R!}}
 	\end{center}
 \end{frame}
 
@@ -325,7 +332,7 @@ text(4.7, 8, "inherits")
 \begin{frame}
   \frametitle{MSE - The Lego block approach}
    \begin{center}
-      \includegraphics[width=0.8\textwidth]{MSE.png}
+      \includegraphics[width=0.9\textwidth]{MSE.png}
    \end{center}
 \end{frame}
 
