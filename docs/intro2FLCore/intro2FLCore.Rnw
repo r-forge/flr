@@ -77,11 +77,19 @@ Dimensions are:
 library(FLCore)
 data(ple4)
 test.quant <- window(landings.n(ple4),start=1995, end = 2001)
+getClassMethods <- function(class, where){
+    v <- showMethods(class=class, where=where, printTo=FALSE)->v
+    unlist(lapply(strsplit(unlist(lapply(strsplit(v[substr(v, 1, 5) %in% "Funct"], " \\("), "[", 1)), ": "), "[", 2))
+} 
 @
+
+Methods for class FLQuant
+
 {\tiny{
 <<results=verbatim,echo=TRUE>>=
-test.quant
-dim(test.quant)
+#test.quant
+#dim(test.quant)
+getClassMethods("FLQuant", "package:FLCore")
 @ %def 
 }}
 
