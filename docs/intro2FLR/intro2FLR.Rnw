@@ -1,23 +1,26 @@
 \documentclass{beamer}% usefull options [handout]
 \usepackage{graphicx}
-\usepackage{wrapfig}
+%\usepackage{wrapfig}
 %\useoutertheme{infolines}
-%\usetheme[height=7mm]{Rochester}
-\usetheme{PaloAlto}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe 
+\usetheme{default}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
 %\usecolortheme{dove}
 %\usefonttheme{structuresmallcapsserif}
 \setbeamertemplate{items}[triangle] % other options "circle", "ball", "square"
 %\setbeamertemplate{blocks}[rounded][shadow=true]
 %\setbeamertemplate{navigation symbols}{}
 
-\title[Introduction to FLR]{An Introduction to FLR}
+%************ Title & Author ***********************
+\title[Introduction to FLR]{Introduction to FLR}
 \author{FLR Core Team}
 
 \begin{document}
 
+%===========================================
+% INTRODUCTION
+%===========================================
 \section{Introduction}
 
-%************ Frame 1***********************
+%*******************************************
 \begin{frame}[plain]
 \titlepage
 \end{frame}
@@ -27,8 +30,7 @@
 \tableofcontents[pausesections]
 \end{frame}
 
-
-%************ Frame 3***********************
+%*******************************************
 \begin{frame}
   \frametitle{Need for FLR}
 
@@ -41,11 +43,18 @@ Schnute \emph{et al.} (2007 and 1998) compared the number of software tools and 
 }}}
 \end{frame}
 
-%*********** Goals **********************
+%*******************************************
 \begin{frame}
 \frametitle{Goals}
 
-To promote and generalize the use of good quality, open source, flexible software in all areas of quantitative fisheries research and management advice, with a key focus on Management Strategies Evaluation. In detail, FLR aims to facilitate and promote research about:
+To \textbf{promote and generalize} the use of \textbf{good quality, open source, flexible software} in all areas of quantitative fisheries research and management advice, with a key focus on Management Strategies Evaluation. 
+
+\end{frame}
+
+%*******************************************
+\begin{frame}
+\frametitle{Goals}
+In detail, FLR aims to facilitate and promote research about:
       \begin{itemize}
 	 \item<2-> Stock assessment and provision of management advice
 	 \item<3-> Data and model validation through simulation
@@ -57,80 +66,85 @@ To promote and generalize the use of good quality, open source, flexible softwar
        \end{itemize}
 \end{frame}
 
-%************ Frame 2***********************
+%*******************************************
 \begin{frame}
   \frametitle{A brief history of FLR}
-  
-%  \begin{wrapfigure}{r}{40mm}
-%	\begin{flushright}
-%		\includegraphics[width=0.20\textwidth]{flr14.jpg}
-%	\end{flushright}
-%  \end{wrapfigure}
-  
   \begin{itemize}
-	\item<1-> Started by FEMS EU project
-	\item<2-> COMMIT \& EFIMAS EU projects provided much of time and sweat
-	\item<3-> Presented to ICES WG Methods 2004
-	\item<4-> FLCore version 1.0 - December 2005
+	\item<2-> Started by FEMS EU project
+	\item<3-> COMMIT \& EFIMAS EU projects provided much of time and sweat
+	\item<4-> Presented to ICES WG Methods 2004
+	\item<5-> FLCore version 1.0 - December 2005
 	\begin{itemize}
-		\item<4-> Release often, release early. Bugs galore
+		\item<5-> FLQuant with 5 dimensions, no "iter"
+		\item<5-> Release often, release early. Bugs galore
 	\end{itemize}
   \end{itemize}
   \begin{itemize}
-	\item<5-> FLCore version 1.4 - 2007
+	\item<6-> FLCore version 1.4 - 2007
 	\begin{itemize}
-		\item<5-> Code name "The Golden Jackal"
-		\item<5-> Stable, full of treats an joy
+		\item<6-> Stable, full of treats an joy
 	\end{itemize}
    \end{itemize}
 \end{frame}
 
-%************ Frame 2***********************
+%*******************************************
+\begin{frame}
+  \frametitle{FLR 1.4 - \emph{The Golden Jackal}}
+	\begin{center}
+		\includegraphics[width=0.30\textwidth]{flr14.jpg}
+	\end{center}
+\end{frame}
+
+%*******************************************
 \begin{frame}
   \frametitle{A brief history of FLR}
-
-%  \begin{wrapfigure}{r}{40mm}
-%	\begin{flushright}
-%		\includegraphics[width=0.20\textwidth]{flr20.jpg}
-%	\end{flushright}
-%  \end{wrapfigure}
-
-
   \begin{itemize}
 	\item<1-> 2007-2009: The Silk Road to version 2
 	\begin{itemize}
-		\item<2-> New FLQuant: uncertainty in structure
-		\item<2-> Rewrite of most methods
-		\item<2-> Extension of methods available
-		\item<2-> New classes: FLModel
-		\item<2-> Stronger use of class inheritance
-		\item<2-> Overhaul of man pages
-		\item<2-> Simplification of package map
+		\item<1-> New FLQuant with 6 dimensions: uncertainty in structure
+		\item<1-> Rewrite of most methods
+		\item<1-> Extension of methods available
+		\item<1-> New classes: FLModel
+		\item<1-> Stronger use of class inheritance
+		\item<1-> Overhaul of man pages
+		\item<1-> Simplification of package map
 	\end{itemize}
   \end{itemize}
   \begin{itemize}
-	\item<3-> FLCore version 2.0 - January 2009
+	\item<2-> FLCore version 2.0 - January 2009
 	\begin{itemize}
-		\item<3-> Code name "Swordfish Polka"
+		\item<2-> 2.2: actual stable version 
+		\item<2-> 2.3: under development 
 	\end{itemize}
    \end{itemize}
 \end{frame}
 
+%*******************************************
+\begin{frame}
+  \frametitle{FLR 2.2 - \emph{Swordfish Polka}}
+	\begin{center}
+		\includegraphics[width=0.60\textwidth]{flr20.jpg}
+	\end{center}
+\end{frame}
+
+%===========================================
+% PHILOSOPHY
+%===========================================
 \section{Philosophy of FLR}
 
-%************ Frame 4***********************
+%*******************************************
 \begin{frame} 
    \frametitle{Mission statement}
 
 The FLR project provides a \textbf{platform for quantitative fisheries science} based on the R statistical language. The guiding principles of FLR are:
 \begin{itemize}
-	\item<2-> openness - through community involvement and the open source ethos
-	\item<3-> flexibility - through a design that does not constrain the user to a given paradigm
-	\item<4-> extendibility - through the provision of tools that are ready to be personalized and adapted.
+	\item<2-> \textbf{openness} - through community involvement and the open source ethos
+	\item<3-> \textbf{flexibility} - through a design that does not constrain the user to a given paradigm
+	\item<4-> \textbf{extendibility} - through the provision of tools that are ready to be personalized and adapted.
 \end{itemize}
 \end{frame}
 
-%************ Frame 4***********************
+%*******************************************
 \begin{frame}
    \frametitle{Mission statement}
 
@@ -139,50 +153,61 @@ FLR's framework \textbf{facilitates and promotes collaboration} within and acros
 FLR is distributed with an \textbf{open source} license and encourages all packages to be distributed under open source licenses in order \textbf{to promote transparency and technology transfer} between disciplines and researchers.
 \end{frame}
 
-%************ Frame 4***********************
+%*******************************************
 \begin{frame}
-\frametitle{Open source != free beer}
-General philosophy of the open source GNU project:\newline\newline
-
-\textrm{{\footnotesize{
-"Free software is a matter of liberty, not price.  To understand the concept, one should think of \emph{free} as in \emph{free speech}, not as in \emph{free beer}."
-}}}
+\frametitle{GNU project (http://gnu.org)}
+	\begin{center}
+		\textrm{{\footnotesize{"Free software is a matter of liberty, not price."}}}\newline\newline
+		\textbf{free = free speech}\newline\newline
+		\textbf{free != free beer}\newline\newline
+	\end{center}
 \end{frame}
 
-%*********** Linus **********************
+%*******************************************
 \begin{frame}
 \frametitle{Collaboration and Open Source}
 \textrm{{\footnotesize{
-"I think the real issue about adoption of open source is that nobody can really ever 'design' a complex system.  That's simply not how things work: people aren't that smart - nobody is.  And what open source allows is to not actually 'design' things, but let them evolve, through lots of different pressures in the market, and having the end result just continually improve"\newline\newline
+"I think the real issue about adoption of open source is that \textbf{nobody can really ever 'design' a complex system}.  That's simply not how things work: people aren't that smart - nobody is.  And what open source allows is to not actually 'design' things, but let them \textbf{evolve}, through lots of different pressures in the market, and having the end result just \textbf{continually improve}"\newline\newline
 }}}
 Linus Torvalds
 \end{frame}
 
-%************ Frame 5***********************
+%*******************************************
 \begin{frame}
   \frametitle{Development of FLR}
   
-FLR is a collaborative development project, where distinct scientists work simultaneously on the code. This settings forced us to look for tools that were not commonly used in fisheries science, like version control systems, collaborative text writing, discussion platforms, file distribution, etc.
+FLR is a \textbf{collaborative development project}, where distinct scientists work simultaneously on code, documentation, etc.
 
       \begin{itemize}
-	 \item<2-> Source code is stored at R-Forge (http://r-forge.r-project.org/projects/flr/) 
-	 \item<3-> Packages and tutorials etc. on wiki (http://www.flr-project.org)
-	 \item<4-> Work developed under number of EU projects (FEMS, COMMIT, EFIMAS, Fisboat, UNCOVER)
-	 \item<5-> Core team - maintenance and development of main packages, release official versions, test submitted packages
+	 \item<2-> Development is managed through R-Forge (http://r-forge.r-project.org/projects/flr/) 
+	 \item<3-> Packages on repository (install.packages(repos="http://flr-project.org/R"))
+	 \item<4-> Documentation on wiki (http://www.flr-project.org)
+	 \item<5-> Funding comes from a number of EU projects (FEMS, COMMIT, EFIMAS, Fisboat, UNCOVER)
+	 \item<6-> FLR Core Team, aka "\emph{Les miserables}", code, maintenance, tests, documentation, etc.
    \end{itemize}
 \end{frame}
 
+%===========================================
+% WHAT IS FLR
+%===========================================
 \section{What is FLR?}
-%************ Frame 2***********************
+
+%*******************************************
 \begin{frame}
   \frametitle{Cut the crap, what is FLR?}
+	\begin{center}
+		\textbf{A working environment}\newline\newline
+		\textbf{for quantitative fisheries analysis in R!}
+	\end{center}
+\end{frame}
 
-A working environment for quantitative fisheries analysis in R. 
-
+%*******************************************
+\begin{frame}
+  \frametitle{Cut the crap, what is FLR?}
       \begin{itemize}
-	 \item<2-> Extendable toolbox for implementing bio-economic simulation models of fishery systems
-	 \item<3-> Tools used by managers (hopefully) as well as scientists
-	 \item<4-> With many applications including:
+	 \item<1-> Extendable toolbox for implementing bio-economic simulation models of fishery systems
+	 \item<2-> Tools used by managers (hopefully) as well as scientists
+	 \item<3-> With many applications including:
 	 \begin{itemize}
 	    \item<4-> Fit stock-recruitment relationships,
 	    \item<4-> Model fleet dynamics (including economics), 
@@ -193,8 +218,12 @@ A working environment for quantitative fisheries analysis in R.
    \end{itemize}
 \end{frame}
 
+%===========================================
+% DESIGN OF FLR
+%===========================================
 \section{Design of FLR}
-%************ Frame 6***********************
+
+%*******************************************
 \begin{frame}
   \frametitle{R and FLR}
 Why do we use R?
@@ -203,16 +232,44 @@ Why do we use R?
 	 \item<3-> Good graphics capabilities
 	 \item<4-> Multi-platform
 	 \item<5-> Open source
-	 \item<6-> Easily extendable in the form of 'packages'
-	 \item<7-> Some packages also use C / C++ code for speed (e.g. XSA) - hidden from user
+	 \item<6-> Links with compiled languages like fortran, C / C++ code for speed
+	 \item<7-> Easily extendable in the form of 'packages'
       \end{itemize}
-% Maybe put in that R packages figure from other beamer pres
 \end{frame}
 
-%************ Frame 7***********************
+%*******************************************
 \begin{frame}
-   \frametitle{Structure of FLR}
-FLR uses object oriented programming
+   \frametitle{Packages}
+<<fig=TRUE, echo=FALSE>>=
+par(mai=c(0.2, 0.2, 0.5, 0.2), lwd=2)
+plot(seq(3, 13, len=2)~seq(1, 8, len=2), type="n", xlab="", ylab="", main="FLR packages' development model", axes=FALSE)
+segments(2, 10, 7, 10, lwd=2)
+segments(2, 10, 2, 8, lwd=2)
+segments(7, 10, 7, 6, lwd=2)
+segments(4.5, 12, 4.5, 6, lwd=2)
+segments(3.8, 6, 5.2, 6, lwd=2)
+segments(3.8, 6, 3.8, 4, lwd=2)
+segments(5.2, 6, 5.2, 4, lwd=2)
+points(4.5, 12, pch=21, cex=12, bg="white")
+points(2, 8, pch=22, cex=12, bg="white")
+points(4.5, 8, pch=21, cex=12, bg="white")
+points(3.8, 4, pch=22, cex=12, bg="white")
+points(5.2, 4, pch=22, cex=12, bg="white")
+points(7, 8, pch=22, cex=12, bg="white")
+points(7, 6, pch=22, cex=12, bg="white")
+text(4.5, 12, "FLCore", font=2, cex=0.9)
+text(2, 8, "FLEDA", font=2, cex=0.9)
+text(4.5, 8, "FLAssess", font=2, cex=0.9)
+text(3.8, 4, "FLXSA", font=2, cex=0.9)
+text(5.2, 4, "FL...", font=2, cex=0.9)
+text(7, 8, "FLash", font=2, cex=0.9)
+text(7, 6, "FLBRP", font=2, cex=0.9)
+@
+\end{frame}
+
+%*******************************************
+\begin{frame}
+   \frametitle{Object oriented programming with S4}
       \begin{itemize}
 	 \item<2-> A programming language model organized around "objects" rather than "actions" 
 	 \item<3-> Uses R S4 classes
@@ -227,9 +284,9 @@ FLR uses object oriented programming
       \end{itemize}
 \end{frame}
 
-%************ Frame 7***********************
+%*******************************************
 \begin{frame}
-   \frametitle{Structure of FLR - Design principles}
+   \frametitle{Design principles}
       \begin{itemize}
 	 \item<2-> Classes to represent different elements of fisheries systems
 	 \item<3-> 'physical' objects (e.g. FLStock class represents a fish stock)
@@ -239,7 +296,32 @@ FLR uses object oriented programming
       \end{itemize}
 \end{frame}
 
-%************ Frame 8***********************
+%*******************************************
+\begin{frame}
+   \frametitle{FLR \& S4}
+<<fig=TRUE, echo=FALSE, width=7, height=7>>=
+par(mai=c(0.2, 0.2, 0.5, 0.2))
+plot(seq(1, 15, len=2)~seq(1, 8, len=2), type="n", xlab="", ylab="", main="FLR hierarchical model", axes=FALSE)
+points(3, 12, pch=1, cex=35, lwd=2)
+text(3, 14, "FLCore", font=2)
+points(2.4, 12, pch=1, cex=15, col="darkblue", lwd=2)
+text(2.4, 12, "classes")
+points(3.5, 11.5, pch=1, cex=15, col="darkgreen", lwd=2)
+text(3.5, 11.5, "methods")
+points(6, 4, pch=1, cex=35, lwd=2)
+text(6, 6, "2ndry pkg", font=2)
+points(5.4, 4, pch=1, cex=15, col="darkblue", lwd=2)
+text(5.4, 4, "classes")
+points(6.5, 3.5, pch=1, cex=15, col="darkgreen", lwd=2)
+text(6.5, 3.5, "methods")
+arrows(2.4, 11, 5, 4.5, length=0.1, col="darkred", lwd=2) 
+arrows(3.5, 10.5, 5.2, 4.5, length=0.1, col="darkred", lwd=2) 
+text(3.5, 7, "extends")
+text(4.7, 8, "inherits")
+@
+\end{frame}
+
+%*******************************************
 \begin{frame}
   \frametitle{MSE - The Lego block approach}
    \begin{center}
@@ -247,19 +329,11 @@ FLR uses object oriented programming
    \end{center}
 \end{frame}
 
-%*********** Frame ***********************
-%\begin{frame}
-%   \frametitle{What's in a package?}
-%      \begin{itemize}
-%	 \item<2-> R code (and C code) for classes, methods and functions
-%	 \item<3-> Help pages
-%	 \item<4-> Examples
-%	 \item<5-> Data sets
-%	 \item<6-> Test scripts.
-%      \end{itemize}
-%\end{frame}
-
+%===========================================
+% WHAT'S NEXT
+%===========================================
 \section{What's next ?}
+
 %*********** Frame ***********************
 \begin{frame}
    \frametitle{What's next ?}
