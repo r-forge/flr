@@ -1,12 +1,12 @@
 all:  sweave pdf clean
 
 sweave:
-	R CMD Sweave intro_to_flr_bergen.rnw
+	R CMD Sweave intro2FLR.Rnw
 
 pdf:
-	pdflatex intro_to_flr_bergen
-	pdflatex intro_to_flr_bergen
-	pdflatex intro_to_flr_bergen
+	pdflatex intro2FLR.Rnw
+	pdflatex intro2FLR.Rnw
+	pdflatex intro2FLR.Rnw
 
 clean:
 	rm -f *.aux
@@ -15,8 +15,11 @@ clean:
 	rm -f *.nav
 	rm -f *.snm
 	rm -f *.toc
+	rm -f *-*.pdf
+	rm -f *.eps
+	rm Rplots.pdf
 
 cleanall: clean
 	rm -f *.tex
 	rm -f *.pdf
-	rm -f *.pdf
+
