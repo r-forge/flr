@@ -1,124 +1,41 @@
-# -*- Makefile -*-
-#  $Id: Makevars 660 2010-04-15 16:25:32Z imosqueira $
+# Makefile for windows
+# Looks same as *nix one
+PKG_CPPFLAGS = -I../inst/include
+PKG_CFLAGS = -I../inst/include
+PKG_LIBS = $(SUBLIBS) $(R_HOME)/library/FLCore/libs/FLCore.so
 
-# What is this Makevars doing?
-# We already have (somewhere on the system) FLCore.so (or FLCore.dll)
-# We need to compile all the FLash *.c / *.cpp files, and the ADOLC *.c / *.cpp files to *.o files
-# Knit all these together into FLash.so (.dll) but not so that FLCore.so is inside FLash.so, just so that the functions in FLash.so
-# knows where all the FLCore.so functions are.
-#
-# Simple
-#
-# But we need to set up lots of variables and flags first
-# R CMD config
-# returns the available settings
-# e.g R CMD config CC
-# e.g R CMD config CFLAGS
+#CFLAGS=$(PKG_CPPFLAGS) -O3
+#ALL_CPPFLAGS=$(PKG_CPPFLAGS)
+#ALL_CFLAGS=-O3
+#ALL_CXXFLAGS=-O3
 
-# PKG_CPPFLAGS are preprocessor flags e.g. include paths
-# PKG_CXXFLAGS are compiler flags
-# PKG_LIBS can be used to set flags to the linker
+MkInclude = $(RHOME)/etc/Makeconf
+CFLAGS = -O0 -ggdb -Wall
+CXXFLAGS = -O0 -ggdb -Wall
 
-# MAKEFLAGS can override flags already set e.g.MAKEFLAGS="CFLAGS=-O3" R CMD SHLIB *.c 
+SOURCES_C = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
 
-# Start from scratch
-# set the C / C++ preprocessor flags
-PKG_CPPFLAGS = -I../inst/include 
-# Does quite well just with this. Compiles all the c and cpp in src (not ADOLC). Makes FLash.so but fails on install.
-# Looking for outofbounds_double which is in FLCore
-# So need to include FLCore.so in linking stage
-ADOLC_DIR = adolc
-ADOLC_LIB = $(ADOLC_DIR:=.a) # an archive of the adolc object files
-#FLCORE_LIB = /usr/local/lib/R/library/FLCore/libs/FLCore.so # Hard wire for the moment
-FLCORE_LIB = $(shell $(R_HOME)/bin/R --slave -e 'library(FLCore); cat(system.file("libs", .Platform[["r_arch"]], "FLCore.so", package="FLCore"))')
-PKG_LIBS = $(FLCORE_LIB) $(ADOLC_LIB)
+OBJECTS = $(SOURCES_C:.cpp=.o)
+#DEPS = $(SOURCES_C:.cpp=.d)
 
-# Make the ADOLC archive by calling the makefile (might want to look at using Makevars instead for future releases)
-# calls the subclean routine first
-# so all files get compiled everytime - seems a tad excessive
-$(ADOLC_LIB): 
-	$(MAKE) -C $(ADOLC_DIR) library
+SUBDIRS = adolc
+SUBLIBS = $(SUBDIRS:=.a)
 
-# This seems to install the package OK.
-# But does the package work?
+all: $(SHLIB)
+$(SHLIB): sublibs $(OBJECTS)
 
-
-# INSTALL only cleans src/*.o src/*$(SHLIB_EXT) for each arch
-# so we need to write additional cleaning routines for the ADOLC directories
-# We have to clean here, to clean up between architectures:
-subclean:
-	$(MAKE) -C $(ADOLC_DIR) clean # call makefile in adolc directory with the clean option
+sublibs: subclean
+	@for d in $(SUBDIRS); do \
+	  (cd $${d} && CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" MkInclude="$(MkInclude)" $(MAKE) library) || exit 1; \
+	done
 
 clean: subclean
-	@-rm -f *.a # removes the archive files *.a, i.e. adolc.a
-	@-rm -f *.o
+	@-rm -rf .libs _libs
+	@-rm -f *.o $(SHLIB)
 
+subclean:
+	@-rm -f *.a
+	@for d in $(SUBDIRS); do \
+	  (cd $${d} && Mkinclude="$(MKinclude)" $(MAKE) clean) || exit 1; \
+	done
 
-#sublibs: subclean
-#	@for d in $(SUBDIRS); do \
-#	  (cd $${d} && CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" MkInclude="$(MkInclude)" $(MAKE) library) || exit 1; \
-#	done
-
-# OK
-# Now need to include ADOLC
-# specify target for ADOLC.so and make it. WOuld need to change makefile so it actually compiles ADOLC.so
-# But then other packages that use FLash will need to link to it?
-# Current makefile creates an archive of .o files
-
-
-OBJECTS = FLashDLL.o FLash-VPA.o flc.o flc_adolc.o flquant_pointer.o fwd.o fwdFLStock.o
-##FLASHSOURCE = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
-all: $(SHLIB)
-  $(SHLIB): OBJECTS
-
-#PKG_CPPFLAGS = -fPIC -I../inst/include
-#PKG_CFLAGS = -fPIC -I../inst/include
-
-## PKG_CFLAGS=$(PKG_CFLAGS) -Wunused -pedantic
-#CXXFLAGS=-g -0 -fPIC -v
-#CFLAGS= -fPIC -v
-
-
-
-#
-# What does this line do?
-# Opens R, gets the location of FLCore.so
-# Can we use R/Rscript? see:http://r.789695.n4.nabble.com/Use-of-R-and-Rscript-in-configure-Makevars-in-packages-td2223991.html 
-# Or these:R_LIBRARY_DIR and R_PACKAGE_DIR variables
-# or
-# $(R_HOME)/bin$(R_ARCH_BIN)/Rscript filename
-#     $(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e 'R expression'#
-#FLCORE_LIB = $(shell $(R_HOME)/bin/R --slave -e 'library(FLCore); cat(system.file("libs", .Platform[["r_arch"]], "FLCore.so", package="FLCore"))')
-#PKG_LIBS = $(SUBLIBS) $(FLCORE_LIB)
-#
-#MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf
-#
-
-#SOURCES_C = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
-#
-#OBJECTS = $(SOURCES_C:.cpp=.o)
-#SUBDIRS = adolc
-#SUBLIBS = $(SUBDIRS:=.a)
-#
-#all: $(SHLIB)
-### making src/*.o and in sublibs can be done simultaneously
-#$(SHLIB): $(OBJECTS) sublibs
-
-
-#
-### We have to clean here, to clean up between architectures:
-### INSTALL only cleans src/*.o src/*$(SHLIB_EXT) for each arch
-#sublibs: subclean
-#	@for d in $(SUBDIRS); do \
-#	  (cd $${d} && CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" MkInclude="$(MkInclude)" $(MAKE) library) || exit 1; \
-#	done
-#
-#clean: subclean
-#	@-rm -rf .libs _libs
-#	@-rm -f *.o $(SHLIB)
-#
-#subclean:
-#	@-rm -f *.a
-#	@for d in $(SUBDIRS); do \
-#	  (cd $${d} && MkInclude="$(MkInclude)" $(MAKE) clean) || exit 1; \
-#	done
