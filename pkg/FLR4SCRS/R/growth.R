@@ -1,19 +1,32 @@
 ################################################################################
 
 #### Growth functions ##########################################################
-#                                                                              #
-# 1) FLQuant to ages                                                           #
-# 2) length to weight                                                          #
-# 3) Weight to length                                                          #
-# 4) Von Bertalanffy, length                                                   #
-# 5) Von Bertalanffy, weigth                                                   #
-# 6) Gompertz                                                                  #
-# 7) Logistic                                                                  #
-# 8) Richards                                                                  #
-# 9) Schnute                                                                   #
+# 1)  Add parameters                                                           #
+# 2)  FLQuant to ages                                                          #
+# 3)  length to weight                                                         #
+# 4)  Weight to length                                                         #
+# 5)  Von Bertalanffy                                                          #
+# 6)  Inverse of Von Bertalanffy                                               #
+# 7)  Gompertz                                                                 #
+# 8)  Logistic                                                                 #
+# 9)  Richards                                                                 #
+# 10) Schnute                                                                  #
 ################################################################################
 
-# 1) FLQuant to ages ###########################################################
+# 1) ###########################################################################                    dd
+addPar<-function(par1,nm,val){
+    dmns       <-dimnames(par1)
+    dmns$params<-c(dmns$params,nm)
+    par2       <-FLPar(array(NA,unlist(lapply(dmns,length)),dimnames=dmns))
+
+    par2[dimnames(par1)$params]<-par1
+    par2[nm]                   <-val
+
+    return(par2)}
+    
+################################################################################
+
+# 2) FLQuant to ages ###########################################################
 # creates FLQuant with ages in cell
 setGeneric('ages', function(data, ...)
    standardGeneric('ages'))
@@ -28,7 +41,7 @@ setMethod("ages", signature(data="FLQuant"),
       return(res)})
 ################################################################################
 
-# 2) length to weight ##########################################################
+# 3) length to weight ##########################################################
 ## converts wt to len using condition factor
 setGeneric('len2wt', function(data, params, ...)
   standardGeneric('len2wt'))
@@ -62,7 +75,7 @@ setMethod("len2wt", signature(params="missing", data="numeric"),
    function(data,a=NA,b=NA) len2wt(FLPar(a=a,b=b),data))
 ################################################################################
 
-# 3) Weight to length ##########################################################
+# 4) Weight to length ##########################################################
 ## converts len to wr using condition factor
 setGeneric('wt2len', function(data, params, ...)
   standardGeneric('wt2len'))
@@ -96,7 +109,7 @@ setMethod("wt2len", signature(params="missing", data="numeric"),
    function(data,a=NA,b=NA) wt2len(FLPar(a=a,b=b),data))
 ################################################################################
 
-# 4) Von Bertalanffy, length ###################################################
+# 5) Von Bertalanffy, length ###################################################
 iniVonB<-function(data,Minf,K,t0,a){
    params<-FLPar(Minf=Minf,K=K,t0=t0,a=a)
    plot(data$age,data$data)
@@ -110,11 +123,17 @@ setGeneric('vonB', function(params,data, ...)
   standardGeneric('vonB'))
 
 setMethod("vonB", signature(params="FLPar", data="FLQuant"),
-   function(params,data) params["Linf"]*(1.0-exp(-params["K"]*(data-params["t0"]))))
+   function(params,data) {
+         if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+         params["Sinf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"]})
 setMethod("vonB", signature(params="FLPar", data="FLCohort"),
-   function(params,data) params["Linf"]*(1.0-exp(-params["K"]*(data-params["t0"]))))
+   function(params,data) {
+         if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+         params["Sinf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"]})
 setMethod("vonB", signature(params="FLPar", data="numeric"),
-   function(params,data) params["Linf"]*(1.0-exp(-params["K"]*(data-params["t0"]))))
+   function(params,data) {
+         if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+         params["Sinf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"]})
 
 setMethod("vonB", signature(params="numeric",data="FLQuant"),
    function(params,data) vonB(FLPar(params),data))
@@ -131,47 +150,53 @@ setMethod("vonB", signature(params="list", data="numeric"),
    function(params,data) vonB(FLPar(unlist(params)),data))
 
 setMethod("vonB", signature(params="missing",data="FLQuant"),
-   function(data,Linf=NA,K=NA,t0=NA) vonB(FLPar(Linf=Linf,K=K,t0=t0),data))
+   function(data,Sinf=NA,K=NA,t0=NA,a=1) vonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
 setMethod("vonB", signature(params="missing", data="FLCohort"),
-   function(data,Linf=NA,K=NA,t0=NA) vonB(FLPar(Linf=Linf,K=K,t0=t0),data))
+   function(data,Sinf=NA,K=NA,t0=NA,a=1) vonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
 setMethod("vonB", signature(params="missing", data="numeric"),
-   function(data,Linf=NA,K=NA,t0=NA) vonB(FLPar(Linf=Linf,K=K,t0=t0),data))
+   function(data,Sinf=NA,K=NA,t0=NA,a=1) vonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
 ################################################################################
 
-# 5) Von Bertalanffy, mass #####################################################
-setGeneric('vonBMass', function(params,data, ...)
-  standardGeneric('vonBMass'))
+# 6) Von Bertalanffy, inverse ##################################################
+setGeneric('inverseVonB', function(params,data, ...)
+  standardGeneric('inverseVonB'))
 
-setMethod("vonBMass", signature(params="FLPar", data="FLQuant"),
-   function(params,data) params["Minf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"])
-setMethod("vonBMass", signature(params="FLPar", data="FLCohort"),
-   function(params,data) params["Minf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"])
-setMethod("vonBMass", signature(params="FLPar", data="numeric"),
-   function(params,data) params["Minf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"])
+setMethod("inverseVonB", signature(params="FLPar", data="FLQuant"),
+   function(object,params) {
+       if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+       params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
+setMethod("inverseVonB", signature(params="FLPar", data="FLCohort"),
+   function(object,params) {
+       if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+       params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
+setMethod("inverseVonB", signature(params="FLPar", data="numeric"),
+   function(object,params) {
+       if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+       params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
 
-setMethod("vonBMass", signature(params="missing",data="FLQuant"),
-   function(data,Minf=NA,K=NA,t0=NA,a=NA) vonBMass(FLPar(Minf=Minf,K=K,t0=t0,a=a),data))
-setMethod("vonBMass", signature(params="missing", data="FLCohort"),
-   function(data,Minf=NA,K=NA,t0=NA,a=NA) vonBMass(FLPar(Minf=Minf,K=K,t0=t0,a=a),data))
-setMethod("vonBMass", signature(params="missing", data="numeric"),
-   function(data,Minf=NA,K=NA,t0=NA,a=NA) vonBMass(FLPar(Minf=Minf,K=K,t0=t0,a=a),data))
+setMethod("inverseVonB", signature(params="missing",data="FLQuant"),
+   function(data,Sinf=NA,K=NA,t0=NA,a=NA) inverseVonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
+setMethod("inverseVonB", signature(params="missing", data="FLCohort"),
+   function(data,Sinf=NA,K=NA,t0=NA,a=NA) inverseVonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
+setMethod("inverseVonB", signature(params="missing", data="numeric"),
+   function(data,Sinf=NA,K=NA,t0=NA,a=NA) inverseVonB(FLPar(Sinf=Sinf,K=K,t0=t0,a=a),data))
 
-setMethod("vonBMass", signature(params="numeric",data="FLQuant"),
-   function(params,data) vonBMass(FLPar(params),data))
-setMethod("vonBMass", signature(params="numeric", data="FLCohort"),
-   function(params,data) vonBMass(FLPar(params),data))
-setMethod("vonBMass", signature(params="numeric", data="numeric"),
-   function(params,data) vonBMass(FLPar(params),data))
+setMethod("inverseVonB", signature(params="numeric",data="FLQuant"),
+   function(params,data) inverseVonB(FLPar(params),data))
+setMethod("inverseVonB", signature(params="numeric", data="FLCohort"),
+   function(params,data) inverseVonB(FLPar(params),data))
+setMethod("inverseVonB", signature(params="numeric", data="numeric"),
+   function(params,data) inverseVonB(FLPar(params),data))
 
-setMethod("vonBMass", signature(params="list",data="FLQuant"),
-   function(params,data) vonBMass(FLPar(unlist(params)),data))
-setMethod("vonBMass", signature(params="list", data="FLCohort"),
-   function(params,data) vonBMass(FLPar(unlist(params)),data))
-setMethod("vonBMass", signature(params="list", data="numeric"),
-   function(params,data) vonBMass(FLPar(unlist(params)),data))
+setMethod("inverseVonB", signature(params="list",data="FLQuant"),
+   function(params,data) inverseVonB(FLPar(unlist(params)),data))
+setMethod("inverseVonB", signature(params="list", data="FLCohort"),
+   function(params,data) inverseVonB(FLPar(unlist(params)),data))
+setMethod("inverseVonB", signature(params="list", data="numeric"),
+   function(params,data) inverseVonB(FLPar(unlist(params)),data))
 ################################################################################
 
-# 6) Gompertz ##################################################################
+# 7) Gompertz ##################################################################
 iniGompertz<-function(data,asym,b2,b3){
    params<-FLPar(asym=asym,b2=b2,b3=b3)
    plot(data$age,data$data)
@@ -211,7 +236,7 @@ setMethod("gompertz", signature(params="missing", data="numeric"),
    function(data,asym=NA,b2=NA,b3=NA) gompertz(FLPar(asym=asym,b2=b2,b3=b3),data))
 ################################################################################
 
-# 7) Logistic ##################################################################
+# 8) Logistic ##################################################################
 iniLog<-function(data,a50,ato95,asym){
    plot(  data$age,data$data)
    points(logisticFn(a50,ato95,asym,data$age),col="red",pch=17)
@@ -264,7 +289,7 @@ setMethod("logistic", signature(params="missing", data="numeric"),
    function(data,asym=NA,a50=NA,ato95=NA) logistic(FLPar(asym=asym,a50=a50,ato95=ato95),data))
 ################################################################################
 
-# 8) Richards ##################################################################
+# 9) Richards ##################################################################
 
 iniRichards<-function(data,beta,a50,ato95){
    params<-FLPar(beta=beta,a50=a50,ato95=ato95)
@@ -311,7 +336,7 @@ setMethod("richards", signature(params="missing", data="numeric"),
    function(data,beta=NA,a50=NA,ato95=NA) richards(FLPar(beta=beta,a50=a50,ato95=ato95),data))
 ################################################################################
 
-# 9) Schnute ###################################################################
+# 10) Schnute ###################################################################
 #### parameters
 # y1: length at age t1
 # y2: length at age t2
@@ -334,8 +359,7 @@ schnuteFn<-function(params,data){
   if (params["a"]!=0 & params["b"]!=0) return(fn1(params,data))
   if (params["a"]!=0 & params["b"]==0) return(fn2(params,data))
   if (params["a"]==0 & params["b"]!=0) return(fn3(params,data))
-  if (params["a"]==0 & params["b"]==0) return(fn4(params,data))
-  }
+  if (params["a"]==0 & params["b"]==0) return(fn4(params,data))}
 
 #### Growth
 setGeneric('schnute', function(data, params, ...)
@@ -370,69 +394,26 @@ setMethod("schnuteMass", signature(params="FLPar", data="numeric"),
    function(params,data) params["cf"]*schnute(params,data)^params["pow"])
 setMethod("schnuteMass", signature(data="FLQuant", params="missing"),
    function(data,a=NA,b=NA,y1=NA,y2=NA,t1=NA,t2=NA,cf=NA,pow=3) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+      params<-FLPar(Sinf=Sinf,K=K,t0=t0,a=a,b=b)
 
       return(params["cf"]*schnute(params,data)^params["pow"])})
 setMethod("schnuteMass", signature(data="FLCohort", params="missing"),
    function(data,a=NA,b=NA,y1=NA,y2=NA,t1=NA,t2=NA,cf=NA,pow=3) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+      params<-FLPar(Sinf=Sinf,K=K,t0=t0,a=a,b=b)
 
       return(params["cf"]*schnute(params,data)^params["pow"])})
 setMethod("schnuteMass", signature(data="numeric", params="missing"),
    function(data,a=NA,b=NA,y1=NA,y2=NA,t1=NA,t2=NA,cf=NA,pow=3) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
+      params<-FLPar(Sinf=Sinf,K=K,t0=t0,a=a,b=b)
 
       return(params["cf"]*schnute(params,data)^params["pow"])})
+
+
 ################################################################################
+# Sinf:    Infinite size, i.e. assymptotic size reached after an infinite period of growth
+# K:       Constant describing "how fast" the animal grows
+# to:      Age of the animal at size zero
+# tprime;  Age at inflexion point
 
-
-
-##### Inverse growth curve
-#### Growth
-setGeneric('invVonB', function(object, params, ...)
-  standardGeneric('invVonB'))
-setMethod("invVonB", signature(object="numeric", params="FLPar"),
-   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
-setMethod("invVonB", signature(object="FLQuant", params="FLPar"),
-   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
-setMethod("invVonB", signature(object="FLCohort", params="FLPar"),
-   function(object,params) params["t0"]-log(1.0-object/params["Linf"])/params["K"])
-setMethod("invVonB", signature(object="FLQuant",params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0)
-      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
-setMethod("invVonB", signature(object="FLCohort",params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0)
-      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
-setMethod("invVonB", signature(object="numeric",params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA) {
-      params<-FLPar(Linf=Linf,K=K,t0=t0)
-      params["t0"]-log(1.0-object/params["Linf"])/params["K"]})
-
-setGeneric('invVonBMass', function(object, params, ...)
-  standardGeneric('invVonBMass'))
-setMethod("invVonBMass", signature(object="FLQuant", params="FLPar"),
-   function(object,params) invVonB((object/params["a"])^(1.0/params["b"]),params))
-setMethod("invVonBMass", signature(object="FLCohort", params="FLPar"),
-   function(object,params) invVonB((object/params["a"])^(1.0/params["b"]),params))
-setMethod("invVonBMass", signature(object="numeric", params="FLPar"),
-   function(object,params) invVonB(c((object/params["a"])^(1.0/params["b"])),params))
-setMethod("invVonBMass", signature(object="FLQuant", params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
-
-      return((object/params["a"])^(1.0/params["b"]))})
-setMethod("invVonBMass", signature(object="FLCohort", params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
-
-      return((object/params["a"])^(1.0/params["b"]))})
-setMethod("invVonBMass", signature(object="numeric", params="missing"),
-   function(object,Linf=NA,K=NA,t0=NA,a=NA,b=NA){
-      params<-FLPar(Linf=Linf,K=K,t0=t0,a=a,b=b)
-
-      return(invVonB(c(object/params["a"])^(1.0/params["b"]),params))})
-
-#      return(params["a"]*invVonB(object,params)^params["b"])})
+#if (a!=0 & b!=0)
 
