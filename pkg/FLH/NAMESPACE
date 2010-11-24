@@ -1,0 +1,11 @@
+import("FLCore")
+importFrom("FLBRP",
+  "FLBRP",
+  "brp",
+  "refpts")
+importFrom("FLash",
+  "fwd",
+  "fwdControl")
+export("genBRP",
+  "logistic",
+  "dnormal")

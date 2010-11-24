@@ -1,14 +1,30 @@
+# lh_generator - «Short one line description»
+# FLH/R/lh_generator.R
 
+# Copyright 2010 Iago Mosqueira & Finlay Scott, Cefas. Distributed under the GPL 2
+# $Id:  $
 
-genBRP <- function(age, fmsy,
-  growth=list(model=mass~a*(Linf*(1-exp(-k*(age-t0))))^b,
-    params=list(Linf=NA, k=NA, t0=0, a=0.001, b=3)),
-  sr=list(model=bevholtSV()$model, params=list(s=NA, v=NA)),
-  selectivity=list(model = pr ~ dnormal(age, a, SL, sR), params=list(a=NA, sL=NA, sR=NA)),
-  maturity=list(model = mat ~ logistic(age, mat50, mat95), params=list(mat95=NA)),
-  m=list(model = m ~ m1 + h * Linf ^ i * L ^ n,
-    params=list(m1=0.1, h=1.71, n=-1.66, i=0.8)))
-{
+# Reference:
+# Notes:
+
+# TODO Wed 24 Nov 2010 09:08:09 AM CET IM:
+
+genBRP <- function(age, fmsy, Linf, k, s, v, a1, sL, sR, mat95,
+  growth=mass~a*(Linf*(1-exp(-k*(age-t0))))^b, sr=bevholtSV()$model,
+  sel=pr ~ dnormal(age, a1, sL, sR),
+  # Gislason 2008
+  m=m ~ m1 + h * Linf ^ i * L ^ n,
+  mat=mat ~ logistic(age, mat50, mat95), ...)
+  {
+  # params with defaults included
+  params <- list(Linf=Linf, k=k, t0=0, a=0.001, b=3,
+    s=s, v=v, a1=a1, sR=sR, sL=sL, mat95=mat95, m1=0.1, h=1.71, n=-1.66, i=0.8)
+
+  # extract ...
+  args <- list(...)
+  if(length(args) > 0)
+    params [names(args)] <- args
+  
   # dimensions
   # age <- 1:20
   dnames <- list(age=age)
@@ -16,24 +32,22 @@ genBRP <- function(age, fmsy,
   # biological values
   #   TODO formulas or functions
   # weights
-  wts <- FLQuant(eval(as.list(growth$model)[[3]], c(growth$params, list(age=age))),
-    dimnames=dnames)
+  wts <- FLQuant(eval(as.list(growth)[[3]], c(params, list(age=age))), dimnames=dnames)
   # M
-  m <- FLQuant(eval(as.list(m$model)[[3]], c(list(L=1000*eval(as.list(growth$model)[[3]],
-    c(growth$params, list(age=age+0.5)))), m$params, growth$params)),
-    dimnames=dnames)
+  m <- FLQuant(eval(as.list(m)[[3]], c(params, list(L=(1000*eval(as.list(growth)[[3]],
+    c(params, list(age=age+0.5)))) ^(1/3)))), dimnames=dnames)
   # mat@50%
-  mat50 <- log(((3 * growth$params$k + mean(m)) / mean(m)) / growth$params$k)
+  # TODO Ref!
+  mat50 <- log(((3 *params$k + mean(m)) / mean(m)) / params$k)
 
   # selection pattern
-  sel <- FLQuant(eval(as.list(selectivity$model)[[3]],
-    list(age=age, a=(mat50+maturity$params$mat95)*selectivity$params$a,
-        sL=(mat50+maturity$params$mat95)*selectivity$params$sL,
-        sR=(mat50+maturity$params$mat95)*selectivity$params$sR)), dimnames=dnames)
+  sell <- FLQuant(eval(as.list(sel)[[3]], list(age=age,
+    a1=(mat50+params$mat95)*params$a1, sL=(mat50+params$mat95)*params$sL,
+    sR=(mat50+params$mat95)*params$sR)), dimnames=dnames)
 
   # maturity
-  mat <- FLQuant(eval(as.list(maturity$model)[[3]], c(list(mat50=mat50),
-    maturity$params)), dimnames=dnames)
+  matt <- FLQuant(eval(as.list(mat)[[3]], c(list(mat50=mat50),
+    params)), dimnames=dnames)
 
   # create FLBRP
   res <- FLBRP(stock.wt = wts,
@@ -41,8 +55,8 @@ genBRP <- function(age, fmsy,
     discards.wt= wts,
     bycatch.wt     =wts,
     m = m,
-    mat = mat,
-    landings.sel = sel,
+    mat = matt,
+    landings.sel = sell,
     discards.sel = FLQuant(0,dimnames=dnames),
     bycatch.harvest = FLQuant(0,dimnames=dnames),
     harvest.spwn = FLQuant(0,dimnames=dnames),
@@ -50,26 +64,16 @@ genBRP <- function(age, fmsy,
     availability = FLQuant(1,dimnames=dnames))
 
   # SR
-  params(res) <- FLPar(do.call(abPars, c(list(model=SRModelName(sr$model),
-    spr0=spr0(res)), sr$params)))
-  model(res) <- abModel(sr$model)
+  params(res) <- FLPar(do.call(abPars, c(list(model=SRModelName(sr),
+    spr0=spr0(res)), params[c('s','v')])))
+  model(res) <- abModel(sr)
 
   # brp
   res        <-brp(res)
 
   # equilibrium conditions at MSY (?)
+  # TODO Ref!
   fbar(res)[] <- fmsy * refpts(res)["msy","harvest",1]
 
   return(res)
 }
-
-res <- genBRP(age=1:20, fmsy=1, 
-  growth=list(model=mass~a*(Linf*(1-exp(-k*(age-t0))))^b,
-  params=list(Linf=10, k=0.1, t0=0.01, a=0.001, b=3)),
-  selectivity=list(model = pr ~ dnormal(age, a, sL, sR), params=list(a=8, sL=4, sR=12)),
-  maturity=list(model = mat ~ logistic(age, mat50, mat95), params=list(mat95=6)),
-  sr=list(model=bevholtSV()$model, params=list(s=0.6, v=2000)),
-  m=list(model = m ~ m1 + h * Linf ^ i * L ^ n,
-    params=list(m1=0.1, h=1.71, n=-1.66, i=0.8)))
-
-plot(res)
