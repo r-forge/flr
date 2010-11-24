@@ -205,10 +205,11 @@ readFLStock<-function(x,y,m=NA,mat=NA,swt=NULL,cwt=swt,m.spwn=NA,harvest.spwn=m.
      stk@stock.n  <-readBinary(paste(x,"NAA.OUT",sep="/"), dmns)
    if (file.exists(paste(x,"CAA.OUT",sep="/")))
      catch.n(stk) <-readBinary(paste(x,"CAA.OUT",sep="/"), dmns)
+   else
+     catch.n(stk)     <-stock.n(stk)*harvest(stk)/(harvest(stk)+m(stk))*(1-exp(-((harvest(stk)+m(stk)))))
 
    units(harvest(stk))<-"f"
 
-   catch.n(stk)     <-stock.n(stk)*harvest(stk)/z(stk)*(1-exp(-z(stk)))
    landings.n(stk)  <-catch.n(stk)
    discards.n(stk)[]<-0
    
