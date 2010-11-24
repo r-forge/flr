@@ -95,18 +95,6 @@ setMethod("FLQuants<-", signature(object="FLComp", value="FLQuants"),
 
 		return(object)})
 
-setGeneric("sel<-", function(object,value){
-	standardGeneric("sel<-")})
-setMethod("sel<-", signature(object="FLStock", value="FLQuants"),
-	function(object, value) {
-
-   harvest(   object)<-recycleFLQuantOverYrs(harvest(   object),value[["harvest"]])
-   catch.n(   object)[]<-NA
-   discards.n(object)<-recycleFLQuantOverYrs(discards.n(object),value[["discards.n"]])
-   landings.n(object)<-recycleFLQuantOverYrs(landings.n(object),value[["landings.n"]])
-      
-   return(object)})
-
 setGeneric("sopCorrect", function(object,...){
 	standardGeneric("sopCorrect")})
 setMethod("sopCorrect", signature(object="FLStock"),
