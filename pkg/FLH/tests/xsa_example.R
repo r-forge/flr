@@ -70,11 +70,3 @@ xsastk <- xsastk + FLXSA(xsastk,cpue,xsa.ctrl, diag.flag=FALSE)
  
 ## Compare OM & MP
 plot(FLStocks(MP=xsastk, OM=window(stk,end=99)))
-
-#Biological
-omBiol<-as(ple4,"FLBiol")
- 
-#Fleet
-omFleet<-as(ple4,"FLFleet")
-
-
