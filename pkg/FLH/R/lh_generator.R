@@ -9,7 +9,7 @@
 
 # TODO Wed 24 Nov 2010 09:08:09 AM CET IM:
 
-genBRP <- function(age, fmsy, Linf, k, s, v, a1, sL, sR, mat95,
+genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
   growth=mass~a*(Linf*(1-exp(-k*(age-t0))))^b, sr=bevholtSV()$model,
   sel=pr ~ dnormal(age, a1, sL, sR),
   # Gislason 2008
@@ -17,7 +17,7 @@ genBRP <- function(age, fmsy, Linf, k, s, v, a1, sL, sR, mat95,
   mat=mat ~ logistic(age, mat50, mat95), ...)
   {
   # params with defaults included
-  params <- list(Linf=Linf, k=k, t0=0, a=0.001, b=3,
+  params <- list(Linf=Linf, k=k, t0=0, a=0.001, b=3, fmsy=1,
     s=s, v=v, a1=a1, sR=sR, sL=sL, mat95=mat95, m1=0.1, h=1.71, n=-1.66, i=0.8)
 
   # extract ...
@@ -73,7 +73,7 @@ genBRP <- function(age, fmsy, Linf, k, s, v, a1, sL, sR, mat95,
 
   # equilibrium conditions at MSY (?)
   # TODO Ref!
-  fbar(res)[] <- fmsy * refpts(res)["msy","harvest",1]
+  fbar(res)[] <- params$fmsy * refpts(res)["msy","harvest",1]
 
   return(res)
 }
