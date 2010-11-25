@@ -7,5 +7,14 @@ importFrom("FLash",
   "fwd",
   "fwdControl")
 export("genBRP",
+  "dnormal",
+  "dnormal.capped",
+  "dnormal.coleraine"
+  "dnormal.plateau",
   "logistic",
-  "dnormal")
+  "logistic.double",
+  "logistic.product",
+  "richards",
+  "richards.capped",
+  "seldnc",
+  )
