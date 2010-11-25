@@ -9,6 +9,7 @@
 
 # TODO Wed 24 Nov 2010 09:08:09 AM CET IM:
 
+# genBRP {{{
 genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
   growth=mass~a*(Linf*(1-exp(-k*(age-t0))))^b, sr=bevholtSV()$model,
   sel=pr ~ dnormal(age, a1, sL, sR),
@@ -32,7 +33,7 @@ genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
   # biological values
   #   TODO formulas or functions
   # weights
-  wts <- FLQuant(eval(as.list(growth)[[3]], c(params, list(age=age))), dimnames=dnames)
+  wts <- FLQuant(predict(growth, params, age=age), dimnames=dnames)
   # M
   m <- FLQuant(eval(as.list(m)[[3]], c(params, list(L=(1000*eval(as.list(growth)[[3]],
     c(params, list(age=age+0.5)))) ^(1/3)))), dimnames=dnames)
@@ -72,4 +73,4 @@ genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
   res        <-brp(res)
 
   return(res)
-}
+} # }}}
