@@ -26,8 +26,8 @@ name(stk) <- 'stock'
 stk <- propagate(stk, iter=100)
  
 # project for increasing F: from fmsy to 2*fmsy in 99 years
-ctrl <- fwdControl(data.frame(year=2:100, quantity="f"),
-  val=msy(res)[,'harvest'] * seq(1,2,length.out=99))
+ctrl <- fwdControl(data.frame(year=2:100, quantity="f",
+  val=msy(res)[,'harvest'] * seq(1,2,length.out=99)))
 
 # generate normally distributed residuals of the SR model to introduce
 # variability in the stock object

@@ -9,7 +9,7 @@ importFrom("FLash",
 export("genBRP",
   "dnormal",
   "dnormal.capped",
-  "dnormal.coleraine"
+  "dnormal.coleraine",
   "dnormal.plateau",
   "logistic",
   "logistic.double",
@@ -17,4 +17,4 @@ export("genBRP",
   "richards",
   "richards.capped",
   "seldnc",
-  )
+  "vonB")

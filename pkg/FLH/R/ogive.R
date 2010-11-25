@@ -12,7 +12,7 @@
 #
 pow<-function(a,b) a^b
 
-# dnormal(x, a1, sL, sR)
+# dnormal(x, a1, sL, sR) {{{
 dnormal <- function(x,a1,sL,sR)
 {
   func <- function(x,a1,sL,sR)
@@ -23,9 +23,9 @@ dnormal <- function(x,a1,sL,sR)
        return(pow(2.0,-((x-a1)/sR*(x-a1)/sR)))
   }
   sapply(x,func,a1,sL,sR)
-}
+} # }}}
 
-# dnormal.capped(x, a, sL, sR, amax=1.0)
+# dnormal.capped(x, a, sL, sR, amax=1.0) {{{
 dnormal.capped <- function(x,a,sL,sR,amax=1.0) {
   func<-function(x,a,sL,sR,amax) {
     if (x < a)
@@ -34,9 +34,9 @@ dnormal.capped <- function(x,a,sL,sR,amax=1.0) {
        return(amax*pow(2.0,-((x-a)/sR*(x-a)/sR)))
   }
   sapply(x,func,a,sL,sR,amax)
-}
+} # }}}
 
-# dnormal.plateau(x, a1, a2, amax, sL, sR)
+# dnormal.plateau(x, a1, a2, amax, sL, sR) {{{
 dnormal.plateau <- function(x, a1, a2, amax, sL, sR) {
   if (x<=a1) 
      return(amax*2^-((x-a1)/sL)^2)
@@ -44,17 +44,17 @@ dnormal.plateau <- function(x, a1, a2, amax, sL, sR) {
      return(amax*2^-((x-a1)/sL)^2)
   else
      return(amax*2^-((x-(a1+a2))/sR)^2)
-}
+} # }}}
 
-# dnornmal.coleraine(x, a, b, c)
+# dnornmal.coleraine(x, a, b, c) {{{
 dnormal.coleraine <- function(x, a, b, c) {
   if (x<a)
       return(exp(-(x-a)^2/b^2))
   else
       return((-(x-a)^2/c^2))
-}
+} # }}}
 
-# logistic(x, a50, ato95)
+# logistic(x, a50, ato95) {{{
 logistic <- function(x, a50, ato95)
 {
   func <- function(x,a50,ato95)
@@ -66,9 +66,9 @@ logistic <- function(x, a50, ato95)
     return(1.0/(1.0+pow(19.0,(a50-x)/ato95)))
   }
   sapply(x,func,a50,ato95)
-}
+} # }}}
 
-# logistic.double(x, a50, ato95, b50, bto95, amax=1.0)
+# logistic.double(x, a50, ato95, b50, bto95, amax=1.0) {{{
 logistic.double <- function(x, a50, ato95, b50, bto95, amax=1.0)
 {
   func <- function(x,a50,ato95,b50,bto95,amax)
@@ -93,9 +93,9 @@ logistic.double <- function(x, a50, ato95, b50, bto95, amax=1.0)
   }
 
   sapply(x,func,a50,ato95,b50,bto95,amax)
-}
+} # }}}
 
-# logistic.product
+# logistic.product {{{
 logistic.product <- function(x,a50,ato95,b50,bto95,amax=1.0)
 {
   func <- function(x,a50,ato95,b50,bto95,amax)
@@ -124,27 +124,27 @@ logistic.product <- function(x,a50,ato95,b50,bto95,amax=1.0)
      }
   }    
   sapply(x,func,a50,ato95,b50,bto95,amax)
-}
+} # }}}
 
-# richards
+# richards {{{
 richards <- function(x, a50, ato95, sigma) {
   beta <- ato95*log(19)/(log(2^sigma-1)-log((20/19)^sigma-1))
   alpha <- a50+beta*log(2^sigma-1)/log(19)
 
   return((1/(1+19^(alpha-x)/beta))^1/sigma)
-}
+} # }}}
 
-# richards.capped
+# richards.capped {{{
 richards.capped <- function(x, a50, ato95, sigma, amax) {
   beta <- ato95*log(19)/(log(2^sigma-1)-log((20/19)^sigma-1))
   alpha <- a50+beta*log(2^sigma-1)/log(19)
 
   return((amax/(1+19^(alpha-x)/beta))^1/sigma)
-}
+} # }}}
 
-# seldnc
+# seldnc {{{
 seldnc <- function(x,a,b,c) {
   d <- rep(b,length(x))
   d[x>a] <- c
   return(exp(-(x-a)^2/d^2))
-}
+} # }}}
