@@ -16,7 +16,7 @@ library(FLXSA)
 # 
 # Linf=100cm, 25 years max lifespan
 res <- genBRP(age=1:25, Linf=100, k=exp(0.5235792+log(100)*-0.4540248),
-    a1=1, sL=.5, sR=150, mat95=3, s=0.75, v=1e3)
+    a1=1, sL=0.5, sR=150, mat95=3, s=0.75, v=1e3)
 
 # coerce FLBRP into an FLStock
 stk <- as(res, 'FLStock')
@@ -27,7 +27,7 @@ stk <- propagate(stk, iter=100)
  
 # project for increasing F: from fmsy to 2*fmsy in 99 years
 ctrl <- fwdControl(data.frame(year=2:100, quantity="f"),
-  val=c(fbar(res)[,1]) * seq(1,2,length.out=99))
+  val=msy(res)['harvest'] * seq(1,2,length.out=99))
 
 # generate normally distributed residuals of the SR model to introduce
 # variability in the stock object
@@ -50,8 +50,10 @@ summary(cpue)
  
 # add measurement and/or process error to CPUE: lnorm(log(mean)=0, log(sd)=0,3)
 index(cpue) <- index(cpue)[] * rlnorm(prod(dim(index(cpue)[])), 0, 0.3)
-# exp(rlnorm(100, log(index(cpue)), 0.3))
 
+# index(cpue)[] * rlnorm(prod(dim(index(cpue)[])), 0, 0.3)
+# exp(rlnorm(100, log(index(cpue)), 0.3))
+# exp(rnorm(100, log(index(cpue)), 0.3))
 
 ## Create a stock data set
 xsastk <- setPlusGroup(stk,10)

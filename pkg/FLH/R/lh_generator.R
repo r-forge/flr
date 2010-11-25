@@ -17,7 +17,7 @@ genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
   mat=mat ~ logistic(age, mat50, mat95), ...)
   {
   # params with defaults included
-  params <- list(Linf=Linf, k=k, t0=0, a=0.001, b=3, fmsy=1,
+  params <- list(Linf=Linf, k=k, t0=0, a=0.001, b=3,
     s=s, v=v, a1=a1, sR=sR, sL=sL, mat95=mat95, m1=0.1, h=1.71, n=-1.66, i=0.8)
 
   # extract ...
@@ -70,10 +70,6 @@ genBRP <- function(age, Linf, k, s, v, a1, sL, sR, mat95,
 
   # brp
   res        <-brp(res)
-
-  # equilibrium conditions at MSY (?)
-  # TODO Ref!
-  fbar(res)[] <- params$fmsy * refpts(res)["msy","harvest",1]
 
   return(res)
 }
