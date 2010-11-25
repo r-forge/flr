@@ -98,7 +98,26 @@ sel& = 2^{-[(x-a_1)/s_L]^2}, & if (x \leq a_1) \nonumber \\
 %\begin{minipage}[H]{0.95\textwidth}%
 %\begin{shaded}%
 <<fig=TRUE, echo=FALSE>>=
-source("FLH_seldemo.r")
+library(FLash)
+library(FLBRP)
+## Selection pattern
+dnormal<-function(x,a,sL,sR){
+  pow<-function(a,b) a^b
+  func<-function(x,a,sL,sR){
+    if (x < a)
+       return(pow(2.0,-((x-a)/sL*(x-a)/sL)))
+    else
+       return(pow(2.0,-((x-a)/sR*(x-a)/sR)))}
+  sapply(x,func,a,sL,sR)
+  }
+age<-seq(1,20,length.out=100)
+selPat<-rbind(cbind(Pattern="Flat Topped",data.frame(rbind(cbind(gear=1,sel=dnormal(age, 5,  5,250)),
+                                                           cbind(gear=2,sel=dnormal(age, 7.5,5,250)),
+                                                           cbind(gear=3,sel=dnormal(age,10,  5,250))))),
+              cbind(Pattern="Domed",      data.frame(rbind(cbind(gear=1,sel=dnormal(age, 7.5,5, 50)),
+                                                           cbind(gear=2,sel=dnormal(age, 7.5,5, 20)),
+                                                           cbind(gear=3,sel=dnormal(age, 7.5,5, 10))))))
+print(xyplot(sel~age|Pattern,groups=gear, data=cbind(age=age,selPat),type="l",xlab="Age",ylab="Selectivity"))
 @
 %\end{shaded}
 %\end{minipage}
