@@ -11,7 +11,7 @@ PKG_LIBS = $(SUBLIBS) $(R_HOME)/library/FLCore/libs/FLCore.so
 
 MkInclude = $(RHOME)/etc/Makeconf
 CFLAGS = -O0 -ggdb -Wall
-CXXFLAGS = -O0 -ggdb -Wall
+CXXFLAGS = -O0 -ggdb -Wall -fPIC
 
 SOURCES_C = FLashDLL.cpp FLash-VPA.cpp flc.cpp flc_adolc.cpp flquant_pointer.cpp fwd.cpp fwdFLStock.cpp
 
