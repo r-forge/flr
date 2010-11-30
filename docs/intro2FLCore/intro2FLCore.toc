@@ -1,3 +1,6 @@
 \beamer@endinputifotherversion {3.07pt}
 \beamer@sectionintoc {1}{Introduction}{1}{0}{1}
-\beamer@sectionintoc {2}{Inside FLCore}{4}{0}{2}
+\beamer@sectionintoc {2}{Basic classes}{17}{0}{2}
+\beamer@sectionintoc {3}{Composite classes}{33}{0}{3}
+\beamer@sectionintoc {4}{List classes}{50}{0}{4}
+\beamer@sectionintoc {5}{Model classes}{51}{0}{5}

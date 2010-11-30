@@ -1,59 +1,123 @@
 \documentclass{beamer}% usefull options [handout]
 \usepackage{graphicx}
-\usepackage{wrapfig}
+\usepackage{amsmath}
+%\usepackage{wrapfig}
 %\useoutertheme{infolines}
-%\usetheme[height=7mm]{Rochester}
-\usetheme{default}% other nice themes Hannover, CambridgeUS 
-%\usecolortheme{dove}
-%\usefonttheme{structuresmallcapsserif}
-%\setbeamertemplate{items}[ball]
+\usetheme{default}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
+\usecolortheme{beetle}% other options "dove"
+\usefonttheme{structuresmallcapsserif}
+\setbeamertemplate{items}[triangle] % other options "circle", "ball", "square"
 %\setbeamertemplate{blocks}[rounded][shadow=true]
-%\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme[height=20pt]{sidebar}
+%\setbeamercolor{normal text}{fg=white,bg=black}% inverted black background white foreground
+\setbeamercolor*{palette sidebar secondary}{fg=white}
 
+%************ Title & Author ***********************
 \title[Introduction to FLCore]{An Introduction to the FLCore package}
 \author{FLR Core Team}
 
 \begin{document}
 
-%\frame{\titlepage}
-
-%\section[Outline]{}
-%\frame{\tableofcontents}
-
-
+%===========================================
+% INTRODUCTION
+%===========================================
 \section{Introduction}
-
-%************ Frame 1***********************
+%*******************************************
 \begin{frame}[plain]
 \titlepage
+\begin{flushright}
+	\includegraphics[width=0.1\textwidth]{cc.png}
+\end{flushright}
 \end{frame}
 
+%*******************************************
 \begin{frame}
 \frametitle{Outline}
 \tableofcontents[pausesections]
 \end{frame}
 
+% some code we need 
+<<echo=FALSE>>=
+library(FLCore)
+library(xtable)
+cls <- getClasses("package:FLCore")
+FLCcls <- lapply(split(cls, cls), function(x){
+	df0 <- data.frame(class=x, parent=NA, nSlots=NA, virtual=NA, child=NA, distance=NA)
+	cls <- getClass(x)
+	# superclass	
+	if(length(cls@contains)!=0) df0$parent <- cls@contains[[1]]@superClass
+	# virtual
+	df0$virtual <- slot(cls, "virtual")	
+	# number of slots
+	if(slot(cls, "virtual")) NA else df0$nSlots <- length(slotNames(new(x)))
+	# children
+	if(length(slot(cls, "subclasses"))!=0) child <- names(slot(cls, "subclasses")) else child <- NA
+	df0 <- df0[rep(1,length(child)),]
+	df0$child <- child
+	# distance
+	if(length(slot(cls, "subclasses"))!=0) dist <- unlist(lapply(slot(cls, "subclasses"), slot, "distance")) else dist <- NA
+	df0$distance <- dist 
+	df0
+})
+FLCcls <- do.call("rbind", FLCcls)
+FLCcls$child <- factor(FLCcls$child)
+getClassMethods <- function(class, where){
+    v <- showMethods(class=class, where=where, printTo=FALSE)->v
+    unlist(lapply(strsplit(unlist(lapply(strsplit(v[substr(v, 1, 5) %in% "Funct"], " \\("), "[", 1)), ": "), "[", 2))
+} 
+data(ple4.index)
+flbiol <- as.FLBiol(ple4)
+data(bt4)
+@
 
-\section{Inside FLCore}
-%************ Frame 10***********************
+%*******************************************
 \begin{frame}
-  \frametitle{FLCore}
-What's inside FLCore?
-      \begin{itemize}
-	 \item<2-> FLQuant - basic class
-	 \item<3-> FLStock - fish stock
-	 \item<4-> FLBiol - biological population
-	 \item<5-> FLModel - model class
-	 \item<6-> FLSR - stock-recruitment relationships
-	 \item<7-> FLIndex - survey indices
-	 \item<8-> FLFleet - fleet (includes FLCatch and FLMetier)
-	 \item<9-> FLlst - list classes (FLFleets, FLStocks, FLIndices etc.)
+\frametitle{FLCore structure}
+Follows S4 paradigm with structured data implemented as classes and several methods to apply on objects of the classes.
+	\begin{itemize}
+		\item<2-> Classes - empty definitions of data
+		\item<3-> Objects - instances of the classes which have data following the class definition
+		\item<4-> Methods - implementation of actions to be executed on objects depending on its class
+		%\newline\newline
+		%\item<5-> Documentation - as man pages or vignettes
+		%\item<6-> Tests - code that runs during compilation to check code 
       \end{itemize}
 \end{frame}
-%************ Frame 11***********************
+
+%*******************************************
+\begin{frame}
+  \frametitle{Inside FLCore}
+	\begin{itemize}
+		\item<2-> Basic classes:\newline FLArray, FLQuant, FLCohort, FLQuantPoint, FLPar
+		\item<3-> Composite classes:\newline FLComp, FLBiol, FLCatch, FLFleet, FLIndex, FLMetier, FLModel, FLStock
+		\item<4-> Lists of classes:\newline FLLst, FLBiols, FLCatches, FLCohorts, FLFleets, FLIndices, FLMetiers, FLQuants, FLStocks 
+		\item<5-> Model class:\newline FLModel, FLGrowth, FLSR
+		\item<6-> Methods
+	\end{itemize}
+\end{frame}
+
+%===========================================
+% BASIC CLASSES
+%===========================================
+\section{Basic classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Basic classes}
+
+\scriptsize{
+<<results=tex,echo=FALSE>>=
+xtable(subset(FLCcls, parent %in% c("FLArray", "FLQuant"))[,-1])
+@
+}
+
+\end{frame}
+
+%*******************************************
 \begin{frame}
   \frametitle{FLQuant}
-Essentially a six dimensional array used to store data of a particular type (e.g. catch numbers).\newline
+
+Six dimensional array used to store data of a particular type (e.g. catch numbers).\newline
 
 Dimensions are:
       \begin{enumerate}
@@ -65,64 +129,144 @@ Dimensions are:
 	 \item<7-> Iter
       \end{enumerate}
 \end{frame}
-%***************************************
+
+%***********************************
 \begin{frame}[containsverbatim]
 
-  \frametitle{FLQuant - example}
-
-% is ampersand necessary
-%@ 
-%<<sample-fn>>=
-<<results=hide,echo=FALSE>>=
-library(FLCore)
-data(ple4)
-test.quant <- window(landings.n(ple4),start=1995, end = 2001)
-getClassMethods <- function(class, where){
-    v <- showMethods(class=class, where=where, printTo=FALSE)->v
-    unlist(lapply(strsplit(unlist(lapply(strsplit(v[substr(v, 1, 5) %in% "Funct"], " \\("), "[", 1)), ": "), "[", 2))
-} 
-@
-
-Methods for class FLQuant
+  \frametitle{FLQuant example}
 
 {\tiny{
 <<results=verbatim,echo=TRUE>>=
-#test.quant
-#dim(test.quant)
+data(ple4)
+flq <- window(landings.n(ple4),start=1995, end = 2001)
+dimnames(flq)
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuant methods}
+
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
 getClassMethods("FLQuant", "package:FLCore")
 @ %def 
 }}
 
 \end{frame}
-%***********************************
+
+%*******************************************
 \begin{frame}[containsverbatim]
+  \frametitle{FLQuantPoint}
 
-  \frametitle{FLQuant - example contd.}
-
+Six dimensional array used to summarize FLQuant objects.\newline
 
 {\tiny{
-<<results=verbatim,echo=TRUE>>=
-dimnames(test.quant)
+<<results=verbatim>>=
+dimnames(FLQuantPoint(flq))
 @ %def 
 }}
 
 \end{frame}
 
-%************ Frame 12***********************
-%\begin{frame}[containsverbatim]
-%  \frametitle{FLStock - contd}
-%Represents a fish stock and comprises a number of slots.
-%{\tiny{
-%<<results=verbatim,echo=TRUE>>=
-%showClass("FLStock")
-%@ %def 
-%}}
-%\end{frame}
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuantPoint methods}
 
-%************ Frame 12***********************
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLQuantPoint", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLCohort}
+
+Six dimensional array used to store cohort data.\newline
+
+{\tiny{
+<<results=verbatim>>=
+dimnames(FLCohort(flq))
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLCohort methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLCohort", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLPar}
+
+A two dimensional array used to store parameter's data.\newline
+
+{\tiny{
+<<results=verbatim>>=
+dimnames(new("FLPar"))
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLPar methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLPar", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+%===========================================
+% COMPOSITE CLASSES
+%===========================================
+\section{Composite classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Composite classes}
+
+Classes that use FLQuant classes to define their slots.
+
+\scriptsize{
+<<results=tex,echo=FALSE>>=
+xtable(subset(FLCcls, parent=="FLComp")[,-1])
+@
+}
+
+\end{frame}
+
+%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLStock}
 Represents a fish stock and comprises a number of slots.
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+showClass("FLStock")
+@ %def 
+}}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLStock example}
 {\tiny{
 <<results=verbatim,echo=TRUE>>=
 summary(ple4)
@@ -130,41 +274,191 @@ summary(ple4)
 }}
 \end{frame}
 
-%************ Frame 12***********************
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLStock methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLStock", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+%%***************************************
+\begin{frame}
+  \frametitle{FLStock plot}
+
+<<fig=TRUE, echo=FALSE>>=
+print(plot(ple4))
+@ %def 
+
+\end{frame}
+
+%%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLBiol}
 Represents a biological population
-<<results=hide,echo=FALSE>>=
-test.biol <- as.FLBiol(ple4)
-@ %def 
 {\tiny{
 <<results=verbatim,echo=TRUE>>=
-summary(test.biol)
+showClass("FLBiol")
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLBiol example}
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+summary(flbiol)
 @ %def 
 }}
 \end{frame}
-%************ Frame 12***********************
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLBiol methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLBiol", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}
+  \frametitle{FLBiol plot}
+
+<<fig=TRUE, echo=FALSE>>=
+print(plot(flbiol))
+@ %def 
+
+\end{frame}
+
+%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLIndex}
 Represents a index (e.g. index of abundance from a survey)
 {\tiny{
 <<results=verbatim,echo=TRUE>>=
-data(ple4.index)
-summary(ple4.index)
+showClass("FLIndex")
 @ %def 
 }}
 
+\end{frame}
 
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLIndex example}
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+summary(ple4.index)
+@ %def 
+}}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLIndex methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLIndex", "package:FLCore")
+@ %def 
+}}
 
 \end{frame}
 
-%************ Frame 14***********************
+%***************************************
+\begin{frame}
+  \frametitle{FLBiol plot}
+
+<<fig=TRUE, echo=FALSE>>=
+print(plot(ple4.index))
+@ %def 
+
+\end{frame}
+
+%***************************************
 \begin{frame}
   \frametitle{FLFleet}
 A more complicated class with three levels: Fleet, Metier and Catch
    \begin{center}
       \includegraphics[width=1\textwidth]{FLFleet.png}
    \end{center}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet}
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+showClass("FLFleet")
+@ %def 
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet example}
+{\tiny{
+<<results=verbatim,echo=TRUE>>=
+summary(bt4)
+@ %def 
+}}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet methods}
+
+{\tiny{
+<<results=verbatim>>=
+getClassMethods("FLFleet", "package:FLCore")
+@ %def 
+}}
+
+\end{frame}
+
+
+
+%===========================================
+% LIST CLASSES
+%===========================================
+\section{List classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{List classes}
+
+\scriptsize{
+<<results=tex,echo=FALSE>>=
+xtable(subset(FLCcls, parent=="FLlst")[,-1])
+@
+}
+
+\end{frame}
+
+
+%===========================================
+% MODEL CLASSES
+%===========================================
+\section{Model classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Model classes}
+
+\scriptsize{
+<<results=tex,echo=FALSE>>=
+xtable(subset(FLCcls, parent=="FLModel")[,-1])
+@
+}
+
 \end{frame}
 
 %************ Frame 14***********************

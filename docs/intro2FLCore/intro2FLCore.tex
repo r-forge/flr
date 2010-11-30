@@ -1,60 +1,103 @@
 \documentclass{beamer}% usefull options [handout]
 \usepackage{graphicx}
-\usepackage{wrapfig}
+\usepackage{amsmath}
+%\usepackage{wrapfig}
 %\useoutertheme{infolines}
-%\usetheme[height=7mm]{Rochester}
-\usetheme{default}% other nice themes Hannover, CambridgeUS 
-%\usecolortheme{dove}
-%\usefonttheme{structuresmallcapsserif}
-%\setbeamertemplate{items}[ball]
+\usetheme{default}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
+\usecolortheme{beetle}% other options "dove"
+\usefonttheme{structuresmallcapsserif}
+\setbeamertemplate{items}[triangle] % other options "circle", "ball", "square"
 %\setbeamertemplate{blocks}[rounded][shadow=true]
-%\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme[height=20pt]{sidebar}
+%\setbeamercolor{normal text}{fg=white,bg=black}% inverted black background white foreground
+\setbeamercolor*{palette sidebar secondary}{fg=white}
 
-\title[Introduction to FLCore]{An Introduction to FLR}
+%************ Title & Author ***********************
+\title[Introduction to FLCore]{An Introduction to the FLCore package}
 \author{FLR Core Team}
 
 \usepackage{Sweave}
 \begin{document}
 
-%\frame{\titlepage}
-
-%\section[Outline]{}
-%\frame{\tableofcontents}
-
-
+%===========================================
+% INTRODUCTION
+%===========================================
 \section{Introduction}
-
-%************ Frame 1***********************
+%*******************************************
 \begin{frame}[plain]
 \titlepage
+\begin{flushright}
+	\includegraphics[width=0.1\textwidth]{cc.png}
+\end{flushright}
 \end{frame}
 
+%*******************************************
 \begin{frame}
 \frametitle{Outline}
 \tableofcontents[pausesections]
 \end{frame}
 
+% some code we need 
 
-\section{Inside FLCore}
-%************ Frame 10***********************
+%*******************************************
 \begin{frame}
-  \frametitle{FLCore}
-What's inside FLCore?
-      \begin{itemize}
-	 \item<2-> FLQuant - basic class
-	 \item<3-> FLStock - fish stock
-	 \item<4-> FLBiol - biological population
-	 \item<5-> FLModel - model class
-	 \item<6-> FLSR - stock-recruitment relationships
-	 \item<7-> FLIndex - survey indices
-	 \item<8-> FLFleet - fleet (includes FLCatch and FLMetier)
-	 \item<9-> FLlst - list classes (FLFleets, FLStocks, FLIndices etc.)
+\frametitle{FLCore structure}
+Follows S4 paradigm with structured data implemented as classes and several methods to apply on objects of the classes.
+	\begin{itemize}
+		\item<2-> Classes - empty definitions of data
+		\item<3-> Objects - instances of the classes which have data following the class definition
+		\item<4-> Methods - implementation of actions to be executed on objects depending on its class
+		%\newline\newline
+		%\item<5-> Documentation - as man pages or vignettes
+		%\item<6-> Tests - code that runs during compilation to check code 
       \end{itemize}
 \end{frame}
-%************ Frame 11***********************
+
+%*******************************************
+\begin{frame}
+  \frametitle{Inside FLCore}
+	\begin{itemize}
+		\item<2-> Basic classes:\newline FLArray, FLQuant, FLCohort, FLQuantPoint, FLPar
+		\item<3-> Composite classes:\newline FLComp, FLBiol, FLCatch, FLFleet, FLIndex, FLMetier, FLModel, FLStock
+		\item<4-> Lists of classes:\newline FLLst, FLBiols, FLCatches, FLCohorts, FLFleets, FLIndices, FLMetiers, FLQuants, FLStocks 
+		\item<5-> Model class:\newline FLModel, FLGrowth, FLSR
+		\item<6-> Methods
+	\end{itemize}
+\end{frame}
+
+%===========================================
+% BASIC CLASSES
+%===========================================
+\section{Basic classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Basic classes}
+
+\scriptsize{
+% latex table generated in R 2.12.0 by xtable 1.5-6 package
+% Tue Nov 30 17:42:08 2010
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlrllr}
+  \hline
+ & parent & nSlots & virtual & child & distance \\ 
+  \hline
+FLCohort & FLArray &   2 & FALSE &  &  \\ 
+  FLQuant & FLArray &   2 & FALSE & FLQuantPoint & 1.00 \\ 
+  FLQuantPoint & FLQuant &   2 & FALSE &  &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}}
+
+\end{frame}
+
+%*******************************************
 \begin{frame}
   \frametitle{FLQuant}
-Essentially a six dimensional array used to store data of a particular type (e.g. catch numbers).\newline
+
+Six dimensional array used to store data of a particular type (e.g. catch numbers).\newline
 
 Dimensions are:
       \begin{enumerate}
@@ -66,58 +109,18 @@ Dimensions are:
 	 \item<7-> Iter
       \end{enumerate}
 \end{frame}
-%***************************************
-\begin{frame}[containsverbatim]
 
-  \frametitle{FLQuant - example}
-
-% is ampersand necessary
-%@ 
-%<<sample-fn>>=
-{\tiny{
-\begin{Schunk}
-\begin{Sinput}
-> test.quant
-\end{Sinput}
-\begin{Soutput}
-An object of class "FLQuant"
-, , unit = unique, season = all, area = unique
-
-    year
-age  1995   1996   1997   1998   1999   2000   2001  
-  1    7751   1104    892    196    549   2634   4509
-  2   36575  42496  42855  30401   8689  15819  35886
-  3   81398  64382  86948  68920 155971  39550  52480
-  4   78370  46359  43669  56329  39857 164330  48238
-  5   36499  32130  22541  16713  24112  14993  89949
-  6   17953  14460  13518   6432   6829   9343   6836
-  7    9772  10605   6362   4986   2783   2130   4418
-  8    4366   4528   3632   2506   2246   1030   1127
-  9    2336   2624   2179   1761   1521    940    637
-  10   3753   4892   4181   3119   3093   2097   2309
-
-units:  thousands 
-\end{Soutput}
-\begin{Sinput}
-> dim(test.quant)
-\end{Sinput}
-\begin{Soutput}
-[1] 10  7  1  1  1  1
-\end{Soutput}
-\end{Schunk}
-}}
-
-\end{frame}
 %***********************************
 \begin{frame}[containsverbatim]
 
-  \frametitle{FLQuant - example contd.}
-
+  \frametitle{FLQuant example}
 
 {\tiny{
 \begin{Schunk}
 \begin{Sinput}
-> dimnames(test.quant)
+> data(ple4)
+> flq <- window(landings.n(ple4), start = 1995, end = 2001)
+> dimnames(flq)
 \end{Sinput}
 \begin{Soutput}
 $age
@@ -143,21 +146,275 @@ $iter
 
 \end{frame}
 
-%************ Frame 12***********************
-%\begin{frame}[containsverbatim]
-%  \frametitle{FLStock - contd}
-%Represents a fish stock and comprises a number of slots.
-%{\tiny{
-%<<results=verbatim,echo=TRUE>>=
-%showClass("FLStock")
-%@ %def 
-%}}
-%\end{frame}
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuant methods}
 
-%************ Frame 12***********************
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLQuant", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+  [1] "apply"          "areaMeans"      "areaSums"       "areaVars"      
+  [5] "as.data.frame"  "as.FLQuant"     "barchart"       "[<-"           
+  [9] "["              "bubbles"        "bwplot"         "capacity<-"    
+ [13] "catch<-"        "catch.n<-"      "catch.q<-"      "catch.wt<-"    
+ [17] "coerce"         "crewshare<-"    "cv"             "dimMeans"      
+ [21] "dimnames<-"     "dims"           "dimSums"        "dimVars"       
+ [25] "discards<-"     "discards.n<-"   "discards.sel<-" "discards.wt<-" 
+ [29] "dotplot"        "effort<-"       "effshare<-"     "E"             
+ [33] "fcost<-"        "fec<-"          "FLBiol"         "FLCatch"       
+ [37] "FLCohort"       "FLIndex"        "FLMetier"       "FLQuant"       
+ [41] "FLQuantPoint"   "FLStock"        "harvest<-"      "harvest.spwn<-"
+ [45] "histogram"      "index<-"        "index.q<-"      "index.var<-"   
+ [49] "iter<-"         "iterMeans"      "iters"          "iterVars"      
+ [53] "jacknife"       "landings<-"     "landings.n<-"   "landings.sel<-"
+ [57] "landings.wt<-"  "loglAR1"        "mat<-"          "m<-"           
+ [61] "m.spwn<-"       "names"          "n<-"            "plot"          
+ [65] "price<-"        "print"          "propagate"      "pv"            
+ [69] "quant<-"        "quant"          "quantile"       "quantMeans"    
+ [73] "quantSums"      "quantTotals"    "quantVars"      "rec<-"         
+ [77] "r"              "rlnorm"         "rnorm"          "rpois"         
+ [81] "rSq"            "seasonMeans"    "seasonSums"     "seasonVars"    
+ [85] "sel.pattern<-"  "setPlusGroup"   "sp"             "spr0"          
+ [89] "spwn<-"         "ssb<-"          "stock<-"        "stock.n<-"     
+ [93] "stock.wt<-"     "stripplot"      "sweep"          "unitMeans"     
+ [97] "units<-"        "units"          "unitSums"       "unitVars"      
+[101] "vcost<-"        "window"         "wt<-"           "xyplot"        
+[105] "yearMeans"      "yearSums"       "yearTotals"     "yearVars"      
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuantPoint}
+
+Six dimensional array used to summarize FLQuant objects.\newline
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> dimnames(FLQuantPoint(flq))
+\end{Sinput}
+\begin{Soutput}
+$age
+ [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
+
+$year
+[1] "1995" "1996" "1997" "1998" "1999" "2000" "2001"
+
+$unit
+[1] "unique"
+
+$season
+[1] "all"
+
+$area
+[1] "unique"
+
+$iter
+[1] "mean"   "median" "var"    "uppq"   "lowq"  
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuantPoint methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLQuantPoint", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "[<-"      "coerce"   "lowq<-"   "lowq"     "mean"     "mean<-"  
+ [7] "median<-" "median"   "plot"     "quantile" "rgamma"   "rlnorm"  
+[13] "rnorm"    "show"     "summary"  "uppq<-"   "uppq"     "var<-"   
+[19] "var"     
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLCohort}
+
+Six dimensional array used to store cohort data.\newline
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> dimnames(FLCohort(flq))
+\end{Sinput}
+\begin{Soutput}
+$age
+ [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
+
+$cohort
+ [1] "1985" "1986" "1987" "1988" "1989" "1990" "1991" "1992" "1993" "1994"
+[11] "1995" "1996" "1997" "1998" "1999" "2000"
+
+$unit
+[1] "unique"
+
+$season
+[1] "all"
+
+$area
+[1] "unique"
+
+$iter
+[1] "1"
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLCohort methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLCohort", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "bubbles"    "ccplot"     "coerce"     "dimnames<-" "dims"      
+ [6] "flc2flq"    "FLCohort"   "iter<-"     "plot"       "propagate" 
+[11] "xyplot"    
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLPar}
+
+A two dimensional array used to store parameter's data.\newline
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> dimnames(new("FLPar"))
+\end{Sinput}
+\begin{Soutput}
+$param
+[1] ""
+
+$iter
+[1] "1"
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLPar methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLPar", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "ab"            "Arith"         "as.data.frame" "[<-"          
+ [5] "["             "coerce"        "convertFLPar"  "densityplot"  
+ [9] "dims"          "FLPar"         "fmle"          "histogram"    
+[13] "iter<-"        "iter"          "mean"          "median"       
+[17] "names<-"       "names"         "params<-"      "plot"         
+[21] "propagate"     "show"          "splom"         "summary"      
+[25] "sv"            "sweep"         "units<-"       "units"        
+[29] "var"          
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%===========================================
+% COMPOSITE CLASSES
+%===========================================
+\section{Composite classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Composite classes}
+
+Classes that use FLQuant classes to define their slots.
+
+\scriptsize{
+% latex table generated in R 2.12.0 by xtable 1.5-6 package
+% Tue Nov 30 17:42:09 2010
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlrllr}
+  \hline
+ & parent & nSlots & virtual & child & distance \\ 
+  \hline
+FLBiol & FLComp &   8 & FALSE &  &  \\ 
+  FLCatch & FLComp &  13 & FALSE &  &  \\ 
+  FLFleet & FLComp &   8 & FALSE &  &  \\ 
+  FLIndex & FLComp &  12 & FALSE &  &  \\ 
+  FLMetier & FLComp &   7 & FALSE &  &  \\ 
+  FLModel.1 & FLComp &  14 & FALSE & FLSR & 1.00 \\ 
+  FLModel.1.1 & FLComp &  14 & FALSE & FLGrowth & 1.00 \\ 
+  FLStock & FLComp &  20 & FALSE &  &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}}
+
+\end{frame}
+
+%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLStock}
 Represents a fish stock and comprises a number of slots.
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> showClass("FLStock")
+\end{Sinput}
+\begin{Soutput}
+Class "FLStock" [package "FLCore"]
+
+Slots:
+                                                                       
+Name:         catch      catch.n     catch.wt     discards   discards.n
+Class:      FLQuant      FLQuant      FLQuant      FLQuant      FLQuant
+                                                                       
+Name:   discards.wt     landings   landings.n  landings.wt        stock
+Class:      FLQuant      FLQuant      FLQuant      FLQuant      FLQuant
+                                                                       
+Name:       stock.n     stock.wt            m          mat      harvest
+Class:      FLQuant      FLQuant      FLQuant      FLQuant      FLQuant
+                                                                       
+Name:  harvest.spwn       m.spwn         name         desc        range
+Class:      FLQuant      FLQuant    character    character      numeric
+
+Extends: "FLComp"
+\end{Soutput}
+\end{Schunk}
+}}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLStock example}
 {\tiny{
 \begin{Schunk}
 \begin{Sinput}
@@ -194,14 +451,80 @@ m.spwn        : [ 10 52 1 1 1 1 ], units =  NA
 }}
 \end{frame}
 
-%************ Frame 12***********************
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLStock methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLStock", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "as.FLBiol"       "as.FLSR"         "[<-"             "["              
+ [5] "+"               "catch<-"         "catch"           "catch.n<-"      
+ [9] "catch.n"         "catch.wt<-"      "catch.wt"        "coerce"         
+[13] "computeCatch"    "computeDiscards" "computeLandings" "computeStock"   
+[17] "dimnames<-"      "dims"            "discards<-"      "discards"       
+[21] "discards.n<-"    "discards.n"      "discards.wt<-"   "discards.wt"    
+[25] "expand"          "fapex"           "fbar"            "harvest<-"      
+[29] "harvest"         "harvest.spwn<-"  "harvest.spwn"    "landings<-"     
+[33] "landings"        "landings.n<-"    "landings.n"      "landings.wt<-"  
+[37] "landings.wt"     "mat<-"           "mat"             "m<-"            
+[41] "m"               "m.spwn<-"        "m.spwn"          "name"           
+[45] "plot"            "qapply"          "range"           "rec"            
+[49] "r"               "setPlusGroup"    "sp"              "spr0"           
+[53] "ssb"             "ssbpurec"        "stock<-"         "stock"          
+[57] "stock.n<-"       "stock.n"         "stock.wt<-"      "stock.wt"       
+[61] "summary"         "survprob"        "trim"            "tsb"            
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%%***************************************
+\begin{frame}
+  \frametitle{FLStock plot}
+
+\includegraphics{intro2FLCore-015}
+
+\end{frame}
+
+%%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLBiol}
 Represents a biological population
 {\tiny{
 \begin{Schunk}
 \begin{Sinput}
-> summary(test.biol)
+> showClass("FLBiol")
+\end{Sinput}
+\begin{Soutput}
+Class "FLBiol" [package "FLCore"]
+
+Slots:
+                                                                            
+Name:          n         m        wt       fec      spwn      name      desc
+Class:   FLQuant   FLQuant   FLQuant   FLQuant   FLQuant character character
+                
+Name:      range
+Class:   numeric
+
+Extends: "FLComp"
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLBiol example}
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> summary(flbiol)
 \end{Sinput}
 \begin{Soutput}
 An object of class "FLBiol"
@@ -221,14 +544,74 @@ spwn          : [ 10 52 1 1 1 1 ], units =  NA
 \end{Schunk}
 }}
 \end{frame}
-%************ Frame 12***********************
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLBiol methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLBiol", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "as.FLBiol"     "as.FLSR"       "catch.n"       "coerce"       
+ [5] "computeStock"  "fbar"          "fec<-"         "fec"          
+ [9] "harvest"       "leslie"        "mean.lifespan" "m<-"          
+[13] "m"             "n<-"           "n"             "plot"         
+[17] "rec"           "r"             "setPlusGroup"  "spwn<-"       
+[21] "spwn"          "ssb"           "ssn"           "summary"      
+[25] "survprob"      "tsb"           "wt<-"          "wt"           
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}
+  \frametitle{FLBiol plot}
+
+\includegraphics{intro2FLCore-019}
+
+\end{frame}
+
+%***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLIndex}
 Represents a index (e.g. index of abundance from a survey)
 {\tiny{
 \begin{Schunk}
 \begin{Sinput}
-> data(ple4.index)
+> showClass("FLIndex")
+\end{Sinput}
+\begin{Soutput}
+Class "FLIndex" [package "FLCore"]
+
+Slots:
+                                                                       
+Name:          type distribution        index    index.var      catch.n
+Class:    character    character      FLQuant      FLQuant      FLQuant
+                                                                       
+Name:      catch.wt       effort  sel.pattern      index.q         name
+Class:      FLQuant      FLQuant      FLQuant      FLQuant    character
+                                
+Name:          desc        range
+Class:    character      numeric
+
+Extends: "FLComp"
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLIndex example}
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
 > summary(ple4.index)
 \end{Sinput}
 \begin{Soutput}
@@ -252,18 +635,193 @@ index.q       : [ 8 24 1 1 1 1 ], units =  NA
 \end{Soutput}
 \end{Schunk}
 }}
+\end{frame}
 
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLIndex methods}
 
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLIndex", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "["             "catch.n<-"     "catch.n"       "catch.wt<-"   
+ [5] "catch.wt"      "coerce"        "computeCatch"  "dims"         
+ [9] "effort<-"      "effort"        "index<-"       "index"        
+[13] "index.q<-"     "index.q"       "index.var<-"   "index.var"    
+[17] "plot"          "sel.pattern<-" "sel.pattern"   "summary"      
+[21] "trim"          "type<-"        "type"         
+\end{Soutput}
+\end{Schunk}
+}}
 
 \end{frame}
 
-%************ Frame 14***********************
+%***************************************
+\begin{frame}
+  \frametitle{FLBiol plot}
+
+\includegraphics{intro2FLCore-023}
+
+\end{frame}
+
+%***************************************
 \begin{frame}
   \frametitle{FLFleet}
 A more complicated class with three levels: Fleet, Metier and Catch
    \begin{center}
       \includegraphics[width=1\textwidth]{FLFleet.png}
    \end{center}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet}
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> showClass("FLFleet")
+\end{Sinput}
+\begin{Soutput}
+Class "FLFleet" [package "FLCore"]
+
+Slots:
+                                                                            
+Name:     effort     fcost  capacity crewshare   metiers      name      desc
+Class:   FLQuant   FLQuant   FLQuant   FLQuant FLMetiers character character
+                
+Name:      range
+Class:   numeric
+
+Extends: "FLComp"
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet example}
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> summary(bt4)
+\end{Sinput}
+\begin{Soutput}
+An object of class "FLFleet"
+
+Name: beam trawl fleet 
+Description: Example of an FLFleet 
+Range:	 min	max	pgroup	minyear	maxyear 
+	0	0	NA	1957	2001	
+Quant: age 
+
+effort        : [ 1 45 1 1 1 1 ], units =  NA 
+fcost         : [ 1 45 1 1 1 1 ], units =  NA 
+capacity      : [ 1 45 1 1 1 1 ], units =  NA 
+crewshare     : [ 1 45 1 1 1 1 ], units =  NA 
+
+Metiers:  
+	 TBB :
+		 ple : [ 15 45 1 1 1 1 ]
+		 sol : [ 10 45 1 1 1 1 ]
+\end{Soutput}
+\end{Schunk}
+}}
+\end{frame}
+
+%***************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLFleet methods}
+
+{\tiny{
+\begin{Schunk}
+\begin{Sinput}
+> getClassMethods("FLFleet", "package:FLCore")
+\end{Sinput}
+\begin{Soutput}
+ [1] "as.data.frame"   "as.FLIndex"      "["               "[["             
+ [5] "capacity<-"      "capacity"        "catches"         "catch"          
+ [9] "catchNames"      "catch.n"         "catch.q<-"       "catch.q"        
+[13] "catch.sel"       "catch.wt"        "coerce"          "computeCatch"   
+[17] "computeDiscards" "computeLandings" "crewshare<-"     "crewshare"      
+[21] "dims"            "discards<-"      "discards"        "discards.n<-"   
+[25] "discards.n"      "discards.sel<-"  "discards.sel"    "discards.wt<-"  
+[29] "discards.wt"     "effort<-"        "effort"          "effshare"       
+[33] "fcost<-"         "fcost"           "FLFleet"         "iter"           
+[37] "landings<-"      "landings"        "landings.n<-"    "landings.n"     
+[41] "landings.sel<-"  "landings.sel"    "landings.wt<-"   "landings.wt"    
+[45] "metier<-"        "metier"          "metiers<-"       "metiers"        
+[49] "price<-"         "price"           "propagate"       "revenue"        
+[53] "summary"         "trim"            "vcost"           "window"         
+\end{Soutput}
+\end{Schunk}
+}}
+
+\end{frame}
+
+
+
+%===========================================
+% LIST CLASSES
+%===========================================
+\section{List classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{List classes}
+
+\scriptsize{
+% latex table generated in R 2.12.0 by xtable 1.5-6 package
+% Tue Nov 30 17:42:17 2010
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlrllr}
+  \hline
+ & parent & nSlots & virtual & child & distance \\ 
+  \hline
+FLBiols & FLlst &   4 & FALSE &  &  \\ 
+  FLCatches & FLlst &   4 & FALSE &  &  \\ 
+  FLCohorts & FLlst &   4 & FALSE &  &  \\ 
+  FLFleets & FLlst &   4 & FALSE &  &  \\ 
+  FLIndices & FLlst &   4 & FALSE &  &  \\ 
+  FLMetiers & FLlst &   4 & FALSE &  &  \\ 
+  FLQuants & FLlst &   4 & FALSE &  &  \\ 
+  FLStocks & FLlst &   4 & FALSE &  &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}}
+
+\end{frame}
+
+
+%===========================================
+% MODEL CLASSES
+%===========================================
+\section{Model classes}
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{Model classes}
+
+\scriptsize{
+% latex table generated in R 2.12.0 by xtable 1.5-6 package
+% Tue Nov 30 17:42:17 2010
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rlrllr}
+  \hline
+ & parent & nSlots & virtual & child & distance \\ 
+  \hline
+FLGrowth & FLModel &  15 & FALSE &  &  \\ 
+  FLSR & FLModel &  18 & FALSE &  &  \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}}
+
 \end{frame}
 
 %************ Frame 14***********************
@@ -302,7 +860,7 @@ residuals     : [ 1 45 1 1 1 1 ], units =  NA NA
 fitted        : [ 1 45 1 1 1 1 ], units =  NA 
 
 Model: 	rec ~ a * ssb * exp(-b * ssb)
-<environment: 0x31944d0>
+<environment: 0x560f3e0>
 Parameters: 
     params
 iter     a        b
