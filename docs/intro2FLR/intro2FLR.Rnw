@@ -1,16 +1,17 @@
 \documentclass{beamer}% usefull options [handout]
 \usepackage{graphicx}
 \usepackage{amsmath}
-%\usepackage{wrapfig}
 %\useoutertheme{infolines}
-\usetheme{default}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
+\usetheme{Hannover}% other nice themes Hannover, CambridgeUS, AnnArbor, Madrid, PaloAlto, Malmoe, Rochester 
 \usecolortheme{beetle}% other options "dove"
 \usefonttheme{structuresmallcapsserif}
 \setbeamertemplate{items}[triangle] % other options "circle", "ball", "square"
 %\setbeamertemplate{blocks}[rounded][shadow=true]
-\setbeamertemplate{navigation symbols}{}
-\useoutertheme[height=20pt]{sidebar}
-%\setbeamercolor{normal text}{fg=white,bg=black}% inverted black background white foreground
+%\setbeamertemplate{navigation symbols}{}
+%\useoutertheme[height=20pt]{sidebar}
+% NOTE: this theme inverts colors, if one wants to use common colors it's necessary
+% to comment the code on the chunk about lattice settings  
+\setbeamercolor{normal text}{fg=white,bg=black}% inverted black background white foreground
 \setbeamercolor*{palette sidebar secondary}{fg=white}
 
 %************ Title & Author ***********************
@@ -25,7 +26,7 @@
 \section{Introduction}
 
 %*******************************************
-\begin{frame}[plain]
+\begin{frame}
 \titlepage
 \begin{flushright}
 	\includegraphics[width=0.1\textwidth]{cc.png}
@@ -250,13 +251,13 @@ Why do we use R?
 <<fig=TRUE, echo=FALSE>>=
 par(mai=c(0.2, 0.2, 0.5, 0.2), lwd=2)
 plot(seq(3, 13, len=2)~seq(1, 8, len=2), type="n", xlab="", ylab="", main="FLR packages' development model", axes=FALSE)
-segments(2, 10, 7, 10, lwd=2)
-segments(2, 10, 2, 8, lwd=2)
-segments(7, 10, 7, 6, lwd=2)
-segments(4.5, 12, 4.5, 6, lwd=2)
-segments(3.8, 6, 5.2, 6, lwd=2)
-segments(3.8, 6, 3.8, 4, lwd=2)
-segments(5.2, 6, 5.2, 4, lwd=2)
+segments(2, 10, 7, 10, lwd=2, col="white")
+segments(2, 10, 2, 8, lwd=2, col="white")
+segments(7, 10, 7, 6, lwd=2, col="white")
+segments(4.5, 12, 4.5, 6, lwd=2, col="white")
+segments(3.8, 6, 5.2, 6, lwd=2, col="white")
+segments(3.8, 6, 3.8, 4, lwd=2, col="white")
+segments(5.2, 6, 5.2, 4, lwd=2, col="white")
 points(4.5, 12, pch=21, cex=12, bg="white")
 points(2, 8, pch=22, cex=12, bg="white")
 points(4.5, 8, pch=21, cex=12, bg="white")
@@ -310,21 +311,21 @@ text(7, 6, "FLBRP", font=2, cex=0.9)
 par(mai=c(0.2, 0.2, 0.5, 0.2))
 plot(seq(1, 15, len=2)~seq(1, 8, len=2), type="n", xlab="", ylab="", main="FLR hierarchical model", axes=FALSE)
 points(3, 12, pch=1, cex=35, lwd=2)
-text(3, 14, "FLCore", font=2)
-points(2.4, 12, pch=1, cex=15, col="darkblue", lwd=2)
-text(2.4, 12, "classes")
-points(3.5, 11.5, pch=1, cex=15, col="darkgreen", lwd=2)
-text(3.5, 11.5, "methods")
+text(3, 14, "FLCore", font=2, col="white")
+points(2.4, 12, pch=1, cex=15, col="blue", lwd=2)
+text(2.4, 12, "classes", col="white")
+points(3.5, 11.5, pch=1, cex=15, col="green", lwd=2)
+text(3.5, 11.5, "methods", col="white")
 points(6, 4, pch=1, cex=35, lwd=2)
-text(6, 6, "2ndry pkg", font=2)
-points(5.4, 4, pch=1, cex=15, col="darkblue", lwd=2)
-text(5.4, 4, "classes")
-points(6.5, 3.5, pch=1, cex=15, col="darkgreen", lwd=2)
-text(6.5, 3.5, "methods")
-arrows(2.4, 11, 5, 4.5, length=0.1, col="darkred", lwd=2) 
-arrows(3.5, 10.5, 5.2, 4.5, length=0.1, col="darkred", lwd=2) 
-text(3.5, 7, "extends")
-text(4.7, 8, "inherits")
+text(6, 6, "2ndry pkg", font=2, col="white")
+points(5.4, 4, pch=1, cex=15, col="blue", lwd=2)
+text(5.4, 4, "classes", col="white")
+points(6.5, 3.5, pch=1, cex=15, col="green", lwd=2)
+text(6.5, 3.5, "methods", col="white")
+arrows(2.4, 11, 5, 4.5, length=0.1, col="red", lwd=2) 
+arrows(3.5, 10.5, 5.2, 4.5, length=0.1, col="red", lwd=2) 
+text(3.5, 7, "extends", col="white")
+text(4.7, 8, "inherits", col="white")
 @
 \end{frame}
 
