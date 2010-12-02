@@ -48,11 +48,12 @@ source("run.R")
 \begin{frame}
 \frametitle{FLCore structure}
 
-Follows S4 paradigm with structured data implemented as classes and several methods to apply on objects of the classes.
+Follows S4 paradigm. Objects are instances of a collection of data and methods, where the data structure and the methods to apply are defined by classes.
+
 	\begin{itemize}
-		\item<2-> Classes - empty definitions of data
-		\item<3-> Objects - instances of the classes which have data following the class definition
-		\item<4-> Methods - implementation of actions to be executed on objects depending on its class
+		\item<2-> Classes - abstract definition of data structure
+		\item<3-> Methods - implementation of actions
+		\item<4-> Objects - instances of the classes which have data following the class definition and methods depending on its class.
 		%\newline\newline
 		%\item<5-> Documentation - as man pages or vignettes
 		%\item<6-> Tests - code that runs during compilation to check code 
@@ -63,10 +64,14 @@ Follows S4 paradigm with structured data implemented as classes and several meth
 \begin{frame}
   \frametitle{Inside FLCore}
 	\begin{itemize}
-		\item<2-> Basic classes:\newline FLArray, FLQuant, FLCohort, FLQuantPoint, FLPar
-		\item<3-> Composite classes:\newline FLComp, FLBiol, FLCatch, FLFleet, FLIndex, FLMetier, FLModel, FLStock
-		\item<4-> Lists of classes:\newline FLLst, FLBiols, FLCatches, FLCohorts, FLFleets, FLIndices, FLMetiers, FLQuants, FLStocks 
-		\item<5-> Model class:\newline FLModel, FLGrowth, FLSR
+		\item<2-> Basic classes - \textit{single array}:\newline 
+		\small{FLArray, FLQuant, FLCohort, FLQuantPoint, FLPar}
+		\item<3-> Composite classes - \textit{complex class composed of basic classes, both FLCore and R}:\newline 
+		\small{FLComp, FLBiol, FLCatch, FLFleet, FLIndex, FLMetier, FLModel, FLStock}
+		\item<4-> List classes - \textit{list of objects of the same class}:\newline 
+		\small{FLlst, FLBiols, FLCatches, FLCohorts, FLFleets, FLIndices, FLMetiers, FLQuants, FLStocks} 
+		\item<5-> Model class - \textit{composite classes specific for implementation of models}:\newline 
+		\small{FLModel, FLGrowth, FLSR}
 		\item<6-> Methods
 	\end{itemize}
 \end{frame}
@@ -81,7 +86,9 @@ Follows S4 paradigm with structured data implemented as classes and several meth
 
 \scriptsize{
 <<results=tex,echo=FALSE>>=
-xtable(subset(FLCcls, parent %in% c("FLArray", "FLQuant") | class=="FLArray")[,-1])
+df0 <- subset(FLCcls, parent %in% c("FLArray", "FLQuant") | class=="FLArray")
+rownames(df0) <- NULL
+xtable(df0)
 @
 }
 
@@ -140,7 +147,7 @@ getClassMethods("FLQuant", "package:FLCore")
 \begin{frame}[containsverbatim]
   \frametitle{FLQuantPoint}
 
-Six dimensional array used to summarize FLQuant objects.\newline
+Six dimensional array used to summarize iterations of FLQuant objects.\newline
 
 {\tiny{
 <<results=verbatim>>=
@@ -150,6 +157,18 @@ dimnames(FLQuantPoint(flq))
 
 \end{frame}
 
+%*******************************************
+\begin{frame}[containsverbatim]
+  \frametitle{FLQuantPoint example}
+
+{\tiny{
+<<results=verbatim>>=
+flq[1:4,1:5]
+FLQuantPoint(flq[1:4,1:5])
+@ %def 
+}}
+
+\end{frame}
 %***************************************
 \begin{frame}[containsverbatim]
   \frametitle{FLQuantPoint methods}
@@ -245,7 +264,9 @@ Classes that use FLQuant classes to define their slots.
 
 \scriptsize{
 <<results=tex,echo=FALSE>>=
-xtable(subset(FLCcls, parent=="FLComp" & class!="FLModel")[,-1])
+df0 <- subset(FLCcls, parent=="FLComp" & (child=="FLSR" | is.na(child)))
+rownames(df0) <- NULL
+xtable(df0)
 @
 }
 
@@ -291,7 +312,7 @@ getClassMethods("FLStock", "package:FLCore")
 \begin{frame}
   \frametitle{FLStock plot}
 
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width=5, height=5>>=
 print(plot(ple4))
 @ %def 
 
@@ -338,7 +359,7 @@ getClassMethods("FLBiol", "package:FLCore")
 \begin{frame}
   \frametitle{FLBiol plot}
 
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width=5, height=5>>=
 print(plot(flbiol))
 @ %def 
 
@@ -383,9 +404,9 @@ getClassMethods("FLIndex", "package:FLCore")
 
 %***************************************
 \begin{frame}
-  \frametitle{FLBiol plot}
+  \frametitle{FLIndex plot}
 
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width=5, height=5>>=
 print(plot(ple4.index))
 @ %def 
 
@@ -520,7 +541,9 @@ getClassMethods("FLFleet", "package:FLCore")
 
 \scriptsize{
 <<results=tex,echo=FALSE>>=
-xtable(subset(FLCcls, parent=="FLlst")[,-1])
+df0 <- subset(FLCcls, parent=="FLlst")
+rownames(df0) <- NULL
+xtable(df0)
 @
 }
 
@@ -584,7 +607,9 @@ getClassMethods("FLlst", "package:FLCore")
 
 \scriptsize{
 <<results=tex,echo=FALSE>>=
-xtable(subset(FLCcls, parent=="FLModel")[,-1])
+df0 <- subset(FLCcls, parent=="FLModel")
+rownames(df0) <- NULL
+xtable(df0)
 @
 }
 
@@ -630,22 +655,10 @@ getClassMethods("FLSR", "package:FLCore")
 \begin{frame}[containsverbatim]
   \frametitle{FLSR plot}
 
-<<fig=TRUE, echo=FALSE>>=
+<<fig=TRUE, echo=FALSE, width=5, height=5>>=
 print(pltSR(nsher))
 @ %def 
 
-\end{frame}
-%************ Frame 15***********************
-\begin{frame}
-  \frametitle{Slot accessors}
-      \begin{itemize}
-	 \item<2-> Try to avoid using @ to access slots
-	 \item<3-> Use accessors instead
-	 \item<4-> e.g. landings.n(stock) not stock@landings.n
-	 \item<5-> Protects against internal changes
-	 \item<6-> e.g. catch slots removed from FLCatch
-	 \item<7-> But accessor catch() still works
-      \end{itemize}
 \end{frame}
 \end{document}
 
