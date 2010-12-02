@@ -228,7 +228,6 @@ rsdl<-function(object,params,model="pellat",error="log",catch=NULL,index=NULL,ny
    res[is.na(res)]<-1e6
 
    yrs<-!is.na(index[1,,1,1,1,1])
-print(res)
    return(res)
    })
 

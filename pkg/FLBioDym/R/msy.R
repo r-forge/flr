@@ -213,15 +213,16 @@ setMethod('computeRefpts', signature(object='FLBioDym'),
      return(res)
      })
 
-setMethod('r', signature(m='FLBioDym', fec='missing'),
+setMethod('r', signature(m='FLBioDym',fec="missing"),
+
   function(m){
-    res<-switch(model(m),
-           fox     =return(params(m)["r",]),
-           schaefer=return(params(m)["r",]),
-           gulland =return(params(m)["r",]),
-           fletcher=return(params(m)["r",]),
-           pellat  =return(params(m)["r",]),
-           shepherd=return(params(m)["r",]),
+           object<-m
+    res<-switch(model(object),
+           fox     =return(params(object)["r",]),
+           gulland =return(params(object)["r",]),
+           fletcher=return(params(object)["r",]),
+           pellat  =return(params(object)["r",]),
+           shepherd=return(params(object)["r",]),
            return(NULL))
            
     return(res)

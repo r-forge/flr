@@ -3,7 +3,14 @@ setGeneric('sp', function(object,...)
 		standardGeneric('sp'))
 		
 setMethod('sp', signature(object='character'),
-  function(object,bio,r=.5,K=10,m=0.25,p=2,msy=0){
+  function(object,bio,pars=NULL,r=.5,K=10,m=0.25,p=2,msy=0){
+
+    if (!is.null(pars)){
+       if ("r"   %in% dimnames(pars)[[1]]) r  <-pars["r"]
+       if ("K"   %in% dimnames(pars)[[1]]) K  <-pars["K"]
+       if ("msy" %in% dimnames(pars)[[1]]) msy<-pars["msy"]
+       if ("p"   %in% dimnames(pars)[[1]]) p  <-pars["p"]
+       if ("m"   %in% dimnames(pars)[[1]]) m  <-pars["m"]}
 
     fox<-function(bio,r,K){
         r*bio*(1-log(bio)/log(K))}
