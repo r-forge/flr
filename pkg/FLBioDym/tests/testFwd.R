@@ -12,9 +12,7 @@
 #checkRun(
 
 #### Test Data
-r.  <-0.5
-K   <-100
-bio<-FLQuant(seq(0,K,length.out=100))
+bio<-FLQuant(seq(0,1,length.out=100))
 
 par(mfrow=c(3,1))
 
