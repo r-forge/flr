@@ -1,0 +1,11 @@
+Package: FLH
+Title: Life history fisheries models
+Version: 0.1
+Author: Laurie T. Kell <laurie.kell@iccat.int>, Finlay Scott <finlay.scott@cefas.co.uk>, Iago Mosqueira <iago.mosqueira@cefas.co.uk>
+Description: Growth, ogives and a life-history-based population generator
+Depends: FLCore(>= 2.2), FLBRP, FLash
+LinkingTo: FLCore
+Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
+License: GPL 2.0
+lazyLoad: Yes
+lazyData: No
