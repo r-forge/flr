@@ -43,7 +43,7 @@ setMethod("ages", signature(data="FLQuant"),
 
 # 3) length to weight ##########################################################
 ## converts wt to len using condition factor
-setGeneric('len2wt', function(data, params, ...)
+setGeneric('len2wt', function(params,data,...)
   standardGeneric('len2wt'))
   
 setMethod("len2wt", signature(params="FLPar", data="FLQuant"),
@@ -77,7 +77,7 @@ setMethod("len2wt", signature(params="missing", data="numeric"),
 
 # 4) Weight to length ##########################################################
 ## converts len to wr using condition factor
-setGeneric('wt2len', function(data, params, ...)
+setGeneric('wt2len', function(params,data, ...)
   standardGeneric('wt2len'))
 
 setMethod("wt2len", signature(params="FLPar", data="FLQuant"),
@@ -125,6 +125,7 @@ setGeneric('vonB', function(params,data, ...)
 setMethod("vonB", signature(params="FLPar", data="FLQuant"),
    function(params,data) {
          if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
+         print(params)
          params["Sinf"]*(1.0-exp(-params["K"]*(data-params["t0"])))^params["a"]})
 setMethod("vonB", signature(params="FLPar", data="FLCohort"),
    function(params,data) {
@@ -162,15 +163,15 @@ setGeneric('inverseVonB', function(params,data, ...)
   standardGeneric('inverseVonB'))
 
 setMethod("inverseVonB", signature(params="FLPar", data="FLQuant"),
-   function(object,params) {
+   function(params,data) {
        if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
        params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
 setMethod("inverseVonB", signature(params="FLPar", data="FLCohort"),
-   function(object,params) {
+   function(params,data) {
        if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
        params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
 setMethod("inverseVonB", signature(params="FLPar", data="numeric"),
-   function(object,params) {
+   function(params,data) {
        if (!("a" %in% dimnames(params)$params)) params<-addPar(params,"a",1)
        params["t0"]-log(1.0-(object/params["Sinf"])^(1/params["a"]))/params["K"]})
 
@@ -257,7 +258,7 @@ logisticFn<-function(x,a50,ato95,asym=1.0){
 
   sapply(x,func,a50,ato95)}
 
-setGeneric('logistic', function(data, params, ...)
+setGeneric('logistic', function(params,data, ...)
   standardGeneric('logistic'))
 
 setMethod("logistic", signature(params="FLPar", data="numeric"),
@@ -362,7 +363,7 @@ schnuteFn<-function(params,data){
   if (params["a"]==0 & params["b"]==0) return(fn4(params,data))}
 
 #### Growth
-setGeneric('schnute', function(data, params, ...)
+setGeneric('schnute', function(params,data, ...)
   standardGeneric('schnute'))
 
 setMethod("schnute", signature(params="FLPar", data="numeric"),
@@ -384,7 +385,7 @@ setMethod("schnute", signature(data="numeric",params="missing"),
       params<-FLPar(a=a,b=b,y1=y1,y2=y2,t1=t1,t2=t2)
       schnuteFn(params,data)})
 
-setGeneric('schnuteMass', function(data, params, ...)
+setGeneric('schnuteMass', function(params,data, ...)
   standardGeneric('schnuteMass'))
 setMethod("schnuteMass", signature(params="FLPar", data="FLQuant"),
    function(params,data) params["cf"]*schnute(params,data)^params["pow"])

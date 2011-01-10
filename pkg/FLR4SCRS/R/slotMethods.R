@@ -62,7 +62,7 @@ setMethod('expand', signature(x='FLArray'),
       
     return(res)})
   
-recycleFLQuantOverYrs<-function(object,flq){
+  recycleFLQuantOverYrs<-function(object,flq){
    ### if averaged over years then expand years
    if (dim(flq)[2]==1 & dim(object)[2]>=1){
       object[]<-rep(c(flq),dim(object)[2])

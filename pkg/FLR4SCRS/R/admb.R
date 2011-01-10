@@ -1,4 +1,4 @@
-admbIn<-function(file){
+read.admb<-function(file){
   ## read in data from ADMB Par or Rep file
   dat  <-scan(file,what="",sep="\n",skip=1)
 
@@ -10,7 +10,7 @@ admbIn<-function(file){
 
   return(vals)}
 
-admbOut<-function(x,file){
+write.admb<-function(x,file){
   cat(x[[1]],file=file,append=FALSE)
   cat("\n",file=file,append=TRUE)
   for (i in 2:length(x)){
