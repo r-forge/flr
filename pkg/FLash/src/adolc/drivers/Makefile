@@ -4,7 +4,7 @@ DRVOBJS=drivers.o driversf.o odedrivers.o odedriversf.o taylor.o
 
 %.o: %.c
 	@echo CC  $<
-	@${CC} ${HEADERS} ${ADOLC_CFLAGS} -c $<
+	@${CC} -fPIC ${HEADERS} ${ADOLC_CFLAGS} -c $<
 
 library: $(DRVOBJS)
 
