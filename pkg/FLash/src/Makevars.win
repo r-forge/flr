@@ -2,7 +2,7 @@
 # Looks same as *nix one
 PKG_CPPFLAGS = -I../inst/include
 PKG_CFLAGS = -I../inst/include
-PKG_LIBS = $(SUBLIBS) $(R_HOME)/library/FLCore/libs/FLCore.dll
+PKG_LIBS = $(SUBLIBS) $(R_HOME)/library/FLCore/libs/${R_ARCH}/FLCore.dll
 
 #CFLAGS=$(PKG_CPPFLAGS) -O3
 #ALL_CPPFLAGS=$(PKG_CPPFLAGS)
