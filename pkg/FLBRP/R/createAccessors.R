@@ -6,7 +6,6 @@
 # Last Change: 01 Mar 2009 14:02
 # $Id$
 
-## createFLAccesors		{{{
 createFLAccesors <- function(class, exclude=character(1), include=missing) {
   
   object <- class
@@ -56,8 +55,6 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 			paste('\alias{"',xr, '"-methods}', sep='')
 		)
 	}
-	return(defined)
-}	# }}}
+	return(defined)}
 
-invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest", "refpts",
-  "landings.n", "stock.n", "discards.n")))
+invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest", "refpts","stock.obs","landings.n", "stock.n", "discards.n")))

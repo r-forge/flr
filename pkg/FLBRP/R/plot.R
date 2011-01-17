@@ -289,10 +289,10 @@ plot.r.s<-function(x,ylim,xlim,cols,refpts,obs,ts)
 
          if (refpts)
             {
-            slope <- refpts(x)[,"rec",]/refpts(x)[,"ssb",]
-            slope <- slope[!is.na(slope)]
-            for(i in seq(length(slope)))
-     	        abline(a=0,b=slope[i], lty=2, col=cols[i])
+            ver <- refpts(x)[,"ssb",]
+            ver <- ver[!is.na(ver)]
+            for(i in seq(length(ver)))
+     	        abline(v=ver[i], lty=2, col=cols[i])
 			      points(refpts(x)[,"ssb",],refpts(x)[,"rec",],pch=19,col=cols,cex=1.2)
             }
 

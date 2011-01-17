@@ -10,8 +10,7 @@
 
 # refpts(array)
 setMethod('refpts', signature(object='array'),
-  function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
-  {
+  function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...){
     # reshape object for iter
     if(length(dim(object)) < 3)
       object <- array(object, dim=c(dim(object), iter))
@@ -32,49 +31,29 @@ setMethod('refpts', signature(object='array'),
       }
 
 
-     return(
-     new('refpts', object)
-     )
-  }
-)
+     return(new('refpts', object))})
+     
 setMethod('refpts', signature(object='missing'),
-  function(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
-  {
-    if(length(iter) == 1 && ac(iter) == '1')
-      iter <- seq(length=as.numeric(iter))
-    refpts(array(as.numeric(NA), dim=c(length(refpt), 8, length(iter))),
-      refpt=refpt, iter=iter, ...)
-  }
-)
+  function(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...){
+    if (length(iter) == 1 && ac(iter) == '1')
+       iter <- seq(length=as.numeric(iter))
+      
+    refpts(array(as.numeric(NA), dim=c(length(refpt), 8, length(iter))),refpt=refpt, iter=iter, ...)})
 
 setMethod('refpts', signature(object='numeric'),
   function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
-  {
-    refpts(array(as.numeric(object), dim=c(length(refpt), 8, iter)), refpt=refpt, 
-      iter=iter, ...)
-  }
-)
+    refpts(array(as.numeric(object), dim=c(length(refpt), 8, iter)), refpt=refpt,iter=iter, ...))
 
 setMethod('refpts', signature(object='logical'),
   function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), iter=1, ...)
-  {
-    refpts(array(as.numeric(object), dim=c(length(refpt), 8, iter)), refpt=refpt,
-      iter=iter, ...)
-  }
-)
+    refpts(array(as.numeric(object), dim=c(length(refpt), 8, iter)),refpt=refpt,iter=iter, ...))
 
 setMethod('refpts', signature(object='refpts'),
   function(object, ...)
-    {
-    refpts(object@.Data, refpt=dimnames(object)$refpt,...)
-    })
+    refpts(object@.Data, refpt=dimnames(object)$refpt,...))
 
-# }}}
-
-# show {{{
 setMethod('show', signature(object='refpts'),
-  function(object)
-  {
+  function(object){
 		cat("An object of class \"refpts\":\n")
 
        if(dim(object)[3] > 1){
@@ -88,37 +67,28 @@ setMethod('show', signature(object='refpts'),
 
 		if(dim(object)[3] != 1)
 			cat("iters: ", dim(object)[3],"\n\n")
-  
-  }
-) # }}}
+    })
 
-# propagate {{{
 setMethod('propagate', signature(object='refpts'),
-  function(object, iter, fill.iter=TRUE)
-    {
+  function(object, iter, fill.iter=TRUE){
+  
     res <- refpts(object, iter=iter)
     if(fill.iter== FALSE)
       res[,,2:iter] <- as.numeric(NA)
-    return(res)
-   }
-) # }}}
+    return(res)})
 
-# refpts<-  {{{
 setMethod('refpts<-', signature(object='FLBRP', value='refpts'),
-  function(object, value)
-  {
+  function(object, value){
     slot(object, 'refpts') <- value
-    return(object)
-  }
-)
+
+    return(object)})
+    
 setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
-  function(object, ..., value)
-  {
+  function(object, ..., value){
     args <- list(...)
 
     # selection required
-    if(length(args) > 0)
-    { 
+    if(length(args) > 0){
       # match and sort args names
       if(!is.null(names(args)))
         args <- args[match(names(dimnames(refpts(object))), names(args))]
@@ -127,27 +97,18 @@ setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
       args <- lapply(args, as.character)
 
       refpts(object) <- do.call('[<-', c(list(x=refpts(object)), args, list(value=value)))
-    }
-    else
-    {
-      refpts(object)[] <- value
-    }
-    return(object)
-  }
-)
+    }else{
+      refpts(object)[] <- value}
+      
+    return(object)})
 
-# }}}
-
-# refpts  {{{
 setMethod('refpts', signature(object='FLBRP'),
-  function(object, ...)
-  {
+  function(object, ...){
     args <- list(...)
     refpts <- slot(object, 'refpts')
     
     # selection required
-    if(length(args) > 0)
-    {
+    if(length(args) > 0){
       # match and sort args names
       if(!is.null(names(args)))
         args <- args[match(names(dimnames(refpts)), names(args))]
@@ -156,43 +117,24 @@ setMethod('refpts', signature(object='FLBRP'),
       args <- lapply(args, as.character)
 
       return(do.call('[', c(list(x=refpts), args)))
-      
-    }
-    else
-      return(refpts)
-  }
-) # }}}
+    }else
+      return(refpts)})
 
-# recalculations  {{{
-
-# MSY
 setMethod("msy", signature(object="FLBRP"),
   function(object) {
     refpts(object) <- refpts(as.numeric(NA), refpt='msy',
       iter=as.numeric(dimnames(object@refpts)$iter))
-    computeRefpts(object)
-  }
-)
+    computeRefpts(object)})
 
-# f0.1
-f0.1 <- function(object)
-  {
+f0.1 <- function(object){
   refpts(object) <- refpts(as.numeric(NA), refpt='f0.1', iter=as.numeric(dimnames(object@refpts)$iter))
-  computeRefpts(object)
-  }
 
-# fmax
-fmax <- function(object)
-  {
+  computeRefpts(object)}
+
+fmax <- function(object){
   refpts(object) <- refpts(as.numeric(NA), refpt='fmax', iter=as.numeric(dimnames(object@refpts)$iter))
-  computeRefpts(object)
-  }
+  computeRefpts(object)}
 
-# spr
-sprr <- function(object, spr='.30')
-  {
+sprr <- function(object, spr='.30'){
   refpts(object) <- refpts(as.numeric(NA), refpt=paste('spr', sub('0.', '.', ac(spr)),sep=''), iter=as.numeric(dimnames(object@refpts)$iter))
-  computeRefpts(object)
-  }
-
-# }}}
+  computeRefpts(object)}

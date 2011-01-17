@@ -19,66 +19,52 @@ setAs('FLBRP', 'FLSR',
     if(validObject(sr))
       return(sr)
     else
-      stop("invalid object created. Please check input object")
-   }
-) # }}}
+      stop("invalid object created. Please check input object")})
 
-# as.FLStock {{{
+recycleFLQuantOverYrs<-function(object,flq){
+   ### if averaged over years then expand years
+   if (dim(flq)[2]==1 & dim(object)[2]>=1){
+      object[]<-rep(c(flq),dim(object)[2])
+      return(object)} else
+      return(flq)}
+
 setAs('FLBRP', 'FLStock',
-  function(from)
-  {
+  function(from){
+
     years <- dimnames(fbar(from))$year
-    
-    catch.wt <- expand(catch.wt(from), year=years)
-    catch.wt[,] <- catch.wt[,1]
-    
-    landings.wt <- expand(landings.wt(from), year=years)
-    landings.wt[,] <- landings.wt[,1]
-    
-    discards.wt <- expand(discards.wt(from), year=years)
-    discards.wt[,] <- discards.wt[,1]
-    
-    stock.wt <- expand(stock.wt(from), year=years)
-    stock.wt[,] <- stock.wt[,1]
-
-    m <- expand(m(from), year=years)
-    m[,] <- m[,1]
-
-    mat <- expand(mat(from), year=years)
-    mat[,] <- mat[,1]
-
-    harvest.spwn <- expand(harvest.spwn(from), year=years)
-    harvest.spwn[,] <- harvest.spwn[,1]
-
-    m.spwn <- expand(m.spwn(from), year=years)
-    m.spwn[,] <- m.spwn[,1]
-
-    # FLStock()
-    res <- FLStock(
+    flq<-landings.n(from)
+    flq[]<-NA
+    res <- FLStock(flq,
       # TODO extend slots for years: check all slots present
-      catch=catch(from), catch.n=catch.n(from),
-      catch.wt=catch.wt,
-      landings=landings(from), landings.n=landings.n(from),
-      landings.wt=landings.wt,
-      discards=discards(from), discards.n=discards.n(from),
-      discards.wt=discards.wt,
-      stock=stock(from), stock.n=stock.n(from),
-      stock.wt=stock.wt,
-      m=m, mat=mat,
-      harvest=harvest(from),
-      harvest.spwn=harvest.spwn, m.spwn=m.spwn,
-      name=name(from), desc=paste("Created by coercion from 'FLBRP'", desc(from)))
+      name=name(from))
+      #, desc=paste("Created by coercion from 'FLBRP'", desc(from)))
 
     # range
+    range(res)<-range(from)
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear',
       'maxyear')])
+
+    years<-dimnames(slot(res,"m"))$year
+    for (i in c("stock.wt","m","mat","harvest.spwn","m.spwn")){
+        dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
+        slot(res,i)                <- expand(slot(from,i), year=years)
+        slot(res,i)                <- recycleFLQuantOverYrs(slot(res,i),slot(from,i))}
+
+    for (i in c("stock.n","catch.n","landings.n","discards.n","harvest")){
+        print(i)
+        print(slot(res,i))
+        print(do.call(i,list(from)))
+        slot(res,i)<- recycleFLQuantOverYrs(slot(res,i),do.call(i,list(from)))}
+        
+    catch.wt(res)   <-recycleFLQuantOverYrs(catch.wt(res),catch.wt(from))
+    discards.wt(res)<-recycleFLQuantOverYrs(discards.wt(res),discards.wt(from))
+    landings.wt(res)<-recycleFLQuantOverYrs(landings.wt(res),landings.wt(from))
+    catch(res)      <-computeCatch(res,"all")
     
     if(validObject(res))
       return(res)
     else
-      stop("invalid object created. Please check input object")
-  }
-) # }}}
+     stop("invalid object created. Please check input object")})
 
 setMethod("as.data.frame", 
 signature(x="FLBRP", row.names="ANY", optional="character"),

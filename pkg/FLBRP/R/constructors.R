@@ -96,13 +96,9 @@ setMethod('FLBRP', signature(object='missing', sr='FLSR'),
   }
 ) # }}}
 
-# FLBRP(object=FLStock, sr=FLSR)  {{{
 setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
-  function(object, sr, ...)
-  {
-    FLBRP(object=object, model=sr@model, params=sr@params, ...)
-  }
-) # }}}
+  function(object, sr, ...){
+    FLBRP(object=object, model=sr@model, params=sr@params, ...)})
 
 # FLBRP(object=FLStock, sr=missing) {{{
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
@@ -262,3 +258,15 @@ setMethod('FLBRP', signature(object='data.frame', sr='missing'),
     return(res)
   }
 ) # }}}
+
+setMethod('FLBRP', signature(object='FLStock', sr='list'),
+  function(object, sr, ...){
+
+  if (!(all(c("model","params") %in% names(sr)))) stop("model and params not in sr list")
+  if (is(sr[["model"]],"charcater"))
+    sr[["model"]]<-do.call("bevholt", list())$model
+
+    FLBRP(object=object, model=sr[["model"]], params=sr[["params"]], ...)
+
+
+    })

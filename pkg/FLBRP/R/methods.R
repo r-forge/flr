@@ -5,7 +5,6 @@
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
 # $Id$
 
-# landings.n  {{{
 setMethod('landings.n', signature(object='FLBRP'),
   function(object){
     # check model is supported by brp
@@ -14,11 +13,8 @@ setMethod('landings.n', signature(object='FLBRP'),
         ")in FLBRP object can not be used by brp. See ?ab"))
 
     .Call('landings_n', object, SRNameCode(SRModelName(object@model)),
-              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
-  }
-) # }}}
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))})
 
-# discards.n  {{{
 setMethod('discards.n', signature(object='FLBRP'),
   function(object)
   {
@@ -28,11 +24,8 @@ setMethod('discards.n', signature(object='FLBRP'),
         ")in FLBRP object can not be used by brp. See ?ab"))
 
    .Call('discards_n', object, SRNameCode(SRModelName(object@model)),
-              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
-  }
-) # }}}
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))})
 
-# stock.n  {{{
 setMethod('stock.n', signature(object='FLBRP'),
   function(object)
   {
@@ -42,23 +35,18 @@ setMethod('stock.n', signature(object='FLBRP'),
         ")in FLBRP object can not be used by brp. See ?ab"))
 
     .Call('stock_n', object, SRNameCode(SRModelName(object@model)),
-              FLQuant(c(params(object)),dimnames=dimnames(params(object))))
-  }
-) # }}}
+              FLQuant(c(params(object)),dimnames=dimnames(params(object))))})
 
-# catch.n {{{
 setMethod('catch.n', signature(object='FLBRP'),
   function(object) {
     res <- landings.n(object) + discards.n(object)
     if (units(discards.n(object)) == units(landings.n(object)))
 		  units(res) <- units(discards.n(object))
     else
-      warning("units of discards.n and landings.n do not match")
-    return(res)
-  }
-) # }}}
+      warning("unts of discards.n and landings.n do not match")
+      
+    return(res)})
 
-# catch.wt  {{{
 setMethod('catch.wt', signature(object='FLBRP'),
   function(object) {
 #      idx1 <- landings.sel(object) == 0
@@ -86,79 +74,53 @@ setMethod('catch.wt', signature(object='FLBRP'),
 
     if (units(discards.wt(object)) == units(landings.wt(object)))
 				units(res) <- units(discards.wt(object))
-    return(res)
-  }
-)  # }}}
 
-# catch.sel {{{
+    return(res)})
+
 setMethod('catch.sel', signature(object='FLBRP'),
-  function(object) {
-    return(landings.sel(object) + discards.sel(object))
-  }
-) # }}}
+  function(object)
+    return(landings.sel(object) + discards.sel(object)))
 
-# catch.obs {{{
 setMethod('catch.obs', signature(object='FLBRP'),
-  function(object) {
-    return(discards.obs(object)+landings.obs(object))
-    }
-) # }}}
+  function(object)
+    return(discards.obs(object)+landings.obs(object)))
 
-# biomass.obs {{{
 setGeneric('biomass.obs', function(object, ...)
 		standardGeneric('biomass.obs'))
 setMethod('biomass.obs', signature(object='FLBRP'),
-  function(object) {
-    # TODO check
-    return(stock.obs(object))
-    }
-) # }}}
+  function(object)
+    return(stock.obs(object)))
 
-# yield.obs {{{
 setMethod('yield.obs', signature(object='FLBRP'),
-  function(object) {
-    return(landings.obs(object))
-    }
-) # }}}
+  function(object)
+    return(landings.obs(object)))
 
-# computeFbar  {{{
 setMethod('computeFbar', signature(object='FLBRP'),
   function(object)
-  {
-    return(apply(harvest(object)[ac(object@range["minfbar"]:object@range["maxfbar"])],c(2:6),mean))
-  }
-) # }}}
+    return(apply(harvest(object)[ac(object@range["minfbar"]:object@range["maxfbar"])],c(2:6),mean)))
 
-# rec {{{
 setMethod('rec', signature(object='FLBRP'),
-  function(object) {
-    return(stock.n(object)[1,])
-    }
-) # }}}
+  function(object)
+    return(stock.n(object)[1,]))
 
-# rec.hat {{{
 setMethod('rec.hat', signature(object='FLBRP'),
    function(object)
-   {
-    return(stock.n(object)[1,]) 
-   }
-) # }}}
+    return(stock.n(object)[1,]))
 
-## harvest {{{
 setMethod("harvest", signature(object="FLBRP", catch="missing"),
-	function(object)
-  {
+	function(object){
     # selectivity
-    sel <- expand(landings.sel(object) + discards.sel(object),
-      year=dimnames(fbar(object))$year)
+    sel<-expand(landings.sel(object) + discards.sel(object),year=dims(discards.sel(object))$minyear+(1:dim(fbar(object))[2])-1)
+    dmns<-dimnames(sel)
+    dmns$year<-dimnames(fbar(object))$year
+    sel<-FLQuant(sel,dimnames=dmns)
+    
     sel[,] <- sel[,1]
     sel <- sweep(sel, 2:6, fbar(object), '*')
     units(sel) <- 'f'
-    return(sel)
-  }
-) # }}}
+    
+    return(sel)})
 
-# ypr   {{{
 setMethod('ypr', signature(object='FLBRP'),
   function(object)
   {
@@ -174,18 +136,11 @@ setMethod('ypr', signature(object='FLBRP'),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
-    return(res)
-  }
-) # }}}
+    return(res)})
 
-# computeRefpts {{{
 setMethod('computeRefpts', signature(object='FLBRP'), function(object){
-	refpts(brp(object))
-	}
-)
-# }}}
+	refpts(brp(object))})
 
-# brp  {{{
 setMethod('brp', signature(object='FLBRP'),
   function(object)
   {
@@ -218,23 +173,16 @@ setMethod('brp', signature(object='FLBRP'),
     else
       refpts <- refpts(object)
 
-    #
-    if ("virgin" %in% dimnames(refpts)$refpt)
-    {
+    if ("virgin" %in% dimnames(refpts)$refpt){
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
-      refpts@.Data["virgin","harvest",] <- 0
-    }
+      refpts@.Data["virgin","harvest",] <- 0}
 
-    #
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLBRP")
 
-    return(res)
-  }
-) # }}}
+    return(res)})
 
-# hcrYield  {{{
 setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
   function(object, fbar)
   {
@@ -266,15 +214,10 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
 )
 setMethod('hcrYield', signature(object='FLBRP', fbar='numeric'),
   function(object, fbar)
-  {
-    hcrYield(object, FLQuant(fbar))
-  }
-) # }}}
+    hcrYield(object, FLQuant(fbar)))
 
-# propagate {{{
 setMethod('propagate', signature(object='FLBRP'),
-  function(object, iter, fill.iter=TRUE, obs=FALSE, params=FALSE)
-  {
+  function(object, iter, fill.iter=TRUE, obs=FALSE, params=FALSE){
     # obs FLQuants
     if(obs)
     {
@@ -297,23 +240,17 @@ setMethod('propagate', signature(object='FLBRP'),
     if(params)
       params(object) <- propagate(params(object), iter=iter, fill.iter=fill.iter)
   
-    return(object)
-  }
-) # }}}
+    return(object)})
 
-# iter {{{
 setMethod('iter', signature(object='FLBRP'),
-  function(object, iter, ...)
-  {
+  function(object, iter, ...){
     object <- callNextMethod(object, iter, ...)
     params(object) <- iter(params(object), iter)
     if(dim(refpts(object))[3] > 1)
       refpts(object) <- refpts(object)[,,iter]
-    return(object)
-  }
-) # }}}
 
-# catch {{{
+    return(object)})
+
 setMethod('catch', signature(object='FLBRP'),
   function(object) {
     res <- landings(object) + discards(object)
@@ -321,69 +258,41 @@ setMethod('catch', signature(object='FLBRP'),
 		  units(res) <- units(discards(object))
     else
       warning("units of discards and landings do not match")
-    return(res)
-  }
-) # }}}
 
-# catch.hat {{{
+    return(res)})
+
 setMethod('catch.hat', signature(object='FLBRP'),
-  function(object) {
-    return(catch(object))
-    }
-) # }}}
+  function(object) return(catch(object)))
 
-# yield {{{
 setMethod('yield', signature(object='FLBRP'),
-  function(object) {
-    return(landings(object))
-    }
-) # }}}
+  function(object) return(landings(object)))
 
-# yield.hat {{{
 setMethod('yield.hat', signature(object='FLBRP'),
-  function(object) { return(landings(object))
-    }
-) # }}}
+  function(object) return(landings(object)))
 
-# discards  {{{
 setMethod('discards', signature(object='FLBRP'),
-  function(object) {
-    return(apply(sweep(discards.n(object),c(1,3:6),discards.wt(object),"*"),2,sum))
-    }
-) # }}}
-
-# discards.hat  {{{
-setMethod('discards.hat', signature(object='FLBRP'),
-  function(object) return(discards(object))
-) # }}}
-
-# landings  {{{
-setMethod('landings', signature(object='FLBRP'),
   function(object)
-  {
-    return(apply(sweep(landings.n(object),c(1,3:6),landings.wt(object),"*"),2,sum))
-  }
-) # }}}
+    return(apply(sweep(discards.n(object),c(1,3:6),discards.wt(object),"*"),2,sum)))
 
-# landings.hat  {{{
+setMethod('discards.hat', signature(object='FLBRP'),
+  function(object) return(discards(object)))
+
+
+setMethod('landings', signature(object='FLBRP'),
+  function(object){
+    return(apply(sweep(landings.n(object),c(1,3:6),landings.wt(object),"*"),2,sum))})
+
 setMethod('landings.hat', signature(object='FLBRP'),
   function(object) return(landings(object))
-) # }}}
+)
 
-# stock {{{
 setMethod('stock', signature(object='FLBRP'),
   function(object)
-  {
-    return(apply(sweep(stock.n(object),c(1,3:6),stock.wt(object),"*"),2,sum))
-  }
-) # }}}
+    return(apply(sweep(stock.n(object),c(1,3:6),stock.wt(object),"*"),2,sum)))
 
-# stock.hat {{{
 setMethod('stock.hat', signature(object='FLBRP'),
-  function(object) return(stock(object))
-) # }}}
+  function(object) return(stock(object)))
 
-# ssb {{{
 setMethod('ssb', signature(object='FLBRP'),
   function(object)
      {
@@ -391,54 +300,31 @@ setMethod('ssb', signature(object='FLBRP'),
      M    <-sweep(      m(object), c(1,3:6),       m.spwn(object), "*")
      expZ <-exp(-sweep(f, c(1,3:6), M, "+"))
 
-     return(apply(sweep(stock.n(object) * expZ, c(1,3:6), stock.wt(object)*mat(object),"*"),2,sum))
-     }
-) # }}}
+     return(apply(sweep(stock.n(object) * expZ, c(1,3:6), stock.wt(object)*mat(object),"*"),2,sum))})
 
-# ssb.hat {{{
 setMethod('ssb.hat', signature(object='FLBRP'),
-  function(object) return(ssb(object))
-) # }}}
+  function(object) return(ssb(object)))
 
-# revenue {{{
 setMethod('revenue', signature(object='FLBRP'),
-  function(object) {
-    return(apply(sweep(landings.n(object),c(1,3:6),price(object)*landings.wt(object),"*"),2,sum))
-    }
-) # }}}
-
-# cost {{{
-setMethod('cost', signature(object='FLBRP'),
   function(object)
-    {
+    return(apply(sweep(landings.n(object),c(1,3:6),price(object)*landings.wt(object),"*"),2,sum)))
+
+setMethod('cost', signature(object='FLBRP'),
+  function(object){
     res<-apply(sweep(sweep(fbar(object),3:6,vcost(object),"*"),3:6,fcost(object),"+"),2,sum)
-    return(res)
-    }
-) # }}}
+    return(res)})
 
-# profit  {{{
 setMethod('profit', signature(object='FLBRP'),
-  function(object) {
-    return(revenue(object)-cost(object))
-  }
-) # }}}
+  function(object)
+    return(revenue(object)-cost(object)))
 
-# profit.hat  {{{
 setMethod('profit.hat', signature(object='FLBRP'),
-  function(object) return(profit(object))
-) # }}}
+  function(object) return(profit(object)))
 
-# r {{{
 setMethod("r", signature(m="FLBRP", fec="missing"),
-	function(m, by = 'year', method = 'el',...) {
-    do.call('r', list(m=m(m), fec=mat(m), by=by, method=method))
-	}
-) # }}}
+	function(m, by = 'year', method = 'el',...)
+    do.call('r', list(m=m(m), fec=mat(m), by=by, method=method)))
 
-# sp {{{
 setMethod('sp', signature(stock='FLBRP', catch='missing'),
 	function(stock, rel=TRUE)
-  {
-    return(sp(ssb.obs(stock), catch.obs(stock), rel=rel))
-  }
-) # }}} 
+    return(sp(ssb.obs(stock), catch.obs(stock), rel=rel)))

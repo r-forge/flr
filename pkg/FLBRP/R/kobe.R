@@ -10,20 +10,12 @@
 # kobe(FLBRP, missing, missing) {{{
 setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="missing"),
     function(biomass, ...)
-    {
-      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass),
-          refpts=biomass@refpts['msy',], ...)
-    }
-) # }}}
+      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass),refpts=biomass@refpts['msy',], ...))
 
 # kobe(FLBRP,missing,list) {{{
 setMethod("kobe", signature(biomass="FLBRP", harvest="missing", refpts="ANY"),
-    function(biomass, refpts, ...)
-    {
-      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass), refpts=refpts,
-        ...)
-    }
-) # }}}
+    function(biomass, refpts, xlim=c(0,0),ylim=c(0,0),...)
+      kobe(biomass=ssb.obs(biomass), harvest=fbar.obs(biomass), refpts=refpts,...))
 
 # kobe(FLQuant, FLQuant, list) {{{
 setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list"),
@@ -38,8 +30,7 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="list")
       
      # call kobe(FLQuant, FLQuant, refpts)
       kobe(biomass, harvest, res, ...)
-  }
-) # }}}
+  })
 
 # kobe(FLQuant, FLQuant, refpts) {{{
 setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts"),
@@ -77,8 +68,14 @@ setMethod("kobe", signature(biomass="FLQuant", harvest="FLQuant", refpts="refpts
     mharvest <- apply(harvest, 1:5, median)
 
     # limits
-    xlim <- c(min(0.5, min(biomass)), max(1.5, max(biomass)))
-    ylim <- c(min(0.5, min(harvest)), max(1.5, max(harvest)))
+    xlim    <-range(harvest)
+    xlim[1] <- 0
+    xlim[2] <- min(xlim[2],max(1.5, min(biomass)))
+
+    ylim    <-range(biomass)
+    ylim[1] <- 0
+    ylim[2] <- max(ylim[2],max(1.5, max(harvest)))
+
     firstyear <- dimnames(biomass)$year[1]
     lastyear <- dimnames(biomass)$year[dim(biomass)[2]]
 
@@ -209,3 +206,12 @@ setMethod('kobeProb', signature(biomass='FLQuant', harvest='FLQuant', refpts='re
 ) # }}}
 
 # kobeMatrix
+
+KSMinterpProb<-function(object,x0,y0){
+    object<-defactor(cbind(expand.grid(dimnames(object)[c("TAC","year")]),val=c(object)))
+    object<-interp(object[,2],object[,1],object[,3], xo=x0,
+                                                     yo=y0)
+
+    dimnames(object[[3]])<-list(year=x0,TAC=y0)
+
+    return(object[[3]])}
