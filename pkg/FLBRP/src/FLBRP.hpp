@@ -60,12 +60,11 @@ public:
    SEXP ReturnYpr(void);
    SEXP ReturnSpr(void);
    
-protected:
-   int minage, maxage,   minfbar,   maxfbar,  plusgrp,  
+   int minage, maxage,   minfbar,   maxfbar,  plusgrp,
        minyr,  maxyr,
        nunits, nseasons, nareas, niters;
-   
-   FLRConstSRR   *sr_model; 
+
+   FLRConstSRR   *sr_model;
    FLQuant       sr_params;
 
    FLQuant      fbar,
@@ -89,13 +88,25 @@ protected:
                 cost_var,         
                 price;          
 
+   void setSR(SEXP,SEXP);
+
+   SEXP newBrp(      SEXP);
+   void setRefpts(   SEXP);
+   void calcRefpts(      );
+   SEXP returnRefpts(SEXP);
+
+protected:
+
    bool isFLBRP(SEXP);
-   void setSR(  SEXP,SEXP,SEXP);
    void Equilibrium(int);
-   
+
    FLRConstBRPTarget TargetType;
    double            Target;
    
+   double ***aRefpts;
+   int       nRefpts;
+   SEXP      dRefpts;
+      
    double F0pt1(int);
    double FMax( int);
    double FMSY( int);
@@ -163,3 +174,6 @@ protected:
 
 #endif /* _INC_FLBRP */
                                                   
+
+
+

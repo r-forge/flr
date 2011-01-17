@@ -153,9 +153,9 @@ FLBRP::FLBRP(SEXP x, SEXP xSR, SEXP xPar)
    {
    Init( x);
 
-   setSR(PROTECT(duplicate(GET_SLOT(x, install("params")))), xSR, xPar);
+   setSR(xSR, xPar);
 
-   UNPROTECT(1);
+//   UNPROTECT(1);
    }
 
 bool FLBRP::isFLBRP(SEXP x)
@@ -1396,22 +1396,14 @@ SEXP FLBRP::brp(SEXP Object)
    dim[1] = INTEGER(dims)[1];
    dim[2] = INTEGER(dims)[2];
 
-double t1,t2,t3;
-
-t1 = dim[0];
-t2 = dim[1];
-t3 = dim[2];
-       	 
    short iRef, iIter, i, j, k, l=0;
 
    //alloc      
    D = new double**[dim[0]];
-   for(i=0; i<dim[0]; i++) 
-      {
+   for(i=0; i<dim[0]; i++) {
       D[i]  = new double*[dim[1]];
       for(j=0; j<dim[1]; j++) 
-         D[i][j] = new double[dim[2]];
-      }
+         D[i][j] = new double[dim[2]];}
 
    for (k = 0; k < dim[2]; k++)
      for (j = 0; j < dim[1]; j++)
@@ -1444,7 +1436,7 @@ t3 = dim[2];
        else if (strcmp(name, "FPA") == 0 || strcmp(name, "FLIM") == 0)
          D[iRef][RP_harvest][iIter] = D[iRef][RP_harvest][iIter];
        else if (strcmp(name, "BPA") == 0 || strcmp(name, "BLIM") == 0 || strcmp(name, "CRASH") == 0){
-         D[iRef][RP_harvest][iIter] =
+          D[iRef][RP_harvest][iIter] =
 	      D[iRef][RP_yield  ][iIter] =
 	      D[iRef][RP_rec    ][iIter] =
 	      D[iRef][RP_biomass][iIter] =
@@ -1573,7 +1565,7 @@ t3 = dim[2];
          }
       
       if (!R_IsNA(D[iRef][RP_harvest][iIter])){
-	       D[iRef][RP_yield  ][iIter] = yield(   D[iRef][RP_harvest][iIter],iIter+1);
+	      D[iRef][RP_yield  ][iIter] = yield(   D[iRef][RP_harvest][iIter],iIter+1);
           D[iRef][RP_rec    ][iIter] = Recruits(D[iRef][RP_harvest][iIter],iIter+1);
           D[iRef][RP_ssb    ][iIter] = SSB(     D[iRef][RP_harvest][iIter],iIter+1);
           D[iRef][RP_biomass][iIter] = Biomass( D[iRef][RP_harvest][iIter],iIter+1);
@@ -1615,13 +1607,13 @@ t3 = dim[2];
    return refpts;   
    }
 
-void FLBRP::setSR(SEXP xModel, SEXP xCode, SEXP xPar)
+void FLBRP::setSR(SEXP xModel, SEXP xPar)
    {
-   if (!isVector(xCode) || !isNumeric(xCode)) 
+   if (!isVector(xModel) || !isNumeric(xModel))
       return;
 
    sr_model    = new FLRConstSRR [nunits]-1;
-   sr_model[1] = (FLRConstSRR)INTEGER(xCode)[0];
+   sr_model[1] = (FLRConstSRR)INTEGER(xModel)[0];
 
    sr_params.Init(xPar);
     }
@@ -1972,5 +1964,362 @@ double FLBRP::ad_Biomass(double FMult, int iIter)
    for (int iUnit=1; iUnit<=nunits; iUnit++)
       result += BPR(FMult_ad,iUnit,iIter)*Recruits(FMult_ad,iUnit,iIter);
 
-   return result.getADValue();
+   return result.getADValue();}
+
+extern "C" SEXPDLLExport InitialCond(SEXP xStk, SEXP xSRModel, SEXP xSRPar, SEXP xCtrl){
+   FLStock stock(xStk);
+   
+   FLBRP   brp;
+   
+   brp.setSR(xSRModel,xSRPar);
+
+   brp.minage   = stock.minquant;
+   brp.maxage   = stock.maxquant;
+   brp.minyr    =
+   brp.maxyr    = 1;
+   brp.nunits   = stock.nunits;
+   brp.nseasons = stock.nseasons;
+   brp.nareas   = stock.nareas;
+   brp.niters   = stock.niters;
+
+   brp.fbar.Init(           1,         1,         brp.minyr,  brp.maxyr, brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+
+   brp.landings_sel.Init(   brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.discards_sel.Init(   brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.bycatch_harvest.Init(brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.stock_wt.Init(       brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.landings_wt.Init(    brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.discards_wt.Init(    brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.bycatch_wt.Init(     brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.m.Init(              brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.mat.Init(            brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.harvest_spwn.Init(   brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.m_spwn.Init(         brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.availability.Init(   brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.cost_var.Init(       brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.cost_fix.Init(       brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.price.Init(          brp.minage,brp.maxage,1,          1,         brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+
+   brp.stock_n.Init(        brp.minage,brp.maxage,brp.minyr,  brp.maxyr, brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.discards_n.Init(     brp.minage,brp.maxage,brp.minyr,  brp.maxyr, brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.landings_n.Init(     brp.minage,brp.maxage,brp.minyr,  brp.maxyr, brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+   brp.harvest.Init(        brp.minage,brp.maxage,brp.minyr,  brp.maxyr, brp.nunits, brp.nseasons, brp.nareas, brp.niters, 0.0);
+
+   // Read in Biol Parameters from 1st FLStock year
+   int iIter, iAge, iYr, iUnit, iSeason, iArea;
+   for (iIter=1;             iIter<=brp.niters;        iIter++)
+     for (iAge=brp.minage;     iAge<=brp.maxage;         iAge++)
+       for (iUnit=1;             iUnit<=brp.nunits;        iUnit++)
+         for (iSeason=1;           iSeason<=brp.nseasons;    iSeason++)
+           for (iArea=1;             iArea<=brp.nareas;        iArea++){
+             brp.landings_sel(   iAge,1,iUnit,iSeason,iArea,iIter) = stock.landings_n(  iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.discards_sel(   iAge,1,iUnit,iSeason,iArea,iIter) = stock.discards_n(  iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.stock_wt(       iAge,1,iUnit,iSeason,iArea,iIter) = stock.stock_wt(    iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.landings_wt(    iAge,1,iUnit,iSeason,iArea,iIter) = stock.landings_wt( iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.discards_wt(    iAge,1,iUnit,iSeason,iArea,iIter) = stock.discards_wt( iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.m(              iAge,1,iUnit,iSeason,iArea,iIter) = stock.m(           iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.mat(            iAge,1,iUnit,iSeason,iArea,iIter) = stock.mat(         iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.harvest_spwn(   iAge,1,iUnit,iSeason,iArea,iIter) = stock.harvest_spwn(iAge,stock.minyr,iUnit,iSeason,iArea,iIter);
+             brp.m_spwn(         iAge,1,iUnit,iSeason,iArea,iIter) = stock.m_spwn(      iAge,stock.minyr,iUnit,iSeason,iArea,iIter);}
+
+
+   for (iIter=1;             iIter<=brp.niters;        iIter++)
+     for (iYr=brp.minyr;       iYr<=brp.maxyr;           iYr++)
+       for (iUnit=1;             iUnit<=brp.nunits;        iUnit++)
+         for (iSeason=1;           iSeason<=brp.nseasons;    iSeason++)
+           for (iArea=1;             iArea<=brp.nareas;        iArea++)
+               brp.fbar(1,iAge,iUnit,iSeason,iArea,iIter) = 0.1;
+
+   // ensure relative abundance
+   for (iIter=1; iIter<=brp.availability.niters(); iIter++)
+     for (iAge=brp.availability.minquant(); iAge<=brp.availability.maxquant(); iAge++)
+       for (iYr=brp.availability.minyr(); iYr<=brp.availability.maxyr(); iYr++)
+         for (iUnit=1; iUnit<=brp.availability.nunits(); iUnit++)
+           for (iSeason=1; iSeason<=brp.availability.nseasons(); iSeason++){
+             double sum = 0.0;
+             for (iArea=1; iArea<=brp.availability.nareas(); iArea++)
+               sum += brp.availability(iAge,iYr,iUnit,iSeason,iArea,iIter);
+
+             brp.availability(iAge,iYr,iUnit,iSeason,iArea,iIter) /= sum;}
+
+   // scale so mean catch.sel = 1.0
+   for (iIter=1; iIter<=brp.discards_sel.niters(); iIter++)
+     for (iYr=brp.discards_sel.minyr(); iYr<=brp.discards_sel.maxyr(); iYr++)
+       for (iUnit=1; iUnit<=brp.discards_sel.nunits(); iUnit++)
+         for (iArea=1; iArea<=brp.discards_sel.nareas(); iArea++)
+            for (iSeason=1; iSeason<=brp.discards_sel.nseasons(); iSeason++)
+             {
+             double sum = 0.0;
+             for (iAge=brp.minfbar; iAge<=brp.maxfbar; iAge++)
+                sum += brp.discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter) +
+                       brp.landings_sel(iAge,iYr,iUnit,iSeason,iArea,iIter);
+
+             sum /= (brp.maxfbar-brp.minfbar+1);
+
+             for (iAge=brp.discards_sel.minquant(); iAge<=brp.discards_sel.maxquant(); iAge++){
+               brp.discards_sel(iAge,iYr,iUnit,iSeason,iArea,iIter) /= sum;
+               brp.landings_sel(iAge,iYr,iUnit,iSeason,iArea,iIter) /= sum;}}
+
+   //brp.brp(SEXP Object);
+
+   return(stock.Return());}
+/*   
+SEXP FLBRP::newBrp(SEXP Object){
+   setRefpts(Object);
+   
+   calcRefpts();
+
+   return(returnRefpts());}
+
+
+SEXP FLBRP::setRefpts(SEXP Object, double ***D){
+   SEXP v        = PROTECT(duplicate(GET_SLOT(Object, install(".Data")))),
+        nRefpts  = GET_DIM(v),
+        dRefpts = GET_DIMNAMES(v),
+        v3;
+
+   double *a     = NUMERIC_POINTER(v);
+   char   name[12];
+   const char *name_ = "";
+
+   short dim[3], n = length(dims);
+
+   if (n != 3)
+      {
+      UNPROTECT(1);
+
+      return FALSE;
+
+      }
+
+   if (INTEGER(dims)[1] != 8)
+      {
+      UNPROTECT(1);
+
+      return FALSE;
+      }
+
+   dim[0] = INTEGER(dims)[0];
+   dim[1] = INTEGER(dims)[1];
+   dim[2] = INTEGER(dims)[2];
+
+   short iRef, iIter, i, j, k, l=0;
+
+   //alloc
+   aRefpts = new double**[dim[0]];
+   for(i=0; i<dim[0]; i++) {
+      aRefpts[i]  = new double*[dim[1]];
+      for(j=0; j<dim[1]; j++)
+         aRefpts[i][j] = new double[dim[2]];}
+
+   for (k = 0; k < dim[2]; k++)
+     for (j = 0; j < dim[1]; j++)
+       for (i = 0; i < dim[0]; i++)
+         aRefpts[i][j][k] = (a)[l++];
+
+   return(dimnames);
    }
+
+void FLBRP::calcRefpts(SEXP dimnames, double ***D){
+   for (int iIter=0; iIter<dim[2]; iIter++)//iter
+     for (int iRef=0; iRef<dim[0]; iRef++)//refpts
+       {
+       if (dimnames != R_NilValue)
+         if (TYPEOF(dimnames) == VECSXP)
+            name_ = CHAR(STRING_ELT(VECTOR_ELT(dimnames, 0), iRef));
+
+       name[0] = '\0';
+       strcpy(name,name_);
+       for (int i=0; i< (signed)strlen(name); i++)
+         name[i] = (signed)toupper(name[i]);
+
+       //F ref pt
+       if (strcmp(name, "MSY") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = FMSY(iIter+1);
+       else if (strcmp(name, "MEY") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = FMEY(iIter+1);
+   	   else if (strcmp(name, "F0.1") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = F0pt1(iIter+1);
+       else if (strcmp(name, "SPR0") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = 0.0;
+       else if (strcmp(name, "FMAX") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = FMax(iIter+1);
+       else if (strcmp(name, "FPA") == 0 || strcmp(name, "FLIM") == 0)
+         aRefpts[iRef][RP_harvest][iIter] = aRefpts[iRef][RP_harvest][iIter];
+       else if (strcmp(name, "BPA") == 0 || strcmp(name, "BLIM") == 0 || strcmp(name, "CRASH") == 0){
+         aRefpts[iRef][RP_harvest][iIter] =
+	       aRefpts[iRef][RP_yield  ][iIter] =
+	       aRefpts[iRef][RP_rec    ][iIter] =
+	       aRefpts[iRef][RP_biomass][iIter] =
+	       aRefpts[iRef][RP_revenue][iIter] =
+	       aRefpts[iRef][RP_cost   ][iIter] =
+	       aRefpts[iRef][RP_profit ][iIter] = R_NaReal;
+	      if (strcmp(name, "CRASH") == 0) aRefpts[iRef][RP_ssb][iIter] = 0.0;
+
+        }
+
+        int Iters=0;
+ 	      double x=0.1,f,dgdx;
+
+		     do
+           {
+           Iters++;
+           //do Newton Raphson to estimate N
+
+           f    = pow(aRefpts[iRef][RP_ssb][iIter]-SSB(x,iIter+1),2);
+           dgdx = -2*(aRefpts[iRef][RP_ssb][iIter]-SSB(x,iIter+1))*SSBGrad(x,iIter+1);
+
+           x = x - f / dgdx;
+           }
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
+
+         //aRefpts[iRef][RP_harvest][iIter] = TargetSSB(aRefpts[iRef][RP_ssb     ][iIter],iIter);
+         aRefpts[iRef][RP_harvest][iIter] = x;
+         }
+       else if (strncmp(name, "SPR.", 4) == 0)
+         {
+         const char *t;
+
+         t = strtok(name, ".\t\n\0");
+         t = strtok(NULL, ".\t\n\0");
+         if (t != NULL)
+            {
+	         double val = atof(t)/100.0;
+
+            aRefpts[iRef][RP_harvest][iIter] = FSPRPercMax(__max(0.0,__min(1.0,val)), iIter+1);
+            }
+         }
+       //SPR ref pt
+       else if (!R_IsNA(aRefpts[iRef][RP_rec][iIter]) && !R_IsNA(aRefpts[iRef][RP_ssb][iIter]))
+         aRefpts[iRef][RP_harvest][iIter] = TargetSPR(aRefpts[iRef][RP_ssb    ][iIter]/aRefpts[iRef][RP_rec][iIter],iIter+1);
+       //YPR ref pt
+       else if (!R_IsNA(aRefpts[iRef][RP_yield][iIter]) && !R_IsNA(aRefpts[iRef][RP_rec][iIter]))
+         aRefpts[iRef][RP_harvest][iIter] = TargetYPR(aRefpts[iRef][RP_yield][iIter]/aRefpts[iRef][RP_rec][iIter],iIter+1);
+       //Y/S or exploitation rate ref pt
+       else if (!R_IsNA(aRefpts[iRef][RP_yield][iIter]) && !R_IsNA(aRefpts[iRef][RP_ssb][iIter]) && R_IsNA(aRefpts[iRef][RP_harvest][iIter]) && R_IsNA(aRefpts[iRef][RP_rec][iIter]))
+         aRefpts[iRef][RP_harvest][iIter] = TargetYS(aRefpts[iRef][RP_yield  ][iIter]/aRefpts[iRef][RP_ssb][iIter],iIter+1);
+       //ssb
+       else if (R_IsNA(aRefpts[iRef][RP_harvest][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_yield  ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_rec    ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_biomass][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_revenue][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_cost   ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_profit ][iIter]) && !R_IsNA(aRefpts[iRef][RP_ssb][iIter]))
+         {
+
+        int Iters=0;
+ 	      double x=0.1,f,dgdx;
+
+		     do
+           {
+           Iters++;
+           //do Newton Raphson to estimate N
+
+           f    = pow(aRefpts[iRef][RP_ssb][iIter]-SSB(x,iIter+1),2);
+           dgdx = -2*(aRefpts[iRef][RP_ssb][iIter]-SSB(x,iIter+1))*SSBGrad(x,iIter+1);
+
+           x = x - f / dgdx;
+           }
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
+
+         //aRefpts[iRef][RP_harvest][iIter] = TargetSSB(aRefpts[iRef][RP_ssb     ][iIter],iIter);
+         aRefpts[iRef][RP_harvest][iIter] = x;
+         }
+       //rec
+       else if (R_IsNA(aRefpts[iRef][RP_harvest][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_yield  ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_ssb    ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_biomass][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_revenue][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_cost   ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_profit ][iIter]) && !R_IsNA(aRefpts[iRef][RP_rec][iIter]))
+         {
+         int Iters=0;
+ 	      double x=0.1,f,dgdx;
+
+		     do
+           {
+           Iters++;
+           //do Newton Raphson to estimate N
+
+           f    = pow(aRefpts[iRef][RP_rec][iIter]-Recruits(x,iIter+1),2);
+           dgdx = -2*(aRefpts[iRef][RP_rec][iIter]-Recruits(x,iIter+1))*RecGrad(x,iIter+1);
+
+           x = x - f / dgdx;
+           }
+        while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
+
+         aRefpts[iRef][RP_harvest][iIter] = x;
+         }
+       //biomass
+       else if (R_IsNA(aRefpts[iRef][RP_harvest][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_yield  ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_rec    ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_ssb    ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_revenue][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_cost   ][iIter]) &&
+                R_IsNA(aRefpts[iRef][RP_profit ][iIter]) && !R_IsNA(aRefpts[iRef][RP_biomass][iIter]))
+         {
+         int Iters=0;
+		     double x=0.1,f,dgdx;
+		     do
+           {
+           Iters++;
+           //do Newton Raphson to estimate N
+
+           f    = pow(aRefpts[iRef][RP_biomass][iIter]-Biomass(x,iIter+1),2);
+           dgdx = -2*(aRefpts[iRef][RP_biomass][iIter]-Biomass(x,iIter+1))*BiomassGrad(x,iIter+1);
+
+           x = x - f / dgdx;
+           }
+         while (fabs(f) >= QS_TOL && Iters <= QS_ITS);
+
+         aRefpts[iRef][RP_harvest][iIter] = x;
+         }
+
+      if (!R_IsNA(aRefpts[iRef][RP_harvest][iIter])){
+	      aRefpts[iRef][RP_yield  ][iIter] = yield(   aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_rec    ][iIter] = Recruits(aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_ssb    ][iIter] = SSB(     aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_biomass][iIter] = Biomass( aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_revenue][iIter] = Revenue( aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_cost   ][iIter] = Cost(    aRefpts[iRef][RP_harvest][iIter],iIter+1);
+          aRefpts[iRef][RP_profit ][iIter] = Profit(  aRefpts[iRef][RP_harvest][iIter],iIter+1);}
+       }
+   }
+
+void FLBRP::returnRefpts(SEXP Object){
+
+    //Allocate memory
+    PROTECT(v3 = Rf_allocArray(REALSXP, dims));
+
+    //Create names for dimensions
+    setAttrib(v3, R_DimNamesSymbol, dimnames);
+
+   l = 0;
+   for (k = 0; k < niters; k++)
+     for (j = 0; j < dim[1]; j++)
+       for (i = 0; i < nRefpts; i++)
+          REAL(v3)[l++] = aRefpts[i][j][k];
+
+   //unalloc
+   for (i=0; i<dim[0]; i++){
+      for (j=0; j<dim[1]; j++)
+        delete [] (aRefpts[i][j]);
+
+      delete [] (aRefpts[i]);
+      }
+    delete [] (aRefpts);
+
+   SEXP refpts;
+
+   PROTECT(refpts = NEW_OBJECT(MAKE_CLASS("refpts")));
+
+   refpts = R_do_slot_assign(refpts, install(".Data"), v3);
+
+   UNPROTECT(3);
+
+   //return v3;
+   return refpts;}
+*/
