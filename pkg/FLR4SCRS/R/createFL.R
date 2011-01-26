@@ -323,12 +323,12 @@ readBinary<-function(x,dmns=list(),size=4){
          return(res)}
 
 ## reads in data from VPA2Box files
-readVPA2Box<-function(x,nits=501){
+readVPA2Box<-function(x,nits=501,...){
     files<-vpa2BoxFiles(x)
     
     dir<-getDir(x)
     dat<-scan(paste(dir,.Platform$file.sep,files[5],sep=""),what="",sep="\n")
-    dat<-dat[nchar(dat)>1]
+    dat<-dat[nchar(dat)>0]
 
     ln <-c(F=grep("F",dat)[1],
            N=grep("N",dat)[1],
@@ -337,8 +337,9 @@ readVPA2Box<-function(x,nits=501){
            I=grep("I",dat)[2])
 
     aaIn<-function(aa,minage=1){
+           aa<-aa[nchar(aa)>1]
            N <-length(aa)
-           aa<-unlist(strsplit(aa," "))
+           aa<-unlist(strsplit(aa," +"))
            aa<-aa[nchar(aa)>0]
 
            dms<-c(length(aa)/N,N)
@@ -370,6 +371,7 @@ readVPA2Box<-function(x,nits=501){
    landings.n.=aaIn(dat[(ln[3]+1):(ln[4]-1)])
    stock.wt.  =aaIn(dat[(ln[4]+1):(ln[5]-1)])
    harvest(   stk) =harvest.
+
    landings.n(stk) =landings.n.
    stock.wt(  stk) =stock.wt.
    discards.wt(stk)[]<-0
@@ -390,7 +392,7 @@ readVPA2Box<-function(x,nits=501){
 
    units(harvest(stk))<-"f"
 
-   landings.n(stk)  <-catch.n(stk)
+   catch.n(stk)     <-landings.n(stk)
    discards.n(stk)[]<-0
 
    if (file.exists(paste(x,"WAA.OUT",sep="/"))){
@@ -401,9 +403,17 @@ readVPA2Box<-function(x,nits=501){
 
    wt(stk)          <-stock.wt(stk)
 
+   ## replace any slots
+   args <- list(...)
+   slt<-names(getSlots("FLStock"))[getSlots("FLStock")=="FLQuant"]
+   for(i in names(args)[names(args) %in% slt]){
+      slot(stk, i)<-args[[i]]}
+
    catch(stk)<-computeCatch(      stk,"all")
    landings(stk)<-computeLandings(stk)
    discards(stk)<-computeDiscards(stk)
+
+   units(harvest(   stk))="f"
 
 #   units(stk)<-units
 
