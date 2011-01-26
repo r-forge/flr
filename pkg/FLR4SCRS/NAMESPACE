@@ -5,6 +5,7 @@ export(
   "admbIn",
   "admbOut",
   "decade",
+  "getClassMethods",
   "imageDef",
   "plotCatches",
   "readVPA2Box",
@@ -13,7 +14,8 @@ export(
   "readPro2Sta",
   "readPro2Refpts",
   "readBinary",
-  "rndWlkFn")
+  "rndWlkFn"
+  "smryClass")
 exportMethods(
 	"+",
 	"-",
@@ -35,6 +37,7 @@ exportMethods(
   "discardsSel",
 	"diags",
 	"fav",
+  "getClassMethods",
   "gompertz",
   "ggplot",
   "pgAge",
