@@ -14,9 +14,6 @@ setMethod("fbar<-", signature(object="FLBRP", value="FLQuant"),
 
 		return(object)})
 
-if (demoIt)
-  fbar(pBrp)<-1:10
-
 #### 1.3 agreed fix
 ## add fbar<- overloads to FLBRP
 ################################################################################
