@@ -9,6 +9,7 @@
 library(SQLiteFL)
 db <- tempfile()
 
+# FLStock
 data(ple4)
 
 # sql
@@ -37,7 +38,20 @@ catch(sql4, year=1957:1960) <- 1:4
 
 catch(sql4) <- catch(ple4)
 
+# FLBiol
+bio4 <- as.FLBiol(ple4)
+
+sqb4 <- sql(bio4)
+
+n(sqb4)
+wt(sqb4)
+
 # FLComp methods
+
+# FLIndex
+pli4 <- as(ple4, 'FLIndex')
+
+sql(pli4)
 
 # -----
 unlink(db)

@@ -199,17 +199,19 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
 	return (Rval);
 } /* }}} */
 
-/* Function SEXP insertFLComp(SEXP Rname, SEXP Rflc, SEXP Rdbname) {{{ */
-SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
+/* Function SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames) {{{ */
+SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP Rstring)
   {
   SEXP Rval = R_NilValue;
   PROTECT(Rval = allocVector(INTSXP, 1));
   Rname = AS_CHARACTER(Rname);
   Rsnames = AS_CHARACTER(Rsnames);
+  Rstring = AS_CHARACTER(Rstring);
     
-  int rc, i, j, k, l, m, n, r, s;
+  int rc, i, j, k, l, m, n, r, s, t;
   int leni, lenj, lenk, lenl, lenm, lenn;
   int lens=length(Rsnames);
+  int lent=length(Rstring);
   int lenr=LENGTH(GET_SLOT(Rflc, install("range")));
   sqlite3 *db;
   sqlite3_stmt *stmt;
@@ -363,9 +365,10 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
   }
   sqlite3_free(sql);
   
+  /* class */
   sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES ('class', '%q');", CHAR(STRING_ELT(Rname, 0)), CHAR(STRING_ELT(GET_CLASS(Rflc), 0)));
   rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
-  /* Can desc in meta be inserted? */
+  /* Can class in meta be inserted? */
   if(rc != SQLITE_OK) {
      Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
      sqlite3_close(db);
@@ -373,7 +376,58 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames)
      return (Rval);
   }
   sqlite3_free(sql);
+
+  /* string slots, if any */
+  if(lent > 1) {
+    sql = sqlite3_mprintf("INSERT INTO \"%q_meta\" (field, value) VALUES (?,?);", CHAR(STRING_ELT(Rname, 0)));
+    rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql), &stmt, &tail);
+    /* Can INSERT@meta statement be prepared? */
+    if(rc != SQLITE_OK) {
+       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+       sqlite3_close(db);
+       UNPROTECT(1);
+       return (Rval);
+    }
+  
+    for (t=0; t < lent; t++) {
+      sqlite3_reset(stmt);
+
+      /* BIND slot name (1) */
+      dname = CHAR(STRING_ELT(Rstring, t));
+      rc=sqlite3_bind_text(stmt, 1, dname, -1, NULL);
+      /* Can slot names be bound to statement? */
+      if(rc != SQLITE_OK) {
+        Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+        sqlite3_close(db);
+        UNPROTECT(1);
+        return (Rval);
+      }
+      /* BIND slot value (2) */
+Rprintf("%s\n", STRING_ELT(GET_SLOT(Rflc, install(CHAR(STRING_ELT(Rstring, t)))), 0));
+/*      dname = CHAR(STRING_ELT(GET_SLOT(Rflc, install(CHAR(STRING_ELT(Rstring, t)))), 0)); */
+      rc=sqlite3_bind_text(stmt, 2, dname, -1, NULL);
+      /* Can slot values be bound to statement? */
+      if(rc != SQLITE_OK) {
+        Rprintf("%s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        INTEGER(Rval)[0] = 14;
+        UNPROTECT(1);
+        return (Rval);
+      }
+      rc=sqlite3_step(stmt);
+      /* Can step be carried out? */
+      if(rc != SQLITE_DONE) {
+        Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
+        sqlite3_close(db);
+        UNPROTECT(1);
+        return (Rval);
+      }
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_free(sql);
+  }
  
+
   /* range */
   sql = sqlite3_mprintf("INSERT INTO \"%q_range\" (field, value) VALUES (?,?);", CHAR(STRING_ELT(Rname, 0)));
   rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql), &stmt, &tail);

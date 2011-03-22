@@ -14,7 +14,7 @@
 
 /* insert.c */
 SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname);
-SEXP insertFLComp(SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP Rdbname);
+SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP Rstring);
 
 /* update.c */
 SEXP updateFLComp(SEXP Rdbname, SEXP Rname, SEXP Rstmt, SEXP Rvalue, SEXP Rdims,

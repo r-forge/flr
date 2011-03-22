@@ -15,16 +15,34 @@ setClass('sqliteFLQuant', representation('sqliteFL'))
 # sqliteFLComp
 setClass('sqliteFLComp', representation('sqliteFL'))
 
-# sqliteFLStock
+# sqliteFLStock {{{
 setClass('sqliteFLStock', representation('sqliteFLComp'),
   validity=function(object) {
     if(object@flrclass != "FLStock")
       return("SQL object linked to is not of class 'FLStock'")
     return(TRUE)
   }
-)
+) # }}}
 
-# sqliteFLlst
+# sqliteFLBiol {{{
+setClass('sqliteFLBiol', representation('sqliteFLComp'),
+  validity=function(object) {
+    if(object@flrclass != "FLBiol")
+      return("SQL object linked to is not of class 'FLBiol'")
+    return(TRUE)
+  }
+) # }}}
+
+# sqliteFLIndex {{{
+setClass('sqliteFLIndex', representation('sqliteFLComp'),
+  validity=function(object) {
+    if(object@flrclass != "FLIndex")
+      return("SQL object linked to is not of class 'FLIndex'")
+    return(TRUE)
+  }
+) # }}}
+
+# sqliteFLlst {{{
 setClass('sqliteFLlst', representation('FLlst'),
   validity= function(object) {
     if(!all(lapply(object, is, 'sqliteFL') == TRUE))
@@ -32,4 +50,4 @@ setClass('sqliteFLlst', representation('FLlst'),
 
     return(TRUE)
   }
-)
+) # }}}

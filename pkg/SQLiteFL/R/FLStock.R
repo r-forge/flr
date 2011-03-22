@@ -20,7 +20,7 @@ setMethod('sql', signature(object='FLStock'),
 
     # call .insert
     .Call('insertFLComp', db, as.character(name), object,
-      names(getSlots(class(object)))[getSlots(class(object)) == 'FLQuant'],
+      names(getSlots(class(object)))[getSlots(class(object)) == 'FLQuant'], "", 
       PACKAGE='SQLiteFL')
 
     # return handler

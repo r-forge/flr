@@ -10,4 +10,4 @@ Imports: FLCore
 Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
 License: GPL 2
 LazyLoad: Yes
-Collate: classes.R FLComp.R FLStock.R FLQuant.R
+Collate: classes.R FLComp.R FLStock.R FLBiol.R FLIndex.R FLQuant.R

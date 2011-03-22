@@ -14,7 +14,7 @@
 #include "exports.h"
 
 static const R_CallMethodDef callMethods[] = {
-        {"insertFLComp", (DL_FUNC) &insertFLComp, 4},
+        {"insertFLComp", (DL_FUNC) &insertFLComp, 5},
         {"updateFLComp", (DL_FUNC) &updateFLComp, 11},
         {"selectFLComp", (DL_FUNC) &selectFLComp, 2},
         {"selectFromFLComp", (DL_FUNC) &selectFLComp, 3},
