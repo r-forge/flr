@@ -395,7 +395,6 @@ setMethod("doubleNormal", signature(params="missing", data="numeric"),
 
 #################################################################################
 ## 11) M ########################################################################
-
 ## NaturallhGen( Mortality as a function of Linf
 M     =function(L,Linf,M1=0.1,h=1.71,n=-1.66,i=0.8) M1+h*Linf^i*L^n
 
