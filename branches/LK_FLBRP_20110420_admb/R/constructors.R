@@ -14,6 +14,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
   function(..., model=formula(rec~a), params=FLPar(1, params='a'),
     fbar=FLQuant(seq(0, 4, 0.04), quant='age'))
   {
+
     args <- list(...)
     
     # quant
@@ -106,6 +107,9 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears,
     sel.nyears=fbar.nyears, na.rm=TRUE, mean='arithmetic', ...)
     {
+
+    warning("Currently sr params set to 1, i.e. per recruit")
+
     # dims & dimnames
     dims <- dims(object)
     if (!all(c("minfbar","maxfbar") %in% names(range(object))))
@@ -266,7 +270,15 @@ setMethod('FLBRP', signature(object='FLStock', sr='list'),
   if (is(sr[["model"]],"charcater"))
     sr[["model"]]<-do.call("bevholt", list())$model
 
-    FLBRP(object=object, model=sr[["model"]], params=sr[["params"]], ...)
+    FLBRP(object=object, model=sr[["model"]], params=sr[["params"]], ...)})
 
 
-    })
+setMethod('FLBRP', signature(object='FLBRP', sr='missing'),
+  function(object, sr, ...){
+
+     args <- list(...)
+     for (slt in names(args)) #[names(args) %in% names(getSlots("FLBRP"))[names(getSlots("FLBRP"))!="fbar"]])
+       slot(object, slt)<-args[[slt]]
+
+   return(object)})
+

@@ -304,10 +304,14 @@ setMethod('ssb', signature(object='FLBRP'),
 
 setMethod('ssb.hat', signature(object='FLBRP'),
   function(object) return(ssb(object)))
+setMethod('revenue.hat', signature(object='FLBRP'),
+  function(object)
+    return(revenue(object)))
 
 setMethod('revenue', signature(object='FLBRP'),
   function(object)
     return(apply(sweep(landings.n(object),c(1,3:6),price(object)*landings.wt(object),"*"),2,sum)))
+
 
 setMethod('cost', signature(object='FLBRP'),
   function(object){

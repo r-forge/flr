@@ -69,6 +69,9 @@ setGeneric('cost', function(object, ...)
 setGeneric('profit.hat', function(object, ...)
 	standardGeneric('profit.hat'))
 
+setGeneric('revenue.hat', function(object, ...)
+	standardGeneric('revenue.hat'))
+
 setGeneric('profit', function(object, ...)
 	standardGeneric('profit'))
 
