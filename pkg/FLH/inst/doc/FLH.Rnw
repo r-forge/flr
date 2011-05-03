@@ -1,0 +1,463 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{url}
+\geometry{verbose,a4paper,tmargin=2cm,bmargin=1.5cm,lmargin=2cm,rmargin=3cm}
+\definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\onehalfspacing
+\hypersetup{colorlinks, urlcolor=darkblue}
+
+\begin{document}
+\SweaveOpts{engine=R}
+\title{Generic Life History Generator for FLR}
+\author{Iago Mosqueira <iago.mosqueira@gmail.com>\\
+Finlay Scott <finlay.scott@cefas.co.uk>\\
+Laurie Kell <lauriekell@googlemail.com>\\
+Cangas, Spain}
+\date{November 2010}
+\maketitle
+
+\section{Introduction}
+
+The Generic Life History Generator creates a function (\texttt{genBRP}) that generates a fully specified, biologically plausible, age-structured description of a stock at equilibrium based on basic biological parameters and a fishing selection pattern.  The Generic Life History Generator uses \texttt{FLR}, a software library for the R statistical environment~\cite{Rref}.
+
+Life history characteristics of fish populations are correlated, e.g. fast growing fish don't grow to a large size and mature young.  Studies have detected general trends in life history characteristics and simple biological measures. For example, models have been fitted that predict natural mortality from Linf~\cite{Gislason2008514}.  Based upon these biological characteristics and the selection pattern it is possible to describe the expected equilibrium dynamics for a range of different fishing intensities. From this it is possible to generate an age-structured stock object.
+
+This approach opens up the possibility of testing and comparing the performance of different assessment methods for a range of different plausible life histories.  The impact of 'data poorness' (e.g. noisy or limited data) can also be tested.
+
+\section{General approach}
+The Generic Life History Generator requires the following inputs:
+\begin{itemize}
+\item A growth model that calculates the mass-at-age of an individual.
+\item A selection pattern that describes relative fishing mortality at age
+\item A natural mortality function
+\item A stock-recruitment relationship
+\item A maturity ogive
+\end{itemize}
+
+These are described in more detail below.
+
+The expected equilibrium dynamics based on these inputs is then calculated using \texttt{FLBRP}. The \texttt{FLBRP} object can then be transformed into an \texttt{FLStock} object and projected forward under different fishing scenarios.
+
+\subsection{Growth model}
+
+The growth model calculates the mass at age of an individual. This can be specified as a list containing the formula and the parameter values, or as an \texttt{FLGrowth} object (not yet it can't...).
+
+The default growth model is a combination of the von Bertalanffy growth equation (that gives lengths at age) and a length-weight relationship. The lengths at age are given by:
+\begin{equation}
+% L(t) = (Linf*(1-exp(-k*(t-t0)))) 
+L(t) = L_{\infty} (1 - e^{(-k (t - t_{0}))})
+\end{equation}
+
+Where $L(t)$ is the length at time $t$, $L_{\infty}$ is the asymptotic length, $k$ is a rate constant with units of reciprocal time, $t0$ is the inital length, i.e. the length at $t = 0$.
+
+The lengths at age are converted to mass at age using the length-mass relationship:
+\begin{equation}
+% Mass = a * L ^ b
+Mass = a Length^b
+\end{equation}
+
+The default values for $a$ and $b$ are 0.001 and 3 respectively.
+
+\subsection{Selection pattern}
+
+The selection pattern determines the relative fishing mortality at age.  The default selection pattern is based on a double normal ogive with estimable parameters $a_1$, $s_L$ and $s_R$~\cite{casalmanual2005}.
+
+%\begin{eqnarray}
+%if (x < a_1) & \nonumber \\
+%& sel = 2^{-((x-a_1)/sL(x-a_1)/sL)} \nonumber \\
+%else & \nonumber \\
+%& sel = 2^{-((x-a_1)/sR(x-a_1)/sR)} \nonumber \\
+%\end{eqnarray}
+
+\begin{eqnarray}
+sel& = 2^{-[(x-a_1)/s_L]^2}, & if (x \leq a_1) \nonumber \\
+& = 2^{-[(x-a_1)/s_R]^2}, & if (x > a_1) \nonumber \\
+\end{eqnarray}
+
+% This also looks nice
+%\[
+%sel = \left\{ \begin{array}{ll}
+%2^{-[(x-a_1)/s_L]^2} & \mbox{if $(x \leq a_1)$} \\
+%2^{-[(x-a_1)/s_R]^2} & \mbox{if $(x > a_1)$} \\
+%\end{array}
+%\right. \\
+%\]
+
+% Plot stolen from Wiki to show possible selectivity shapes
+\begin{figure}[!hb]
+\begin{center}
+%\begin{minipage}[H]{0.95\textwidth}%
+%\begin{shaded}%
+<<fig=TRUE, echo=FALSE>>=
+library(FLash)
+library(FLBRP)
+## Selection pattern
+dnormal<-function(x,a,sL,sR){
+  pow<-function(a,b) a^b
+  func<-function(x,a,sL,sR){
+    if (x < a)
+       return(pow(2.0,-((x-a)/sL*(x-a)/sL)))
+    else
+       return(pow(2.0,-((x-a)/sR*(x-a)/sR)))}
+  sapply(x,func,a,sL,sR)
+  }
+age<-seq(1,20,length.out=100)
+selPat<-rbind(cbind(Pattern="Flat Topped",data.frame(rbind(cbind(gear=1,sel=dnormal(age, 5,  5,250)),
+                                                           cbind(gear=2,sel=dnormal(age, 7.5,5,250)),
+                                                           cbind(gear=3,sel=dnormal(age,10,  5,250))))),
+              cbind(Pattern="Domed",      data.frame(rbind(cbind(gear=1,sel=dnormal(age, 7.5,5, 50)),
+                                                           cbind(gear=2,sel=dnormal(age, 7.5,5, 20)),
+                                                           cbind(gear=3,sel=dnormal(age, 7.5,5, 10))))))
+print(xyplot(sel~age|Pattern,groups=gear, data=cbind(age=age,selPat),type="l",xlab="Age",ylab="Selectivity"))
+@
+%\end{shaded}
+%\end{minipage}
+\end{center}
+\caption{Sample selectivity ogives and parameters. Flat topped: $a_1$ = 5, $s_L$ = 5, $s_R$ = 250 (blue); $a_1$ = 7.5, $s_L$ = 5, $s_R$ = 250 (pink); $a_1$ = 10, $s_L$ = 5, $s_R$ = 250 (green). Domed: $a_1$ = 7.5, $s_L$ = 5, $s_R$ = 50 (blue); $a_1$ = 7.5, $s_L$ = 5, $s_R$ = 20 (pink);$a_1$ = 7.5, $s_L$ = 5, $s_R$ = 10 (green)}
+\label{fig:seldemo}
+\end{figure}
+
+Where $sel$ is the selction pattern at age and $x$ is the age or length. The selection ogive has values 1 at $x = a_1$ and 0.5 at $x = a_1 - s_L$ or $x = a_1 + s_R$. Example selection ogives can be seen in Figure~\ref{fig:seldemo}.
+
+\subsection{Natural mortality}
+
+By default, the natural mortality relationship considers natural mortality to consist of a size-dependent part that reflects predation and a constant size-independent part that reflects all other causes of natural death which is identical for all species and sizes~\cite{Gislason2008514}.  The predation mortality is described as a power function of both individual and asymptotic lengths. Combining these, the natural mortality is calculated using the following function:
+
+\begin{equation}
+%M     <-function(L,Linf,M1=0.1,h=1.71,n=-1.66,i=0.8) M1+h*Linf^i*L^n
+M = M1 + h L_{\infty}^i L^n
+\end{equation}
+
+Where $M$ is the natural mortality at age, $M1$ (0.1) accounts for all of the size-independent mortality (e.g. disease), $L$ and $L_{\infty}$ are the actual and asymptotic length respectively (and are also used in the von Bertalanffy equation to calculate growth), and $h$ (1.71), $i$ (0.8), and $n$ (-1.66) are the parameters for the power function that scale predation with body size. Default values, taken from~\cite{Gislason2008514}, are given in parenthesis. These default values are for demersal species. For pelagic species $h$ is 27.3 and $i$ is 0.
+
+\subsection{Maturity}
+
+The default maturity equation is the standard logistic ogive (REF):
+
+\begin{eqnarray}
+Mat& = 0, & if ((Mat_{50} - x) / Mat_{95} > 5) \nonumber \\
+& = 1, & if ((Mat_{50} - x) / Mat_{95} < -5) \nonumber \\
+& = \frac{1}{1 + 19^{(Mat_{50}-x)/Mat_{95}}}& 
+\end{eqnarray}
+
+Where $Mat$ is the maturity at age, $Mat_{95}$ is the age at which 95\% of the population is mature and 
+
+\begin{equation}
+Mat_{50} = log(((3 k + M)/M)/k)
+\end{equation}
+Where $Mat_{50}$ is the age at 50\% maturity, $M$ is the natural mortality at age (given by the natural mortality relationship described above) and $k$ is the rate from the growth equation (see above). NEED A REFERENCE FOR THIS
+
+\subsection{Stock recruitment relationship}
+
+The stock recruitment relationship is specified as a list of parameters and model name or an \texttt{FLSR} object. The default is a Beverton-Holt relationship, specified using virgin biomass ($v$), steepness (the ratio of expected recruitment at 40\% virgin biomass to that at virgin biomass, $s$) and spawners-per-recruit at zero fishing mortality ($spr0$).
+
+\begin{equation}
+R = \frac{a SSB}{b + SSB}
+\end{equation}
+
+Where $R$ is the recruitment abundance and $SSB$ is the spawning stock biomass. For the steepness and virgin biomass parameterisation:
+
+\begin{align}
+%a = (v + (v - s * v)/(5 * s - 1))/spr0
+a = \frac{v + \frac{v - s v}{5 s - 1}}{spr0} \\
+b = \frac{v - s v}{5 s - 1}
+\end{align}
+
+If $spr0$ is not specified by the user then it is estimated using \texttt{FLBRP} using a spawner-per-recruit analysis. This means that under the default settings, the user need only supply steepness and virgin biomass for the stock-recruitment relationship.
+
+\subsection{Putting it all together with \texttt{genBRP()}}
+
+The Life History Generator uses the function \texttt{genBRP()} to create an \texttt{FLBRP} object based on the function inputs.  Arguments to the function are the growth, selectivity, natural mortality, maturity and stock-recruitment relationships, specified as formulae along with their parameters. The formulae all have defaults, described above, and do not need to be specfied by the user.
+Some parameters for these formulae also have default values (see above) and some need to be specified. The age vector, the growth parameters ($L_{\infty}$ and $k$), the stock-recruitment parameters ($s$ and $v$), the selectivity parameters ($a_1$, $s_L$ and $s_R$) and $mat95$ all need to be set by the user. Any other parameters needed by the formulae can be specified using the $...$ argument. This can be used to override any default parameter values (e.g. $M1$ in the default natural mortality formula which has a default value of 0.1).
+
+Note that the current version of \texttt{genBRP()} is very much a Beta version and that the interface and arguments may change in the future.
+
+Inside the function the weights at age are calculated using the growth function, and the natural mortality, maturity, and selectivity at age are calculated using their functions. These are combined with the stock-recruitment relationship to create and return an \texttt{FLBRP} object. By default the \texttt{FLBRP} creates a vector of 100 values of $f_{bar}$, ranging from 0 to 4. The equilibrium values of SSB, recruitment and yield are calculated at each value of $f_{bar}$. A range of reference points, e.g. $F_{MSY}$ is also calculated. The equilibrium values can be plotted along with the reference points. This is demonstrated in section~\ref{sec:lifedemo}. In this the way the reference points and stock status for different life histories can be easily examined. For more information on \texttt{FLBRP} see the wiki page \url{http://wiki.flr-project.org/doku.php?id=courses:flbrp}. 
+
+
+The \texttt{FLBRP} object can be transformed into an \texttt{FLStock} object and projected forward under a range of different scenarios (e.g. alternative fishing and management regimes). This then allows the outcome of different assessment methods to be compared (see section~\ref{sec:stockdemo}).
+
+%*************************************************************************
+\section{Demonstration of creating a life history}
+\label{sec:lifedemo}
+Here is a simple example of using the Generic Life History Generator and the \texttt{genBRP} function. To start with we use a flat-topped selectivity function.
+
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+# Load the FLH library and the dependents
+library(FLH)
+# Set up necessary parameters
+# Huge age range
+age <- 1:100
+#Growth parameters
+Linf <- 100
+k <- 0.2
+# Selectivity - flat topped to start with
+a1 <- 10
+sL <- 5
+sR <- 250
+# Maturity
+mat95 <- 3
+# Stock-recruitment parameters
+s <- 0.75
+v <- 1e3
+# Call the genBRP function with these parameters (all others left as defaults)
+res_flat_100 <- genBRP(age=age, Linf=Linf, k=k,
+  a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
+# The function returns an object of class FLBRP
+class(res_flat_100)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+We can now take a look at the reference points for the stock (ignoring the economic ones) using the \texttt{refpts()} method:
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+refpts(res_flat_100)[1:4,1:5]
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+We can also plot the resulting \texttt{FLBRP} object (see figure~\ref{fig:resflat100}):
+% Not plotted here
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE,fig=FALSE,eval=FALSE>>=
+plot(res_flat_100)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+% Plotted here
+\begin{figure}[!hb]
+\begin{center}
+<<fig=TRUE, echo=FALSE>>=
+plot(res_flat_100)
+@
+\end{center}
+\caption{Equilibrium plot for a life history with $L_{\infty}$=100 and a flat topped selectivity}
+\label{fig:resflat100}
+\end{figure}
+
+The plot and the reference points can be compared to the case when we have a domed shaped selectivity (see figure~\ref{fig:resdome100}):
+
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE,fig=FALSE>>=
+# Selectivty - dome shaped
+a1 <- 7.5
+sL <- 5
+sR <- 10
+res_dome_100 <- genBRP(age=age, Linf=Linf, k=k,
+  a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
+refpts(res_dome_100)[1:4,1:5]
+plot(res_dome_100)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+% Plot the dome shaped brp
+\begin{figure}[!hb]
+\begin{center}
+<<fig=TRUE, echo=FALSE>>=
+plot(res_dome_100)
+@
+\end{center}
+\caption{Equilibrium plot for a life history with $L_{\infty}$=100 and a dome shaped selectivity ogive}
+\label{fig:resdome100}
+\end{figure}
+
+Finally, we can see the reference points when we have a stock with a higher $L_{\infty}$ of 200, a correspondingly lower k of 1.5 and a higer age of maturity.
+
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+Linf <- 200
+k <- 1.5
+# Selectivity - back to flat topped
+a1 <- 10
+sL <- 5
+sR <- 250
+# Maturity
+mat95 <- 6
+res_flat_200 <- genBRP(age=age, Linf=Linf, k=k,
+  a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
+refpts(res_flat_200)[1:4,1:5]
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+%**************************************************************************
+\section{Projecting forward and testing assessment methods}
+\label{sec:stockdemo}
+\subsection{XSA example}
+\label{sec:xsademo}
+Here we show an example of how to turn the output of \texttt{genBRP()} into an \texttt{FLStock} object, project foward under a fishing scenario, generate a CPUE index, and run an XSA. This approach can be developed and expanded to test assumptions of stock assessment (e.g. that there is no error in the catch data).
+
+First we set up the equilibrium \texttt{FLBRP} object.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+# Load the FLH and FLXSA packages
+library(FLH)
+library(FLXSA)
+library(FLash)
+# Set up the parameters
+age<-1:100
+Linf <- 100
+k <- 0.2
+a1 <- 1
+sL <- 0.5
+sR <- 150
+mat95 <- 3
+s <- 0.75
+v <- 1e3
+# Generate the FLBRP object
+res <- genBRP(age=age, Linf=Linf, k=k,
+    a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+As mentioned above, this generates a \texttt{FLBRP} object which describes the equilibrium stock levels at 101 different values of $fbar$ (from 0 to 4, by default). The \texttt{FLBRP} object can be turned into an \texttt{FLStock} object using the \texttt{as()} method. This creates an \texttt{FLStock} object with 101 years, where each year holds the stock data at the equilibrium level for the associated value of $fbar$. For example, the data in the first year is for a fishing level of 0 (you can check this by calling $fbar()$ on \texttt{stk}). In this way the \texttt{FLStock} is not terribly useful as it currently stands. However, we can use it to project forward from a virgin state (i.e. from the first year, where $fbar$ is 0). As we want to perform a Monte Carlo projection, we need to propagate the number of iterations.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+stk <- as(res,'FLStock')
+# name the stock
+name(stk) <- 'stock'
+## add iters so we can perform a Monte Carlo simulation
+stk <- propagate(stk, iter=100)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+We are going to use the \texttt{fwd()} method to project forward. For that we need to set up a control object which describes the projection scenario. Here we will project forward with an increasing level of fishing mortality, with f increasing from $F_{MSY}$ to double $F_{MSY}$ over 99 years. Note that $F_{MSY}$ is taken from the output of \texttt{genBRP()}.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+ctrl <- fwdControl(data.frame(year=2:100, quantity="f",
+    val=msy(res)[,'harvest'] * seq(1,2,length.out=99)))
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+We want to introduce some variability in the stock-recruitment relationship for the Monte Carlo simulation. Here we create some 'fake' residuals by sampling from a lognormal distribution with a mean of 1 and standard deviation of 0.5. This is a very simple approach to keep the demonstration easy. The use of more sophisticated methods for introducing variability (e.g. with correlation between years) is encouraged.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+# generate normally distributed residuals of the SR model to introduce
+# variability in the stock object
+resid <- FLQuant(exp(rnorm(99*100,0,.5)),
+    dimnames=list(age=0,year=2:99,iter=1:100))
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+Now we have the stock object, the projection control object that describes our increasing $fbar$ scenario and the stock-recruitment residuals, we can project forward from a virgin state using \texttt{fwd()}.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+stk <- fwd(stk, ctrl=ctrl, sr=list(model=model(res), params=params(res)),
+    sr.residuals=resid)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+The next stage is to perform an XSA and compare the assessment with the 'true' stock. For that we need to generate an index of abundance. This is generated from the 'true' stock abundance using the \texttt{as()} method to create an \texttt{FLIndex} object. Error is added to the index by multiplying it by samples from a lognormal distribution with a standard deviation of 0.3. More sophisticated methods of simulating indices of abundance could be used. 
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+# create an index of abundance from the stock, and set the plusgroup to age=10
+cpue <- as(setPlusGroup(stk,10), "FLIndex")
+# select years up to 99, as catch/F has not been predicted for year=100
+cpue <- window(cpue,end=99)
+# make it be a 1st Quarter Survey
+range(cpue, c("startf","endf")) <- c(0, 0.25)
+# add measurement and/or process error to CPUE: lnorm(log(mean)=0, log(sd)=0,3)
+index(cpue) <- index(cpue)[] * rlnorm(prod(dim(index(cpue)[])), 0, 0.3)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+To perform the XSA, we create a perceived stock object from the 'true' object, set the plus group to 10 and delete the stock abundances and fishing mortalities. We also change the natural mortality at age from the 'true' biological values to those typically used in Working Groups.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE>>=
+## Create a stock data set
+xsastk <- setPlusGroup(stk,10)
+xsastk <- window(xsastk,end=99)
+## Set the natural mortality
+m(xsastk)[]<-0.2
+## Nothing up my sleeve
+stock.n(xsastk)[] <- NA
+harvest(xsastk)[] <- NA
+## Perform assessment using default XSA settings
+xsa.ctrl <- FLXSA.control(maxit=50, qage=6, tspower=0)
+xsastk <- xsastk + FLXSA(xsastk,cpue,xsa.ctrl, diag.flag=FALSE)
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+Finally, we can compare the perceived stock (generated from the XSA) and the 'true' stock by plotting them (figure~\ref{fig:xsademo}). Note that the XSA underestimates the 'true' fishing mortality.
+\begin{center}
+\begin{minipage}[H]{0.95\textwidth}%
+\begin{shaded}
+<<echo=TRUE,keep.source=TRUE,fig=FALSE>>=
+plot(FLStocks(MP=xsastk, OM=window(stk,end=99)))
+@
+\end{shaded}
+\end{minipage}
+\end{center}
+
+% Plot the difference
+\begin{figure}[!hb]
+\begin{center}
+<<fig=TRUE, echo=FALSE>>=
+print(plot(FLStocks(MP=xsastk, OM=window(stk,end=99))))
+@
+\end{center}
+\caption{Comparing the 'true' stock (cyan) with the perceived stock generated from the XSA (red)}
+\label{fig:xsademo}
+\end{figure}
+%*************************************************************************
+\bibliography{FLHbib}{}
+\bibliographystyle{plain}
+
+
+\end{document}
