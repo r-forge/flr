@@ -62,14 +62,14 @@ setMethod("plot", signature(x="FLlst", y="missing"),
      if (refpts){
       ref.=ldply(x, function(x) mdply(varBrp(),getBrpRefpts,   obj=x))
       ref.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
-      if (!all(is.na(refpts(x))))
-        p=p+geom_point(aes(x,y,group=iter:.id,colour=refpt:.id),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))}
+      #if (!all(is.na(refpts(x))))
+        p=p+geom_point(aes(x,y,group=iter:.id,colour=.id,shape=(refpt)),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))}
 
      if (obs){
       obs.=ldply(x, function(x) mdply(varBrp(),getBrpObs,     obj=x))
       obs.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
       p<-p+geom_point(aes(x,y,group=iter:.id,col=.id),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))} 
-    }
+   }
 
      print(p)
 
@@ -77,7 +77,7 @@ setMethod("plot", signature(x="FLlst", y="missing"),
 
 
 ## Bivariate CI
-bivariateOrder<-function(dt)
+bvOrder<-function(dt)
     {
     mn      <-apply(dt,2,mean)
     dt[,1]  <-dt[,1]-mn[1]

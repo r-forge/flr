@@ -11,38 +11,34 @@ mmm<-function(x){
            x)}
 
 #### Life History Generator ####################################################
-setGeneric('lhSim', function(grw,...)
+setGeneric('gislaSim', function(grw,...)
    standardGeneric('lhSim'))
-setMethod("lhSim", signature(grw="numeric"),
-   function(grw,
-            mat=FLPar("a50"=NA,"ato95"=3),
-            sel=FLPar(a=1,sl=1,sr=1e6),
-            m  =NULL,   
-            sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
-            age=0:40,...){
-
-            grw=FLPar(sinf=grw,k=0.6-grw*0.003,a=0.001,b=3)
-            
-       return(lhSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...))})
-
-setMethod("lhSim", signature(grw="FLPar"),
+setMethod('gislaSim', signature(grw="FLPar"),
    function(grw,
             mat=FLPar("a50"=NA,"ato95"=3),
             sel=FLPar(a=1,sl=1,sr=1e6),
             m  =NULL,
             sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
-            age=0:40,...)
+            age=1:40,...){
 
-       return(lhSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...)))
+            if (!("k"  %in% dimnames(grw)$params)) grw=addPar(grw,"k",0.5)
+            if (!("t0" %in% dimnames(grw)$params)) grw=addPar(grw,"t0",0)
+            if (!("a"  %in% dimnames(grw)$params)) grw=addPar(grw,"a", 0.001)
+            if (!("b"  %in% dimnames(grw)$params)) grw=addPar(grw,"b", 3)
 
+       return(lhSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...))})
 
-lhSim.=function(grw,mat,sel,m,sr,age,...){
+gislaSim.=function(grw,mat,sel,m,sr,age,...){
    ## Biological processes
    wts       =vonB(grw,age)
-   if (is.null(m))
-     m       =FLQuant(M(c(1000*growth(age+0.5,grw["sinf"],grw["k"]))^(1/3),grw["sinf"]),dimnames=dimnames(wts))
-   if (is.na(mat["a50"])){
-     mat["a50"]=mat50(c(mean(m)),grw["k"])}
+   if (is.null(m)){
+     L<-wts
+     L[]<-wt2len(grw[c("a","b")],wts[dim(wts)[1]])
+     m       =M(wt2len(grw[c("a","b")],wts),L)}
+
+   if (is.na(mat["a50"]))
+     mat["a50"]=mat50(apply(m,2:6,mean),grw["k"])
+print(wts)
    mat.        =logistic(FLPar(a50=mat["a50"],ato95=(mat["a50"]+mat["ato95"]),asym=1.0),age)
 
    sel=FLPar(a1=(mat["a50"]+mat["ato95"])*sel["a"],
@@ -79,6 +75,7 @@ lhSim.=function(grw,mat,sel,m,sr,age,...){
    params(res)=FLPar(abPars(sr$model,spr0=spr0(res),s=sr$steepness,v=sr$vbiomass))
 
    if ("fbar" %in% names(args)) fbar(res)<-args[["fbar"]]
+   refpts(res)<-refpts(res)[c(1,4)]
 
    return(brp(res))}
 ################################################################################
