@@ -717,7 +717,7 @@ readASPICAssess<-function(dir,scen){
 
     ## Quantiles in data.frame
     qtls<-transform(melt(ddply(ts,.(X1,year,qname),function(x) quantile(x$data,prob=c(0.25,0.5,0.75))),id.vars=c("X1","qname","year")),
-		      Scenario=factor(X1),Quantity=factor(qname), Year=year, Quantile=variable)[,c("Scenario","Quantity","Year","Quantile","value")]
+		      Scenario=factor(X1),Quantity=factor(qname), Year=year, Quantile=variable)[,c("scenario","quantity","year","qantile","value")]
 
     ## Model frame with points
     ts<-cast(subset(res, qname %in% c("biomass","harvest"),select=c("X1","year","iter","data","qname")), 
@@ -729,10 +729,11 @@ readASPICAssess<-function(dir,scen){
 readASPICProj<-function(dir,scen){
     prj       <-subset(mdply(scen, function(scen,TAC,dir) as.data.frame(readASPIC(paste(dir,"/",scen,TAC,".prb",sep=""))), dir=dir), !is.na(data))   
     prj       <-cast(prj,scen+year+TAC+iter~qname,value="data") 
-    names(prj)<-c("Scenario","Year","TAC","iter","biomass","harvest")
+    names(prj)<-c("scenario","year","TAC","iter","biomass","harvest")
 
     prjP      <-cbind(prj,kobeP(prj$biomass,prj$harvest))
-    prjP      <-ddply(prjP,.(Scenario,Year,TAC), function(x) cbind(F=mean(x$f,na.rm=T),B=mean(x$b,na.rm=T),P=mean(x$p,na.rm=T)))
+
+    prjP      <-ddply(prjP,.(scenario,year,TAC), function(x) cbind(f=mean(x$f,na.rm=T),b=mean(x$b,na.rm=T),p=mean(x$p,na.rm=T),collapsed=mean(x$collapsed)))
     return(prjP)}
 
 .readASPIC<-function(x,type,scen="missing"){

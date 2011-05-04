@@ -128,7 +128,6 @@ vonBParams<-function(params){
 setMethod("vonB", signature(params="FLPar", data="FLQuant"),
    function(params,data) {
          params<-vonBParams(params)  
-print(params)
          params["sinf"]*(1.0-exp(-params["k"]*(data-params["t0"])))^params["b"]})
 setMethod("vonB", signature(params="FLPar", data="FLCohort"),
    function(params,data) {
@@ -402,6 +401,8 @@ MRoT=function(maxAge,val=3) val/maxAge
 ## Maturity age at 50% maturity
 mat50 =function(M,k) log(((3*k+M)/M)/k)
 
+Mfunc  =function(L,Linf,k) exp(0.55 - 1.61*log(L) + 1.44*log(Linf) + log(k))
+Matfunc=function(Linf,k) 0.8776*Linf-0.038
 
 ## 13) Schnute ###################################################################
 #### parameters

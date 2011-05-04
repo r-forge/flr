@@ -12,12 +12,12 @@ mmm<-function(x){
 
 #### Life History Generator ####################################################
 setGeneric('gislaSim', function(grw,...)
-   standardGeneric('lhSim'))
+   standardGeneric('gislaSim'))
 setMethod('gislaSim', signature(grw="FLPar"),
    function(grw,
-            mat=FLPar("a50"=NA,"ato95"=3),
+            m  =function(L,Linf,k) exp(0.55 - 1.61*log(L) + 1.44*log(Linf) + log(k)),
+            mat=function(Linf,ato50=3) FLPar(a50=0.8776*Linf-0.038-ato50,ato95=ato50),
             sel=FLPar(a=1,sl=1,sr=1e6),
-            m  =NULL,
             sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40,...){
 
@@ -25,28 +25,37 @@ setMethod('gislaSim', signature(grw="FLPar"),
             if (!("t0" %in% dimnames(grw)$params)) grw=addPar(grw,"t0",0)
             if (!("a"  %in% dimnames(grw)$params)) grw=addPar(grw,"a", 0.001)
             if (!("b"  %in% dimnames(grw)$params)) grw=addPar(grw,"b", 3)
-
-       return(lhSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...))})
+           
+       return(gislaSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...))})
 
 gislaSim.=function(grw,mat,sel,m,sr,age,...){
    ## Biological processes
-   wts       =vonB(grw,age)
-   if (is.null(m)){
-     L<-wts
-     L[]<-wt2len(grw[c("a","b")],wts[dim(wts)[1]])
-     m       =M(wt2len(grw[c("a","b")],wts),L)}
+     grw.<-addPar(grw[!(dimnames(grw)$params=="Linf")],"sinf",grw["a"]*grw["Linf"]^grw["b"])
+     wts       =vonB(grw.,age)
 
-   if (is.na(mat["a50"]))
-     mat["a50"]=mat50(apply(m,2:6,mean),grw["k"])
-print(wts)
-   mat.        =logistic(FLPar(a50=mat["a50"],ato95=(mat["a50"]+mat["ato95"]),asym=1.0),age)
+   ## m
+   if (is.function(m)){
+      L<-wt2len(grw[c("a","b")],wts)
+      m       =m(L,grw["Linf"],grw["k"])}
+   
+   if (is.function(mat)){
+      mat=mat(grw["Linf"]) 
+mat["a50"]<-invVonB(grw,c(mat["a50"]))
+mat<-addPar(mat,"asym",1)
+print(mat)
+mat.<<-mat
+age<<-age
+      mat.=logistic(mat,age)}
+
+print(mat.)
+
 
    sel=FLPar(a1=(mat["a50"]+mat["ato95"])*sel["a"],
              sl=(mat["a50"]+mat["ato95"])*sel["sl"],
 	     sr=(mat["a50"]+mat["ato95"])*sel["sr"])
 
    selPattern =doubleNormal(sel,age)
-   
+
    dms=dimnames(m)
    ## create a FLBRP object to	 calculate expected equilibrium values and ref pts
    res=FLBRP(stock.wt       =wts,

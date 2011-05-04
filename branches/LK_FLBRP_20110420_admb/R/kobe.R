@@ -85,7 +85,7 @@ kobeL=function(x,col=list(levels=seq(0.0,1.0,0.05),
     
     invisible(tapply(x[,3],x[,2:1],mean))}
 
-kobeS<-function(x,cex=1.2){
+kobeS<-function(x,cex=1.2,image=NULL,contour=NULL){
     ops<-par(mfrow=c(2,2), mex=.5,mai=c( 0.5, 0.75 ,0.5, 0.1),cex=par()$cex)
 
     kobeM(x[,c(1:2,4)]);mtext(expression(plain(P) (B>=B[MSY])),                           line=0.5, cex=cex)
