@@ -30,25 +30,18 @@ setMethod('gislaSim', signature(grw="FLPar"),
 
 gislaSim.=function(grw,mat,sel,m,sr,age,...){
    ## Biological processes
-     grw.<-addPar(grw[!(dimnames(grw)$params=="Linf")],"sinf",grw["a"]*grw["Linf"]^grw["b"])
-     wts       =vonB(grw.,age)
+   grw.=addPar(grw[!(dimnames(grw)$params=="Linf")],"sinf",grw["a"]*grw["Linf"]^grw["b"])
+   wts =vonB(grw.,age)
 
    ## m
    if (is.function(m)){
-      L<-wt2len(grw[c("a","b")],wts)
-      m       =m(L,grw["Linf"],grw["k"])}
+      L=wt2len(grw[c("a","b")],wts)
+      m=m(L,grw["Linf"],grw["k"])}
    
    if (is.function(mat)){
-      mat=mat(grw["Linf"]) 
-mat["a50"]<-invVonB(grw,c(mat["a50"]))
-mat<-addPar(mat,"asym",1)
-print(mat)
-mat.<<-mat
-age<<-age
+      mat=addPar(mat(grw["Linf"]),"asym",1)
+      mat["a50"]=invVonB(grw,c(mat["a50"]))
       mat.=logistic(mat,age)}
-
-print(mat.)
-
 
    sel=FLPar(a1=(mat["a50"]+mat["ato95"])*sel["a"],
              sl=(mat["a50"]+mat["ato95"])*sel["sl"],
