@@ -153,13 +153,13 @@ Mat& = 0, & if ((Mat_{50} - x) / Mat_{95} > 5) \nonumber \\
 Where $Mat$ is the maturity at age, $Mat_{95}$ is the age at which 95\% of the population is mature and 
 
 \begin{equation}
-Mat_{50} = log(((3 k + M)/M)/k)
+Mat_{50} = log(((3 k + \hat{M})/\hat{M})/k)
 \end{equation}
-Where $Mat_{50}$ is the age at 50\% maturity, $M$ is the natural mortality at age (given by the natural mortality relationship described above) and $k$ is the rate from the growth equation (see above). NEED A REFERENCE FOR THIS
+Where $Mat_{50}$ is the age at 50\% maturity, $\hat{M}$ is the mean natural mortality across ages and $k$ is the rate from the growth equation (see above). NEED A REFERENCE FOR THIS
 
 \subsection{Stock recruitment relationship}
 
-The stock recruitment relationship is specified as a list of parameters and model name or an \texttt{FLSR} object. The default is a Beverton-Holt relationship, specified using virgin biomass ($v$), steepness (the ratio of expected recruitment at 40\% virgin biomass to that at virgin biomass, $s$) and spawners-per-recruit at zero fishing mortality ($spr0$).
+The stock recruitment relationship is specified as a list of parameters and model name or an \texttt{FLSR} object. The default is a Beverton-Holt relationship, specified using virgin biomass ($v$), steepness (the ratio of expected recruitment at 20\% virgin biomass to that at virgin biomass, $s$) and spawners-per-recruit at zero fishing mortality ($spr0$).
 
 \begin{equation}
 R = \frac{a SSB}{b + SSB}
