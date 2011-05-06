@@ -3,10 +3,10 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
-# Last Change: 11 Oct 2010 10:19
+# Last Change: Fri May 06, 2011 at 11:12 AM +0200
 # $Id$
 
-# as.FLSR {{{
+# coerce {{{
 setAs('FLBRP', 'FLSR',
   function(from)
 	{
@@ -38,9 +38,8 @@ setAs('FLBRP', 'FLStock',
       # TODO extend slots for years: check all slots present
       name=name(from))
       #, desc=paste("Created by coercion from 'FLBRP'", desc(from)))
-
     # range
-    range(res)<-range(from)
+    range(res)[names(range(from))] <- range(from)
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear',
       'maxyear')])
 
@@ -51,9 +50,6 @@ setAs('FLBRP', 'FLStock',
         slot(res,i)                <- recycleFLQuantOverYrs(slot(res,i),slot(from,i))}
 
     for (i in c("stock.n","catch.n","landings.n","discards.n","harvest")){
-        print(i)
-        print(slot(res,i))
-        print(do.call(i,list(from)))
         slot(res,i)<- recycleFLQuantOverYrs(slot(res,i),do.call(i,list(from)))}
         
     catch.wt(res)   <-recycleFLQuantOverYrs(catch.wt(res),catch.wt(from))
