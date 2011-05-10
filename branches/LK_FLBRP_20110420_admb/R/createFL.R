@@ -47,10 +47,10 @@ setMethod("readVPA2Box",   signature(x="character"),                   function(
 setMethod("diagVPA2Box",   signature(x="character"),                   function(x)                                    .diagVPA2Box(x))
 setMethod("readPro2Box",   signature(x="character", type="character"), function(x,type,minyear=1,data.frame=TRUE,...) .readPro2Box(x,type,minyear,data.frame,...))
 
-setMethod("readASPIC",     signature(x="character", type="missing",  scen="missing"),    function(x,type,scen,...)    .readASPIC(  x,type,...))
-setMethod("readASPIC",     signature(x="character", type="character",scen="missing"),    function(x,type,scen,...)    .readASPIC(  x,type,...))
-setMethod("readASPIC",     signature(x="character", type="character",scen="data.frame"), function(x,type,scen,...)    .readASPIC(  x,type,scen,...))
-setMethod("readASPIC",     signature(x="character", type="character",scen="character"),  function(x,type,scen,...)    .readASPIC(  x,type,scen,...))
+setMethod("readASPIC",     signature(x="character", type="missing",  scen="missing"),    function(x,type,scen,...)    .readASPIC(  x,type,scale="msy",...))
+setMethod("readASPIC",     signature(x="character", type="character",scen="missing"),    function(x,type,scen,...)    .readASPIC(  x,type,scale="msy",...))
+setMethod("readASPIC",     signature(x="character", type="character",scen="data.frame"), function(x,type,scen,...)    .readASPIC(  x,type,scen,scale="msy",...))
+setMethod("readASPIC",     signature(x="character", type="character",scen="character"),  function(x,type,scen,...)    .readASPIC(  x,type,scen,scale="msy",...))
 
 setMethod("readMFCL",      signature(x="character"),                   function(x,...)                                .readMFCL(   x,...))
 
@@ -669,7 +669,7 @@ if (FALSE){ ctl<-scan("/home/lkell/Desktop/Stuff/data/inputs/pro2box/Prj10.ctl",
 
 #### ASPIC #####################################################################################
 #### Historic series
-aspicTS<-function(file){
+aspicTS<-function(file,scale="msy"){
    t.  <-scan(file,skip=4)
    nits<-scan(file,skip=1,nmax=1)
    yrs <-scan(file,skip=2,nmax=2)
@@ -687,7 +687,7 @@ aspicTS<-function(file){
    return(FLQuants(biomass=sweep(b.,6,bmsy,"/"),harvest=sweep(f.,6,fmsy,"/"),bmsy=bmsy,fmsy=fmsy))}
 
 ## Projections
-aspicProj<-function(file){
+aspicProj<-function(file,scale="msy"){
         ## Stuff
         nits<-scan(file,skip=1,nmax=1)
         yrs <-scan(file,skip=2,nmax=2)
@@ -710,7 +710,7 @@ aspicProj<-function(file){
 
         return(FLQuants(harvest=f.,biomass=b.))}
 
-readASPICAssess<-function(dir,scen){
+readASPICAssess<-function(dir,scen,scale="msy"){
     res   <-mdply(scen, function(x,dir) as.data.frame(readASPIC(paste(dir,"/",scen,".bio",sep=""))), dir=dir)
     ts    <-subset(res, qname %in% c("biomass","harvest"))
     refpts<-subset(res, qname %in% c("bmsy",   "fmsy"))
@@ -726,7 +726,7 @@ readASPICAssess<-function(dir,scen){
 
     return(list(ts=ts,quantiles=qtls,refpts=refpts))}
 
-readASPICProj<-function(dir,scen){
+readASPICProj<-function(dir,scen,scale="msy"){
     prj       <-subset(mdply(scen, function(scen,TAC,dir) as.data.frame(readASPIC(paste(dir,"/",scen,TAC,".prb",sep=""))), dir=dir), !is.na(data))   
     prj       <-cast(prj,scen+year+TAC+iter~qname,value="data") 
     names(prj)<-c("scenario","year","TAC","iter","biomass","harvest")
@@ -736,7 +736,7 @@ readASPICProj<-function(dir,scen){
     prjP      <-ddply(prjP,.(scenario,year,TAC), function(x) cbind(f=mean(x$f,na.rm=T),b=mean(x$b,na.rm=T),p=mean(x$p,na.rm=T),collapsed=mean(x$collapsed)))
     return(prjP)}
 
-.readASPIC<-function(x,type,scen="missing"){
+.readASPIC<-function(x,type,scen="missing",scale="msy"){
   
   if (!missing(scen)){
      if (substr(tolower(type[1]),1,1)=="b") return(readASPICAssess(x,scen))

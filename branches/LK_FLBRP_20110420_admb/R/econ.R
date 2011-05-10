@@ -1,7 +1,5 @@
-# npv	{{{
 setGeneric('npv', function(object, ...)
-		standardGeneric('npv')
-)
+		standardGeneric('npv'))
 
 setMethod('npv', signature('FLBRP'),
 	function(object,d=0.05,dfg=NULL,gen=100){
@@ -36,8 +34,7 @@ setMethod('npv', signature('FLBRP'),
 
      units(res)<-unts
      
-     return(res)
-})
+     return(res)})
 
 setMethod('npv', signature('FLStock'),
 	function(object,price,vcost,fcost,d=0.05){
@@ -56,20 +53,8 @@ setMethod('npv', signature('FLStock'),
         p<-i-as.integer(i/IG)*IG
         if (p==0) p<-IG
 
-        res<-res+profit(object)/(1+d)^p
-        }
+        res<-res+profit(object)/(1+d)^p}
 
      units(res)<-unts
-     return(res)
-})
 
-npv<-function(object,price,vcost,fcost,d){
-  rev   <-apply(landings.n(object)*price,c(2:6),sum)
-  costs <-fcost+fbar(object)*vcost
-  profit<-rev-costs
-  wt    <-FLQuant(cumprod(rep(1+d,100)),dimnames=list(year=2008:2107))
-  res   <-profit/wt
-  res   <-apply(res,1,sum)
-  
-  return(res)
-  }
+     return(res)})

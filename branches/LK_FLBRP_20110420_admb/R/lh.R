@@ -19,14 +19,14 @@ setMethod('gislaSim', signature(grw="FLPar"),
             mat=function(Linf,ato50=3) FLPar(a50=0.8776*Linf-0.038-ato50,ato95=ato50),
             sel=FLPar(a=1,sl=1,sr=1e6),
             sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
-            age=1:40,...){
+            age=1:40,ageOffset=0.5,...){
 
             if (!("k"  %in% dimnames(grw)$params)) grw=addPar(grw,"k",0.5)
             if (!("t0" %in% dimnames(grw)$params)) grw=addPar(grw,"t0",0)
             if (!("a"  %in% dimnames(grw)$params)) grw=addPar(grw,"a", 0.001)
             if (!("b"  %in% dimnames(grw)$params)) grw=addPar(grw,"b", 3)
            
-       return(gislaSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age,dimnames=list(age=age)),...))})
+       return(gislaSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age+ageOffset,dimnames=list(age=age)),...))})
 
 gislaSim.=function(grw,mat,sel,m,sr,age,...){
    ## Biological processes
