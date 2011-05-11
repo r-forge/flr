@@ -50,15 +50,15 @@ void
      {
         R_registerRoutines(info, NULL, callMethods, NULL, NULL);
         R_useDynamicSymbols(info, FALSE);
-        R_RegisterCCallable("FLBRP", "Adolc_gr_tapeless", (DL_FUNC) Adolc_gr_tapeless);
-        R_RegisterCCallable("FLBRP", "ypr", (DL_FUNC) &ypr);
-        R_RegisterCCallable("FLBRP", "spr", (DL_FUNC) &spr);
-        R_RegisterCCallable("FLBRP", "hcrYield", (DL_FUNC) &hcrYield);
-        R_RegisterCCallable("FLBRP", "computeRefpts", (DL_FUNC) &computeRefpts);
-        R_RegisterCCallable("FLBRP", "brp", (DL_FUNC) &brp);
-        R_RegisterCCallable("FLBRP", "landings_n", (DL_FUNC) &landings_n);
-        R_RegisterCCallable("FLBRP", "discards_n", (DL_FUNC) &discards_n);
-        R_RegisterCCallable("FLBRP", "stock_n", (DL_FUNC) &stock_n);
-        R_RegisterCCallable("FLBRP", "equilibrium", (DL_FUNC) &equilibrium);
-        R_RegisterCCallable("FLBRP", "brp2stk", (DL_FUNC) &equilibrium);
+        R_RegisterCCallable("FLAdvice", "Adolc_gr_tapeless", (DL_FUNC) Adolc_gr_tapeless);
+        R_RegisterCCallable("FLAdvice", "ypr", (DL_FUNC) &ypr);
+        R_RegisterCCallable("FLAdvice", "spr", (DL_FUNC) &spr);
+        R_RegisterCCallable("FLAdvice", "hcrYield", (DL_FUNC) &hcrYield);
+        R_RegisterCCallable("FLAdvice", "computeRefpts", (DL_FUNC) &computeRefpts);
+        R_RegisterCCallable("FLAdvice", "brp", (DL_FUNC) &brp);
+        R_RegisterCCallable("FLAdvice", "landings_n", (DL_FUNC) &landings_n);
+        R_RegisterCCallable("FLAdvice", "discards_n", (DL_FUNC) &discards_n);
+        R_RegisterCCallable("FLAdvice", "stock_n", (DL_FUNC) &stock_n);
+        R_RegisterCCallable("FLAdvice", "equilibrium", (DL_FUNC) &equilibrium);
+        R_RegisterCCallable("FLAdvice", "brp2stk", (DL_FUNC) &equilibrium);
      }

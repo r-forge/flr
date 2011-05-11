@@ -134,7 +134,7 @@ setMethod('ypr', signature(object='FLBRP'),
 
     res<-.Call("ypr", object, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
-      PACKAGE = "FLBRP")
+      PACKAGE = "FLAdvice")
 
     return(res)})
 
@@ -179,7 +179,7 @@ setMethod('brp', signature(object='FLBRP'),
 
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
-      PACKAGE = "FLBRP")
+      PACKAGE = "FLAdvice")
 
     return(res)})
 
@@ -203,7 +203,7 @@ setMethod('hcrYield', signature(object='FLBRP', fbar='FLQuant'),
 
     res <- .Call("hcrYield", object, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
-      fbar, PACKAGE = "FLBRP")
+      fbar, PACKAGE = "FLAdvice")
     
     # propagate landings.wt
     if(dims(res)$iter != dims(landings.wt(object))$iter)

@@ -1,5 +1,5 @@
-useDynLib("FLBRP")
-importFrom("ggplot2","ggplot")
+useDynLib("FLAdvice")
+importFrom("ggplotFL")
 import("FLCore")
 importFrom("FLash",
   "SRchar2code")
