@@ -15,11 +15,11 @@ kobe<-function(x,xlim=c(0,2),ylim=xlim){
 
 kobeP<-function(biomass,harvest) {
             
-            b =  pmin(as.integer(biomass),1)
-            f =1-pmin(as.integer(harvest),1)
+            b =  pmax(pmin(as.integer(biomass),1),0)
+            f =1-pmax(pmin(as.integer(harvest),1),0)
             p =f*b
 
-            cbind(f=f,b=b,p=p,collapsed=(1-b)*(1-f))}
+            data.frame(f=f,b=b,p=p,collapsed=(1-b)*(1-f))}
 
   
 ### Kobe Matrix ##################################################################################################
@@ -49,11 +49,11 @@ kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
        
             grid()
        
-            invisible(tapply(x[,1],x[,c(2,3)],mean))}
+            invisible(tapply(x[,3],x[,c(1,2)],mean))}
 
 ##### plot Kobe lines
-kobeL=function(x,col=list(levels=seq(0.0,1.0,0.05),
-                          col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
+kobeL=function(x,image=list(levels=seq(0.0,1.0,0.05),
+                            col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
                offSet  =1.5,
                cex.lgnd=0.75){
     iTAC =unique(x[,2])
@@ -69,10 +69,10 @@ kobeL=function(x,col=list(levels=seq(0.0,1.0,0.05),
      
     axis(side=1, at=seq(min(x[,1]),max(x[,1]),2))
     axis(side=2 ) ; box()
-    if (!is.null(col)){      
+    if (!is.null(image)){      
       xRng<-rep(range(x[,1]),each=2)
-      for (i in 1:length(col$col))
-	polygon(xRng,c(col$levels[i],col$levels[i+1],col$levels[i+1],col$levels[i]),col=col$col[i],border=NA)}
+      for (i in 1:length(image$col))
+	polygon(xRng,c(image$levels[i],image$levels[i+1],image$levels[i+1],image$levels[i]),col=image$col[i],border=NA)}
 
     icol=0
     for( i in unique(x[,2])) {
@@ -85,15 +85,20 @@ kobeL=function(x,col=list(levels=seq(0.0,1.0,0.05),
     
     invisible(tapply(x[,3],x[,2:1],mean))}
 
-kobeS<-function(x,cex=1.2,image=NULL,contour=NULL){
+kobeS<-function(x,cex=1.2,image  =list(levels=seq(0.0,1.0,0.05),
+                                       col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
+                          contour=list(levels=c(.6,.7,1.0,.9),
+                                       col   =c("black"))){
     ops<-par(mfrow=c(2,2), mex=.5,mai=c( 0.5, 0.75 ,0.5, 0.1),cex=par()$cex)
 
-    kobeM(x[,c(1:2,4)]);mtext(expression(plain(P) (B>=B[MSY])),                           line=0.5, cex=cex)
-    kobeM(x[,c(1:2,5)]);mtext(expression(plain(P) (F<=F[MSY])),                           line=0.5, cex=cex)
-    kobeM(x[,c(1:2,3)]);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=0.5, cex=cex)
-    kobeL(x[,c(1:2,3)]);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>= B[MSY])),line=0.5, cex=cex, side=3)
+         kobeM(x[,c(1:2,4)],image=image,contour=contour);mtext(expression(plain(P) (B>=B[MSY])),                           line=0.5, cex=cex)
+         kobeM(x[,c(1:2,5)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY])),                           line=0.5, cex=cex)
+    res<-kobeM(x[,c(1:2,3)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=0.5, cex=cex)
+         kobeL(x[,c(1:2,3)],image=image);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>= B[MSY])),line=0.5, cex=cex, side=3)
     
     #kobeM(xCont[,c("Year","P","TAC")]);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=.5, cex=.8)
     
-    par(mfrow=ops$mfrow,mex=ops$mex,mai=ops$mai,cex=ops$cex)}
+    par(mfrow=ops$mfrow,mex=ops$mex,mai=ops$mai,cex=ops$cex)
+
+    invisible(res)}
 
