@@ -91,10 +91,10 @@ kobeS<-function(x,cex=1.2,image  =list(levels=seq(0.0,1.0,0.05),
                                        col   =c("black"))){
     ops<-par(mfrow=c(2,2), mex=.5,mai=c( 0.5, 0.75 ,0.5, 0.1),cex=par()$cex)
 
-         kobeM(x[,c(1:2,4)],image=image,contour=contour);mtext(expression(plain(P) (B>=B[MSY])),                           line=0.5, cex=cex)
+         kobeM(x[,c(1:2,4)],image=image,contour=contour);mtext(expression(plain(P) (SSB>=SSB[MSY])),                       line=0.5, cex=cex)
          kobeM(x[,c(1:2,5)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY])),                           line=0.5, cex=cex)
     res<-kobeM(x[,c(1:2,3)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=0.5, cex=cex)
-         kobeL(x[,c(1:2,3)],image=image);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>= B[MSY])),line=0.5, cex=cex, side=3)
+         kobeL(x[,c(1:2,3)],image=image);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=SSB[MSY])),               line=0.5, cex=cex, side=3)
     
     #kobeM(xCont[,c("Year","P","TAC")]);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=.5, cex=.8)
     
