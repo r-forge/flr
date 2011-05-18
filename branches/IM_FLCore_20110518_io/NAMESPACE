@@ -65,7 +65,6 @@ export(
 	"readFLIndices",
 	"read.FLIndices",
 	"readFLStock",
-	"read.FLStock",
   "readMFCL",
 	"ricker",
 	"rickerAR1",
