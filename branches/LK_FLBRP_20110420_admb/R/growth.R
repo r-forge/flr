@@ -511,5 +511,73 @@ dd<-function(par,dd,covar,ff="linear",multiplicative=TRUE){
 #x<-seq(-10,10,length.out=100)
 #plot(bnd(x,10,50)~x,type="l")
 
- 
+SS3SelParam<-function(param){
+    #p1 – PEAK: ascending inflection size (in cm)
+    #p2 – TOP: width of plateau, as logistic between PEAK and MAXLEN
+    #p3 – ASC-WIDTH: parameter value is ln(width)
+    #p4 – DESC-WIDTH: parameter value is ln(width)
+    #p5 – INIT: selectivity at first bin, as logistic between 0 and 1.
+    #P6 – FINAL: selectivity at last bin, as logistic between 0 and 1.
 
+
+    #Lmin is the midpoint of the smallest length bin,
+    #Lmax is the midpoint of the largest length bin, and
+    beta   <-numeric(5)
+
+    #β1 is the size at which selectivity=1.0 begins,
+    beta[1]<-p1
+
+    #β2 is the size at which selectivity=1.0 ends,
+    beta[2]<-p2-p1
+
+    #β3 determines the slope of the ascending section,
+    beta[3]<-p3
+
+    #β4 determines the slope of the descending section,
+    beta[4]<-p4
+
+    #β5 is the selectivity at Lmin,
+    beta[5]<-p5
+
+    #β6 is the selectivity at Lmin,
+    beta[6]<-p6
+
+    return(beta)}
+
+
+L<-read.csv("/home/lkell/Dropbox/BillfishSA/SS3base/sel.csv")
+
+ss3SelDN<-function(L,beta,Lmin,Lmax){
+
+   join=function(L,beta)
+         (1+exp(-20*((L-beta)/(1+abs(L-beta)))))^(-1)
+	  
+   nrml=function(L,Lbnd,a,b,c){
+           term1 = 1-exp(-(L   -a)^2/b)
+           term2 = 1-exp(-(Lbnd-a)^2/b)         
+           
+           return(1-(1-c)*((term1)/(term2)))}
+
+   asc=function(L,Lmin,beta) nrml(L,Lbnd,beta[1],beta[3],beta[5])
+   dsc=function(L,Lmax,beta) nrml(L,Lbnd,beta[2],beta[4],beta[6])
+
+   return(data.frame(Len=L,
+                     asc=asc(L,Lmin,beta),join1=join(L,beta[1]),join2=join(L,beta[2]),desc=dsc(L,Lmax,beta),   
+                     sel=asc(L,Lmin,beta)*(1-join(L,beta[1]))+join(L,beta[1])*(1-join(L,beta[2])+dsc(L,Lmax,beta)*join(L,beta[2]))))
+
+   return(sel)}
+
+beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
+Lmin=min(L[,1])
+Lmax=max(L[,1])
+
+
+beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
+ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
+       geom_line(aes(Len,value,group=variable,colour=variable)) + 
+       scale_y_continuous(limits=c(0,1))
+
+beta<-c("1"=10.0,"2"=15,"3"=.2,"4"=.2,"5"=.12,"6"=0.1)
+ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
+       geom_line(aes(Len,value,group=variable,colour=variable)) + 
+       scale_y_continuous(limits=c(0,1))

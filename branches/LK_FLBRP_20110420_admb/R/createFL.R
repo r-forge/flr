@@ -35,12 +35,13 @@
 #read.FLStock(...)
 
 ##### New code #####################################################################################
-setGeneric("readVPASuite", function(x,type,...) standardGeneric("readVPASuite"))
-setGeneric("readVPA2Box",  function(x,type,...) standardGeneric("readVPA2Box"))
-setGeneric("diagVPA2Box",  function(x,type,...) standardGeneric("diagVPA2Box"))
-setGeneric("readPro2Box",  function(x,type,...) standardGeneric("readPro2Box"))
+setGeneric("readVPASuite", function(x,type,...)      standardGeneric("readVPASuite"))
+setGeneric("readVPA2Box",  function(x,type,...)      standardGeneric("readVPA2Box"))
+setGeneric("diagVPA2Box",  function(x,type,...)      standardGeneric("diagVPA2Box"))
+setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
 setGeneric("readASPIC",    function(x,type,scen,...) standardGeneric("readASPIC"))
-setGeneric("readMFCL",     function(x,type,...) standardGeneric("readMFCL"))
+setGeneric("readMFCL",     function(x,type,...)      standardGeneric("readMFCL"))
+setGeneric("readSS3",      function(x,type,...)      standardGeneric("readSS3"))
 
 setMethod("readVPASuite",  signature(x="character",type="character"),  function(x,type,no.discards,sep,...)           .readLow(    x,type,no.discards=FALSE, sep="",...))
 setMethod("readVPA2Box",   signature(x="character"),                   function(x,...)                                .readVPA2Box(x,args=list(...)))
@@ -53,6 +54,7 @@ setMethod("readASPIC",     signature(x="character", type="character",scen="data.
 setMethod("readASPIC",     signature(x="character", type="character",scen="character"),  function(x,type,scen,...)    .readASPIC(  x,type,scen,scale="msy",...))
 
 setMethod("readMFCL",      signature(x="character"),                   function(x,...)                                .readMFCL(   x,...))
+setMethod("readSS3",       signature(x="character"),                   function(x,...)                                .readSS3(    x,yrs,scen,...))
 
 #### VPA2Box #########################################################################################
 getDir<-function(file){
@@ -130,7 +132,6 @@ getNBootRetro<-function(file){
 
 ## reads in data from VPA2Box files
 .readVPA2Box<-function(x,args){ 
-print(args)
 
   ## control file ##############################################################
   dir  <-getDir(x)
@@ -750,4 +751,29 @@ readASPICProj<-function(dir,scen,scale="msy"){
 
   return(res)}
 ################################################################################
+
+.readSS3<-function(x,yrs,scen,prob=c(0.25,0.5,0.75)){
+
+    post <-mdply(scen, function(scenario) read.table(paste(x,"C",scen,"/posteriors.sso",        sep=""),header=T))
+    postD<-mdply(scen, function(scenario) read.table(paste(x,"C",scen,"/derived_posteriors.sso",sep=""),header=T))
+
+    getDat<-function(dat,var){
+      dat<-dat[,c("scenario","Iter",paste(var,yrs,sep="_"))]
+      dat<-melt(dat,id.var=c("scenario","Iter"))
+      dat$variable<-as.numeric(substr(as.character(dat$variable),nchar(var)+2,nchar(as.character(dat$variable))))
+      names(dat)[2]<-"iter"
+
+      return(dat)}
+
+    b<-getDat(postD,"Bratio")
+    f<-getDat(postD,"F")
+    
+    ts<-data.frame(b[,1:2],year=b[,3],ssb=b[,4],harvest=f[,4],kobeP(b$value,f$value))
+
+    quantiles<-rbind(cbind(melt(ddply(ts[,c("year","scenario","ssb")],    .(year,scenario),function(x) quantile(x$ssb,    prob=prob)),id.var=c("year","scenario")),quantity="ssb"),
+		     cbind(melt(ddply(ts[,c("year","scenario","harvest")],.(year,scenario),function(x) quantile(x$harvest,prob=prob)),id.var=c("year","scenario")),quantity="harvest"))
+    names(quantiles)[3]="quantile"
+
+    return(list(posteriors=post,derived=postD,ts=ts,quantiles=quantiles))}
+
 
