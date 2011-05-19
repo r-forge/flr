@@ -9,9 +9,18 @@
 # by Pierre Kleiber. Licensed under MIT license
 # http://code.google.com/p/r4mfcl/
 
-# readMFCL {{{
-readMFCL <- function(repfile, parfile)
-{
+
+getExt <-function(file) substr(file,max(gregexpr("\\.",             file)[[1]])+1,nchar(file))
+
+setGeneric("readMFCL",     function(x,type,...)      standardGeneric("readMFCL"))
+setMethod( "readMFCL",      signature(x="character"),                   function(x,...)            .readMFCL(   x,...))
+
+.readMFCL <- function(x){
+
+  for (i in x){
+     if (getExt(i)=="rep") repfile<-i
+     if (getExt(i)=="par") parfile<-i}
+
   nreg <- getnreg(repfile)
 
   # seasons
@@ -68,8 +77,7 @@ readMFCL <- function(repfile, parfile)
   discards(stk)  <- computeDiscards(stk)
   stock(stk)  <- computeStock(stk)
 
-  return(stk)
-} # }}}
+  return(stk)} 
 
 # readMFCLCatch
 
