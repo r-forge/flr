@@ -633,3 +633,7 @@ setGeneric("FLlst", function(object, ...)
 # FLStocks
 setGeneric("FLStocks", function(object, ...)
 	standardGeneric("FLStocks"))
+
+# readMFCL
+setGeneric("readMFCL", function(x, ...)
+  standardGeneric("readMFCL"))

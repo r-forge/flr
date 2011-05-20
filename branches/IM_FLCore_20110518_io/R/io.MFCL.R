@@ -10,12 +10,11 @@
 # http://code.google.com/p/r4mfcl/
 
 
-getExt <-function(file) substr(file,max(gregexpr("\\.",             file)[[1]])+1,nchar(file))
 
-setGeneric("readMFCL",     function(x,type,...)      standardGeneric("readMFCL"))
-setMethod( "readMFCL",      signature(x="character"),                   function(x,...)            .readMFCL(   x,...))
+# readMFCL {{{
 
-.readMFCL <- function(x){
+setMethod( "readMFCL", signature(x="character"),
+  function(x,...) {
 
   for (i in x){
      if (getExt(i)=="rep") repfile<-i
@@ -77,9 +76,12 @@ setMethod( "readMFCL",      signature(x="character"),                   function
   discards(stk)  <- computeDiscards(stk)
   stock(stk)  <- computeStock(stk)
 
-  return(stk)} 
+  return(stk)}
+) # }}} 
 
-# readMFCLCatch
+# getExt {{{
+getExt <- function(file)
+  substr(file,max(gregexpr("\\.", file)[[1]])+1,nchar(file)) # }}}
 
 # getmfclstuff functions  {{{
 getqedlist<-function(plotrepfile="plot.rep"){
