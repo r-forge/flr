@@ -635,5 +635,5 @@ setGeneric("FLStocks", function(object, ...)
 	standardGeneric("FLStocks"))
 
 # readMFCL
-setGeneric("readMFCL", function(x, ...)
+setGeneric("readMFCL", function(file, ...)
   standardGeneric("readMFCL"))

@@ -10,15 +10,14 @@
 # http://code.google.com/p/r4mfcl/
 
 
-
 # readMFCL {{{
+setMethod( "readMFCL", signature(file="character"),
+  function(file, ...) {
 
-setMethod( "readMFCL", signature(x="character"),
-  function(x,...) {
-
-  for (i in x){
+  for (i in file) {
      if (getExt(i)=="rep") repfile<-i
-     if (getExt(i)=="par") parfile<-i}
+     if (getExt(i)=="par") parfile<-i
+  }
 
   nreg <- getnreg(repfile)
 
