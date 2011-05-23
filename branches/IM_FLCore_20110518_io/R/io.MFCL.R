@@ -9,30 +9,33 @@
 # by Pierre Kleiber. Licensed under MIT license
 # http://code.google.com/p/r4mfcl/
 
+setGeneric("readMFCL",     function(file,...)      standardGeneric("readMFCL"))
 
-# readMFCL {{{
 setMethod( "readMFCL", signature(file="character"),
   function(file, ...) {
 
   for (i in file) {
      if (getExt(i)=="rep") repfile<-i
-     if (getExt(i)=="par") parfile<-i
-  }
+     if (getExt(i)=="par") parfile<-i}
 
   nreg <- getnreg(repfile)
+  if (nreg>1)
+     nreg=1:nreg
+  else
+     nreg="unique"
 
   # seasons
   if (getnpd(repfile) != getnyr(repfile))
-    nseason <- getnpd(repfile) / getnyr(repfile)
+    seasons <- 1:(getnpd(repfile)/getnyr(repfile))
   else
-    nseason <- 1
+    seasons <- "all"
 
   minage <- 1
   minyr <- floor(min(unlist(getrtimes(repfile))))
 
   # dimnames
   dmns <- list(age=minage:getnages(repfile)+minage-1,
-      year=minyr:(minyr+getnyr(repfile)-1), unit=1, season=1:nseason, area=1:nreg)
+      year=minyr:(minyr+getnyr(repfile)-1), unit="unique", season=seasons, area=nreg)
 
   # output stock
   stk <- FLStock(
@@ -48,7 +51,7 @@ setMethod( "readMFCL", signature(file="character"),
     stock       = FLQuant(NA, dimnames=dmns[-1], quant='age'),
     stock.wt    = FLQuant(getwt.age(repfile), dimnames=dmns),
     harvest     = FLQuant(NA, dimnames=dmns, units="f"),
-    m           = FLQuant(getM.age(   repfile)/nseason, dimnames=dmns),
+    m           = FLQuant(getM.age(   repfile)/length(seasons), dimnames=dmns),
     mat         = FLQuant(getmaturity(parfile), dimnames=dmns),
     harvest.spwn= FLQuant(0, dimnames=dmns),
     m.spwn      = FLQuant(0, dimnames=dmns),
@@ -57,26 +60,25 @@ setMethod( "readMFCL", signature(file="character"),
 
   # stock.n
   N <- getNyar(repfile, byyear=FALSE)
-  N <- array(c(N), c(nseason, length(dmns$year), length(dmns$age), nreg, 1, 1))
+  N <- array(c(N), c(length(seasons), length(dmns$year), length(dmns$age), length(nreg), 1, 1))
   stock.n(stk) <- FLQuant(aperm(N, c(3,2,5,1,4,6)), dimnames=dmns)
 
   # harvest (F)
   f <- getFya(repfile)
-  f <- array(c(f), c(nseason, length(dmns$year), length(dmns$age), nreg, 1, 1))
+  f <- array(c(f), c(length(seasons), length(dmns$year), length(dmns$age), length(nreg), 1, 1))
   harvest(stk) <- FLQuant(aperm(f, c(3,2,5,1,4,6)), dimnames=dmns, units="f")
 
   # catch.n = stock.n * harvest/(harvest + m) * (1- exp(-harvest - m))
   catch.n(stk) <- stock.n(stk)*harvest(stk)/(harvest(stk)+m(stk))*
     (1-exp(-harvest(stk)-m(stk)))
   # landings.n = catch.n
-  landings.n(stk) <- catch.n(stk)
-  catch(stk)  <- computeCatch(stk, "all")
-  landings(stk) <- computeLandings(stk)
+  landings.n(stk)<- catch.n(stk)
+  catch(stk)     <- computeCatch(stk, "all")
+  landings(stk)  <- computeLandings(stk)
   discards(stk)  <- computeDiscards(stk)
-  stock(stk)  <- computeStock(stk)
+  stock(stk)     <- computeStock(stk)
 
-  return(stk)}
-) # }}} 
+  return(stk)})
 
 # getExt {{{
 getExt <- function(file)
