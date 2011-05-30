@@ -1081,15 +1081,21 @@ setMethod('jacknife', signature(object='FLQuant'),
 # as.data.frame(FLQuant) {{{
 setMethod("as.data.frame", signature(x="FLQuant", row.names="missing",
   optional="missing"),
-	function(x, row.names=NULL, optional="missing", cohort=FALSE) {
+	function(x, row.names=NULL, optional="missing", cohort=FALSE, drop=FALSE) {
 
     res <- callNextMethod(x)
     
+    # create cohort column as year - age
     if(cohort) {
-      # create cohort column as year - age
       res$cohort  <-  as.numeric(NA)
       if(quant(x) == "age")
         try(res$cohort <- res$year - res$age)
+    }
+
+    # drops columns with a single value, i.e. dims of length=1
+    if(drop) {
+      idx <- names(x)[dim(x) == 1]
+      res <- res[,idx]
     }
 
     return(res)
