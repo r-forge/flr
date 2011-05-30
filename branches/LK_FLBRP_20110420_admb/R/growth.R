@@ -545,8 +545,6 @@ SS3SelParam<-function(param){
     return(beta)}
 
 
-L<-read.csv("/home/lkell/Dropbox/BillfishSA/SS3base/sel.csv")
-
 ss3SelDN<-function(L,beta,Lmin,Lmax){
 
    join=function(L,beta)

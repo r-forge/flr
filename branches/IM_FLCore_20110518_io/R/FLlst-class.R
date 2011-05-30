@@ -1,58 +1,11 @@
-#=====================================================================
-#
-#! Class: FLlst & FL*s
-#! Date: 13/04/2007
-#! Version: 0.1-0
-#
-# \name{ myclass-class }
-# \docType{class}
-# \alias{ myclass-class }
-# \title{  - class}
-# \description{
-#	Represents this using that. 
-# }
-# \section{Slots}{
-#	\describe{
-#		\item{\code{slot1}:}{Object of class \code{"???"} ...}
-#		\item{\code{slot2}:}{Object of class \code{"???"} ...}
-# 	}
-# }
-# \section{Methods}{
-# Type \code{showMethods(classes="myclass")} at the R prompt for a complete list of methods which are available for this class.
-# Useful methods include:
-#	\describe{
-#		\item{\code{mymeth1}:}{ blahblahblah }
-#		\item{\code{mymeth2}:}{ blahblahblah }
-#	}
-# }
-# \seealso{
-#	\code{\link{ myclass2-class}}
-# }
-# \section{Creating Objects from the Class}{
-#	new("myclass")
-# }
-# \note{
-#	If relevant ...	
-# }
-# \author{
-#	me 
-#	\email{me@myself.org}
-#	\url{www.myself.org}
-# }
-# \keyword{classes}
-# \keyword{classes}
-#
-#! ToDo:
-#
-#! References (bibtex):
-#
-#! Notes:
-#
-#=====================================================================
+# FLlst-class.R - 
+# FLCore/R/FLlst-class.R
 
-#! FLlst
+# Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Iago Mosqueira, JRC
+# $Id:  $
 
-# validity
+# FLlst class{{{
 vFLl <- function(object){
 
 	# Make sure the list contains all items of the same class
@@ -69,15 +22,13 @@ vFLl <- function(object){
 }
 
 # class
-setClass("FLlst",contains="list",representation(
-	names="character",
-	desc="character",
-	lock="logical"),
+setClass("FLlst", contains="list",
+  representation(names="character", desc="character", lock="logical"),
 	prototype(lock=FALSE),
 	validity=vFLl
-)
+) # }}}
 
-# getPlural
+# getPlural {{{
 getPlural <- function(object)
 {
   switch(class(object),
@@ -91,9 +42,9 @@ getPlural <- function(object)
     'FLFleet'='FLFleets',
     'list'
     )
-}
+} # }}}
 
-# constructor
+# FLlst() {{{
 setMethod("FLlst", signature(object="ANY"), function(object, ...){
 	lst1 <- list(...)
 	nlst <- length(lst1)
@@ -115,30 +66,42 @@ setMethod("FLlst", signature(object="missing"), function(...){
 
 setMethod("FLlst", "list", function(object){
 	new("FLlst", object)
-})
+}) # }}}
 
-# coerce to list
+# coerce {{{
 setAs("FLlst", "list", function(from){
 	lst <- from@.Data
 	names(lst) <- from@names
 	attr(lst, "desc") <- from@desc # check when it's empty insert something
 	lst
-})
+}) # }}}
 
-#! FLStocks
 
-# validity
+# FLComps {{{
+vFLCs <- function(object) {
+
+  # all elements inherit from class FLComp
+  if(!all(unlist(lapply(object, is, 'FLComp'))))
+    return("All elements must be of a class that inherits from FLComp")
+
+  return(TRUE)
+}
+
+setClass("FLComps", contains=c("FLlst"), validity=vFLCs)
+# }}}
+
+# FLStocks {{{
 vFLSs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLStock")) stop("Components must be FLStock")	
-	}
-	# Everything is fine
+	
+  # All items are FLStock
+  if(!all(unlist(lapply(object, is, 'FLStock'))))
+      return("Components must be FLStock")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLStocks", contains="FLlst",
+setClass("FLStocks", contains="FLComps",
 	validity=vFLSs
 )
 
@@ -153,50 +116,37 @@ setMethod("FLStocks", signature(object="ANY"), function(object, ...){
 	new("FLStocks", lst)
 })
 
-setMethod("FLStocks", "missing", function(...){
-	if(missing(...)){
-		new("FLStocks")
-	} else { 
-		lst <- list(...)
-		new("FLStocks", lst)
-	}
-})
+setMethod("FLStocks", signature(object="missing"),
+  function(...) {
+  	if(missing(...)){
+	  	new("FLStocks")
+  	} else { 
+	  	lst <- list(...)
+		  new("FLStocks", lst)
+	  }
+  }
+)
 
 setMethod("FLStocks", "list", function(object){
 	new("FLStocks", object)
-})
+}) # }}}
 
-# is
-setGeneric("is.FLStocks", function(object)
-	standardGeneric("is.FLStocks"))
-
-setMethod("is.FLStocks", "ANY", function(object){
-	identical(is(object)[1],"FLStocks")
-})
-
-#! FLIndices
-
-# validity
-vFLIs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLIndex")) stop("Components must be FLIndex")	
-	}
-	# Everything is fine
+# FLIndices {{{
+vFLSs <- function(object){
+	
+  # All items are FLIndex
+  if(!all(unlist(lapply(object, is, 'FLIndex'))))
+      return("Components must be FLIndex")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLIndices", contains="FLlst",
-	validity=vFLIs
+setClass("FLIndices", contains="FLComps",
+	validity=vFLSs
 )
 
 # constructor
-setGeneric("FLIndices", function(object, ...){
-	standardGeneric("FLIndices")
-	}
-)
-
 setMethod("FLIndices", signature(object="ANY"), function(object, ...){
 	lst1 <- list(...)
 	nlst <- length(lst1)
@@ -207,52 +157,37 @@ setMethod("FLIndices", signature(object="ANY"), function(object, ...){
 	new("FLIndices", lst)
 })
 
-setMethod("FLIndices", "missing", function(...){
-	if(missing(...)){
-		new("FLIndices")
-	} else { 
-		lst <- list(...)
-		new("FLIndices", lst)
-	}
-})
+setMethod("FLIndices", signature(object="missing"),
+  function(...) {
+  	if(missing(...)){
+	  	new("FLIndices")
+  	} else { 
+	  	lst <- list(...)
+		  new("FLIndices", lst)
+	  }
+  }
+)
 
 setMethod("FLIndices", "list", function(object){
 	new("FLIndices", object)
-})
+}) # }}}
 
-# is
-setGeneric("is.FLIndices", function(object, ...){
-	standardGeneric("is.FLIndices")
-	}
-)
-
-setMethod("is.FLIndices", "ANY", function(object, ...){
-	identical(is(object)[1],"FLIndices")
-})
-
-#! FLBiols
-
-# validity
-vFLBs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLBiol")) stop("Components must be FLBiol")	
-	}
-	# Everything is fine
+# FLBiols {{{
+vFLSs <- function(object){
+	
+  # All items are FLBiol
+  if(!all(unlist(lapply(object, is, 'FLBiol'))))
+      return("Components must be FLBiol")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLBiols", contains="FLlst",
-	validity=vFLBs
+setClass("FLBiols", contains="FLComps",
+	validity=vFLSs
 )
 
 # constructor
-setGeneric("FLBiols", function(object, ...){
-	standardGeneric("FLBiols")
-	}
-)
-
 setMethod("FLBiols", signature(object="ANY"), function(object, ...){
 	lst1 <- list(...)
 	nlst <- length(lst1)
@@ -263,114 +198,88 @@ setMethod("FLBiols", signature(object="ANY"), function(object, ...){
 	new("FLBiols", lst)
 })
 
-setMethod("FLBiols", "missing", function(...){
-	if(missing(...)){
-		new("FLBiols")
-	} else { 
-		lst <- list(...)
-		new("FLBiols", lst)
-	}
-})
+setMethod("FLBiols", signature(object="missing"),
+  function(...) {
+  	if(missing(...)){
+	  	new("FLBiols")
+  	} else { 
+	  	lst <- list(...)
+		  new("FLBiols", lst)
+	  }
+  }
+)
 
 setMethod("FLBiols", "list", function(object){
 	new("FLBiols", object)
-})
+}) # }}}
 
-# is
-setGeneric("is.FLBiols", function(object, ...){
-	standardGeneric("is.FLBiols")
-	}
-)
-
-setMethod("is.FLBiols", "ANY", function(object, ...){
-	identical(is(object)[1],"FLBiols")
-})
-
-#! FLCatches
-
-# validity
-vFLCs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLCatch")) stop("Components must be FLCatch")	
-	}
-	# Everything is fine
+# FLCatches {{{
+vFLSs <- function(object){
+	
+  # All items are FLCatch
+  if(!all(unlist(lapply(object, is, 'FLCatch'))))
+      return("Components must be FLCatch")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLCatches", contains="FLlst", 
-	validity=vFLCs
+setClass("FLCatches", contains="FLComps",
+	validity=vFLSs
 )
 
 # constructor
-setGeneric("FLCatches", function(object, ...){
-	standardGeneric("FLCatches")
-	}
+setMethod("FLCatches", signature(object="FLCatch"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLCatches(lst)
+})
+
+setMethod("FLCatches", signature(object="missing"),
+  function(...) {
+    # empty
+  	if(missing(...)){
+	  	new("FLCatches")
+    # or not
+  	} else {
+      FLCatches(list(...))
+	  }
+  }
 )
 
-setMethod("FLCatches", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
+setMethod("FLCatches", signature(object="list"),
+  function(object, ...) {
 
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
+    args <- list(...)
 
-	# IM 20.08.07 get names
-	names <- c(object@name, unlist(lapply(lst1, function(x) x@name)))
-	attr(lst, "names") <- names
-	attr(lst, "lock") <- TRUE
-	new("FLCatches", lst)
-})
+    if(!"names" %in% names(args)) {
+      if(is.null(names(object))) {
+        names <- unlist(lapply(object, name))
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    } else
+      names <- names(object)
 
-setMethod("FLCatches", "missing", function(...){
-	if(missing(...)){
-		new("FLCatches")
-	} else { 
-		lst <- list(...)
-		new("FLCatches", lst)
-	}
-})
+    new("FLCatches", object, names=names)
+}) # }}}
 
-setMethod("FLCatches", "list", function(object){
-	new("FLCatches", object)
-})
-
-# is
-setGeneric("is.FLCatches", function(object, ...){
-	standardGeneric("is.FLCatches")
-	}
-)
-
-setMethod("is.FLCatches", "ANY", function(object, ...){
-	identical(is(object)[1],"FLCatches")
-})
-
-#! FLMetiers
-
-# validity
-vFLMs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLMetier")) stop("Components must be FLMetier")	
-	}
-	# Everything is fine
+# FLMetiers {{{
+vFLSs <- function(object){
+	
+  # All items are FLMetier
+  if(!all(unlist(lapply(object, is, 'FLMetier'))))
+      return("Components must be FLMetier")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLMetiers", contains="FLlst", 
-	validity=vFLMs
+setClass("FLMetiers", contains="FLComps",
+	validity=vFLSs
 )
 
 # constructor
-setGeneric("FLMetiers", function(object, ...){
-	standardGeneric("FLMetiers")
-	}
-)
-
 setMethod("FLMetiers", signature(object="ANY"), function(object, ...){
 	lst1 <- list(...)
 	nlst <- length(lst1)
@@ -378,65 +287,40 @@ setMethod("FLMetiers", signature(object="ANY"), function(object, ...){
 	length(lst) <- nlst + 1
 	lst[[1]] <- object
 	lst[-1] <- lst1
-
-  if(is.null(names(lst1)))
-    names(lst1) <- rep("", nlst)
-  names(lst) <- c(object@gear, names(lst1))
-  if(any(names(lst) == ""))
-  names(lst)[names(lst)==""] <- unlist(lapply(lst[names(lst)==""], function(x) x@gear))
-
-	attr(lst, "lock") <- TRUE
 	new("FLMetiers", lst)
 })
 
-setMethod("FLMetiers", "missing", function(...){
-	if(missing(...)){
-		new("FLMetiers")
-	} else { 
-		lst <- list(...)
-    if(any(names(lst) == ""))
-      names(lst)[names(lst)==""] <- unlist(lapply(lst[names(lst)==""], function(x) x@gear))
-		new("FLMetiers", lst)
-	}
-})
+setMethod("FLMetiers", signature(object="missing"),
+  function(...) {
+  	if(missing(...)){
+	  	new("FLMetiers")
+  	} else { 
+	  	lst <- list(...)
+		  new("FLMetiers", lst)
+	  }
+  }
+)
 
 setMethod("FLMetiers", "list", function(object){
 	new("FLMetiers", object)
-})
+}) # }}}
 
-# is
-setGeneric("is.FLMetiers", function(object, ...){
-	standardGeneric("is.FLMetiers")
-	}
-)
-
-setMethod("is.FLMetiers", "ANY", function(object, ...){
-	identical(is(object)[1],"FLMetiers")
-})
-
-#! FLFleets
-
-# validity
-vFLFs <- function(object){
-	# Make sure the list contains all items of the same class
-	for(i in 1:length(object)){
-		if(!is(object[[i]], "FLFleet")) stop("Components must be FLFleet")	
-	}
-	# Everything is fine
+# FLFleets {{{
+vFLSs <- function(object){
+	
+  # All items are FLFleet
+  if(!all(unlist(lapply(object, is, 'FLFleet'))))
+      return("Components must be FLFleet")	
+	
 	return(TRUE)
 }
 
 # class
-setClass("FLFleets", contains="FLlst",
-	validity=vFLFs
+setClass("FLFleets", contains="FLComps",
+	validity=vFLSs
 )
 
 # constructor
-setGeneric("FLFleets", function(object, ...){
-	standardGeneric("FLFleets")
-	}
-)
-
 setMethod("FLFleets", signature(object="ANY"), function(object, ...){
 	lst1 <- list(...)
 	nlst <- length(lst1)
@@ -447,31 +331,22 @@ setMethod("FLFleets", signature(object="ANY"), function(object, ...){
 	new("FLFleets", lst)
 })
 
-setMethod("FLFleets", "missing", function(...){
-	if(missing(...)){
-		new("FLFleets")
-	} else { 
-		lst <- list(...)
-		new("FLFleets", lst)
-	}
-})
+setMethod("FLFleets", signature(object="missing"),
+  function(...) {
+  	if(missing(...)){
+	  	new("FLFleets")
+  	} else { 
+	  	lst <- list(...)
+		  new("FLFleets", lst)
+	  }
+  }
+)
 
 setMethod("FLFleets", "list", function(object){
 	new("FLFleets", object)
-})
+}) # }}}
 
-# is
-setGeneric("is.FLFleets", function(object, ...){
-	standardGeneric("is.FLFleets")
-	}
-)
-
-setMethod("is.FLFleets", "ANY", function(object, ...){
-	identical(is(object)[1],"FLFleets")
-})
-
-#! FLQuants
-
+# FLQuants {{{
 # validity
 vFLQs <- function(object){
 	# Make sure the list contains all items of the same class
@@ -518,17 +393,7 @@ setMethod("FLQuants", "list", function(object){
 
 setMethod("FLQuants", "FLQuants", function(object){
 	return(object)
-})
-
-# is
-setGeneric("is.FLQuants", function(object, ...){
-	standardGeneric("is.FLQuants")
-	}
-)
-
-setMethod("is.FLQuants", "ANY", function(object, ...){
-	identical(is(object)[1],"FLQuants")
-})
+}) # }}}
 
 #! FLCohorts
 
