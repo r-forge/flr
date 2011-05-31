@@ -106,29 +106,56 @@ setClass("FLStocks", contains="FLComps",
 )
 
 # constructor
-setMethod("FLStocks", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
-	new("FLStocks", lst)
+setMethod("FLStocks", signature(object="FLStock"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLStocks(lst)
 })
 
 setMethod("FLStocks", signature(object="missing"),
   function(...) {
+    # empty
   	if(missing(...)){
 	  	new("FLStocks")
-  	} else { 
-	  	lst <- list(...)
-		  new("FLStocks", lst)
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLStocks',  c(list(object=object), args))
 	  }
   }
 )
 
-setMethod("FLStocks", "list", function(object){
-	new("FLStocks", object)
+setMethod("FLStocks", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLStocks", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
 
 # FLIndices {{{
@@ -147,29 +174,56 @@ setClass("FLIndices", contains="FLComps",
 )
 
 # constructor
-setMethod("FLIndices", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
-	new("FLIndices", lst)
+setMethod("FLIndices", signature(object="FLIndex"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLIndices(lst)
 })
 
 setMethod("FLIndices", signature(object="missing"),
   function(...) {
+    # empty
   	if(missing(...)){
 	  	new("FLIndices")
-  	} else { 
-	  	lst <- list(...)
-		  new("FLIndices", lst)
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLIndices',  c(list(object=object), args))
 	  }
   }
 )
 
-setMethod("FLIndices", "list", function(object){
-	new("FLIndices", object)
+setMethod("FLIndices", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLIndices", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
 
 # FLBiols {{{
@@ -188,29 +242,56 @@ setClass("FLBiols", contains="FLComps",
 )
 
 # constructor
-setMethod("FLBiols", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
-	new("FLBiols", lst)
+setMethod("FLBiols", signature(object="FLBiol"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLBiols(lst)
 })
 
 setMethod("FLBiols", signature(object="missing"),
   function(...) {
+    # empty
   	if(missing(...)){
 	  	new("FLBiols")
-  	} else { 
-	  	lst <- list(...)
-		  new("FLBiols", lst)
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLBiols',  c(list(object=object), args))
 	  }
   }
 )
 
-setMethod("FLBiols", "list", function(object){
-	new("FLBiols", object)
+setMethod("FLBiols", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLBiols", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
 
 # FLCatches {{{
@@ -241,27 +322,44 @@ setMethod("FLCatches", signature(object="missing"),
 	  	new("FLCatches")
     # or not
   	} else {
-      FLCatches(list(...))
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLCatches',  c(list(object=object), args))
 	  }
   }
 )
 
 setMethod("FLCatches", signature(object="list"),
   function(object, ...) {
-
+    
     args <- list(...)
-
-    if(!"names" %in% names(args)) {
-      if(is.null(names(object))) {
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
         names <- unlist(lapply(object, name))
+        # ... or 1:n
         idx <- names == "NA" | names == ""
         if(any(idx))
           names[idx] <- as.character(length(names))[idx]
       }
-    } else
-      names <- names(object)
+    }
 
-    new("FLCatches", object, names=names)
+    # desc & lock
+    args <- c(list(Class="FLCatches", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
 
 # FLMetiers {{{
@@ -280,29 +378,56 @@ setClass("FLMetiers", contains="FLComps",
 )
 
 # constructor
-setMethod("FLMetiers", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
-	new("FLMetiers", lst)
+setMethod("FLMetiers", signature(object="FLMetier"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLMetiers(lst)
 })
 
 setMethod("FLMetiers", signature(object="missing"),
   function(...) {
+    # empty
   	if(missing(...)){
 	  	new("FLMetiers")
-  	} else { 
-	  	lst <- list(...)
-		  new("FLMetiers", lst)
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLMetiers',  c(list(object=object), args))
 	  }
   }
 )
 
-setMethod("FLMetiers", "list", function(object){
-	new("FLMetiers", object)
+setMethod("FLMetiers", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLMetiers", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
 
 # FLFleets {{{
@@ -321,30 +446,58 @@ setClass("FLFleets", contains="FLComps",
 )
 
 # constructor
-setMethod("FLFleets", signature(object="ANY"), function(object, ...){
-	lst1 <- list(...)
-	nlst <- length(lst1)
-	lst <- list()
-	length(lst) <- nlst + 1
-	lst[[1]] <- object
-	lst[-1] <- lst1
-	new("FLFleets", lst)
+setMethod("FLFleets", signature(object="FLFleet"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLFleets(lst)
 })
 
 setMethod("FLFleets", signature(object="missing"),
   function(...) {
+    # empty
   	if(missing(...)){
 	  	new("FLFleets")
-  	} else { 
-	  	lst <- list(...)
-		  new("FLFleets", lst)
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLFleets',  c(list(object=object), args))
 	  }
   }
 )
 
-setMethod("FLFleets", "list", function(object){
-	new("FLFleets", object)
+setMethod("FLFleets", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLFleets", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
 }) # }}}
+
 
 # FLQuants {{{
 # validity
@@ -395,7 +548,7 @@ setMethod("FLQuants", "FLQuants", function(object){
 	return(object)
 }) # }}}
 
-#! FLCohorts
+#! FLCohorts {{{
 
 # validity
 vFLQs <- function(object){
@@ -443,4 +596,4 @@ setMethod("FLCohorts", "list", function(object){
 
 setMethod("FLCohorts", "FLCohorts", function(object){
 	return(object)
-})
+}) # }}}
