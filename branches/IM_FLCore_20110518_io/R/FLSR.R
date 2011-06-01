@@ -27,8 +27,6 @@ remove(validFLSR)
 invisible(createFLAccesors("FLSR", include=c('rec', 'ssb', 'covar'))) # }}}
 
 # FLSR()	{{{
-setGeneric('FLSR', function(model, ...)
-		standardGeneric('FLSR'))
 setMethod('FLSR', signature(model='ANY'),
   function(model, ...)
   {

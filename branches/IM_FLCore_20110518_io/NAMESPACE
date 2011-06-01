@@ -108,6 +108,7 @@ exportClasses(
 	"FLQuantPoint",
 	"FLQuants",
 	"FLSR",
+	"FLSRs",
 	"FLStock",
 	"FLStocks"
 )
@@ -215,6 +216,7 @@ exportMethods(
 	"FLQuants",
 	"FLQuantPoint",
 	"FLSR",
+	"FLSRs",
 	"FLStock",
 	"FLStocks",
   "gear",

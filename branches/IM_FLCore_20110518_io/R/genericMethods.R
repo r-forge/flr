@@ -657,3 +657,11 @@ setGeneric("FLFleets", function(object, ...)
 # readMFCL
 setGeneric("readMFCL", function(file, ...)
   standardGeneric("readMFCL"))
+
+# FLSRs
+setGeneric("FLSRs", function(object, ...)
+  standardGeneric("FLSRs"))
+
+# FLSR
+setGeneric("FLSR", function(model, ...)
+		standardGeneric("FLSR"))
