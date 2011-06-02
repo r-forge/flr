@@ -35,15 +35,20 @@
 #read.FLStock(...)
 
 ##### New code #####################################################################################
-setGeneric("readVPASuite", function(x,type,...)      standardGeneric("readVPASuite"))
+
+#setGeneric("readMFCL",     function(x,type,...)      standardGeneric("readMFCL"))
+#setMethod("readMFCL",      signature(x="character"),                   function(x,...)                                .readMFCL(   x,...))
+#.readMFCL<-function(x) FLCore::readMFCL(x[1],x[2])
+
 setGeneric("readVPA2Box",  function(x,type,...)      standardGeneric("readVPA2Box"))
 setGeneric("diagVPA2Box",  function(x,type,...)      standardGeneric("diagVPA2Box"))
 setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
+
+setGeneric("readVPASuite", function(x,type,...)      standardGeneric("readVPASuite"))
 setGeneric("readASPIC",    function(x,type,scen,...) standardGeneric("readASPIC"))
-setGeneric("readMFCL",     function(x,type,...)      standardGeneric("readMFCL"))
 setGeneric("readSS3",      function(x,type,...)      standardGeneric("readSS3"))
 
-setMethod("readVPASuite",  signature(x="character",type="character"),  function(x,type,no.discards,sep,...)           .readLow(    x,type,no.discards=FALSE, sep="",...))
+setMethod("readVPASuite",  signature(x="character", type="character"),  function(x,type,no.discards,sep,...)          .readLow(    x,type,no.discards=FALSE, sep="",...))
 setMethod("readVPA2Box",   signature(x="character"),                   function(x,...)                                .readVPA2Box(x,args=list(...)))
 setMethod("diagVPA2Box",   signature(x="character"),                   function(x)                                    .diagVPA2Box(x))
 setMethod("readPro2Box",   signature(x="character", type="character"), function(x,type,minyear=1,data.frame=TRUE,...) .readPro2Box(x,type,minyear,data.frame,...))
@@ -53,7 +58,6 @@ setMethod("readASPIC",     signature(x="character", type="character",scen="missi
 setMethod("readASPIC",     signature(x="character", type="character",scen="data.frame"), function(x,type,scen,...)    .readASPIC(  x,type,scen,scale="msy",...))
 setMethod("readASPIC",     signature(x="character", type="character",scen="character"),  function(x,type,scen,...)    .readASPIC(  x,type,scen,scale="msy",...))
 
-setMethod("readMFCL",      signature(x="character"),                   function(x,...)                                .readMFCL(   x,...))
 setMethod("readSS3",       signature(x="character"),                   function(x,...)                                .readSS3(    x,yrs,scen,...))
 
 #### VPA2Box #########################################################################################
