@@ -33,6 +33,7 @@ exportMethods(
   "cost",
   "rec",
   "rec.hat",
+  "plot",
   "profit",
   "profit.hat",
   "sp",
@@ -120,8 +121,7 @@ exportMethods(
   "parscale", 
   "readVPASuite",
   "readVPA2Box",
-  "readPro2Box",     
-  "readMFCL",   
+  "readPro2Box",  
   "readASPIC",
   "diagVPA2Box")
 export("f0.1",
