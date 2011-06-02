@@ -1,5 +1,4 @@
 PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/${R_ARCH}/Rterm.exe --slave -e 'cat(system.file("libs", package="FLCore"))')/${R_ARCH}/FLCore.dll
-PKG_CPPFLAGS = $(shell $(R_HOME)/bin/${R_ARCH}/Rterm.exe --slave -e 'cat(system.file("include", package="FLash"))')
 COPTFLAG=-O0
 CXXOPTFLAG=-O0
 DEBUG=F
