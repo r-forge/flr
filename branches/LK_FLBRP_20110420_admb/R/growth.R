@@ -545,37 +545,37 @@ SS3SelParam<-function(param){
     return(beta)}
 
 
-ss3SelDN<-function(L,beta,Lmin,Lmax){
-
-   join=function(L,beta)
-         (1+exp(-20*((L-beta)/(1+abs(L-beta)))))^(-1)
+#ss3SelDN<-function(L,beta,Lmin,Lmax){
+#
+#   join=function(L,beta)
+#         (1+exp(-20*((L-beta)/(1+abs(L-beta)))))^(-1)
 	  
-   nrml=function(L,Lbnd,a,b,c){
-           term1 = 1-exp(-(L   -a)^2/b)
-           term2 = 1-exp(-(Lbnd-a)^2/b)         
+#   nrml=function(L,Lbnd,a,b,c){
+#           term1 = 1-exp(-(L   -a)^2/b)
+#           term2 = 1-exp(-(Lbnd-a)^2/b)         
            
-           return(1-(1-c)*((term1)/(term2)))}
+#           return(1-(1-c)*((term1)/(term2)))}
 
-   asc=function(L,Lmin,beta) nrml(L,Lbnd,beta[1],beta[3],beta[5])
-   dsc=function(L,Lmax,beta) nrml(L,Lbnd,beta[2],beta[4],beta[6])
+#   asc=function(L,Lmin,beta) nrml(L,Lbnd,beta[1],beta[3],beta[5])
+#   dsc=function(L,Lmax,beta) nrml(L,Lbnd,beta[2],beta[4],beta[6])
 
-   return(data.frame(Len=L,
-                     asc=asc(L,Lmin,beta),join1=join(L,beta[1]),join2=join(L,beta[2]),desc=dsc(L,Lmax,beta),   
-                     sel=asc(L,Lmin,beta)*(1-join(L,beta[1]))+join(L,beta[1])*(1-join(L,beta[2])+dsc(L,Lmax,beta)*join(L,beta[2]))))
+#   return(data.frame(Len=L,
+#                     asc=asc(L,Lmin,beta),join1=join(L,beta[1]),join2=join(L,beta[2]),desc=dsc(L,Lmax,beta),   
+#                     sel=asc(L,Lmin,beta)*(1-join(L,beta[1]))+join(L,beta[1])*(1-join(L,beta[2])+dsc(L,Lmax,beta)*join(L,beta[2]))))
 
-   return(sel)}
+#   return(sel)}
 
-beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
-Lmin=min(L[,1])
-Lmax=max(L[,1])
+#beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
+#Lmin=min(L[,1])
+#Lmax=max(L[,1])
 
 
-beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
-ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
-       geom_line(aes(Len,value,group=variable,colour=variable)) + 
-       scale_y_continuous(limits=c(0,1))
+#beta<-c("1"=10.0,"2"=15,"3"=1,"4"=1,"5"=.12,"6"=0.1)
+#ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
+#       geom_line(aes(Len,value,group=variable,colour=variable)) + 
+#       scale_y_continuous(limits=c(0,1))
 
-beta<-c("1"=10.0,"2"=15,"3"=.2,"4"=.2,"5"=.12,"6"=0.1)
-ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
-       geom_line(aes(Len,value,group=variable,colour=variable)) + 
-       scale_y_continuous(limits=c(0,1))
+#beta<-c("1"=10.0,"2"=15,"3"=.2,"4"=.2,"5"=.12,"6"=0.1)
+#ggplot(melt(ss3SelDN(L[,1],beta,Lmin,Lmax),id.var="Len")) + 
+#       geom_line(aes(Len,value,group=variable,colour=variable)) + 
+#       scale_y_continuous(limits=c(0,1))
