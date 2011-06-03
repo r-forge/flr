@@ -56,14 +56,3 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
        slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
   
     return(object)}
-
-library(FLAdvice)
-data(ple4)
-
-stk<-ple4
-flb<-FLBRP(ple4)
-recycle6d(m(stk))<-m(flb)
-args<-cbind(e1=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.n",  "discards.n",   "m","mat","harvest"  ,"harvest.spwn","m.spwn"),                    
-            e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
-
-t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {recycle6d(stk[[e1]][[1]])<-flb[[e2]][[1]]; return(stk[[e1]][[1]])},stk=stk,flb=flb))

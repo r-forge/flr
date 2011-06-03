@@ -38,9 +38,9 @@ egg.pairs <- function(A, ...)
 	pairs(A,pch=".",lower.panel=fried.egg,diag.panel=panel.hist,...)
 }
 
-require(MASS)
-Sigma <- matrix(c(10,2.5,2.5,2),2,2)
-XY=mvrnorm(n=10000, rep(0, 2), Sigma)
-xx=XY[,1]; yy=XY[,2]
+#require(MASS)
+#Sigma <- matrix(c(10,2.5,2.5,2),2,2)
+#XY=mvrnorm(n=10000, rep(0, 2), Sigma)
+#xx=XY[,1]; yy=XY[,2]
 
-egg.pairs(XY)
+#egg.pairs(XY)
