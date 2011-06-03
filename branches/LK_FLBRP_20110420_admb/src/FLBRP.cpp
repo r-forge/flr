@@ -293,7 +293,8 @@ void FLBRP::Init(SEXP x)
 
 FLBRP::~FLBRP(void)      
    {
-   //unalloc sr      
+   //unalloc sr   
+
 /*
    for (int i=1; i<=3; i++)
       {
@@ -607,13 +608,11 @@ double  FLBRP::QuadSearch(int iIter)
    QSBracket(x, iIter);
 
    short Iter = 0;
-   do 
-      {
+   do {
       for(short i = 0; i <= 2; i++)
          F[i] = QSGetFunc(x[i], iIter);
 
       Newx = QSGetNewx(x, F);
-    
       Newf = QSGetFunc(Newx, iIter);
     
       //Check for one sided convergence
@@ -639,6 +638,11 @@ double  FLBRP::QuadSearch(int iIter)
             }
          else
             x[1] = Newx;
+
+Rprintf("QS \t%f\t%f\t%f\t%f",   Newx,x[0],x[1],x[2]);
+Rprintf("   \t%f\t%f\t%f\t%f\n", Newf,F[0],F[1],F[2]);
+
+//library(FLAdvice);data(ple4);t.<-brp(FLBRP(ple4))
       }
    while ((fabs(x[2] - x[0]) > QS_TOL) && (fabs(x[0] - x[1])) > QS_TOL  && (fabs(x[1] - x[2]) > QS_TOL) &&
           (fabs(F[2] - F[0]) > QS_TOL) && (fabs(F[0] - F[1])) > QS_TOL  && (fabs(F[1] - F[2]) > QS_TOL) &&Iter++ < QS_ITS);
@@ -648,7 +652,11 @@ double  FLBRP::QuadSearch(int iIter)
 
 double  FLBRP::QSGetNewx(double x[], double func[])
    {
-   return 0.5 * (x[0] + x[2]) - 0.5 * (func[0] - func[2]) * (x[2] - x[1]) * (x[1] - x[0]) / ((x[1] - x[2]) * func[0] + (x[2] - x[0]) * func[1] + (x[0] - x[1]) * func[2]);
+   double bottom = ((x[1]-x[2])*func[0] + (x[2]-x[0])*func[1] + (x[0]-x[1])*func[2]);  
+
+   if (fabs(bottom) < QS_TOL) return(x[1]);
+
+   return 0.5*(x[0]+x[2]) -0.5*(func[0] -func[2])*(x[2]-x[1])*(x[1]-x[0]) / bottom;
    }
 
 double  FLBRP::QSGetFunc(double x, int iIter)
@@ -702,6 +710,7 @@ void  FLBRP::QSBracket(double *x, int iIter)
          do { 
             x[2] *= QS_INC;
 //            t  = yield(x[2], iIter);
+            Rprintf("QSBracket \t%f\t%f\t%f\t%f\n",x[0],x[1],x[2],YieldGrad(x[2], iIter));
             }
          while (YieldGrad(x[2], iIter)>=0.0 && Iter++ < QS_ITS);
 //         while (t2>t && Iter++ < QS_ITS);

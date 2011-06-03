@@ -18,11 +18,8 @@ importFrom("stats",
   "rpois",
   "sd",
   "window")
-importFrom("graphics",
-	"plot"
-)
-importFrom("stats4",
-  "BIC")
+importFrom("graphics","plot")
+importFrom("stats4",  "BIC")
 importFrom("lattice",
 	"xyplot",
 	"bwplot",

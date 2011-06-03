@@ -11,7 +11,6 @@
 ## class :: FLStock			{{{
 validFLStock <- function(object) {
 	
-	
 	names <- names(getSlots('FLStock')[getSlots('FLStock')=="FLQuant"])
 	for(i in names){
 		# all dimnames but iter are the same
