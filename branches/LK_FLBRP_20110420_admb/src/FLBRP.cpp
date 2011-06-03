@@ -639,8 +639,8 @@ double  FLBRP::QuadSearch(int iIter)
          else
             x[1] = Newx;
 
-Rprintf("QS \t%f\t%f\t%f\t%f",   Newx,x[0],x[1],x[2]);
-Rprintf("   \t%f\t%f\t%f\t%f\n", Newf,F[0],F[1],F[2]);
+//Rprintf("QS \t%f\t%f\t%f\t%f",   Newx,x[0],x[1],x[2]);
+//Rprintf("   \t%f\t%f\t%f\t%f\n", Newf,F[0],F[1],F[2]);
 
 //library(FLAdvice);data(ple4);t.<-brp(FLBRP(ple4))
       }
@@ -710,7 +710,6 @@ void  FLBRP::QSBracket(double *x, int iIter)
          do { 
             x[2] *= QS_INC;
 //            t  = yield(x[2], iIter);
-            Rprintf("QSBracket \t%f\t%f\t%f\t%f\n",x[0],x[1],x[2],YieldGrad(x[2], iIter));
             }
          while (YieldGrad(x[2], iIter)>=0.0 && Iter++ < QS_ITS);
 //         while (t2>t && Iter++ < QS_ITS);
