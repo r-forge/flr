@@ -20,7 +20,6 @@ exportMethods(
   "discards.hat",
   "fbar<-",
   "fmsy",
-  "fwdSetup",
   "landings",
   "landings.hat",
   "msy",
@@ -141,4 +140,5 @@ export("f0.1",
        "kobe",
        "kobeP",
        "kobeM",
-       "kobeL")
+       "kobeL",
+       "fwdSetup")
