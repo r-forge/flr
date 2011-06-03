@@ -56,3 +56,39 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
        slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
   
     return(object)}
+    
+setAs('FLBRP', 'FLStock',
+  function(from){
+
+    years <- dimnames(fbar(from))$year
+    flq<-landings.n(from)
+    flq[]<-NA
+    res <- FLStock(flq,
+      # TODO extend slots for years: check all slots present
+      name=name(from))
+      #, desc=paste("Created by coercion from 'FLBRP'", desc(from)))
+
+    # range
+    range(res)<-range(from)
+    range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear','maxyear')])
+
+    years<-dimnames(slot(res,"m"))$year
+    for (i in c("stock.wt","m","mat","harvest.spwn","m.spwn")){
+        dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
+        slot(res,i)                <- expand(slot(from,i), year=years)
+        recycle6d(slot(res,i))     <- slot(from,i)}
+
+    for (i in c("stock.n","catch.n","landings.n","discards.n","harvest"))
+        recycle6d(slot(res,i))<-do.call(i,list(from))
+        
+    recycle6d(   catch.wt(res))<-catch.wt(from)
+    recycle6d(discards.wt(res))<-discards.wt(from)
+    recycle6d(landings.wt(res))<-landings.wt(from)
+    catch(res)                 <-computeCatch(res,"all")
+    
+    if(validObject(res))
+      return(res)
+    else
+     stop("invalid object created. Please check input object")})
+    
+    
