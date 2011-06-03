@@ -20,6 +20,7 @@ exportMethods(
   "discards.hat",
   "fbar<-",
   "fmsy",
+  "fwdSetup",
   "landings",
   "landings.hat",
   "msy",
