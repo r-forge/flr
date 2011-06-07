@@ -1047,6 +1047,12 @@ setMethod('jacknife', signature(object='FLQuant'),
 setMethod("as.data.frame", signature(x="FLQuant", row.names="missing",
   optional="missing"),
 	function(x, cohort=FALSE, drop=FALSE) {
+    as.data.frame(x, row.names=NULL, cohort=cohort, drop=drop)
+  }
+)
+setMethod("as.data.frame", signature(x="FLQuant", row.names="ANY",
+  optional="missing"),
+	function(x, row.names, cohort=FALSE, drop=FALSE) {
 
     res <- callNextMethod(x)
     
@@ -1059,8 +1065,8 @@ setMethod("as.data.frame", signature(x="FLQuant", row.names="missing",
 
     # drops columns with a single value, i.e. dims of length=1
     if(drop) {
-      idx <- names(x)[dim(x) == 1]
-      res <- res[,idx]
+      idx <- names(x)[dim(x) > 1]
+      res <- res[, c(idx, 'data')]
     }
 
     return(res)

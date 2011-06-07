@@ -178,7 +178,7 @@ setMethod("mcf", signature(object="list"), function(object){
 
 ## as.data.frame	{{{
 setMethod("as.data.frame", signature(x="FLQuants", row.names="ANY", optional="missing"),
-  function(x, row.names=NULL, drop=FALSE)
+  function(x, row.names, drop=FALSE)
 	{
 		# names
 		if(is.null(names(x)))
@@ -208,7 +208,7 @@ setMethod("as.data.frame", signature(x="FLQuants", row.names="ANY", optional="mi
 
 setMethod("as.data.frame", signature(x="FLQuants", row.names="missing",
   optional="missing"),
-    function(x, row.names=NULL, ...) {
+    function(x, ...) {
       as.data.frame(x, row.names=NULL, ...)
     }
 )
