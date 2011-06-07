@@ -5,41 +5,6 @@
 # Maintainer: Iago Mosqueira, JRC
 # $Id: FLQuant.R 933 2011-05-03 12:32:03Z imosqueira $
 
-## Class
-## FLQuant     {{{
-validFLQuant  <-  function(object){
-	# Make sure there are at least 6 dimensions in the array named
-	# *, "year", "unit", "season", "area" and "iter"
-	DimNames  <-  names(object)
-  if (length(DimNames) != 6)
-    return("the array must have 6 dimensions")
-  if (!all(DimNames[2:6] == c("year", "unit", "season", "area", "iter")))
-    return("dimension names of the array are incorrect")
-	if (!is.numeric(object) && !is.na(object))
-		return("array is not numeric")
-
-	# check "units" slot
-	if(!is.character(object@units))
-		return("units must be a string")
-
-	# Everything is fine
-	return(TRUE)
-}
-
-setClass("FLQuant",
-	representation("FLArray"),
-	prototype(array(as.numeric(NA), dim=c(1,1,1,1,1,1),
-		dimnames=list(quant="all", year="1", unit="unique", season="all",
-		area="unique", iter="1")), units="NA"),
-	validity=validFLQuant
-)
-
-remove(validFLQuant)    # }}}
-
-## Methods
-## FLQuant      {{{
-	setGeneric("FLQuant", function(object, ...)
-		standardGeneric("FLQuant"))# }}}
 
 # FLQuant(missing)		{{{
 # FLQuant  <- FLQuant()
@@ -1081,7 +1046,7 @@ setMethod('jacknife', signature(object='FLQuant'),
 # as.data.frame(FLQuant) {{{
 setMethod("as.data.frame", signature(x="FLQuant", row.names="missing",
   optional="missing"),
-	function(x, row.names=NULL, optional="missing", cohort=FALSE, drop=FALSE) {
+	function(x, cohort=FALSE, drop=FALSE) {
 
     res <- callNextMethod(x)
     

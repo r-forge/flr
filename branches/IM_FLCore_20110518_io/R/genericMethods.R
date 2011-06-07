@@ -665,3 +665,7 @@ setGeneric("FLSRs", function(object, ...)
 # FLSR
 setGeneric("FLSR", function(model, ...)
 		standardGeneric("FLSR"))
+
+# FLQuant
+	setGeneric("FLQuant", function(object, ...)
+		standardGeneric("FLQuant"))

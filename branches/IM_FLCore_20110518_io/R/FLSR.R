@@ -5,26 +5,6 @@
 # Maintainer: Dorleta García, AZTI
 # $Id: FLSR.R 954 2011-05-13 07:15:37Z imosqueira $
 
-# Reference:
-# Notes:
-
-# FLSR  {{{
-validFLSR <- function(object)
-{
-	return(TRUE)
-}
-setClass('FLSR',
-  representation(
-	  'FLModel',
-  	rec='FLQuant',
-	  ssb='FLQuant',
-  	covar='FLQuants',
-    logerror='logical'),
-  prototype(residuals=FLQuant(), fitted=FLQuant(), logerror=TRUE),
-	validity=validFLSR)
-remove(validFLSR)
-
-invisible(createFLAccesors("FLSR", include=c('rec', 'ssb', 'covar'))) # }}}
 
 # FLSR()	{{{
 setMethod('FLSR', signature(model='ANY'),

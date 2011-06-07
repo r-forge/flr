@@ -5,26 +5,6 @@
 # Maintainer: Iago Mosqueira, JRC
 # $Id: FLPar.R 933 2011-05-03 12:32:03Z imosqueira $
 
-# Reference:
-# Notes:
-
-# Validity  {{{
-validFLPar <- function(object) {
-
-	# Last dimension is called 'iter' ...
-  if(names(dimnames(object))[length(dim(object))] != "iter")
-    return("last dimension must be named 'iter'")
-  # ... and the first 'params'
-
-	return(TRUE)
-}   # }}}
-
-# FLPar {{{
-setClass('FLPar', representation('array', units='character'),
-	prototype=prototype(array(as.numeric(NA), dim=c(1,1),
-	dimnames=list(param="", iter=1)), units='NA'), validity=validFLPar)
-remove(validFLPar)
-# }}}
 
 # Constructors  {{{
 if (!isGeneric("FLPar"))
