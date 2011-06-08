@@ -326,12 +326,18 @@ setMethod('jacknife', signature(object="FLSR"),
 
   # jacknife input(s)
   for(i in seq(length(what)))
-    slot(object, what) <- jacknife(slot(object, what))
+    slot(object, what[i]) <- jacknife(slot(object, what[i]))
 
   # fit
   object <- fmle(object)
 
-  #
+  for(i in seq(length(stat)))
+    res<-jacknife.smry(object[[stat[1]]]) 
+  
+  return(res)}) 
+# }}}
+
+jacknife.smry<-function(object, ...) {
   jack.mean <- function(x) {
     n   <- length(dims(x)$iter)-1
  
@@ -367,11 +373,9 @@ setMethod('jacknife', signature(object="FLSR"),
     mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
     return(- sqrt(((n - 1)/n) *  apply(u-mnU, idx, function(x) sum(x^2))))}
 
-  #
-    mn   <- lapply(object[[stat]], jack.mean)
-    se   <- lapply(object[[stat]], jack.se)
-    bias <- lapply(object[[stat]], jack.bias)
+    #
+    mn   <- lapply(object, jack.mean)
+    se   <- lapply(object, jack.se)
+    bias <- lapply(object, jack.bias)
     
-    return(list(jk=object[[stat]],mean=mn,se=se,bias=bias))}
-    
-) # }}}
+    return(list(mean=mn,se=se,bias=bias))}
