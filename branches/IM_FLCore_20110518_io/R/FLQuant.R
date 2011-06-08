@@ -1039,8 +1039,11 @@ setMethod('jacknife', signature(object='FLQuant'),
     idx <- array(c(TRUE,rep(NA, prod(dmo[-6]))), dim=dim(res))
     res[idx] <- NA
 
-    return(res)
-  }
+    res2 <- propagate(object, prod(dmo)+1)
+    res2[,,,,, 1] <-object
+    res2[,,,,,-1]<-res
+ 
+    return(res2)}
 ) # }}}
 
 # as.data.frame(FLQuant) {{{
