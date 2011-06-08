@@ -319,3 +319,48 @@ setMethod('parscale', signature(object='FLSR'),
       return(res)
   }
 ) # }}}
+
+# jacknife {{{
+setMethod('jacknife', signature(object="FLSR"),
+  function(object, what, stat, ...) {
+
+  # jacknife input(s)
+  for(i in seq(length(what)))
+    slot(object, what) <- jacknife(slot(object, what))
+
+  # fit
+  object <- fmle(object)
+
+  #
+  jack.bias <- function(x) {
+    n <- dims(x)$iter - 1
+
+    nms <- names(dimnames(x))
+    idx <- seq(length(nms))[nms != 'iter']
+
+    mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+    # NOTE Remember 1 is not the original value, but the first jacknifed
+    thetahat <- iter(x, 1)
+
+    return((n - 1) * (mnU - thetahat))
+  }
+  jack.se <- function(x) {
+    n <- dims(x)$iter
+    # NOTE This was -1 in your code, but then m and mnU are almost
+    # the same.
+    u <- iter(x, -1)
+    
+    nms <- names(dimnames(x))
+    idx <- seq(length(nms))[nms != 'iter']
+
+    mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+    return(- sqrt(((n - 1)/n) * sum((u - mnU)^2)))
+  }
+
+  #
+    se <- lapply(object[[stat]], jack.se)
+    bias <- lapply(object[[stat]], jack.bias)
+    
+    return(list(se=se,bias=bias))
+  }
+) # }}}
