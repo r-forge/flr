@@ -413,7 +413,7 @@ setMethod("dims", signature(obj="FLPar"),
 	function(obj, ...) {
     dimnames(obj)
     names(obj)
-		iter <- as.numeric(dimnames(obj)$iter)
+		iter <- length(dimnames(obj)$iter)
     params <- dimnames(obj)$params
 		return(list(iter=iter, params=params))
 	}

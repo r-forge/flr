@@ -1024,26 +1024,20 @@ setMethod('sweep', signature(x='FLQuant'),
 ) # }}}
 
 # jacknife  {{{
-setGeneric("jacknife", function(object, ...)
-	standardGeneric("jacknife"))
 setMethod('jacknife', signature(object='FLQuant'),
-  function(object)
-  {
+  function(object) {
     # get dimensions
     dmo <- dim(object)
 
     # propagate
-    res <- propagate(object, prod(dmo))
+    res <- propagate(object, prod(dmo) + 1)
   
     # create array with 1 at each location by iter
-    idx <- array(c(TRUE,rep(NA, prod(dmo[-6]))), dim=dim(res))
-    res[idx] <- NA
+    idx <- array(c(TRUE, rep(NA, prod(dmo[-6]))), dim=c(dmo[-6], prod(dmo)))
+    res[,,,,,-1][idx] <- NA
 
-    res2 <- propagate(object, prod(dmo)+1)
-    res2[,,,,, 1] <-object
-    res2[,,,,,-1]<-res
- 
-    return(res2)}
+    return(res)
+  }
 ) # }}}
 
 # as.data.frame(FLQuant) {{{

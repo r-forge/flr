@@ -320,62 +320,50 @@ setMethod('parscale', signature(object='FLSR'),
   }
 ) # }}}
 
-# jacknife {{{
-setMethod('jacknife', signature(object="FLSR"),
-  function(object, what="rec", stat="params", ...) {
+# jackSummary {{{
+setMethod("jackSummary", signature(object="array"),
+  function(object, ...) {
 
-  # jacknife input(s)
-  for(i in seq(length(what)))
-    slot(object, what[i]) <- jacknife(slot(object, what[i]))
+    # jack.mean
+    jack.mean <- function(x) {
+      n <-length(dims(x)$iter) - 1
 
-  # fit
-  object <- fmle(object)
+      nms <- names(dimnames(x))
+      idx <- seq(length(nms))[nms != 'iter']
 
-  for(i in seq(length(stat)))
-    res<-jacknife.smry(object[[stat[1]]]) 
-  
-  return(res)}) 
-# }}}
+      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+    
+      return(mnU)
+    }
 
-jacknife.smry<-function(object, ...) {
-  jack.mean <- function(x) {
-    n   <- length(dims(x)$iter)-1
+    # jack.bias
+    jack.bias <- function(x) {
+      n  <- length(dims(x)$iter) - 1
  
-    nms <- names(dimnames(x))
-    idx <- seq(length(nms))[nms != 'iter']
+      nms <- names(dimnames(x))
+      idx <- seq(length(nms))[nms != 'iter']
 
-    mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+      
+      thetahat <- iter(x, 1)
+
+      return((n - 1) * (mnU - thetahat))
+    }
+
+    # jack.se
+    jack.se <- function(x) {
+      n <- length(dims(x)$iter)-1
+      u <- iter(x, -1)
     
-    return(mnU)}
+      nms <- names(dimnames(x))
+      idx <- seq(length(nms))[nms != 'iter']
 
-  jack.bias <- function(x) {
-    n   <- length(dims(x)$iter)-1
- 
-    nms <- names(dimnames(x))
-    idx <- seq(length(nms))[nms != 'iter']
-
-    mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
-    # NOTE Remember 1 is not the original value, but the first jacknifed
-    thetahat <- iter(x, 1)
-
-    return((n - 1) * (mnU - thetahat))}
-  
-  jack.se <- function(x) {
-    n <- length(dims(x)$iter)-1
-    # NOTE This was -1 in your code, but then m and mnU are almost
-    # the same.
-    ## Reason was because I realised in jacknife the 1st iter should have no NAs
-    u <- iter(x, -1)
+      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
+      return(- sqrt(((n - 1)/n) *  apply(u-mnU, idx, function(x) sum(x^2))))
+    }
     
-    nms <- names(dimnames(x))
-    idx <- seq(length(nms))[nms != 'iter']
-
-    mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
-    return(- sqrt(((n - 1)/n) *  apply(u-mnU, idx, function(x) sum(x^2))))}
-
-    #
-    mn   <- lapply(object, jack.mean)
-    se   <- lapply(object, jack.se)
-    bias <- lapply(object, jack.bias)
     
-    return(list(mean=mn,se=se,bias=bias))}
+    return(list(jack.mean=jack.mean(object), jack.se=jack.se(object),
+        jack.bias=jack.bias(object)))
+  }
+) # }}}
