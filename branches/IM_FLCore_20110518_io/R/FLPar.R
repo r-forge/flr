@@ -577,3 +577,33 @@ setMethod('sweep', signature(x='FLPar'),
     do.call(class(x), list(res, units=units(x)))
   }
 ) # }}}
+
+# apply {{{
+setMethod('apply', signature(X='FLPar'),
+  function(X, MARGIN, FUN, ...)
+  {
+    res <- callNextMethod()
+    do.call(class(x), list(res, units=units(x)))
+  }
+) # }}}
+
+# jackSummary {{{
+setMethod("jackSummary", signature(object="FLPar"),
+  function(object, ...) {
+
+   nms <-names(dimnames(object))
+   idx <-seq(length(nms))[nms != 'iter']
+   n <-dims(object)$iter - 1
+   
+   mn <-iter(object,  1)
+   u <-iter(object, -1)
+   mnU <-apply(u, idx, mean)   
+
+   SS <-apply(sweep(u, idx, mnU,"-")^2, idx, sum)
+
+   bias <- (n - 1) * (mnU - mn)
+   se <- sqrt(((n-1)/n)*SS)
+
+   return(list(jack.mean=mn, jack.se=se, jack.bias=bias))
+  }
+) # }}}

@@ -1040,6 +1040,25 @@ setMethod('jacknife', signature(object='FLQuant'),
   }
 ) # }}}
 
+# jackSummary {{{
+setMethod("jackSummary", signature(object="FLQuant"),
+  function(object, ...) {
+   
+   n <- dims(object)$iter - 1
+   
+   mn <- iter(object,  1)
+   u <- iter(object, -1)
+   mnU <- apply(u, 1:5, mean)   
+
+   SS <- apply(sweep(u, 1:5, mnU,"-")^2, 1:5, sum)
+
+   bias <- (n - 1) * (mnU - mn)
+   se <- sqrt(((n-1)/n)*SS)
+
+   return(list(jack.mean=mn, jack.se=se, jack.bias=bias))
+  }
+) # }}}
+
 # as.data.frame(FLQuant) {{{
 setMethod("as.data.frame", signature(x="FLQuant", row.names="missing",
   optional="missing"),

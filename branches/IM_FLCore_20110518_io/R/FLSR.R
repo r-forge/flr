@@ -319,25 +319,3 @@ setMethod('parscale', signature(object='FLSR'),
       return(res)
   }
 ) # }}}
-
-# jackSummary {{{
-setMethod("jackSummary", signature(object="array"),
-  function(object, ...) {
-
-   nms <-names(dimnames(object))
-   idx <-seq(length(nms))[nms != 'iter']
-   n <-dims(object)$iter-1
-   
-   mn <-iter(object,  1)
-   u <-iter(object, -1)
-   mnU <-apply(u, idx, mean)   
-
-   # BUG FLPar being called as hack for missing apply(FLpar)
-   SS <-FLPar(apply(sweep(u, idx, mnU,"-")^2, idx, sum))
-
-   bias <- (n - 1) * (mnU - mn)
-   se <- sqrt(((n-1)/n)*SS)
-
-   return(list(jack.mean=mn, jack.se=se, jack.bias=bias))
-  }
-) # }}}
