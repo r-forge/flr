@@ -583,7 +583,7 @@ setMethod('apply', signature(X='FLPar'),
   function(X, MARGIN, FUN, ...)
   {
     res <- callNextMethod()
-    do.call(class(x), list(res, units=units(x)))
+    do.call(class(X), list(res, units=units(X)))
   }
 ) # }}}
 
