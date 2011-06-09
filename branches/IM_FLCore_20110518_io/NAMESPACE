@@ -242,6 +242,7 @@ exportMethods(
 	"iterVars",
 	"iters",
   "jacknife",
+  "jackSummary",
 	"landings",
 	"landings<-",
 	"landings.n",
