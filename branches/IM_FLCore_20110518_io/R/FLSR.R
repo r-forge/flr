@@ -324,46 +324,20 @@ setMethod('parscale', signature(object='FLSR'),
 setMethod("jackSummary", signature(object="array"),
   function(object, ...) {
 
-    # jack.mean
-    jack.mean <- function(x) {
-      n <-length(dims(x)$iter) - 1
+   nms <-names(dimnames(object))
+   idx <-seq(length(nms))[nms != 'iter']
+   n <-dims(object)$iter-1
+   
+   mn <-iter(object,  1)
+   u <-iter(object, -1)
+   mnU <-apply(u, idx, mean)   
 
-      nms <- names(dimnames(x))
-      idx <- seq(length(nms))[nms != 'iter']
+   # BUG FLPar being called as hack for missing apply(FLpar)
+   SS <-FLPar(apply(sweep(u, idx, mnU,"-")^2, idx, sum))
 
-      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
-    
-      return(mnU)
-    }
+   bias <- (n - 1) * (mnU - mn)
+   se <- sqrt(((n-1)/n)*SS)
 
-    # jack.bias
-    jack.bias <- function(x) {
-      n  <- length(dims(x)$iter) - 1
- 
-      nms <- names(dimnames(x))
-      idx <- seq(length(nms))[nms != 'iter']
-
-      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
-      
-      thetahat <- iter(x, 1)
-
-      return((n - 1) * (mnU - thetahat))
-    }
-
-    # jack.se
-    jack.se <- function(x) {
-      n <- length(dims(x)$iter)-1
-      u <- iter(x, -1)
-    
-      nms <- names(dimnames(x))
-      idx <- seq(length(nms))[nms != 'iter']
-
-      mnU <- apply(iter(x, -1), idx, mean, na.rm=TRUE)
-      return(- sqrt(((n - 1)/n) *  apply(u-mnU, idx, function(x) sum(x^2))))
-    }
-    
-    
-    return(list(jack.mean=jack.mean(object), jack.se=jack.se(object),
-        jack.bias=jack.bias(object)))
+   return(list(jack.mean=mn, jack.se=se, jack.bias=bias))
   }
 ) # }}}
