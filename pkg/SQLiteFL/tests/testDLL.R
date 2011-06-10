@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 08 Jan 2009 15:02
+# Last Change: Fri Jun 10, 2011 at 02:41 PM +0200
 # $Id$
 
 # Reference:
@@ -18,7 +18,7 @@ db <- tempfile()
 data(ple4)
 
 # insertFLComp
-.Call('insertFLComp', db, 'ple4', ple4, names(getSlots(class(ple4)))[getSlots(class(ple4)) == 'FLQuant'])
+.Call('insertFLComp', db, 'ple4', ple4, names(getSlots(class(ple4)))[getSlots(class(ple4)) == 'FLQuant'], "")
 
 # selectFLComp
 ple4b <- .Call('selectFLComp', db, 'ple4')

@@ -403,8 +403,7 @@ SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP Rstrin
         return (Rval);
       }
       /* BIND slot value (2) */
-Rprintf("%s\n", STRING_ELT(GET_SLOT(Rflc, install(CHAR(STRING_ELT(Rstring, t)))), 0));
-/*      dname = CHAR(STRING_ELT(GET_SLOT(Rflc, install(CHAR(STRING_ELT(Rstring, t)))), 0)); */
+      Rprintf("%s\n", STRING_ELT(GET_SLOT(Rflc, install(CHAR(STRING_ELT(Rstring, t)))), 0));
       rc=sqlite3_bind_text(stmt, 2, dname, -1, NULL);
       /* Can slot values be bound to statement? */
       if(rc != SQLITE_OK) {
