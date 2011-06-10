@@ -1,0 +1,76 @@
+# plot - plot(FLBioDym)
+
+# Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Laurence Kell
+# Last Change: 16 Sep 2009 11:24
+
+setMethod("plot", signature(x="FLBioDym", y="missing"),
+p.<-  function(x, y, type=c("all","equil","stock","harvest","index","catch","diag"),...){
+
+      switch(as.character(type[1]),
+             "equil"  =plot.e(x),
+             "stock"  =plot.s(x),
+             "harvest"=plot.h(x),
+             "index"  =plot.u(x),
+             "catch"  =plot.c(x),
+             "diag"   =plot.d(x),
+             "all"    =plot.a(x),
+             stop("type must be 'equil','stock','harvest','index','catch','diag','all'!"))
+
+      invisible()
+		})
+
+plot.u<-function(x){
+
+   catchability<-calcQ(stock(x),index(x),error=x@distribution)
+   indexHat.   <-catchability*mnBio(stock(x))
+
+   plot( c(index(x)) ~dimnames(index(x))$year,xlab="Year",ylab="CPUE Index")
+   lines(c(indexHat.)~dimnames(indexHat.)$year)
+   }
+   
+plot.s<-function(x){
+   plot(stock(x),type="b",xlab="Year",ylab="Stock",main="Stock Biomass")
+   }
+
+plot.c<-function(x){
+   plot(catch(x),type="b",,xlab="Year",ylab="Catch",main="Catch Biomass")
+   }
+
+plot.h<-function(x){
+   h.<-catch(x)/stock(x)[,dimnames(catch(x))$year]
+
+   plot(h.,type="b",xlab="Year",ylab="Harvest",main="Exploitation Rate")
+   }
+
+plot.e<-function(x){
+   .ylim=c(0,max(msy(x)[1],catch(x)))*1.1
+   
+   stk<-FLQuant(seq(0,getPar(params(x),"K"),length.out=100))@.Data
+   ctch<-sp(x,stock=stk)
+
+   plot(c(ctch)~c(stk[,dimnames(ctch)$year,,,,]),type="l",xlab="Stock",ylab="Yield",lwd=2,col="navy",ylim=.ylim)
+   points(catch(x)~stock(x)[,dimnames(catch(x))$year],type="b",lwd=2,pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=3,col="blue", pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=2,col="white",pch=16)
+   points(refpts(x)["catch",1]~refpts(x)["stock",1],type="p",cex=1,col="red",  pch=16)
+   }
+   
+plot.a<-function(x){
+    print(plot.c(x),split=c(1,3,1,3),more=T)
+    print(plot.h(x),split=c(1,2,1,3),more=T)
+    print(plot.s(x),split=c(1,1,1,3),more=F)
+    }
+    
+plot.d<-function(x){
+    yrs    <-ac(dimnames(x@index)$year)
+    obs    <-x@index[,yrs]
+    resid  <-residuals(x)[,yrs]
+    indVar <-x@stock[,yrs]
+    indVar.<-FLQuant(seq(0, max(indVar), length=dim(indVar)[2]),dimnames=dimnames(indVar))
+    hat    <-sweep(x@stock[,yrs],6, x@params["q",], "*")
+    prd    <-sweep(indVar.,6, x@params["q",], "*")
+
+    diagResidPlot(hat,indVar,indVar.,prd,obs,resid,xttl="Stock",yttl="CPUE",mttl="Index of abundance")
+    }
+    

@@ -1,0 +1,18 @@
+import("FLCore")
+import("FLash")
+export("summary",
+       "show")
+exportClasses("FLBioDym")
+exportMethods("FLBioDym",
+              "fit",
+              "fitted",
+              "fwd",
+              "residuals",
+              "computeRefpts",
+              "r",
+              "vb",
+              "sp",
+              "msy",
+              "bmsy",
+              "fmsy",
+              "plot")
