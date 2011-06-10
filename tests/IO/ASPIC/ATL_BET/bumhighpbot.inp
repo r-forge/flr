@@ -1,0 +1,456 @@
+BOT                    ## Run type (FIT, BOT, or IRF)
+"BUM 2011 US LL and sport and LL Japan and Tai until 1980 Japan from 1981 and Ven LL and Sport weighted by area "
+LOGISTIC YLD SSE        ## See notes at end of this file
+2                       ## Verbosity on screen (0-3); add 10 for SUM & PRN files
+1000  90                ## N bootstrap trials <= 1000, user bootst. conf. intvl.
+0 20000                 ## 0=no MC search, 1=search, 2=repeated srch; N trials
+1d-8                    ## Convergence crit. for simplex
+3d-8    8               ## Convergence crit. for restarts, N restarts
+1d-4    24              ## Conv. crit. for F; N steps/yr for gen. model
+6d0                     ## Maximum F when cond. on yield
+0d0                     ## Stat weight for B1>K as residual (usually 0 or 1)
+7                      ## Number of fisheries (data series)
+0.2d0 1d0 0.02d0 0.1d0 0.15d0 1d0 0.02d0 ## Statistical weights for data series
+1d0                    ## B1/K (starting guess, usually 0 to 1)
+4000                   ## MSY (starting guess)
+27000                       ## K (carrying capacity) (starting guess)
+0.00001 0.00001 0.00001 0.00001 0.00001 0.00001  0.00001  ## q (starting guesses -- 1 per data series)
+0 1 1 1 1 1 1 1 1 1 ## Estimate flags (0 or 1) (B1/K,MSY,K,q1...qn)
+1000  10000            ## Min and max constraints -- MSY
+10000 300000           ## Min and max constraints -- K
+3941285                 ## Random number seed (large integer)
+54                      ## Number of years of data in each series
+"US longline"             ## Title for 1st series (<=40 chars)
+CC                                     ## Series type (CC = CPUE, catch)
+1956   -1             39.0
+1957   -1             764.0
+1958   -1             772.0
+1959   -1             841.0
+1960   -1             2815.0
+1961   -1             4083.0
+1962   -1             7308.0
+1963   -1             9038.0
+1964   -1             8011.0
+1965   -1             6156.0
+1966   -1             3863.0
+1967   -1             2246.0
+1968   -1             2527.0
+1969   -1             3106.0
+1970   -1             2886.0
+1971   -1             3398.0
+1972   -1             2414.0
+1973   -1             3226.0
+1974   -1             3095.0
+1975   -1             3271.0
+1976   -1             2419.0
+1977   -1             2181.0
+1978   -1             1642.0
+1979   -1             1527.3
+1980   -1             1847.6
+1981   -1             2032.3
+1982   -1             2707.6
+1983   -1             2141.8
+1984   -1             2888.2
+1985   -1             3415.9
+1986   1.83792342     2113.8
+1987   1.296945961    2329.7
+1988   1.326944711    2974.4
+1989   1.904920628    4432.1
+1990   1.818924211    4705.0
+1991   1.238948377    4330.0
+1992   1.868922128    3207.7
+1993   2.05991417     3309.1
+1994   1.609932919    4410.5
+1995   1.228948794    4353.4
+1996   1.251947836    5568.0
+1997   0.742969043    5936.7
+1998   0.693971085    5964.3
+1999   0.588975459    5651.3
+2000   0.538977543    5519.9
+2001   0.379984167    4525.6
+2002   0.489979584    3846.0
+2003   0.28198825     4415.6
+2004   0.432981959    2934.2
+2005   0.485979751    3415.6
+2006   0.344985626    3079.0
+2007   0.445981417    4105.7
+2008   0.668972126    4345.5
+2009   0.459980834    3169.8
+"Longline Japan period 1959-1980"
+I1
+1956    -1
+1957    -1
+1958    -1
+1959    2.220788851
+1960    1.96415205
+1961    3.819901227
+1962    3.464691814
+1963    2.777073592
+1964    1.77584706
+1965    1.215532212
+1966    1.005166637
+1967    0.973885808
+1968    1.175901161
+1969    1.298704416
+1970    1.047897769
+1971    0.652417289
+1972    0.74679979
+1973    0.57885534
+1974    0.965945598
+1975    0.698988523
+1976    0.485062854
+1977    0.557954786
+1978    0.58981563
+1979    0.601375936
+1980    0.733179429
+1981    -1
+1982    -1
+1983    -1
+1984    -1
+1985    -1
+1986    -1
+1987    -1
+1988    -1
+1989    -1
+1990    -1
+1991    -1
+1992    -1
+1993    -1
+1994    -1
+1995    -1
+1996    -1
+1997    -1
+1998    -1
+1999    -1
+2000    -1
+2001    -1
+2002    -1
+2003    -1
+2004    -1
+2005    -1
+2006    -1
+2007    -1
+2008    -1
+2009    -1
+"Venezuela recreational 1961-1995"         ## Title for 9th series
+I1                               ## Series type (I1 = annual average index)
+1956        -1
+1957        -1
+1958        -1
+1959        -1
+1960        -1
+1961        2.232918082
+1962        3.342770857
+1963        1.4798037
+1964        1.149490374
+1965        0.858814647
+1966        2.470743677
+1967        1.691204228
+1968        1.572291431
+1969        1.796904492
+1970        1.625141563
+1971        0.858814647
+1972        0.422801057
+1973        0.317100793
+1974        0.620989052
+1975        0.211400529
+1976        0.145337863
+1977        0.277463194
+1978        0.264250661
+1979        0.620989052
+1980        0.56813892
+1981        0.898452246
+1982        0.409588524
+1983        0.951302378
+1984        1.849754624
+1985        0.805964515
+1986        0.713476784
+1987        0.845602114
+1988        0.502076255
+1989        0.87202718
+1990        0.224613062
+1991        0.528501321
+1992        0.687051718
+1993        0.515288788
+1994        1.426953567
+1995        1.241978105
+1996        -1
+1997        -1
+1998        -1
+1999        -1
+2000        -1
+2001        -1
+2002        -1
+2003        -1
+2004        -1
+2005        -1
+2006        -1
+2007        -1
+2008        -1
+2009        -1
+"Longline Venezuela 1991-2009"         ## Title for 3rd series
+I1                               ## Series type (I1 = annual average index)
+1956        -1
+1957        -1
+1958        -1
+1959        -1
+1960        -1
+1961        -1
+1962        -1
+1963        -1
+1964        -1
+1965        -1
+1966        -1
+1967        -1
+1968        -1
+1969        -1
+1970        -1
+1971        -1
+1972        -1
+1973        -1
+1974        -1
+1975        -1
+1976        -1
+1977        -1
+1978        -1
+1979        -1
+1980        -1
+1981        -1
+1982        -1
+1983        -1
+1984        -1
+1985        -1
+1986        -1
+1987        -1
+1988        -1
+1989        -1
+1990        -1
+1991        2.220779221
+1992        1.19851577
+1993        0.810760668
+1994        1.515769944
+1995        1.339517625
+1996        1.092764378
+1997        1.163265306
+1998        1.092764378
+1999        0.775510204
+2000        1.057513915
+2001        0.775510204
+2002        0.74025974
+2003        0.45825603
+2004        0.387755102
+2005        0.387755102
+2006        1.163265306
+2007        0.881261596
+2008        1.233766234
+2009        0.705009276
+"Longline Chi. Taipei 1967-2000"         ## Title for 4th series
+I1                               ## Series type (I1 = annual average index)
+1956        -1
+1957        -1
+1958        -1
+1959        -1
+1960        -1
+1961        -1
+1962        -1
+1963        -1
+1964        -1
+1965        -1
+1966        -1
+1967        2.864289822
+1968        3.098907418
+1969        2.668775158
+1970        1.779183439
+1971        1.407705578
+1972        0.967797585
+1973        1.006900518
+1974        0.967797585
+1975        0.694077056
+1976        0.684301323
+1977        0.518113859
+1978        0.527889592
+1979        0.566992524
+1980        0.782058654
+1981          -1
+1982          -1
+1983          -1
+1984          -1
+1985          -1
+1986          -1
+1987          -1
+1988          -1
+1989          -1
+1990          -1
+1991          -1
+1992          -1
+1993          -1
+1994          -1
+1995          -1
+1996          -1
+1997          -1
+1998          -1
+1999          -1
+2000          -1
+2001          -1
+2002          -1
+2003          -1
+2004          -1
+2005          -1
+2006          -1
+2007          -1
+2008          -1
+2009          -1
+"Longline Japan period 1981-98"             ## Title for 1st series (<=40 chars)
+I1                                     ## Series type (CC = CPUE, catch)
+1956       -1
+1957       -1
+1958       -1
+1959       -1    
+1960       -1    
+1961       -1    
+1962       -1    
+1963       -1    
+1964       -1    
+1965       -1    
+1966       -1
+1967       -1
+1968       -1
+1969       -1    
+1970       -1
+1971       -1
+1972       -1    
+1973       -1    
+1974       -1    
+1975       -1
+1976       -1    
+1977       -1    
+1978       -1
+1979       -1
+1980       -1
+1981    0.651227258
+1982    0.827231922      
+1983    0.740549625      
+1984    0.827851938      
+1985    0.87321314       
+1986    0.604856029
+1987    0.662547558      
+1988    0.640446972      
+1989    0.674407872      
+1990    0.523833882      
+1991    0.357599476      
+1992    0.366129702      
+1993    0.479022694      
+1994    0.502903327      
+1995    0.471652499      
+1996    0.512513582      
+1997    0.459322172      
+1998    0.474752581      
+1999    -1               
+2000    -1               
+2001    -1               
+2002    -1               
+2003    -1               
+2004    -1               
+2005    -1               
+2006    -1               
+2007    -1               
+2008    -1               
+2009    -1
+"US recreational 1974-2009"         ## Title for 7th series
+I1                               ## Series type (I1 = annual average index)
+1956     -1
+1957     -1
+1958     -1
+1959     -1
+1960     -1
+1961     -1
+1962     -1
+1963     -1
+1964     -1
+1965     -1
+1966     -1
+1967     -1
+1968     -1
+1969     -1
+1970     -1
+1971     -1
+1972     -1
+1973     -1
+1974     0.746041447
+1975     0.566031446
+1976     0.762042336
+1977     0.837046503
+1978     0.650036113
+1979     1.089060503
+1980     1.022056781
+1981     1.152064004
+1982     1.051058392
+1983     0.870048336
+1984     1.016056448
+1985     0.884049114
+1986     0.763042391
+1987     1.36007556
+1988     1.188066004
+1989     1.123062392
+1990     1.166064781
+1991     1.202066781
+1992     1.20906717
+1993     1.067059281
+1994     1.203066837
+1995     1.281071171
+1996     1.129062726
+1997     1.134063004
+1998     1.088060448
+1999     1.361075615
+2000     1.133062948
+2001     0.724040224
+2002     0.724040224
+2003     0.686038113
+2004     0.936052003
+2005     0.937052058
+2006     0.988054892
+2007     0.987054836
+2008     0.818045447
+2009     1.14606367
+--------------------------------------------------------------------------------
+Note that (as in this file) comments may follow the values on each line. Also,
+comments may be added to the end of the file, as here. The hash marks (##) in
+this file are for visual clarity only and have no special meaning to ASPIC.
+
+Data series types (here, lines 24 and 56) are:
+   CE = effort and catch.
+   CC = CPUE and catch.
+   B0, B1, or B2 = annual biomass estimate at start, middle, or end of year.
+   I0, I1, or I2 = annual biomass index at start, middle or end of year.
+
+Notes for line 3 (symbol "|" means "or"):
+   First entry:  LOGISTIC | FOX | GENGRID | GENFIT   specifies model shape
+   Second entry: YLD | EFT   to condition on yield (catch) or effort
+      (Recommended option is YLD, equivalent to ASPIC 3.xx option EFF)
+   Third entry:  SSE | LAV   to select objective function (SSE recommended)
+If GENGRID is chosen, more values as follows:
+   phimin phimax phistep multiple
+If GENFIT is chosen, use instead values as follows:
+   phimin phimax phiguess multiple
+Meaning: phimin  is minimum shape parameter, phi = 100*Bmsy/K.
+         phimax  is maximum shape parameter.
+         phistep  is step size for grid search.
+         phiguess  is initial value for direct search.
+         multiple  sets MSY constraints based on initial logistic fit.
+Examples for line 3:
+LOGISTIC YLD SSE
+     is a classic fit of the logistic (Schaefer) model.
+FOX EFT LAV
+     is a least-absolute-values fit of the Fox model, conditioned on effort.
+GENGRID YLD SSE  30 60 5 8d0
+     fits the generalized model with grid search between phi=30 & phi=60.
+GENFIT YLD SSE 30 60 50 8d0
+     fits the generalized model by direct search between phi=30 & phi=60.
+The multiple of 8d0 shown above seems appropriate for routine use.
+
+The three convergence values on lines 7-8-9 work well and are recommended.
+
+PLEASE READ THE ASPIC USER'S MANUAL AND PRAGER (1994) ARTICLE IN FISH. BULL.
+--------------------------------------------------------------------------------
+
+
