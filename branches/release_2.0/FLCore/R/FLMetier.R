@@ -53,9 +53,6 @@ createFLAccesors('FLMetier', exclude=c('range', 'catches', 'name', 'desc'))
 # }}}
 
 ## FLMetier()	{{{
-setGeneric('FLMetier', function(catches, ...)
-		standardGeneric('FLMetier')
-)
 # FLMetier(FLCatch)
 setMethod('FLMetier', signature(catches='FLCatch'),
 	function(catches, gear='NA', ...)
@@ -72,7 +69,8 @@ setMethod('FLMetier', signature(catches='FLCatches'),
       # if any in ... is FLQuant
       if(any('FLQuant' %in% classes))
         # take dimnames of first one
-        dimn <- dimnames(args[[names(classes['FLQuant' %in% classes])[1]]])
+        ## BUG FIX: dimn <- dimnames(args[[names(classes['FLQuant' %in% classes])[1]]])
+        dimn <- dimnames(args[[names(classes[classes %in% 'FLQuant'])[1]]])
     }
     if(!exists('dimn'))
     {
@@ -97,7 +95,7 @@ setMethod('FLMetier', signature(catches='FLCatches'),
 # FLMetier(FLQuant)
 setMethod('FLMetier', signature(catches='FLQuant'),
 	function(catches, gear='NA', ...)
-      return(FLMetier(FLCatch(catches), geasr=gear, ...))
+      return(FLMetier(FLCatch(catches), gear=gear, ...))
 )
 # FLMetier(missing)
 setMethod('FLMetier', signature(catches='missing'),

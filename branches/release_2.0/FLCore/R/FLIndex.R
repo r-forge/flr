@@ -31,9 +31,9 @@ validFLIndex <- function(object) {
       stop(cat("Mismatch in dims for", i))
       
   # first dim equal for all index.* slots
-  for(i in grep('index', names(dimnms), value=TRUE))
-    if(!all.equal(dimnms[[i]][1], dimnms[[1]][1]))
-      stop(cat("Mismatch in dims for", i))
+  #for(i in grep('index', names(dimnms), value=TRUE))
+  #  if(!all.equal(dimnms[[i]][1], dimnms[[1]][1]))
+  #    stop(cat("Mismatch in dims for", i))
 
   # effort should have quant='all'
   if (!(dims(slot(object,"effort"))[1] == 1))
@@ -109,8 +109,6 @@ remove(validFLIndex)    #   }}}
 invisible(createFLAccesors("FLIndex", exclude=c('name', 'desc', 'range', 'effort'))) # }}}
 
 # FLIndex()   {{{
-setGeneric('FLIndex', function(object, ...)
-		standardGeneric('FLIndex'))
 setMethod('FLIndex', signature(object='FLQuant'),
   function(object, plusgroup=dims(object)$max, ...)
   {
@@ -166,10 +164,6 @@ is.FLIndex <- function(x)
 # }}}
 
 ## as.FLIndex::FLFleet      {{{
-if (!isGeneric("as.FLIndex"))
-    setGeneric("as.FLIndex", function(object, ...)
-        standardGeneric("as.FLIndex"))
-
 setMethod("as.FLIndex", signature(object="FLFleet"),
     function(object, catchname="missing", catchtype="missing", ...) {
     
@@ -250,6 +244,8 @@ setMethod(computeCatch, signature("FLIndex"), function(object){
 setMethod("trim", signature("FLIndex"), function(x, ...){
 
 	args <- list(...)
+  rng<-range(x)
+
   names <- getSlotNamesClass(x, 'FLArray')
 	quant <- quant(slot(x, names[1]))
   c1 <- args[[quant]]
@@ -271,7 +267,8 @@ setMethod("trim", signature("FLIndex"), function(x, ...){
   	if (length(c1) > 0) {
     	x@range["min"] <- c1[1]
 	    x@range["max"] <- c1[length(c1)]
-    	x@range["plusgroup"] <- NA
+      if (rng["max"] != x@range["max"])
+         x@range["plusgroup"] <- NA
 	}
   	if (length(c2)>0 ) {
     	x@range["minyear"] <- as.numeric(c2[1])
@@ -305,17 +302,6 @@ setAs("data.frame", "FLIndex",
   }
 ) # }}}
 
-# coerce  {{{
-setAs("data.frame", "FLStock",
-  function(from)
-  {
-  lst <- list()
-  qnames <- as.character(unique(from$slot))
-  for (i in qnames)
-    lst[[i]] <- as.FLQuant(from[from$slot==i,-1])
-  do.call('FLIndex', lst)
-  }
-) # }}}
 
 ## effort		{{{
 setMethod("effort", signature(object="FLIndex", metier="missing"),

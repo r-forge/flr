@@ -2,31 +2,33 @@
 # FLCore/R/FLComp.R
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
+# Maintainer: Iago Mosqueira, JRC
 # $Id$
 
 # FLComp   {{{
-validFLComp <- function(object)
-{
+validFLComp <- function(object){
+  dims <- unlist(qapply(object, function(x) dims(x)$iter))
+  dimnms <- qapply(object, function(x) dimnames(x)$iter)
+  quants <- unlist(qapply(object, quant))
+	
 	# FLQuant slots must have either 1 or n iter
-  names <- getSlotNamesClass(object, 'FLArray')
-	dims <- vector(length=length(names))
-	dimnms <- vector("list", length(names)) 
-	dimnms <- list()
-	for (i in seq(names))
-	{
-		dims[i] <- dims(slot(object, names[i]))$iter
-		dimnms[[i]] <- dimnames(slot(object, names[i]))$iter
-	}
-	test <- dims != max(dims) & dims != 1
+  test <- dims != max(dims) & dims != 1
 	if (any(test))
 		stop(paste("All slots must have iters equal to 1 or 'n': error in",
 			paste(names[test], collapse=', ')))
-	# and dimname for iter[1] should be '1'
+	
+  # and dimname for iter[1] should be '1'
 	test <- unlist(dimnms[dims == 1])
 	if(!all(test==test))
 		stop(paste("Incorrect names on the iter dimension in ",
 			paste(names[test], collapse=', ')))
+
+  return(TRUE)
+  
+  # all 'quant' should be equal
+  if(any(quants != quants[1]))
+    stop("Not all 'quant' names are the same. Check using qapply(x, quant)")
+
 	return(TRUE)
 }
 
@@ -117,9 +119,6 @@ setMethod("iter<-", signature(object="FLComp", value="FLComp"),
 )   # }}}
 
 ## transform	{{{
-if (!isGeneric("transform"))
-	setGeneric("transform", function(`_data`, ...) standardGeneric("transform"))
-
 setMethod("transform", signature(`_data`="FLComp"),
 	function(`_data`, ...)
   {	
@@ -139,9 +138,6 @@ setMethod("transform", signature(`_data`="FLComp"),
 )	# }}}
 
 ## qapply		{{{
-if (!isGeneric("qapply"))
-	setGeneric("qapply", function(X, FUN, ...) standardGeneric("qapply"))
-
 setMethod('qapply', signature(X='FLComp', FUN='function'),
 	function(X, FUN, ..., exclude=missing) {
 		FUN <- match.fun(FUN)
@@ -167,6 +163,7 @@ setMethod("trim", signature("FLComp"),
 	function(x, ...)
 	{
 	  args <- list(...)
+	  
     names <- getSlotNamesClass(x, 'FLArray')
 
     c1 <- args[[quant(slot(x, names[1]))]]
@@ -180,7 +177,6 @@ setMethod("trim", signature("FLComp"),
     {
     	x@range["min"] <- c1[1]
 	    x@range["max"] <- c1[length(c1)]
-    	x@range["plusgroup"] <- NA
 	  }
   	if (length(c2)>0 )
     {
@@ -230,7 +226,7 @@ setMethod('[', signature(x='FLComp'),
     
     for(q in qnames)
       slot(x, q) <- do.call('[', c(list(x=slot(x,q)), args))
-
+    
     # range
     x@range['min'] <- dims(slot(x, qnames[1]))$min
     x@range['max'] <- dims(slot(x, qnames[1]))$max
@@ -243,34 +239,36 @@ setMethod('[', signature(x='FLComp'),
 
 ## "[<-"            {{{
 setMethod("[<-", signature(x="FLComp"),
-	function(x, i, j, k, l, m, n, ..., value="missing") {
-
+	function(x, i, j, k, l, m, n, ..., value="missing")
+  {
 		qnames <- names(getSlots(class(x))[getSlots(class(x))=="FLQuant"])
 		dx <- dim(slot(x, qnames[1]))
+    di <- qapply(x, function(y) seq(1, dim(y)[1]))
+    dn <- qapply(x, function(y) seq(1, dim(y)[6]))
 
-		if (missing(i))
-			i <- seq(1, dx[1])
+		if (!missing(i))
+      di <- lapply(di, function(x) x <- i)
 		if (missing(j))
 			j <- seq(1, dx[2])
-   		if (missing(k))
+   	if (missing(k))
 			k <- seq(1, dx[3])
 		if (missing(l))
 			l <- seq(1, dx[4])
 		if (missing(m))
 			m <- seq(1, dx[5])
-		if (missing(n))
-			n <- seq(1, dx[6])
+		if (!missing(n))
+      dn <- lapply(dn, function(x) x <- n)
 
-        for(q in qnames)
-            slot(x, q)[i,j,k,l,m,n] <- slot(value, q)
+    for(q in qnames)
+      slot(x, q)[di[[q]],j,k,l,m,dn[[q]]] <- slot(value, q)
 	    
-   		return(x)
+   	return(x)
 	}
 )   # }}}
 
 ## as.data.frame        {{{
 setMethod("as.data.frame", signature(x="FLComp", row.names="missing", optional="missing"),
-	function(x, row.names, optional)
+	function(x, row.names, optional, drop=FALSE)
 	{
     qnames <- getSlotNamesClass(x, 'FLArray')
     quant <- quant(slot(x, qnames[1]))
@@ -286,6 +284,12 @@ setMethod("as.data.frame", signature(x="FLComp", row.names="missing", optional="
 
 			df  <- rbind(df, dfq)
 	  }
+    # drop
+    if(drop) {
+      idx <- apply(df, 2, function(x) length(unique(x))) == 1
+      df <- df[, !idx]
+    }
+
 		# add attributes
 		attributes(df)$desc <- x@desc
 		attributes(df)$name <- x@name
@@ -296,9 +300,6 @@ setMethod("as.data.frame", signature(x="FLComp", row.names="missing", optional="
 )   # }}}
 
 ## mcf	{{{
-setGeneric("mcf", function(object, ...)
-	standardGeneric("mcf")
-)
 setMethod('mcf', signature(object='FLComp'),
 	function(object, second) {
 
@@ -332,21 +333,31 @@ setMethod("dims", signature(obj="FLComp"),
     # Returns a list with different parameters
     function(obj, ...)
 	{
-		qnames <- names(getSlots(class(obj))[getSlots(class(obj))=="FLQuant"])
+    qnames <- getSlotNamesClass(obj, 'FLArray')
     range <- as.list(range(obj))
-		res <- list(
-            quant = quant(slot(obj, qnames[1])),
-            quants = dim(slot(obj, qnames[2]))[1],
-            min = range$min,
-            max = range$max,
-            year = dim(slot(obj, qnames[1]))[2],
-            minyear = range$minyear,
-            maxyear = range$maxyear,
-            plusgroup = ifelse('plusgroup' %in% names(range), range$plusgroup, NA),
-            unit = dim(slot(obj, qnames[1]))[3],
-            season = dim(slot(obj, qnames[1]))[4],
-            area = dim(slot(obj, qnames[1]))[5],
-            iter = max(unlist(qapply(obj, function(x) dims(x)$iter))))
+    dimsl <- qapply(obj, dim)
+    dnames <- qapply(obj, dimnames)
+    dimsl <- dimsl[!names(dnames) %in% 'fbar']
+    dims <- matrix(unlist(dimsl), ncol=6, byrow=TRUE)
+    
+    # Hack for FLBRP
+    dnames <- dnames[!names(dnames) %in% 'fbar']
+    quants <- lapply(dnames, function(x) x[[1]])[unlist(lapply(dimsl,
+      function(x) x[1] == max(dims[,1])))][[1]]
+		
+    res <- list(
+      quant = quant(slot(obj, qnames[1])),
+      quants = max(dims[,1]),
+      min = as.numeric(quants[1]),
+      max = as.numeric(quants[max(dims[,1])]),
+      year = max(dims[,2]),
+      minyear = as.numeric(dnames[[1]]$year[1]),
+      maxyear = as.numeric(dnames[[1]]$year[max(dims[,2])]),
+      plusgroup = ifelse('plusgroup' %in% names(range), range$plusgroup, NA),
+      unit = max(dims[,3]),
+      season = max(dims[,4]),
+      area = max(dims[,5]),
+      iter = max(dims[,6]))
     res <- lapply(res, function(x) if(is.null(x)) return(as.numeric(NA)) else return(x))
     names(res)[2] <- res$quant
     return(res)
@@ -424,8 +435,6 @@ setMethod("histogram", signature("formula", "FLComp"), function(x, data, ...){
 })  # }}}
 
 # model.frame {{{
-if (!isGeneric("model.frame"))
-	setGeneric("model.frame", useAsDefault = model.frame)
 setMethod('model.frame', signature(formula='FLComp'),
 	function(formula, ...)
   {
@@ -450,8 +459,6 @@ setMethod("range", "FLComp",
   }
 ) 
 
-if (!isGeneric("range<-"))
-	setGeneric("range<-", function(x, i, value) standardGeneric("range<-"))
 setReplaceMethod("range", "FLComp",
   function(x, i, value)
   {
@@ -473,6 +480,68 @@ setMethod('expand', signature(x='FLComp'),
     range(x, c('min', 'max', 'minyear', 'maxyear')) <- c(as.numeric(dnames[[1]][1]),
       as.numeric(dnames[[1]][length(dnames[[1]])]), as.numeric(dnames[[2]][1]),
       as.numeric(dnames[[2]][length(dnames[[2]])]))
+
+    return(x)
+  }
+) # }}}
+
+# '[['  {{{
+setMethod('[[', signature(x='FLComp', i='character'),
+  function(x, i, j, ..., drop=FALSE) {
+
+    res <- FLlst()
+    args <- list(...)
+
+    # j
+    if(!missing(j))
+      if(is(j, 'character'))
+        i <- c(i, j)
+      else
+        stop(paste('Only character vectors for slot names allowed:', as.character(j)))
+    # args
+    if(length(args) > 0)
+      if(all(unlist(lapply(args, function(x) is(x, 'character')))))
+        i <- c(i, unlist(args))
+      else
+        stop(paste('Only character vectors for slot names allowed:',
+          unlist(args[!unlist(lapply(args, function(x) is(x, 'character')))])))
+
+    for (j in 1:length(i))
+      res[[i[j]]] <- do.call(i[j],list(x))
+
+    names(res) <- i
+    
+    return(new(getPlural(res[[1]]), res))
+  }
+) # }}}
+
+# '[[<-'  {{{
+setMethod('[[<-', signature(x='FLComp', i='character', value='FLlst'),
+  function(x, i, j, ..., value) {
+
+    args <- list(...)
+
+    # j
+    if(!missing(j))
+      if(is(j, 'character'))
+        i <- c(i, j)
+      else
+        stop(paste('Only character vectors for slot names allowed:', as.character(j)))
+
+    # args
+    if(length(args) > 0)
+      if(all(unlist(lapply(args, function(x) is(x, 'character')))))
+        i <- c(i, unlist(args))
+      else
+        stop(paste('Only character vectors for slot names allowed:',
+          unlist(args[!unlist(lapply(args, function(x) is(x, 'character')))])))
+    
+    # check names match
+    if(!identical(sort(names(value)), sort(i)))
+      stop('Names in list do not match those in selection.')
+
+    for (j in 1:length(i))
+      slot(x, i[j]) <- value[[i[j]]]
 
     return(x)
   }

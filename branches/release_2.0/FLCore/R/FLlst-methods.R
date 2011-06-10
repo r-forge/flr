@@ -24,7 +24,9 @@ setReplaceMethod("[[", signature(x="FLlst", i="ANY", j="missing", value="ANY"),
 			|
 			(is.numeric(i) & length(x)<i)))
 				stop("The object is locked. You can not replace non-existent elements.") 
-		lst <- as(x, "list")
+		
+    lst <- as(x, "list")
+    names(lst) <- names(x)
 	
 		if(length(lst)==0)
 		{
@@ -44,13 +46,15 @@ setReplaceMethod("[[", signature(x="FLlst", i="ANY", j="missing", value="ANY"),
 	}
 )
 	
-setReplaceMethod("$", signature(x="FLlst", name="character", value="ANY"),
+setReplaceMethod("$", signature(x="FLlst", value="ANY"),
 	function(x, name, value)
 	{
 		if(isTRUE(x@lock) & is.na(match(name, names(x))))
 			stop("The object is locked. You can not replace non-existent elements.") 
 		
 		lst <- as(x, "list")
+    names(lst) <- names(x)
+
 		if(length(lst)==0)
 		{
 			cls <- is(value)[1]
@@ -89,6 +93,8 @@ setReplaceMethod("[", signature(x="FLlst", i="ANY", j="missing", value="ANY"),
 
 setMethod("[", signature(x="FLlst", i="ANY", j="missing", drop="ANY"), function(x,i,j,drop){
 	lst <- as(x, "list")
+  # names dropped!
+  names(lst) <- names(x)
 	lst <- lst[i]
 	new(is(x), lst)
 })  # }}}
@@ -350,8 +356,9 @@ setMethod("names", signature(x="FLlst"),
 # }}}
 
 ## as.data.frame	{{{
-setMethod("as.data.frame", signature(x="FLCohorts", row.names="missing", optional="missing"),
-    function(x) {
+setMethod("as.data.frame", signature(x="FLCohorts", row.names="missing",
+	optional="missing"),
+		function(x) {
 	# names 
 	if(!is.null(names(x))){
 		flqnames <- names(x)

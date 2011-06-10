@@ -1,26 +1,25 @@
 # io.FLStock.R - read and write assessment input files into an FLStock
 
-# Author: FLR Team
-# Additions:
-# Last Change: 11 Feb 2009 11:24
+# Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Iago Mosqueira, JRC
 # $Id$
 
-## readFLStock		{{{
-
-readFLStock <- function (file, type = "VPA", name, desc = paste("Imported from a", 
+# readFLStock		{{{
+readFLStock <- function(file, type = "VPA", name, desc = paste("Imported from a", 
     type, "file. (", file, "). ", date()), m = 0.2, quant="age", quiet=TRUE,
-    no.discards=FALSE)
+    no.discards=FALSE, harvest.units, sep="")
 	{
     ow <- options()$warn
     options(warn = -1)
     on.exit(options(warn = ow))
 
     res <- switch(type,
-                  VPA = readVPA(file, quiet=quiet),
+                  VPA = readVPA(file, quiet=quiet, sep=sep),
                   Adapt = readAdaptFile(file,m),
                   PA = readPAFile(file),
                   CSA = readCSAFile(file),
                   stop("type must be either 'VPA', 'Adapt', 'PA' or 'CSA'!"))
+                  
     Mat <- res@stock.wt
     Mat[, , , , ] <- NA
     Dim <- dim(Mat)
@@ -53,8 +52,8 @@ readFLStock <- function (file, type = "VPA", name, desc = paste("Imported from a
     if (is.null(res@m.spwn)      || !all(dim(res@m.spwn)      == Dim)) 
         res@m.spwn      <- Mat
     Mat <- Mat[1, , , , ]
-    
-    if (is.null(res@catch) || !all(dim(res@catch) == dim(Mat))) 
+
+    if (is.null(res@catch) || !all(dim(res@catch) == dim(Mat)))
         res@catch <- Mat
     if (is.null(res@discards) || !all(dim(res@discards) == dim(Mat)))
         res@discards <- Mat
@@ -74,17 +73,27 @@ readFLStock <- function (file, type = "VPA", name, desc = paste("Imported from a
         quant(slot(res, s.)) <- quant
     }
 
+   stock(res) <- computeStock(res)
+
     if(no.discards)
-    {
+      {
       discards(res) <- 0
       discards.n(res) <- 0
       discards.wt(res) <- 0
       catch(res) <- computeCatch(res, 'all')
-    }
+      }
+
+#    if(type=="VPA") units(harvest(res)) <- "f"
+#    if(type=="Adapt") units(harvest(res)) <- "f"
+#    if(type=="PA") units(harvest(res)) <- "f"
+#    if(type=="CSA") units(harvest(res)) <- "hr"
+    if(missing(harvest.units)) harvest.units  <- switch(type, VPA = "f", Adapt = "f", PA = "f", CSA = "hr")
+    units(harvest(res)) <- harvest.units
+   
     return(res)
 }	# }}}
 
-## readAdaptFile	{{{
+# readAdaptFile	{{{
 readAdaptFile <- function(file., m. = m) {
     skip.hash <- function(i) {
         i <- i + 1
@@ -160,66 +169,55 @@ readAdaptFile <- function(file., m. = m) {
         i <- skip.hash(i)
         t. <- scan(file., skip = i, nmax = nyears * (nages+1), quiet = TRUE)
 
-        FLStock.@stock.wt <- as.FLQuant(array(t., dim=dims2)[-1,], dimnames=dimnms)
-    }
+        FLStock.@stock.wt <- as.FLQuant(array(t., dim=dims2)[-1,], dimnames=dimnms)}
+    FLStock.@landings.wt<-FLStock.@stock.wt
+    
     FLStock.@m <- as.FLQuant(array(m., dim = dims, dimnames=dimnms))
     return(FLStock.)
 }	# }}}
 
-## readCSAFile		{{{
+# readCSAFile		{{{
 readCSAFile <- function(file.) {
-    
     t.    <-scan(file=file.,skip=1,sep=",")
     nrow. <-length(t.)/9
     t.    <-t(array(t.,dim=c(9,nrow.)))
     t.    <-array(t.[,-1],dim=c(20,8),
-        dimnames=list(t.[,1],c("m","c.rec","c.full","w.rec","w.full","s.rat","u.rec","u.full")))
+    dimnames=list(t.[,1],c("m","c.rec","c.full","w.rec","w.full","s.rat","u.rec","u.full")))
 
-    s. <- FLStock(catch.n=as.FLQuant(t(array(cbind(t.[,"c.rec"],t.[,"c.full"]),
-        dim=c(nrow.,2)))))
-    s.@catch.n <- as.FLQuant(t(array(cbind(t.[,"c.rec"],t.[,"c.full"]),
-        dim=c(nrow.,2),
-        dimnames=list(dimnames(t.)[[1]],c("r","full")))))
-    s.@stock.wt <- as.FLQuant(t(array(cbind(t.[,"w.rec"],t.[,"w.full"]),
-        dim=c(nrow.,2),
-        dimnames=list(dimnames(t.)[[1]],c("r","full")))))
-    s.@catch.wt <- as.FLQuant(t(array(cbind(t.[,"w.rec"],t.[,"w.full"]),
-        dim=c(nrow.,2),
-        dimnames=list(dimnames(t.)[[1]],c("r","full")))))
-    s.@m <- as.FLQuant(t(array(t.[,"m"], 
-        dim=c(nrow.,2),
-        dimnames=list(dimnames(t.)[[1]],c("r","full")))))
-
-    mat.0 <- FLQuant(0,dimnames(s.@catch.n))
-    mat.na <- FLQuant(NA,dimnames(s.@catch.n))
+    dmns<-list(year=dimnames(t.)[[1]],age=c("r","full"))
+    s. <- FLStock(catch.n=as.FLQuant(t(array(cbind(t.[,"c.rec"],t.[,"c.full"]), dim=c(nrow.,2)))))
+    s.@catch.n  <- as.FLQuant(t(array(cbind(t.[,"c.rec"],t.[,"c.full"]), dim=c(nrow.,2), dimnames=dmns)))
+    s.@stock.wt <- as.FLQuant(t(array(cbind(t.[,"w.rec"],t.[,"w.full"]), dim=c(nrow.,2), dimnames=dmns)))
+    s.@catch.wt <- as.FLQuant(t(array(cbind(t.[,"w.rec"],t.[,"w.full"]), dim=c(nrow.,2), dimnames=dmns)))
+    s.@m        <- as.FLQuant(t(array(t.[,"m"], dim=c(nrow.,2),                          dimnames=dmns)))
+    mat.0       <- FLQuant( 0,dimnames=dmns)
+    mat.na      <- FLQuant(NA,dimnames=dmns)
 
     s.@harvest.spwn <- mat.0
     s.@m.spwn <- mat.0
 
-    s.@landings.n <- s.@catch.n
+    s.@landings.n  <- s.@catch.n
     s.@landings.wt <- s.@catch.wt
-    s.@discards.n <- mat.0
+    s.@discards.n  <- mat.0
     s.@discards.wt <- mat.0
 
-    d.            <- dimnames(s.@catch.n)
-    d.$age        <- "all"
-    s.@catch      <- as.FLQuant(apply(s.@catch.wt   *s.@catch.n,   2,sum),d.)
-    s.@landings   <- as.FLQuant(apply(s.@landings.wt*s.@landings.n,2,sum),d.)
-    s.@discards   <- as.FLQuant(apply(s.@discards.wt*s.@discards.n,2,sum),d.)
+    s.@catch       <- apply(s.@catch.wt   *s.@catch.n,   2,sum)
+    s.@landings    <- apply(s.@landings.wt*s.@landings.n,2,sum)
+    s.@discards    <- apply(s.@discards.wt*s.@discards.n,2,sum)
 
-    s.@mat        <-mat.na
-    s.@stock.n    <-mat.na
-    s.@harvest    <-FLQuant(NA,dimnames(s.@catch.n), units='f')
+    s.@mat         <-mat.na
+    s.@stock.n     <-mat.na
+    s.@harvest     <-FLQuant(NA,dimnames=dmns, units='f')
 
-    s.@range["minyear"]     <-min(t.[,1])   
-    s.@range["maxyear"]     <-max(t.[,1])   
+    s.@range["minyear"]     <-min(as.numeric(dimnames(t.)[[1]]))
+    s.@range["maxyear"]     <-max(as.numeric(dimnames(t.)[[1]]))
 
     s.@desc		<-"read in from CSA file"
 
     return(s.)
 }	# }}}
-    
-## readPAFile		{{{
+
+# readPAFile		{{{
 readPAFile <- function(file.) {
     getmatrix <- function(file., start, nlines, yrs, ages) {
         m. <- t(as.matrix(read.table(file = file., skip = start - 
@@ -258,7 +256,7 @@ readPAFile <- function(file.) {
     return(FLStock.)
 }	# }}}
 
-## readVPAFile		{{{
+# readVPAFile		{{{
 readVPAFile <- function(file, sep = "", units = "NA", quiet = TRUE) {	
     if (!file.exists(file)){
         if(quiet==TRUE) stop()
@@ -309,7 +307,7 @@ readVPAFile <- function(file, sep = "", units = "NA", quiet = TRUE) {
     )
 }	# }}}
 
-## readVPA		{{{
+# readVPA		{{{
 readVPA <- function(file, sep = "", quiet=TRUE) {
     if (!file.exists(file)){
         if(quiet==TRUE) stop()
@@ -334,7 +332,7 @@ readVPA <- function(file, sep = "", quiet=TRUE) {
            if(quiet != TRUE) cat("File ", i, "does not exist", "\n")
            }
         if (file.exists(i)) {
-            a.   <-  readVPAFile(i, quiet=quiet)
+            a.   <-  readVPAFile(i, sep=sep, quiet=quiet)
 
             switch(as.character(scan(i, skip = 1, nlines = 1, sep = sep, comment.char='#', quiet=TRUE)[2]),
             "1" = FLStock.@landings    <-a.,
@@ -366,7 +364,7 @@ readVPA <- function(file, sep = "", quiet=TRUE) {
     return(FLStock.)
 }	# }}}
 
-## writeFLStock	{{{
+# writeFLStock	{{{
 writeFLStock <- function(FLStock, output.file=FLStock@name, type="VPA") {
 	if (!inherits(FLStock, "FLStock"))
 		stop("FLStock must be an 'FLStock' object!")

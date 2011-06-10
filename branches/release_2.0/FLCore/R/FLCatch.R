@@ -2,7 +2,7 @@
 # FLCore/R/FLCatch.R
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
+# Maintainer: Iago Mosqueira, JRC
 # $Id$
 
 ## FLCatch               {{{
@@ -11,7 +11,8 @@ validFLCatch <- function(object)
 	names <- names(getSlots('FLCatch')[getSlots('FLCatch')=="FLQuant"])
   nits  <- sort(unique(unlist(qapply(object, function(x) dims(x)$iter))))
   
-  if (length(nits)>2) return(paste("All FLQuant must either have same number of iters or '1 & n'"))
+  if (length(nits)>2)
+		return(paste("All FLQuant must either have same number of iters or '1 & n'"))
 
 	for(i in names)
 	{
@@ -58,9 +59,6 @@ setClass("FLCatch",
 remove(validFLCatch) # }}}
 
 # FLCatch()                {{{
-setGeneric('FLCatch', function(object, ...)
-		standardGeneric('FLCatch'))
-
 # TODO Fix size of input objects and validity
 setMethod('FLCatch', signature(object='FLQuant'),
 	function(object, range='missing', name='NA', desc=character(0), ...) {
@@ -194,7 +192,7 @@ setMethod("[<-", signature(x="FLCatch", value="FLCatch"),
     for(q in quants)
       slot(x, q)[i,j,k,l,m,n] <- slot(value, q)
 	    
-    quants <- list("catch", "landings", "discards")
+    quants <- list("landings", "discards")
     for(q in quants)
       slot(x, q)[1,j,k,l,m,n] <- slot(value,q)
 
@@ -203,8 +201,6 @@ setMethod("[<-", signature(x="FLCatch", value="FLCatch"),
 )   # }}}
 
 # addFLCatch for FLCatch {{{
-setGeneric('addFLCatch', function(e1, e2, ...)
-		standardGeneric('addFLCatch'))
 setMethod('addFLCatch', signature(e1='FLCatch', e2='FLCatch'),
   function(e1, e2)
   {
@@ -251,14 +247,10 @@ setMethod('setPlusGroup', signature(x='FLCatch', plusgroup='numeric'),
 )# }}}
 
 # catchNames {{{
-setGeneric('catchNames', function(object, ...)
-		standardGeneric('catchNames'))
 setMethod('catchNames', signature(object='FLCatch'),
   function(object)
     return(object@name))
 
-setGeneric('catchNames<-', function(object, ..., value)
-		standardGeneric('catchNames<-'))
 setReplaceMethod('catchNames', signature(object='FLCatch', value='character'),
   function(object, value)
   {
@@ -271,6 +263,9 @@ setReplaceMethod('catchNames', signature(object='FLCatch', value='character'),
 setMethod("trim", signature("FLCatch"), function(x, ...){
 
 	args <- list(...)
+	
+  rng<-range(x)
+
 
   c1 <- args[[quant(x@landings.n)]]
 	c2 <- args[["year"]]
@@ -305,7 +300,8 @@ setMethod("trim", signature("FLCatch"), function(x, ...){
   if (length(c1) > 0) {
     x@range["min"] <- c1[1]
     x@range["max"] <- c1[length(c1)]
-    x@range["plusgroup"] <- NA
+    if (rng["max"] != x@range["max"])
+        x@range["plusgroup"] <- NA
   }
   if (length(c2)>0 ) {
     x@range["minyear"] <- c2[1]
@@ -367,9 +363,6 @@ setMethod('catch.wt', signature(object='FLCatch'),
 )
 
 # catch.sel
-setGeneric('catch.sel', function(object, ...)
-		standardGeneric('catch.sel')
-)
 setMethod('catch.sel', signature(object='FLCatch'),
   function(object)
   {

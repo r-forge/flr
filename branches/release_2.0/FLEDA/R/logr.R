@@ -17,7 +17,6 @@ setMethod("logr", signature("FLQuant"), function(object, ...){
 	} else {
 		object <- object
 	}
-
 	dobj <- dim(object)
 	flc <- FLCohort(object)
 	dflc <- dim(flc)
@@ -28,3 +27,11 @@ setMethod("logr", signature("FLQuant"), function(object, ...){
 	new("logr", logr)
 })
 
+setMethod("logr", signature("missing"),
+  function(...)
+  {
+    logr(
+        FLQuant(...)
+        )
+  }
+)

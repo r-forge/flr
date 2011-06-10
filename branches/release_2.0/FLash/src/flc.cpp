@@ -7,12 +7,12 @@ void sv2ab(FLRConstSRR sr_model, double ***sr_params, int niters, int nunits)
   {
  	double steepness,vbiomass,spr0,a,b;
 
-  if      (sr_model==FLRConst_SRR_bevholt_sv)
-    sr_model=FLRConst_SRR_bevholt;
-  else if (sr_model==FLRConst_SRR_ricker_sv)
-    sr_model=FLRConst_SRR_ricker;
+  if      (sr_model==FLRConst_BevHoltSV)
+     sr_model=FLRConst_BevHolt;
+  else if (sr_model==FLRConst_RickerSV)
+     sr_model=FLRConst_Ricker;
   else
-    return;  
+     return;  
 
 	for (int i = 1; i <= niters; i++)
     for (int j = 2; j <= nunits; j++)
@@ -21,12 +21,12 @@ void sv2ab(FLRConstSRR sr_model, double ***sr_params, int niters, int nunits)
 	    vbiomass =sr_params[i][j][2];
 	    spr0     =sr_params[i][j][3];
 
-      if (sr_model==FLRConst_SRR_bevholt)
+      if (sr_model==FLRConst_BevHolt)
         {
         a = vbiomass*4.0*steepness/(spr0*(5.0*steepness-1.0));
 	      b = a*spr0*(1.0/steepness - 1.0)/4.0;
 	      }
-      else if (sr_model==FLRConst_SRR_ricker)
+      else if (sr_model==FLRConst_Ricker)
 	      {
         b = log(5.0*steepness)/(vbiomass*0.8);
         a = exp(b*vbiomass)/spr0;
@@ -212,7 +212,7 @@ double sr::recruits(int istock, double ssb, int iyr, int iunit, int iseason, int
          returnval = param(istock,1,_yr,iunit,iseason,iarea,iter)*ssb*exp(-param(istock,2,_yr,iunit,iseason,iarea,iter)*ssb);
       break;
       
-      case FLRConst_SRR_shepherd:
+      case FLRConst_Shepherd:
          returnval = param(istock,1,_yr,iunit,iseason,iarea,iter) * ssb/pow(param(istock,2,_yr,iunit,iseason,iarea,iter) + ssb,param(istock,3,_yr,iunit,iseason,iarea,iter));
       break;
         

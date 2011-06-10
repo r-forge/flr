@@ -2,13 +2,13 @@
 # FLCore/R/zzz.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
+# Maintainer: Iago Mosqueira, JRC
 # $Id$
 
 .onLoad <- function(lib,pkg) {
 	require(methods)
-	cat("FLCore 2.2 \"Swordfish Polka\"\n")
-  cat("------------------------------------\n")
+  #cat("FLCore 3.0 \"\"\n")
+  #cat("------------------------------------\n")
 }
 
 ## convert6d  {{{
@@ -36,10 +36,8 @@ convert6d<-function(obj)
 # }}}
 
 # convertFLPar{{{
-if (!isGeneric("convertFLPar")) {
 	setGeneric("convertFLPar", function(object, ...)
 		standardGeneric("convertFLPar"))
-}
 setMethod('convertFLPar', signature(object='FLModel'),
   function(object)
   {

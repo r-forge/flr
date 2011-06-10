@@ -2,13 +2,12 @@
 # FLCore/R/FLQuant.R
 
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
-# Maintainer: Iago Mosqueira, Cefas
+# Maintainer: Iago Mosqueira, JRC
 # $Id$
 
 ## Class
 ## FLQuant     {{{
 validFLQuant  <-  function(object){
-
 	# Make sure there are at least 6 dimensions in the array named
 	# *, "year", "unit", "season", "area" and "iter"
 	DimNames  <-  names(object)
@@ -22,10 +21,6 @@ validFLQuant  <-  function(object){
 	# check "units" slot
 	if(!is.character(object@units))
 		return("units must be a string")
-	
-	# check contents are not integers
-#    if(any(is.integer(object)))
-#        return("FLQuants must be of type double or NA")
 
 	# Everything is fine
 	return(TRUE)
@@ -39,16 +34,12 @@ setClass("FLQuant",
 	validity=validFLQuant
 )
 
-#setValidity("FLQuant", validFLQuant)
 remove(validFLQuant)    # }}}
 
 ## Methods
 ## FLQuant      {{{
-if (!isGeneric("FLQuant")) {
-	setGeneric("FLQuant", function(object, ...){
-		standardGeneric("FLQuant")
-	})
-}   # }}}
+	setGeneric("FLQuant", function(object, ...)
+		standardGeneric("FLQuant"))# }}}
 
 # FLQuant(missing)		{{{
 # FLQuant  <- FLQuant()
@@ -140,8 +131,8 @@ setMethod("FLQuant", signature(object="vector"),
       units=units)
 
 		# Set extra iters to NA
-	    if(dims(flq)$iter > 1 && !fill.iter)
-    		flq[,,,,,2:dims(flq)$iter] <- as.numeric(NA)
+	  if(dims(flq)$iter > 1 && !fill.iter)
+      flq[,,,,,2:dims(flq)$iter] <- as.numeric(NA)
 
 		if (!is.null(quant))
 			quant(flq) <- quant
@@ -295,12 +286,8 @@ setMethod("FLQuant", signature(object="FLQuant"),
 )		# }}}
 
 ## as.FLQuant      {{{
-if (!isGeneric("as.FLQuant")) {
-	setGeneric("as.FLQuant", function(x, ...){
-		value  <-  standardGeneric("as.FLQuant")
-		value
-	})
-}   # }}}
+	setGeneric("as.FLQuant", function(x, ...)
+		standardGeneric("as.FLQuant"))# }}}
 
 # as.FLQuant(array)		{{{
 setMethod("as.FLQuant", signature(x="array"),
@@ -416,14 +403,23 @@ setMethod("as.FLQuant", signature(x="data.frame"),
     em <- data.frame(quant=rep('all', n), year=rep(1,n), unit=rep('unique',n),
       season=rep('all',n), area=rep('unique',n), iter=rep(1,n), stringsAsFactors=FALSE)
     names(em)[names(em)=="quant"] <- qname
-    x[,!names(x)%in%'data'] <- 
-    as.data.frame(as.matrix(x[,!names(x)%in%'data']),
+    
+    # Not sure why the call to as.matrix was here, but is messes up names from numbers
+    #  sometimes, as 1 truns to " 1" is there is 10. Trying now without it. IM, 2/7/09
+    #
+    #x[,!names(x)%in%'data'] <- as.data.frame(as.matrix(x[,!names(x)%in%'data']),
+    #  stringsAsFactors=FALSE)
+    x[,!names(x)%in%'data'] <- as.data.frame(x[,!names(x)%in%'data'],
       stringsAsFactors=FALSE)
     em[names(x)] <- x
 
     # create array
-    flq <- tapply(em[,"data"], list(em[,qname], em[,"year"], em[,"unit"], em[,"season"],
-      em[,"area"], em[,"iter"]), sum)
+    flq <- tapply(em[,"data"], list(factor(x = em[,qname], levels = unique(em[,qname])),
+      factor(x = em[,"year"], levels = unique(em[,"year"])),
+      factor(x = em[,"unit"], levels = unique(em[,"unit"])),
+      factor(x = em[,"season"], levels = unique(em[,"season"])),
+      factor(x = em[,"area"], levels = unique(em[,"area"])),
+      factor(x = em[,"iter"], levels = unique(em[,"iter"]))), sum)
 
     # fix dimnames names
     names(dimnames(flq)) <- c(qname, 'year', 'unit', 'season', 'area', 'iter')
@@ -488,10 +484,6 @@ setMethod("dimnames<-", signature(x="FLQuant", value='list'),
 ) # }}}
 
 ## dims       {{{
-if (!isGeneric("dims"))
-	setGeneric("dims", function(obj, ...)
-		standardGeneric("dims"))
-
 setMethod("dims", signature(obj="FLQuant"),
 	# Return a list with different parameters
 	function(obj, ...){
@@ -692,66 +684,8 @@ function(x, data, bub.scale=2.5, col=c("blue","red"), ...){
 
 # }}}
 
-## apply            {{{
-if (!isGeneric("apply"))
-	setGeneric("apply", useAsDefault=apply)
-
-setMethod("apply", signature(X="FLQuant", MARGIN="numeric", FUN="function"),
-	function(X, MARGIN, FUN, ...)
-  {
-		data <- apply(X@.Data, MARGIN, FUN, ...)
-		# set dim
-		dim <- c(1,1,1,1,1,1)
-		if (is.null(dim(data)))
-			dim[MARGIN] <- length(data)
-		else
-			dim[MARGIN] <- dim(data)
-		# new flq
-		flq <- FLQuant(dim=dim, units=units(X), quant=quant(X))
-		flq[1:dim[1],1:dim[2],1:dim[3],1:dim[4],1:dim[5],1:dim[6]] <- data
-
-		# dimnames
-		dimnames <- dimnames(X)
-		dimnames(flq) <- dimnames[MARGIN]
-		
-    return(flq)
-	}
-)   # }}}
-
-## window           {{{
-if (!isGeneric("window")) {
-	setGeneric("window", useAsDefault = window)
-}
-setMethod("window", signature="FLQuant",
-	function(x, start=dims(x)$minyear, end=dims(x)$maxyear, extend=TRUE, frequency=1) {
-
-		# get original min and max
-		min <- dims(x)$minyear
-		max <- dims(x)$maxyear
-
-		if(!extend && (start < min | end > max))
-			stop("FLQuant to be extended but extend=FALSE")
-		# construct new FLQuant
-		years <- seq(start, end, by=frequency)
-		dim <- dim(x)
-		dim[2] <- length(years)
-		flq <- FLQuant(NA, dim=dim, units=units(x), quant=quant(x))
-		# copy dimanmes ...
-		dimnames(flq)[c(1,3:6)] <- dimnames(x)[c(1,3:6)]
-		# ... but changing years
-		dimnames(flq) <- list(year=years)
-
-		# add data for matching years
-		flq[,dimnames(x)$year[dimnames(x)$year%in%as.character(years)],,,]  <-
-			x[,dimnames(x)$year[dimnames(x)$year%in%as.character(years)],,,]
-
-		return(flq)
-	}
-)   # }}}
-
 ## Sums         {{{
-if (!isGeneric("quantTotals"))
-	setGeneric("quantTotals", function(x, ...) standardGeneric("quantTotals"))
+setGeneric("quantTotals", function(x, ...) standardGeneric("quantTotals"))
 setMethod('quantTotals', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	sums <- x
 	for (i in 1:dim(x)[2])
@@ -759,7 +693,6 @@ setMethod('quantTotals', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(sums)
 })
 
-if (!isGeneric("yearTotals"))
 	setGeneric("yearTotals", function(x, ...) standardGeneric("yearTotals"))
 setMethod('yearTotals', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	sums <- x
@@ -768,7 +701,6 @@ setMethod('yearTotals', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(sums)
 })
 
-if (!isGeneric("quantSums"))
 	setGeneric("quantSums", function(x, ...) standardGeneric("quantSums"))
 setMethod('quantSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	res <- colSums(x, na.rm=na.rm)
@@ -777,37 +709,31 @@ setMethod('quantSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
     units=units(x)))
 })
 
-if (!isGeneric("yearSums"))
 	setGeneric("yearSums", function(x, ...) standardGeneric("yearSums"))
 setMethod('yearSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1,3:6), sum, na.rm=na.rm))
 })
 
-if (!isGeneric("unitSums"))
 	setGeneric("unitSums", function(x, ...) standardGeneric("unitSums"))
 setMethod('unitSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:2,4:6), sum, na.rm=na.rm))
 })
 
-if (!isGeneric("seasonSums"))
 	setGeneric("seasonSums", function(x, ...) standardGeneric("seasonSums"))
 setMethod('seasonSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:3,5:6), sum, na.rm=na.rm))
 })
 
-if (!isGeneric("areaSums"))
 	setGeneric("areaSums", function(x, ...) standardGeneric("areaSums"))
 setMethod('areaSums', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:4), sum, na.rm=na.rm))
 })
 
-if (!isGeneric("dimSums"))
 	setGeneric("dimSums", function(x, ...) standardGeneric("dimSums"))
 setMethod('dimSums', signature(x='FLQuant'), function(x, dim=c(1:2,6), na.rm=TRUE) {
 	return(apply(x, dim, sum, na.rm=na.rm))
 })
 
-if (!isGeneric("quantMeans"))
 	setGeneric("quantMeans", function(x, ...) standardGeneric("quantMeans"))
 setMethod('quantMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	res <- colMeans(x, na.rm=na.rm)
@@ -816,79 +742,66 @@ setMethod('quantMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
     units=units(x)))
 })
 
-if (!isGeneric("yearMeans"))
 	setGeneric("yearMeans", function(x, ...) standardGeneric("yearMeans"))
 setMethod('yearMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1,3:6), mean, na.rm=na.rm))
 })
 
-if (!isGeneric("unitMeans"))
 	setGeneric("unitMeans", function(x, ...) standardGeneric("unitMeans"))
 setMethod('unitMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:2,4:6), mean, na.rm=na.rm))
 })
 
-if (!isGeneric("seasonMeans"))
 	setGeneric("seasonMeans", function(x, ...) standardGeneric("seasonMeans"))
 setMethod('seasonMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:3,6), mean, na.rm=na.rm))
 })
 
-if (!isGeneric("areaMeans"))
 	setGeneric("areaMeans", function(x, ...) standardGeneric("areaMeans"))
 setMethod('areaMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:4,6), mean, na.rm=na.rm))
 })
 
-if (!isGeneric("iterMeans"))
 	setGeneric("iterMeans", function(x, ...) standardGeneric("iterMeans"))
 setMethod('iterMeans', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:5), mean, na.rm=na.rm))
 })
 
-if (!isGeneric("dimMeans"))
 	setGeneric("dimMeans", function(x, ...) standardGeneric("dimMeans"))
 setMethod('dimMeans', signature(x='FLQuant'), function(x, dim=c(1:2,6), na.rm=TRUE) {
 	return(apply(x, dim, mean, na.rm=na.rm))
 })
 
-if (!isGeneric("quantVars"))
 	setGeneric("quantVars", function(x, ...) standardGeneric("quantVars"))
 setMethod('quantVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, 2:6, var, na.rm=na.rm))
 })
 
-if (!isGeneric("yearVars"))
 	setGeneric("yearVars", function(x, ...) standardGeneric("yearVars"))
 setMethod('yearVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1,3:6), var, na.rm=na.rm))
 })
 
-if (!isGeneric("unitVars"))
 	setGeneric("unitVars", function(x, ...) standardGeneric("unitVars"))
 setMethod('unitVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:2,4:6), var, na.rm=na.rm))
 })
 
-if (!isGeneric("seasonVars"))
 	setGeneric("seasonVars", function(x, ...) standardGeneric("seasonVars"))
 setMethod('seasonVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:3,5:6), var, na.rm=na.rm))
 })
 
-if (!isGeneric("areaVars"))
 	setGeneric("areaVars", function(x, ...) standardGeneric("areaVars"))
 setMethod('areaVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:4,6), var, na.rm=na.rm))
 })
 
-if (!isGeneric("iterVars"))
 	setGeneric("iterVars", function(x, ...) standardGeneric("iterVars"))
 setMethod('iterVars', signature(x='FLQuant'), function(x, na.rm=TRUE) {
 	return(apply(x, c(1:5), var, na.rm=na.rm))
 })
 
-if (!isGeneric("dimVars"))
 	setGeneric("dimVars", function(x, ...) standardGeneric("dimVars"))
 setMethod('dimVars', signature(x='FLQuant'), function(x, dim=c(1:2,6), na.rm=TRUE) {
 	return(apply(x, dim, var, na.rm=na.rm))
@@ -955,9 +868,8 @@ setMethod("iters", signature(object="FLQuant"),
 )   # }}}
 
 # iter<-     {{{
-if (!isGeneric("iter<-"))
-	setGeneric("iter<-", function(object, ..., value)
-		standardGeneric("iter<-"))
+setGeneric("iter<-", function(object, ..., value)
+	standardGeneric("iter<-"))
 setMethod("iter<-", signature(object="FLQuant", value="FLQuant"),
 	function(object, iter, value)
 	{
@@ -967,9 +879,6 @@ setMethod("iter<-", signature(object="FLQuant", value="FLQuant"),
 )   # }}}
 
 # propagate {{{
-if (!isGeneric("propagate"))
-	setGeneric("propagate", function(object, ...) standardGeneric("propagate"))
-
 setMethod("propagate", signature(object="FLQuant"),
   function(object, iter, fill.iter=TRUE)
   {
@@ -981,11 +890,11 @@ setMethod("propagate", signature(object="FLQuant"),
 setGeneric("rnorm", function(n, mean=0, sd=1) standardGeneric("rnorm"))
 setMethod("rnorm", signature(n='numeric', mean="FLQuant", sd="FLQuant"),
 	function(n=1, mean, sd) {
-		if(all(dim(mean) != dim(sd)))
+		if(any(dim(mean) != dim(sd)))
 			stop("dims of mean and sd must be equal")
 		FLQuant(array(rnorm(prod(dim(mean)[-6])*n, rep(iter(mean, 1)[drop=TRUE], n),
 			rep(iter(sd, 1)[drop=TRUE], n)), dim=c(dim(mean)[-6], n)),
-			dimnames=c(dimnames(mean)[-6], list(iter=seq(n))), fill.iter=TRUE)
+			dimnames=c(dimnames(mean)[-6], list(iter=seq(n))))
 	}
 )	
 setMethod("rnorm", signature(n='numeric', mean="FLQuant", sd="numeric"),
@@ -995,7 +904,16 @@ setMethod("rnorm", signature(n='numeric', mean="FLQuant", sd="numeric"),
 setMethod("rnorm", signature(n='numeric', mean="numeric", sd="FLQuant"),
 	function(n=1, mean, sd)
 		rnorm(n, FLQuant(mean, dimnames=dimnames(sd)), sd)
-) # }}}
+)
+setMethod("rnorm", signature(n='numeric', mean="FLQuant", sd="missing"),
+	function(n=1, mean)
+		rnorm(n, mean, 1)
+)
+setMethod("rnorm", signature(n='numeric', mean="missing", sd="FLQuant"),
+	function(n=1, sd)
+		rnorm(n, 0, sd)
+)
+# }}}
 
 # rlnorm	{{{
 setGeneric("rlnorm", function(n, meanlog=0, sdlog=1) standardGeneric("rlnorm"))
@@ -1018,7 +936,19 @@ setMethod("rlnorm", signature(n='numeric', meanlog="FLQuant", sdlog="numeric"),
 setMethod("rlnorm", signature(n='numeric', meanlog="numeric", sdlog="FLQuant"),
 	function(n=1, meanlog, sdlog)
 		rlnorm(n, FLQuant(meanlog, dimnames=dimnames(sdlog)), sdlog)
-)	# }}}
+)
+
+setMethod("rlnorm", signature(n='numeric', meanlog="FLQuant", sdlog="missing"),
+	function(n=1, meanlog, sdlog)
+		rlnorm(n, meanlog, 1)
+)
+
+setMethod("rlnorm", signature(n='numeric', meanlog="missing", sdlog="FLQuant"),
+	function(n=1, meanlog, sdlog)
+		rlnorm(n, 0, sdlog)
+)
+
+# }}}
 
 # rpois		{{{
 setGeneric("rpois", function(n, lambda) standardGeneric("rpois"))
@@ -1031,11 +961,9 @@ setMethod("rpois", signature(n='numeric', lambda="FLQuant"),
 )	 # }}}
 
 # PV	{{{
-if (!isGeneric("pv")) {
-	setGeneric("pv", function(object, ...){
-		standardGeneric("pv")
-	})
-}
+setGeneric("pv", function(object, ...)
+		standardGeneric("pv"))
+
 # Heath. 2006. Oikos 115:573-581
 setMethod('pv', signature(object='FLQuant'),
 	function(object, dist=FALSE)
@@ -1077,22 +1005,41 @@ setMethod('pv', signature(object='FLQuant'),
 # }}}
 
 # setPlusGroup	{{{
-if (!isGeneric("setPlusGroup"))
-	setGeneric("setPlusGroup", function(x, plusgroup, ...)
+setGeneric("setPlusGroup", function(x, plusgroup, ...)
 		standardGeneric("setPlusGroup"))
 setMethod("setPlusGroup", signature(x='FLQuant', plusgroup='numeric'),
-	function(x, plusgroup, na.rm=FALSE)
-	{
+	function(x, plusgroup, na.rm=FALSE, by='mean') {
 	# only valid for age-based FLQuant
 	if(quant(x) != 'age')
 		stop('setPlusGroup onoy makes sense for age-based FLQuant objects')
 	# plusgroup not < than minage
-  	if ((plusgroup) < dims(x)$min)
-		stop("plusgroup < min age")
-	
-	res <- trim(x, age=dims(x)$min:plusgroup)
-	res[as.character(plusgroup)] <- quantSums(x[as.character(plusgroup:dims(x)$max)],
-		na.rm=na.rm)
+  if ((plusgroup) < dims(x)$min)
+	  stop("plusgroup < min age")
+  
+  # expand                       
+  if ((plusgroup) > dims(x)$max) {
+    dmns <-dimnames(x)
+    dmns$age <-dims(x)$min:plusgroup
+    oldMaxage<-dims(x)$max
+    
+    # create extra ages and fill with plusgroup
+    res  <-FLQuant(x, dimnames=dmns)
+    res[ac((oldMaxage+1):plusgroup)] <- 0;
+    res[ac((oldMaxage+1):plusgroup)] <- sweep(res[ac((oldMaxage+1):plusgroup)],
+      2:6, res[ac(oldMaxage)],"+")
+    
+    if (by != "mean")
+      res[ac((oldMaxage + 1):plusgroup)] <- res[ac((oldMaxage + 1):plusgroup)]/
+        (plusgroup-oldMaxage + 1)
+
+  }
+  # trim
+  else {
+    res <- trim(x, age=dims(x)$min:plusgroup)
+    res[as.character(plusgroup)] <- switch(by,
+      'mean'= quantMeans(x[as.character(plusgroup:dims(x)$max)], na.rm=na.rm),
+      'sum'= quantSums(x[as.character(plusgroup:dims(x)$max)], na.rm=na.rm))
+  }
 
 	return(res)
 	}
@@ -1107,7 +1054,7 @@ setMethod('sweep', signature(x='FLQuant'),
   function(x, MARGIN, STATS, FUN, check.margin=TRUE, ...)
   {
     res <- callNextMethod()
-    FLQuant(res)
+    FLQuant(res, units=units(x))
   }
 ) # }}}
 

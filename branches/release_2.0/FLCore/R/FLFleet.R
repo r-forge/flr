@@ -62,9 +62,6 @@ remove(validFLFleet)
 invisible(createFLAccesors("FLFleet", exclude=c('range', 'effort', 'name', 'desc')))	# }}}
 
 # FLFleet()		{{{
-setGeneric('FLFleet', function(object, ...)
-		standardGeneric('FLFleet')
-)
 setMethod('FLFleet', signature(object='FLMetiers'),
 	function(object, ...)
 	{
@@ -140,14 +137,10 @@ setMethod('summary', signature(object='FLFleet'),
 # }}}
 
 # metier(fl, me)	{{{
-setGeneric('metier', function(object, metier, ...)
-		standardGeneric('metier'))
 setMethod('metier', signature(object='FLFleet', metier='ANY'),
 	function(object, metier, ...)
 		return(object@metiers[[metier]])
 )
-setGeneric('metier<-', function(object, metier, ..., value)
-		standardGeneric('metier<-'))
 setReplaceMethod('metier', signature(object='FLFleet', metier='ANY', value='FLMetier'),
 	function(object, metier, ..., value)
 	{
@@ -155,105 +148,6 @@ setReplaceMethod('metier', signature(object='FLFleet', metier='ANY', value='FLMe
 		return(object)
 	}
 )	# }}}
-
-## createFLeetAccesors  {{{
-createFleetAccesors <- function(slot, fun, level=c(1:5), assigment=TRUE, class='FLQuant')
-  {
-	# replacement function
-  if(assigment == TRUE)
-  {
-	# generic
-	eval(substitute(if (!isGeneric(SLOT)) {
-		setGeneric(SLOT, function(object, ..., value)
-				standardGeneric(SLOT))}, list(SLOT=paste(slot, '<-', sep=''))))
-	# FLCatch
-  if(1 %in% level)
-	eval(substitute(setReplaceMethod(SLOT, signature(object='FLCatch', value=class),
-		function(object, value) {
-			slot(object, SLOT) <- value
-			return(object)}), list(SLOT=slot)))
-	# FLCatches
-  if(2 %in% level)
-	eval(substitute(setReplaceMethod(SLOT, signature(object='FLCatches', value=class),
-		function(object, catch, value) {
-			slot(object[[catch]], SLOT) <- value
-			return(object)
-		}),list(SLOT=slot)))
-	# FLMetier
-  if(3 %in% level)
-	eval(substitute(setReplaceMethod(SLOT, signature(object='FLMetier', value=class),
-		function(object, catch, value) {
-			slot(object@catches[[catch]], SLOT) <- value
-			return(object)
-		}),list(SLOT=slot)))
-	# FLMetiers
-  if(4 %in% level)
-	eval(substitute(setReplaceMethod(SLOT, signature(object='FLMetiers', value=class),
-		function(object, metier, catch, value) {
-			slot(object[[metier]]@catches[[catch]], SLOT) <- value
-			return(object)
-		}), list(SLOT=slot)))
-	# FLFleet
-  if(5 %in% level)
-	eval(substitute(setReplaceMethod(SLOT, signature(object='FLFleet', value=class),
-		function(object, metier, catch, value) {
-			slot(object@metiers[[metier]]@catches[[catch]], SLOT) <- value
-			return(object)
-		}), list(SLOT=slot)))
-  }
-
-	# accesor functions
-	# generic
-	eval(substitute(if (!isGeneric(SLOT)) {
-		setGeneric(SLOT, function(object, ...)
-				standardGeneric(SLOT))}, list(SLOT=slot)))
-	# FLCatch
-  if(1 %in% level)
-	eval(substitute(setMethod(SLOT, signature(object='FLCatch'),
-		function(object)
-			return(slot(object, SLOT))), list(SLOT=slot)))
-	# FLCatches
-  if(2 %in% level)
-	eval(substitute(setMethod(SLOT, signature(object='FLCatches'),
-		function(object, catch='missing') {
-			if(missing(catch))
-				return(lapply(object, SLOT))
-			else
-				return(FUN(object[[catch]]))}),list(SLOT=slot, FUN=fun)))
-	# FLMetier
-  if(3 %in% level)
-	eval(substitute(setMethod(SLOT, signature(object='FLMetier'),
-		function(object, ...)
-				return(FUN(object@catches, ...))), list(SLOT=slot, FUN=fun)))
-	# FLMetiers
-  if(4 %in% level)
-	eval(substitute(setMethod(SLOT, signature(object='FLMetiers'),
-		function(object, metier='missing', catch='missing', ...) {
-      # nothing
-			if (missing(metier) && missing(catch))
-				stop('Either metier or catch must be specified')
-      # metier
-			else if(!missing(metier) && missing(catch))
-				return(FUN(object[[metier]], ...))
-      # catch
-			else if(missing(metier) && !missing(catch))
-      {
-				res <- FLQuants()
-				for(i in names(object))
-        {
-          if (catch %in% names(object[[i]]@catches))
-  					res[[i]] <- FUN(object[[i]], catch=catch, ...)
-        }
-				return(res)
-      # both
-			} else
-				return(FUN(object[[metier]], catch=catch, ...))}), list(SLOT=slot, FUN=fun)))
-	# FLFleet
-  if(5 %in% level)
-	eval(substitute(setMethod(SLOT, signature(object='FLFleet'),
-		function(object, ...)
-				return(FUN(object@metiers, ...))), list(SLOT=slot, FUN=fun)))
-}   # }}}
 
 # FLFleet accesors	{{{
 createFleetAccesors('catch', catch, c(2:5), assigment=FALSE)
@@ -273,9 +167,6 @@ createFleetAccesors('price', price)
 # }}}
 
 # Sums(FLQuants)	{{{
-setGeneric('Sums', function(object, ...)
-		standardGeneric('Sums')
-)
 setMethod('Sums', signature(object='FLQuants'),
 	function(object, na.rm=FALSE, ...) {
 		if(length(object) == 1)
@@ -283,10 +174,6 @@ setMethod('Sums', signature(object='FLQuants'),
 		eval(parse(text=paste('object[[', paste(seq(length(object)),
 			collapse=']] + object[['), ']]', sep='')))
 	}
-)
-
-setGeneric('Products', function(object, ...)
-		standardGeneric('Products')
 )
 setMethod('Products', signature(object='FLQuants'),
 	function(object, na.rm=FALSE, ...)
@@ -314,9 +201,6 @@ setMethod("Arith", ##  "+", "-", "*", "^", "%%", "%/%", "/"
 # }}}
 
 # revenue	{{{
-setGeneric('revenue', function(object, ...)
-		standardGeneric('revenue')
-)
 setMethod('revenue', signature('FLCatch'),
 	function(object)
     if(!all(is.na(landings.n(object))))
@@ -347,7 +231,13 @@ setMethod('revenue', signature('FLMetiers'),
 )
 setMethod('revenue', signature('FLFleet'),
   function(object, ...)
-    return(revenue(object@metiers, ...))
+  {
+    lst <- lapply(object@metiers, revenue)
+    lst <- new('FLQuants', lst)
+    if(length(lst) > 1)
+      for (i in 2:length(lst))
+        lst[[1]] <- lst[[1]] + lst[[i]]
+  }
 ) # }}}
 
 ## iter {{{
@@ -373,9 +263,6 @@ setMethod("iter", signature(object="FLFleet"),
 ) # }}}
 
 # catches(fl, me, ca)	{{{
-setGeneric('catches', function(object, ...)
-		standardGeneric('catches')
-)
 setMethod('catches', signature(object='FLFleet'),
 	function(object, ...)
 		return(catches(object@metiers, ...))
@@ -426,9 +313,6 @@ setMethod('catches', signature(object='FLMetier'),
 )	# }}}
 
 # catches<-(fl, ca)	{{{
-setGeneric('catches<-', function(object, catch, ..., value)
-		standardGeneric('catches<-')
-)
 setMethod('catches<-', signature(object='FLMetier', value='FLCatch'),
 	function(object, catch, ..., value)
   {
@@ -525,9 +409,6 @@ setMethod("window", signature(x="FLFleet"),
 )	# }}}
 
 ## effort		{{{
-	setGeneric("effort", function(object, metier, ...)
-		standardGeneric("effort"))
-
 setMethod("effort", signature(object="FLFleet", metier="missing"),
 	function(object)
     return(slot(object, "effort")))
@@ -536,9 +417,6 @@ setMethod("effort", signature(object="FLFleet", metier="character"),
 	function(object, metier)
     return(slot(object, "effort") * slot(metier(object, metier), "effshare")))
 
-if (!isGeneric("effort<-"))
-	setGeneric("effort<-", function(object, ..., value)
-		standardGeneric("effort<-"))
 setReplaceMethod("effort", signature(object="FLFleet", value="FLQuant"),
 	function(object, value)
   {

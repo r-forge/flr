@@ -2,13 +2,17 @@
 \docType{class}
 \alias{FLBiol-class}
 \alias{catch.n,FLBiol-method}
+\alias{FLBiol}
+\alias{FLBiol-methods}
+\alias{FLBiol,missing-method}
+\alias{FLBiol,FLQuant-method}
 \title{Class FLBiol}
 \description{
  This is a class for the modelling of age/length or biomass structured populations.
- It is  in its structure a subset of the \code{FLStock-class} class, but lacks the 
- harvesting information of that class. The slots are for mortality (natural or otherwise),
- fecundity/maturity/per capita birth rates, numbers, weight and mortality components 
- before spawning/birthing period. 
+ It is  in its structure a subset of the \code{\linkS4class{FLStock}} class, but lacks 
+ the harvesting information of that class. The slots are for mortality (natural or 
+ otherwise), fecundity/maturity/per capita birth rates, numbers, weight and mortality 
+ components before spawning/birthing period. 
 
  The non-accessor methods for this class calculate mature stock biomass/numbers of
  eggs/etc. and many life-history methods are available that calculate natural mortality 
@@ -29,6 +33,15 @@
 \section{Extends}{\describe{
 FLComp
 }}
+\section{Constructor}{
+\describe{
+\item{}{The \code{FLBiol(object, ...)} constructor method allows simple creation of new FLBiol objects with the methods described below.
+}
+  \item{object}{An initial FLQuant only used for sizing.}
+  \item{plusgroup}{The age/length to be considered as plusgroup.}
+  \item{...}{Extra objects to be allocated to given slots.}
+}}
+
 \section{Methods}{\describe{
 \item{\link{as.FLBiol}(FLCore) :}{Coerces object ino an \code{FLBiol} object.}
 \item{}{\code{ signature(object=missing) }}

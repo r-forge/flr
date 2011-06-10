@@ -78,8 +78,6 @@ remove(validFLBiol)	# We do not need this function any more
 invisible(createFLAccesors("FLBiol", exclude=c('name', 'desc', 'range'))) # }}}
 
 # FLBiol()   {{{
-setGeneric('FLBiol', function(object, ...)
-		standardGeneric('FLBiol'))
 setMethod('FLBiol', signature(object='FLQuant'),
   function(object, plusgroup=dims(object)$max, ...)
   {
@@ -126,10 +124,6 @@ is.FLBiol <- function(x)
 # }}}
 
 ## mean.lifespan {{{
-if (!isGeneric("mean.lifespan"))
-	setGeneric("mean.lifespan", function(x, ...)
-		standardGeneric("mean.lifespan"))
-
 setMethod("mean.lifespan", signature(x="FLBiol"),
 	function(x, ref.age = 'missing',...) {
 		
@@ -168,13 +162,6 @@ setMethod("mean.lifespan", signature(x="FLBiol"),
 )# }}}
 
 ## as.FLBiol {{{
-if (!isGeneric("as.FLBiol")) {
-	setGeneric("as.FLBiol", function(object, ...){
-		value <- standardGeneric("as.FLBiol")
-		value
-	})
-}
-
 setMethod("as.FLBiol", signature(object="FLBiol"),
 
   function(object, unit  =1:dim(object@n)[3],
@@ -264,6 +251,17 @@ setMethod("ssb", signature(object="FLBiol"),
   }
 )	# }}}
 
+## tsb  {{{
+setMethod("tsb", signature(object="FLBiol"),
+	function(object, ...)
+  {
+		res <- quantSums(n(object) * wt(object) * exp(-spwn(object) * 
+      m(object)), na.rm=FALSE)
+    units(res) <- paste(units(n(object)), units(wt(object)), sep=' * ')
+    return(res)
+  }
+)	# }}}
+
 ## computeStock  {{{
 setMethod("computeStock", signature(object="FLBiol"),
 	function(object, ...)
@@ -271,14 +269,6 @@ setMethod("computeStock", signature(object="FLBiol"),
 )	# }}}
 
 ## ssn  {{{
-
-if (!isGeneric("ssn")) {
-	setGeneric("ssn", function(object, ...){
-		value  <-  standardGeneric("ssn")
-		value
-	})
-}
-
 setMethod("ssn", signature(object="FLBiol"),
 	function(object, ...)
 		return(quantSums(n(object) * fec(object) * exp(-spwn(object) * m(object)), ...))
@@ -357,15 +347,10 @@ setMethod('harvest', signature(object='FLBiol', catch='missing'),
 ) # }}}
 
 # leslie {{{
-if (!isGeneric("leslie"))
-	setGeneric("leslie", function(object, ...)
-		standardGeneric("leslie"))
-
 # this method applies the Leslie Matrix-type model to an FLBiol object
 # ::
 # this is just for the year and age version as tweeks will be needed for 
 # sexually dimorphic and seasonal models
-
 setMethod("leslie", signature(object="FLBiol"),
 	function(object, plusgroup = FALSE, ...) {
 		
@@ -422,119 +407,90 @@ setMethod("leslie", signature(object="FLBiol"),
 # }}}
 
 # r {{{
-
-# calculates the intrinsic rate of increase from the Leslie-transition matrix or the Euler-Lotka equation
-# by year or by cohort
-
-if (!isGeneric("r")) {
-	setGeneric("r", function(object, ...){
-		value  <-  standardGeneric("r")
-		value
-	})
-}
-
-# estimates r by year or cohort using Leslie matrix ideas
-
-setMethod("r", signature(object="FLBiol"),
-	function(object, by = 'year', method = 'el',...) {
-
+# calculates the intrinsic rate of increase from the Leslie-transition matrix
+# or the Euler-Lotka equation by year or by cohort.
+setMethod("r", signature(m="FLQuant", fec="FLQuant"),
+	function(m, fec, by = 'year', method = 'el',...)
+  {
+    # checks
 		if(by != 'year' && by != 'cohort')
 			stop("Error in r: direction of estimation is neither year nor cohort")
 
 		if(method != 'leslie' && method != 'el')
 			stop("Error in r: method used is neither Leslie matrix or Euler-Lotka")
 
-		# call survprob to convert M to survival probabilities
-
-		ps <- survprob(object,by)
-		f <- fec(object)
-	
 		# estimate by year
-	
-		if(by == 'year') {
-
-			dmf <- dim(f)
-			dmps <- dim(ps)
-
-			age <- as.numeric(dimnames(f)$age)
+		if(by == 'year')
+    {
+			dmf <- dim(fec)
+			dmm <- dim(m)
+			age <- as.numeric(dimnames(fec)$age)
 
 			# solve Euler-Lotka equation
+			if(method == 'el')
+      {
+        m <- survprob(m)
 
-			if(method == 'el') {
-
-				r.func <- function(ff,p,age) {
-
+				r.func <- function(ff, p, age)
+        {
 					# solve Euler-Lotka using optimise
-
-					elfn <- function(x) {
-
-						return((sum(exp(-x[1]*age)*p*ff)-1)^2)
-					}
+					elfn <- function(x)
+						return((sum(exp(-x[1] * age) * p * ff) - 1) ^ 2)
 				
-					res.r <- optimise(elfn,interval=c(-10,10))[[1]]
-
+					res.r <- optimise(elfn, interval=c(-10,10))[[1]]
 					return(res.r)
 				}
 
-				if(dmf[6] > 1 && dmps[6] > 1 && (dmf[6] != dmps[6]))
-					stop("Error in r: iteration dimensions are not the same in FLBiol object")
+				if(dmf[6] > 1 && dmm[6] > 1 && (dmf[6] != dmm[6]))
+					stop("Error in r: iteration dimensions are not the same for fec and m")
 
-				if(dmf[6] > 1 && dmps[6] > 1)
-					nits <- dmf[6]
+        nits <- max(dmf[6], dmm[6])
 
-				if(dmf[6] == 1 && dmps[6] == 1)
-					nits <- 1
-
-				if(dmf[6] > 1 && dmps[6] == 1) {
-						
-					tmp <- ps
-					ps <- f
+				if(dmf[6] > 1 && dmm[6] == 1)
+        {		
+					tmp <- m
+					ps <- fec
 					ps[] <- tmp[]
 					rm(tmp)
 					nits <- dmf[6]
 				} 
 
-				if(dmf[6] == 1 && dmps[6] > 1) {
-						
-					tmp <- f
-					f <- ps
+				if(dmf[6] == 1 && dmm[6] > 1)
+        {		
+					tmp <- fec
+					f <- m
 					f[] <- tmp[]
 					rm(tmp)
-					nits <- dmps[6]
+					nits <- dmm[6]
 				} 
 
-				r.ret <- FLQuant(quant='all',dim=c(1,dmf[2],1,1,1,nits))
-				dimnames(r.ret) <- dimnames(quantMeans(f)) 
+				r.ret <- FLQuant(dim=c(1,dmf[2],1,1,1,nits), 
+          dimnames=dimnames(quantMeans(fec))[1:5])
 
 				# define required variables for the estimation
-				
-				for(y in 1:dmf[2]) {  
-					
+				for(y in 1:dmf[2])
+        {  	
 					# loop over the iterations
-					
-					for(i in 1:nits) {
+					for(i in 1:nits)
+          {	
+						ff <- as.vector(fec[,y,,,,i])
+						p <- as.vector(m[,y,,,,i])						
 						
-						ff <- as.vector(f[,y,,,,i])
-						p <- as.vector(ps[,y,,,,i])						
-						
-						r.ret[,y,,,,i] <- r.func(ff,p,age)
+						r.ret[,y,,,,i] <- r.func(ff, p, age)
 					}
 				}
 			}
 
 			# use Leslie matrix lead eigenvalues
-
-			if(method == 'leslie') {
-
-				ps <- exp(-m(object))
-				f <- fec(object) 
+      else if(method == 'leslie')
+      {
+				m <- exp(-m)
 
 				# define function to construct leslie matrix and calculate r 
 
-				r.func <- function(ff,p) {
+				r.func <- function(ff, p) {
 
 					# construct the leslie matrix 
-
 					lesm <- matrix(ncol=length(ff),nrow=length(ff))
 					
 					lesm[,] <- 0
@@ -544,51 +500,44 @@ setMethod("r", signature(object="FLBiol"),
 						lesm[a+1,a] <- p[a+1]
 					
 					# calculate log of real part of the lead eigenvalue of the leslie matrix
-
 					res.r <- log(max(Re(eigen(lesm)[['values']])))
 
 					return(res.r)
 				}
 
-				if(dmf[6] > 1 && dmps[6] > 1 && (dmf[6] != dmps[6]))
-					stop("Error in r: iteration dimensions are not the same in FLBiol object")
+				if(dmf[6] > 1 && dmm[6] > 1 && (dmf[6] != dmm[6]))
+					stop("Error in r: iteration dimensions are not the same for fec and m")
 
-				if(dmf[6] > 1 && dmps[6] > 1)
-					nits <- dmf[6]
+        nits <- max(dmf[6], dmm[6])
 
-				if(dmf[6] == 1 && dmps[6] == 1)
-					nits <- 1
-
-				if(dmf[6] > 1 && dmps[6] == 1) {
-						
-					tmp <- ps
-					ps <- f
+				if(dmf[6] > 1 && dmm[6] == 1)
+        {		
+					tmp <- m
+					ps <- fec
 					ps[] <- tmp[]
 					rm(tmp)
 					nits <- dmf[6]
 				} 
 
-				if(dmf[6] == 1 && dmps[6] > 1) {
-						
-					tmp <- f
-					f <- ps
+				if(dmf[6] == 1 && dmm[6] > 1)
+        {		
+					tmp <- fec
+					f <- m
 					f[] <- tmp[]
 					rm(tmp)
-					nits <- dmps[6]
+					nits <- dmm[6]
 				} 
 
-				r.ret <- FLQuant(quant='all',dim=c(1,dmf[2],1,1,1,nits))
-				dimnames(r.ret) <- dimnames(quantMeans(f)) 
+				r.ret <- FLQuant(dim=c(1,dmf[2],1,1,1,nits), 
+          dimnames=dimnames(quantMeans(fec))[1:5])
 
-				for(y in 1:dmf[2]) {  
-					
+				for(y in 1:dmf[2])
+        {  	
 					# loop over the iterations
-					
-					for(i in 1:nits) {
-						
-						ff <- as.vector(f[,y,,,,i])
-						p <- as.vector(ps[,y,,,,i])						
-						
+					for(i in 1:nits)
+          {	
+						ff <- as.vector(fec[,y,,,,i])
+						p <- as.vector(m[,y,,,,i])						
 						r.ret[,y,,,,i] <- r.func(ff,p)
 					}
 				} 
@@ -597,47 +546,34 @@ setMethod("r", signature(object="FLBiol"),
 	
 		# estimate by cohort
 
-		if(by == 'cohort') {
-
+    else if(by == 'cohort') {
+      stop("not implemented yet")
 		}
 
 		return(r.ret)
 	}
+) 
+
+setMethod("r", signature(m="FLBiol", fec="missing"),
+	function(m, by = 'year', method = 'el',...)
+  {
+    r(m(m), fec(m), by=by, method=method,)
+  }
 ) # }}}
 
 # survprob {{{
-
-if (!isGeneric("survprob")) {
-	setGeneric("survprob", function(object, ...){
-		value  <-  standardGeneric("survprob")
-		value
-	})
-}
-
 # estimate survival probabilities by year or cohort
-
 setMethod("survprob", signature(object="FLBiol"),
 	function(object, by = 'year',...) {
 		
-		ps <- m(object)
-		mm <- m(object)
-
 		# estimate by year
+		if(by == 'year')
+      return(survprob(m(object)))
 		
-		if(by == 'year') {
-		
-			ps[1,,,,,] <- 1	
-			for(a in 2:dim(ps)[1])
-				ps[a,,,,,] <- ps[a-1,,,,,]*exp(-mm[a-1,,,,,])
-		}
-
 		# estimate by cohort
+    else if(by == 'cohort')
+      return(survprob(FLCohort(m(object))))
 
-		if(by == 'cohort') {
-
-		}
-
-		return(ps)
 	}
 ) # }}}
 
@@ -673,11 +609,9 @@ s.<-	function(x, plusgroup, na.rm=FALSE)
 )# }}}
 
 # rec(FLBiol)  {{{
-if (!isGeneric("rec"))
-	setGeneric("rec", function(object, ...)
-		standardGeneric("rec"))
 setMethod('rec', signature(object='FLBiol'),
-  function(object, rec.age=ac(dims(object)$min))
+#  function(object, rec.age=ac(dims(object)$min))
+  function(object, rec.age=object@range["min"])
   {
     if(dims(object)$quant == 'age')
       n(object)[rec.age,]

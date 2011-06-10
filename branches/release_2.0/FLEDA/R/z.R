@@ -19,10 +19,8 @@ setMethod("z", signature("FLQuant"), function(object, agerng="missing", ...){
 
 # important note: agerng is defined by the dimnames so it should be
 # the names of the ages not their position on the array
-
 	# check that quant is age or quant
 	if(!(quant(object) %in% c("age", "quant"))) stop("Quant must be \"age\" or \"quant\".")
-
 	if(!missing(...)){
 		logr.obj <- logr(object, ...)
 		logcc.obj <- logcc(object, ...)
@@ -42,22 +40,10 @@ setMethod("z", signature("FLQuant"), function(object, agerng="missing", ...){
 	logr.obj <- trim(logr.obj, age=agerng)	
 	logcc.obj <- trim(logcc.obj, age=agerng)	
 
-	zy <- apply(logr.obj, c(2,3,4,5,6), mean) #, na.rm=TRUE)
-	za <- apply(logr.obj, c(1,3,4,5,6), mean) #, na.rm=TRUE)
+	zy <- apply(logr.obj, c(2,3,4,5,6), mean)
+	za <- apply(logr.obj, c(1,3,4,5,6), mean)
 	dimnames(za)$year <- "all"
-	# for cohort objects I need some hacking to make use of nice
-	# flq's apply correction
-	mat <- logcc.obj@.Data
-	dimnames(mat) <- NULL
-	flq <- FLQuant(mat)
-	zc <- apply(flq, c(2,3,4,5,6), mean)
-
-	# back to FLCohort and fix dimnames
-	zc <- new("FLCohort", zc)
-	dn <- dimnames(logcc.obj)
-	dn[[1]] <- "all"
-	dn$cohort <- as.numeric(dn$cohort)-as.numeric(agerng[1])
-	dimnames(zc) <- dn	
+	zc <- apply(logcc.obj, c(2,3,4,5,6), mean)
 
 	# correct units
 	units(zy) <- "year-1"
