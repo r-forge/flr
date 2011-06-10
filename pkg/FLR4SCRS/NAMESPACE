@@ -1,7 +1,0 @@
-importFrom("ggplot2","ggplot")
-import("FLCore")
-exportMethods("ln2z",
-              "wt2z",
-              "mnLen")
-export("lhGen")
-
