@@ -1,8 +1,0 @@
-Package: FLICA
-Title: VPA based assessment method
-Version: 1.99
-Author: Mark Payne
-Description: 
-Maintainer: Mark Payne
-License: GPL 2.0
-Depends: FLCore, FLAssess
