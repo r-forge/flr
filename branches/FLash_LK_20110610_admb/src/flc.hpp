@@ -3,7 +3,7 @@
 #ifndef _INC_flc
 #define _INC_flc
 
-#include "FLCoreClasses.hpp"
+#include <FLCoreClasses.hpp>
 #include <Rmath.h>
 
 FLRConstSRR get_sr(int i);
