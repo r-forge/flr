@@ -1,0 +1,8 @@
+useDynLib("FLSURBAdll")
+import("FLAssess")
+exportClasses("FLSURBA",
+              "FLSURBA.control")
+export("FLSURBA",
+       "FLSURBA.control",
+	     "is.FLSURBA",    
+       "is.FLSURBA.control")

@@ -1,0 +1,8 @@
+Package: FLICA
+Title: FLR implementation of the VPA-based ICA assessment method
+Version: 1.4-11
+Author: Laurence T. Kell and Mark Payne
+Description: 
+Maintainer: Mark Payne <mpa@aqua.dtu.dk>
+License: GPL 2.0
+Depends: FLCore, FLAssess

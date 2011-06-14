@@ -1,0 +1,8 @@
+Package: FLSURBA
+Title: Survey based assessment method
+Version: 1.2-4
+Author: Laurence T. Kell
+Description: 
+Maintainer: Coby Needle <c.needle@frs.ac.uk>
+License: GPL 2.0
+Depends: FLCore, FLAssess

@@ -1,0 +1,13 @@
+NRC set 1
+1
+set1NRCLA.txt
+set1NRCCatch.txt
+set1NRCCW.txt
+set1NRCSW.txt
+set1NRCM.txt
+set1NRCMAT.txt
+set1NRCPF.txt
+set1NRCPM.txt
+************
+************
+set1NRCCPUE.txt

@@ -1,0 +1,18 @@
+useDynLib("FLICA")
+import("FLCore")
+import("FLAssess")
+exportClasses("FLICA",
+              "FLICA.control")
+export("FLICA",
+       "FLICA.control",
+	     "is.FLICA",    
+       "is.FLICA.control",
+       "diagnostics",
+       "plot.banana",
+	 "plot.otolith",
+       "ica.out",
+       "FLICA.out")
+exportMethods(
+    "assess",
+    "diagnostics")
+

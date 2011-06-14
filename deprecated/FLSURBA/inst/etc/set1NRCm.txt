@@ -1,0 +1,6 @@
+NRC Clean data set Natural Mortality
+1	5
+1901	1920
+1	12
+3	
+0.2
