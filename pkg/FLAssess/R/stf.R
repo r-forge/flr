@@ -53,7 +53,7 @@ setMethod('stf', signature(object='FLStock'),
     # harvest as mean over fbar.nyears
     f <-apply(slot(res, 'harvest')[,fbar.years], c(1,3:6), fmean, na.rm=na.rm)
     for (i in years)
-       slot(res, 'harvest')[,i] <-f
+       slot(res, 'harvest')[,i] <- f
 
     # f.rescale
     if(f.rescale == TRUE)
