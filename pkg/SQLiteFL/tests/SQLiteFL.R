@@ -41,7 +41,7 @@ catch(sql4) <- catch(ple4)
 # FLBiol
 bio4 <- as.FLBiol(ple4)
 
-sqb4 <- sql(bio4)
+sqb4 <- sql(bio4, db=db)
 
 n(sqb4)
 wt(sqb4)
@@ -51,7 +51,7 @@ wt(sqb4)
 # FLIndex
 pli4 <- as(ple4, 'FLIndex')
 
-sql(pli4)
+sql(pli4, db=db)
 
 # -----
 unlink(db)
