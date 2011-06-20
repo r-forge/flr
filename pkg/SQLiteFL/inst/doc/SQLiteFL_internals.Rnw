@@ -1,0 +1,70 @@
+% Usage: R CMD Sweave sweave.Rnw
+%
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{url}
+\title{SQLiteFl internals}
+\author{Iago Mosqueira\\\smaller EC JRC, Ispra}
+\date{June 2011}
+
+% Sweave options
+%  code output better formated
+\DefineVerbatimEnvironment{Sinput}{Verbatim} {xleftmargin=2em}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{xleftmargin=2em}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{xleftmargin=2em}
+\fvset{listparameters={\setlength{\topsep}{0pt}}}
+\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}}
+%  keep comments in output code
+\SweaveOpts{keep.source=TRUE}
+%  output only pdf to use with pdflatex
+\SweaveOpts{eps = FALSE, pdf = TRUE}
+
+
+\begin{document}
+
+% limits width of output to fit in page, avoids + sign on broken lines
+<<echo=false>>=
+options(width=60)
+options(continue=" ")
+@
+
+\maketitle
+\tableofcontents
+
+% Introduction
+\section{Introduction}
+
+% Database structure
+\section{Database structure}
+Objects belonging to any FLR \emph{complex} class are commonly based on the \texttt{FLQuant} class, and its 6D array, together with some metadata slots (usually \emph{name}, \emph{desc} and \emph{range}). Information on the dimeniGiven the very different dimensions and
+
+\subsection{Tables}
+\paragraph{data}
+\paragraph{meta}
+\paragraph{range}
+\paragraph{slots}
+
+% Classes
+\section{Classes}
+
+% Exported C functions
+\section{Exported C functions}
+
+% Examples
+\section{Examples}
+
+% Hidden R code chunk
+<<echo = FALSE, results = hide>>=
+  library(xtable)
+@
+
+% R commands shown in document
+<<echo = TRUE, results = hide>>=
+  library(SQLiteFL)
+@
+
+% R commands shown in document & output too
+<<echo = TRUE, results = tex>>=
+@
+
+\end{document}
