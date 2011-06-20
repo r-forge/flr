@@ -1,0 +1,11 @@
+Package: FLFleet
+Title: Fleets, metiers and catches
+Version: 0.0.1
+Date: 2011
+Author: Iago Mosqueira
+Description: FLFleet
+Depends: methods, FLCore
+Imports: FLCore
+Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
+License: GPL 2
+LazyLoad: Yes
