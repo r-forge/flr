@@ -1,5 +1,0 @@
-# -*- Makefile -*-
-#  $Id: Makevars 913 2011-03-22 10:20:01Z imosqueira $
-# PKG_CFLAGS=-Wunused -pedantic
-
-PKG_LIBS = $(shell $(R_HOME)/bin/${R_ARCH}/R --slave -e 'cat(system.file("libs", package="FLCore"))')/${R_ARCH}/FLCore.so
