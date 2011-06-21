@@ -1,20 +1,27 @@
-importFrom("ggplot2","ggplot")
 importClassesFrom("FLCore",
 "FLQuant",
 "FLCohort",
 "FLComp",
 "FLQuants",
-"FLComps")
+"FLComps",
+"FLSR")
+importFrom("FLCore",
+  "plot",
+  "quantile",
+  "apply",
+  "FLQuants",
+  "as.data.frame",
+  "stock.n",
+  "harvest",
+  "ac")
+importFrom("ggplot2",
+  "ggplot",
+  "theme_bw",
+  "theme_text")
 exportMethods(
   "diags",
   "ggplot",
   "plot",
   "plotDiags",
   "plotEP")
-importFrom("FLCore",
-  "plot",
-  "quantile",
-  "apply",
-  "FLQuants",
-  "as.data.frame")
 export("mytheme")

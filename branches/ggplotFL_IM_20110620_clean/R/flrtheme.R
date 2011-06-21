@@ -5,7 +5,7 @@
 # Maintainer: Iago Mosqueira, JRC
 # $Id:  $
 
-# flrtheme {{{
+# mytheme {{{
 mytheme <- function(theme=theme_bw, base_size = 12, base_family="", ...)
   modifyList(do.call(theme, list(base_size=base_size, base_family=base_family)),
     list(...))
