@@ -24,4 +24,8 @@ exportMethods(
   "plot",
   "plotDiags",
   "plotEP")
-export("mytheme")
+export("mytheme",
+  "theme_flr",
+  "theme_min",
+  "plotComp",
+  "plotComps")
