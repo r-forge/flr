@@ -13,5 +13,8 @@ exportMethods(
   "plotEP")
 importFrom("FLCore",
   "plot",
-  "quantile")
+  "quantile",
+  "apply",
+  "FLQuants",
+  "as.data.frame")
 export("mytheme")

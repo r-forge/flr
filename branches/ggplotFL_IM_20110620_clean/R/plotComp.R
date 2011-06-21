@@ -15,7 +15,6 @@ whooow  <-function(x,fn,probs)
 plotComp <- function(x, fn=NULL, probs=c(0.95,0.50,0.05), size=c(0.5,1.0,0.5),
   lty=c(2,1,2), facet=facet_wrap(~qname, scale="free")) {
 
-browser()
   res <- whooow(x,fn,probs)
 
   #
