@@ -1,0 +1,17 @@
+importFrom("ggplot2","ggplot")
+importClassesFrom("FLCore",
+"FLQuant",
+"FLCohort",
+"FLComp",
+"FLQuants",
+"FLComps")
+exportMethods(
+  "diags",
+  "ggplot",
+  "plot",
+  "plotDiags",
+  "plotEP")
+importFrom("FLCore",
+  "plot",
+  "quantile")
+export("mytheme")
