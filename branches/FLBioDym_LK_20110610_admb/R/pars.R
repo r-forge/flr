@@ -5,10 +5,9 @@ parLst<-list(fox       =c("r","K"),
              gulland   =c("r","K"),
              fletcher  =c("K","msy","p"))
 
-
-setParams<-function(model="pellat",its=1){
+setParams<-function(model="pellat",its=1)
    return(FLPar(NA,dimnames=list(params=c(parLst[[model]],"b0","q","sigma"),iter=its)))
-   }
+
 
 defaultPar<-function(object){
    params(object)<-FLPar(NA,dimnames=list(params=c(parLst[[model(object)]],"b0","q","sigma"),iter=1:dims(object)$iter))
@@ -48,6 +47,5 @@ getPar<-function(params,nm){
    if (nm %in% dimnames(params)$params)
       return(c(params[nm,]))
    else
-      return(rep(as.numeric(NA),length=dims(params)$iter))
-   }
+      return(rep(as.numeric(NA),length=dims(params)$iter))}
    

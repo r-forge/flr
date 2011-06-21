@@ -1,4 +1,4 @@
-# class - «Short one line description»
+# class - ?Short one line description?
 # FLBioDym/R/class.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
@@ -23,31 +23,36 @@ validFLBioDym <- function(object)
   #if(range$minyear < dims$minyear | range$maxyear > dims$maxyear)
   #  return("mismatch between range and object dimensions")
 
-  return(TRUE)
-  }
+  return(TRUE)}
 
 setClass('FLBioDym',
   representation(
     "FLComp",
+    model         ="character",
+    distribution  ="character",
     catch         ='FLQuant',
     index         ='FLQuant',
     stock         ='FLQuant',
-    model         ="character",
-    distribution  ="character",
+    index.hat     ='FLQuant',
+    bounds        ='array',
+    priors        ='array',
     params        ='FLPar',
     vcov          ='array',
     hessian       ='array',
     logLik        ='numeric',
     rsdlVar       ='numeric',
     dof           ='array',
-    stats         ='array',
     stopmess      ="character"),
   prototype(
     range       =unlist(list(minyear=as.numeric(NA), maxyear=as.numeric(NA))),
     catch       =FLQuant(),
     index       =FLQuant(),
+    index.hat   =FLQuant(),
     stock       =FLQuant(),
     model       ="pellat",
     distribution="log",
-    params      =FLPar(c(.5,NA,2,1,NA,NA),,dimnames=list(paramss=c("r","K","p","b0","q","sigma"),iter=1))),
+    params      =FLPar(c(.5,NA,2,1,NA,NA),                    dimnames=list(param=c("r","K","p","b0","q","sigma"),iter=1)),
+    bounds      =array(rep(c(1,NA,NA,NA),each=6), dim=c(6,4), dimnames=list(param=c("r","K","p","b0","q","sigma"),c("phase","lower","upper","start"))),
+    priors      =array(rep(c(-1,0,0.3,1),each=6), dim=c(6,4), dimnames=list(param=c("r","K","p","b0","q","sigma"),c("weight","a","b","type")))
+    ),
 	validity=validFLBioDym)

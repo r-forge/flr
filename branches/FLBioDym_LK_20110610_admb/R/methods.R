@@ -7,69 +7,27 @@
 if (!isGeneric("vb")) {
 	setGeneric("vb", function(object, ...){
 		value  <-  standardGeneric("vb")
-		value
-	})}
+		value})}
 
-setGeneric('vb', function(object,...)
-		standardGeneric('vb'))
-
-####  Biomass mid year
-mnBio<-function(x) (x[,-dim(x)[2],,,,,drop=FALSE]+x[,-1,,,,,drop=FALSE])/2
-
-#### Calculate Q for use in constricted likelihoods etc
-calcQ<-function(bio,idx,error="log"){
-   ####  Biomass mid year
-   bio<-mnBio(bio)
-   yrs<-dimnames(idx)$year[dimnames(idx)$year %in% dimnames(bio)$year]
-
-   bio<-bio[,yrs,,,,,drop=FALSE]
-   idx<-idx[,yrs,,,,,drop=FALSE]
-
-   if (error=="log"){
-      q <- sum(bio*idx, na.rm=T)/sum(bio*bio, na.rm=T)}
-   else if (error=="normal"){
-      q <- exp(sum(log(idx)-log(bio), na.rm=T)/(sum(ifelse(is.na(c(idx)),1,0))))}
-   else if (error=="cv"){
-      res   <-sum(idx/bio)
-      sigma2<-calcSigma(res)
-      q     <-(-res+(res^2+4*length(idx)*sigma2*sum((idx/bio)^2)))/(2*length(idx)*sigma2)
-      }
-
-   return(q)
-   }
+if (!isGeneric("harvest")) {
+  setGeneric("harvest", function(object, ...){
+		value  <-  standardGeneric("harvest")
+		value})}
+    
+setMethod('harvest', signature(object='FLBioDym'),
+  function(object) catch(object)/stock(object)[,dimnames(catch(object))$year])
+    
 
 #### Calculate expected catch for given parameters and stock
 catchHat<-function(stock,r,K,p=2){
    res<-r*stock*(1-stock^(p-1)/K)
 
-   return(res)
-   }
+   return(res)}
 
 calcSigma<-function(obs,hat=rep(0,length(obs)),error="log"){
       SS   <-sum((obs-hat)^2,na.rm=T)
 
-   return((SS/length(hat))^.5)
-   }
-
-#### calc logLik for Schaefer by default
-calcLogLik<-function(obs,hat=rep(0,length(obs)),error="log",type=1)
-   {
-   logl<-function(se,obs,hat)
-      {
-      SS<-sum((obs-hat)^2)
-      
-      n   <-length(obs)
-      res <-(log(1/(2*pi))-n*log(se)-SS/(2*se^2))/2
-
-      return(res)
-      }
-
-   se<-calcSigma(obs,hat,error=error)
-
-   if (type==1) return(logl(se,obs,hat)) else
-   if (type==2) return(-sum(dnorm(obs, hat, se, log=(error=="log"), na.rm=TRUE))) else
-   if (type==3) return(sum((obs-hat)^2))
-   }
+   return((SS/length(hat))^.5)}
 
 calcB0<-function(index,params,nyrB0,error="log"){
    if (is.null(nyrB0)) return(params["b0",])
@@ -80,13 +38,11 @@ calcB0<-function(index,params,nyrB0,error="log"){
    else if (error=="normal")
       t.<-sweep(index[,1:nyrB0,,,,,drop=FALSE],c(1,6),params["q",],"/")
 
-   return(exp(apply(t.,c(1,6),mean))/params["K",])
-   }
+   return(exp(apply(t.,c(1,6),mean))/params["K",])}
 
 setGeneric('fit', function(object,...)
 		standardGeneric('fit'))
 
-setMethod('fit', signature(object='FLBioDym'),
 f.<-  function(object,fixed=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",model=NULL,nlsControl=nls.lm.control(),nyrB0=NULL){
      if (!is.null(model) & is.character(model))
         model(object)<-model
@@ -167,17 +123,14 @@ f.<-  function(object,fixed=c(b0=1.0,p=2.0,m=0.5),start=NULL,minimiser="nls.lm",
              }
          }
 
-     return(object)
-     })
+     return(object)}
      
 ### Calculate index hat
-indexHat<-function(object,q)
-   {
+indexHat<-function(object,q){
    ## calculate q
    bio  <-mnBio(object)
 
-   return(q*bio)
-   }
+   return(q*bio)}
 
 ### Calculate index hat
 setGeneric('fitted', function(object,...)
@@ -188,8 +141,7 @@ setMethod('fitted', signature(object='FLBioDym'),
 
    index_hat<-sweep(stock(object),c(6),object@params["q",],"*")
 
-   return(index_hat)
-   })
+   return(index_hat)})
    
 #### residuals
 setGeneric('residuals', function(object,...)
@@ -296,11 +248,9 @@ getOptim<-function(object,catch.,index.,nls.out,i){
 	  }
 
 setMethod('vb', signature(object='FLBioDym'),
-   function(object)
-      {
+   function(object){
 
-      return(object)
-      })
+      return(object)})
 
 
 #Get the hessian then calculate the eigen values e.g.
@@ -313,3 +263,119 @@ setMethod('vb', signature(object='FLBioDym'),
 # Rounding these off to 1 significant digit will suggest which parameter you can
 # fix and drop from the model.
 
+
+
+####  Biomass mid year
+mnBio<-function(x) (x[,-dim(x)[2],,,,,drop=FALSE]+x[,-1,,,,,drop=FALSE])/2
+
+#### Calculate Q for use in constricted likelihoods etc
+calcQ<-function(bio,idx,error="log"){
+   ####  Biomass mid year
+   bio<-mnBio(bio)
+   yrs<-dimnames(idx)$year[dimnames(idx)$year %in% dimnames(bio)$year]
+
+   bio<-bio[,yrs,,,,,drop=FALSE]
+   idx<-idx[,yrs,,,,,drop=FALSE]
+
+   if (error=="log"){
+      q <- sum(bio*idx, na.rm=T)/sum(bio*bio, na.rm=T)}
+   else if (error=="normal"){
+      q <- exp(sum(log(idx)-log(bio), na.rm=T)/(sum(ifelse(is.na(c(idx)),1,0))))}
+   else if (error=="cv"){
+      res   <-sum(idx/bio)
+      sigma2<-calcSigma(res)
+      q     <-(-res+(res^2+4*length(idx)*sigma2*sum((idx/bio)^2)))/(2*length(idx)*sigma2)
+      }
+
+   return(q)}
+
+#### calc logLik for Schaefer by default
+calcLogLik<-function(obs,hat=rep(0,length(obs)),error="log",type=1)
+   {
+   logl<-function(se,obs,hat)
+      {
+      SS<-sum((obs-hat)^2)
+      
+      n   <-length(obs)
+      res <-(log(1/(2*pi))-n*log(se)-SS/(2*se^2))/2
+
+      return(res)
+      }
+
+   se<-calcSigma(obs,hat,error=error)
+
+   if (type==1) return(logl(se,obs,hat)) else
+   if (type==2) return(-sum(dnorm(obs, hat, se, log=(error=="log"), na.rm=TRUE))) else
+   if (type==3) return(sum((obs-hat)^2))}
+
+
+ runWindows<-function(file_name,cmdoptions){
+    #cmd <- paste("\"",system.file("bin","windows",paste(file_name,".exe",sep=""),package="FLBioDym"), "\"", " ", cmdoptions, sep="")
+    cmd <- paste("\"",system.file("bin","windows",paste(file_name,".exe",sep=""),package="FLBioDym"), "\"", " ", cmdoptions, sep="")
+    shell(cmd, invisible=TRUE)}
+    
+ runLinux<-function(fileNm,path,cmdoptions){
+    file.copy(system.file("bin","linux",file_name,package="FLBioDym"),".")
+    Sys.chmod(file_name,mode="0755") ## file.copy strips executable permissions????
+    cmd2       =paste("./", file_name, " ", cmdoptions, sep="")
+    sys.result =system(cmd2,intern=!verbose)
+    unlink(file_name)}
+
+t.<-function()
+switch(.Platform$OS.type,
+    "windows"  =runWindows(),
+    "linux-gnu"=runWindows(),
+    stop())
+
+parLst<-list(fox       =c("r","K"),
+             schaefer  =c("r","K"),
+             pellat    =c("r","K","p"),
+             shepherd  =c("r","K","m"),
+             gulland   =c("r","K"),
+             fletcher  =c("K","msy","p"))
+
+setInit<-function(object,params=NULL){
+  dmns  =list(params=c(parLst[model(object)][[1]],"b0","q","sigma"),c("weight","a","b","type"))
+  priors=array(rep(c(0.0,NA,0.3,1),each=length(dmns$params)), laply(dmns,length),dmns)
+  
+  dmns  =list(params=c(parLst[model(object)][[1]],"b0","q","sigma"),c("phase","lower","upper","start"))
+  bounds=array(rep(c(1.0,0.01,100.0,NA),each=length(dmns$params)), laply(dmns,length),dmns)
+  
+  ## q
+  tmp<-c(index(object)/catch(object))
+  bounds["q","start"] <-mean(tmp[!is.na(tmp) & is.finite(tmp)])/10
+  
+  ## K
+  tmp<-c(catch(object))
+  bounds["K","start"] <-mean(tmp[!is.na(tmp) & is.finite(tmp)])*10
+ 
+  ## r
+  if(!is.null(params))
+     bounds["r","start"]=c(apply(params(object)["r"],1,mean)) else
+     bounds["r","start"]=0.5
+     
+  ## p
+  if (!is.null(params))
+     bounds["p","start"]<-c(apply(params(object)["p"],1,mean)) else
+     bounds["p","start"]<-1.0
+  bounds["p",c("lower","upper")]<-c(0.001,5)   
+  
+  ## B0
+  if (!is.null(params))
+     bounds["b0","start"]=c(apply(params(object)["b0"],1,mean)) else
+     bounds["b0",]<-c(0,0.2,1,1)
+ 
+  ## sigma
+  bounds["sigma",]<-c(1,0.01,1.0,0.3)
+  
+  bounds[c("r","K","q"),"upper"]<-bounds[c("r","K","q"),"upper"]*bounds[c("r","K","q"),"start"]
+  bounds[c("r","K","q"),"lower"]<-bounds[c("r","K","q"),"lower"]*bounds[c("r","K","q"),"start"]
+ 
+  priors[,"a"]<-bounds[,"start"]
+  
+  object@bounds<-bounds
+  object@priors<-priors
+  
+  params(object)[]<-object@bounds[,"start"]
+ 
+  return(object)}
