@@ -5,43 +5,40 @@
 ################################################################################
 
 # warnings all over the shop
-# FLPar(r=1,p=2)
-# kacknife.summary missing
+# FLPar(r=1,p=1)
+# jacknife.summary missing
 # need to sort out accessors
 # turn functions into methods
 # work on ADMB intgration
 # drops in mf & df
 ###############################################################################
 
-#### These should all be the branched versions (for now)
-library(FLCore)
-library(FLash)
-library(FLBioDym)
-library(FLAdvice)
 
 cd /home/lkell/Dropbox/jrciccat/FLBioDym
 export ADMB_HOME='/usr/local/admb/'
 sudo ln -s /usr/local/admb/bin/adlink /usr/local/bin/adlink
 
+#### These should all be the branched versions (for now)
+library(FLCore)               #/home/lkell/flr/pkg
+library(FLash)                #/home/lkell/flr/pkg
+library(FLBioDym)             #/home/lkell/flr/branches
+library(ggplotFL)             #/home/lkell/flr/pkga
+library(FLAssess)             #/home/lkell/flr/pkg
+library(FLXSA)                #/home/lkell/flr/pkg
+library(FLAdvice)             #/home/lkell/flr/branches
+
+setwd("/home/lkell/Dropbox/jrciccat/FLBioDym")
+
 source("/home/lkell/flr/pkg/ggplotFL/R/ggplot.R")
 source("/home/lkell/flr/pkg/ggplotFL/R/plot.R")
 source("/home/lkell/flr/pkg/ggplotFL/R/plotComp.R")
 
-if (FALSE){
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/class.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/constructors.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/createAccessors.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/msy.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/sp.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/pars.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/methods.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/plot.R")
-  source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/fwd.R")
- }
-
+source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/msy.R")
+source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/plot.R")
+source("/home/lkell/flr/branches/FLBioDym_LK_20110610_admb/R/methods.R")
   
-  ## temporary functions to be replaced by FLCore functions
-  readADMB<-function(file){
+## temporary functions to be replaced by FLCore functions
+readADMB<-function(file){
     ## read in data from ADMB Par or Rep file
     dat  <-scan(file,what="",sep="\n",skip=1)
     ## Get values
@@ -50,30 +47,30 @@ if (FALSE){
     names(vals)<-lapply(grep("#",dat,value=T),function(x) substr(x,3,nchar(x)-1))
     return(vals)}
   
-  writeADMB<-function(x,file){
+writeADMB<-function(x,file){
     cat("#", names(x[1]),"\n",file=file,append=FALSE)
     cat(x[[1]],"\n",file=file,append=TRUE)
     for (i in 2:length(x)){
       cat("#", names(x[i]),"\n",file=file,append=TRUE)
       cat(x[[i]],"\n",file=file,append=TRUE)}}
       
-  jacknife.summary<-function (flx) {
-      nms     <-names(dimnames(flx))
-      idx     <-seq(length(nms))[nms != 'iter']
-      n       <-dims(flx)$iter-1
+jacknife.summary<-function (flx) {
+    nms     <-names(dimnames(flx))
+    idx     <-seq(length(nms))[nms != 'iter']
+    n       <-dims(flx)$iter-1
       
-      mn      <-iter(flx,  1)
-      u       <-iter(flx, -1)
-      mnU     <-apply(u,idx,mean)   
+    mn      <-iter(flx,  1)
+    u       <-iter(flx, -1)
+    mnU     <-apply(u,idx,mean)   
   
-      SS      <-apply(sweep(u,idx, mnU,"-")^2,idx,sum)
+    SS      <-apply(sweep(u,idx, mnU,"-")^2,idx,sum)
   
-      bias<-(n - 1) * (mnU - mn)
-      se  <-sqrt(((n-1)/n)*SS)
+    bias<-(n - 1) * (mnU - mn)
+    se  <-sqrt(((n-1)/n)*SS)
   
-      return(list("1"=mn,mean=mnU,se=se,bias=bias))}
+    return(list("1"=mn,mean=mnU,se=se,bias=bias))}
   
-  drop<-function(x,nms2drop=c("age","quant","year","unit","season","area","iter")){
+drop<-function(x,nms2drop=c("age","quant","year","unit","season","area","iter")){
     nms     <-names(x)
     nms2drop<-nms2drop[nms2drop %in% nms]
     
@@ -81,32 +78,45 @@ if (FALSE){
     nms2drop.<-nms2drop[!maply(nms2drop, function(nms,x) length(unique(x[[nms[1]]]))==1,x=x)]
     
     return(x[,c(nms2drop.,nms2keep)])}
-  ################################################################################################
+################################################################################################
   
-  ### test function ##############################################################################
-  simBioDym<-function(model,harvest=NULL,r=0.5,K=100,p=1,m=0.25,b0=1.0,error="log",cv=0.3){
+### test function ##############################################################################
+simBioDym<-function(model,harvest=NULL,r=0.5,K=100,p=1,m=0.25,b0=1.0,error="log",cv=0.3){
   
       if (model=="fletcher") msy <-r.*K/4
       nyr  =dims(harvest)$year
       
-      bd   =FLBioDym(model ="pellat",
+      object   =FLBioDym(model ="pellat",
                      stock =FLQuant(rep(K,nyr)),
                      params=FLPar(c(r=r,K=K,p=p,b0=b0,q=1,sigma=0.3)))
-      bd   =fwd(bd,harvest=harvest)               
-                     
-      index(bd)<-switch(error,
-                      log   =exp(rnorm(nyr,0,cv))*(stock(bd)[,-(nyr+1)]+stock(bd)[,-1])/2,
-                      normal=exp(rnorm(nyr,0,cv))*(stock(bd)[,-(nyr+1)]+stock(bd)[,-1])/2,
-                      cv    =exp(rnorm(nyr,0,cv))*(stock(bd)[,-(nyr+1)]+stock(bd)[,-1])/2)
+      object   =fwd(object,harvest=harvest)               
+
+      stk=stock(object) 
+ 
+      index(object)<-switch(error,
+                      log   =exp(rnorm(nyr,0,cv))*(stk[,-(nyr+1)]+stk[,-1])/2,
+                      normal=exp(rnorm(nyr,0,cv))*(stk[,-(nyr+1)]+stk[,-1])/2,
+                      cv    =exp(rnorm(nyr,0,cv))*(stk[,-(nyr+1)]+stk[,-1])/2)
      
-      bd<-setInit(bd,params(bd))
-      #bd@priors["p",1]<-1
+      #bd<-setInit(bd,params(bd))
+      object@bounds["r",     "start"]=r
+      object@bounds["K",     "start"]=K
+      object@bounds["p",     "start"]=p
+      object@bounds["b0",    "start"]=b0
+      object@bounds["q",     "start"]=1.0
+      object@bounds["sigma", "start"]=0.3
+  
+      object@bounds[,"lower"]=object@bounds[,"start"]*.1
+      object@bounds[,"upper"]=object@bounds[,"start"]*10
       
-      return(bd)}
-      
-      
-  #### Prototype for fit #####################################################################
-  setMethod('fit', signature(object='FLBioDym'),
+      object@bounds["p", "phase"]=-1
+      object@bounds["b0","phase"]=-1
+      object@priors[,1]=-1
+ 
+      return(object)}
+          
+#### Prototype for fit #####################################################################
+setMethod('fit', signature(object='FLBioDym'),
   f.<-function(object,cmdOps=paste("-maxfn 500"),pathNm=getwd(),admbNm="pella"){
       pathOrg<-getwd()
       setwd(pathNm)
@@ -124,7 +134,6 @@ if (FALSE){
    
         return(idx$year)}
         
-      object@bounds["b0",1]<--1  
       ctl<-object@bounds 
       ctl[,2:4]<-log(ctl[,2:4])
       ctl<-alply(ctl,1)
@@ -132,7 +141,6 @@ if (FALSE){
       writeADMB(ctl,paste(pathNm,"/",admbNm,".ctl",sep=""))
        
       prr<-object@priors 
-      prr[,2:3]<-log(prr[,2:3])
       prr<-alply(prr,1)
       names(prr)<-dimnames(object@priors)$params
       writeADMB(prr,paste(pathNm,"/",admbNm,".prr",sep=""))
@@ -193,48 +201,86 @@ smryStats<-function(bd){
     return(as.FLQuant(res))}
        
   bdJK<-function(bd){
-  index(bd)=jacknife(index(bd))
-  bd<-fit(bd)
-  plot(bd)
-  res<-as.data.frame(FLQuants(jacknife.summary(smryStats(bd))),drop=T)
+    
+    index(bd)=jacknife(index(bd))
+    bd       =fit(bd)
+    res      =as.data.frame(FLQuants(jacknife.summary(smryStats(bd))),drop=T)
+  
   return(res)}
-     
-  ### tests ###################################################################################
-  setwd("/home/lkell/Dropbox/jrciccat/FLBioDym")
+    
   
-  bd  =simBioDym("pellat",FLQuant(seq(0,1,0.1)),r=0.5,K=1000,p=2)
-  
-  #hvst=FLQuant(c(seq(0.0,1.0,length.out=20),seq(1.0,0.25,length.out=20)))*1.25*fmsy("pellat",FLPar(c(K=2,r=0.5, p=2)))    
-  hvst=seq(0.5,1.5,length.out=40)*fmsy("pellat",FLPar(c(r=0.5,K=1000,p=2)))
-  hvst=FLQuant(c(rep(hvst[1],10),hvst,rev(hvst)[-1]))
-  #bd  =window(simBioDym("pellat",hvst,r=0.5,K=1000,p=2),start=11)
-  index(bd)=window(index(bd),start=11)
-  stock(bd)=window(stock(bd),start=11)
-  catch(bd)=window(catch(bd),start=11)
-  range(bd,"minyear")=11
- 
-  plot(bd)
-  kobe(model.frame(mcf(bd[[c("stock","harvest")]]))) + 
+### tests ###################################################################################
+hvst     =seq(0,1.5,length.out=40)*fmsy("pellat",FLPar(c(r=0.5,K=1000,p=1)))
+hvst     =FLQuant(c(hvst,rev(hvst)[-1]))
+bd       =simBioDym("pellat",hvst,r=0.5,K=1000,p=1,cv=0.3)
+
+plot.sp(bd)
+plot(   bd)
+kobe(model.frame(mcf(bd[[c("stock","harvest")]]))) + 
      geom_path( aes(stock/c(bmsy(bd)),harvest/c(fmsy(bd)))) +
      geom_point(aes(stock/c(bmsy(bd)),harvest/c(fmsy(bd)),colour=year),size=1.25)
  
- 
-# Jacknife every year
-sims5<-rdply(100, function(){
-                   bd  =simBioDym("pellat",hvst,r=0.5,K=1000,p=2)
-                 
-ggplot(subset(s5, params %in% c("fmsy"))) + 
-   geom_histogram(aes(se))+facet_grid(end~params,scale="free") + 
-   scale_x_continuous(limits=c(0,50))
+## one fit
+bd<-fit(simBioDym("pellat",window(hvst,end=40), r=0.5,K=1000,p=1,cv=0.3))
+ggplot(model.frame(mcf(bd[[c("index","fitted","stock")]]))) + 
+         geom_line(aes(year, fitted)) + 
+         geom_point(aes(year,index))
+plot(bd)         
+  
+## multiple fits
+t1000=rdply(1000,function() {
+  res<-fit(simBioDym("pellat",window(hvst,end=60),r=0.5,K=1000,p=1,cv=0.3))
+  print(ggplot(model.frame(mcf(res[[c("index","fitted","stock")]]))) +
+     geom_line(aes(year,fitted))+
+     geom_point(aes(year,index)))
+  as.data.frame(smryStats(res),drop=T)
+  })
+ggplot(subset(t1000,params=="r"))+geom_histogram(aes(data))+facet_wrap(~params,scale="free") 
+save(t1000,file="/home/lkell/Dropbox/jrciccat/FLBioDym/t1000.RData")
 
-                   mdply(data.frame(end=seq(25,40,1)), function(end) bdJK(window(bd,end=end)))})
-                 
-ggplot(subset(sims5,qname==1))+geom_point(aes(end,data))+facet_wrap(~params,scale="free")
+true<-as.data.frame(smryStats(window(bd,end=60)),drop=T)
+names(true)[2]<-"true"
+t1000.<-transform(merge(t1000,true),stat=(data-true)/true)
+ggplot(subset(t1000., !(params %in% c("b0","p"))))+geom_histogram(aes(stat))+facet_wrap(~params) 
 
-save(sims5,file="/home/lkell/sims5.RData")
+
+## sequential jk fits
+decline=rdply(10, function() {
+        sim<-simBioDym("pellat",hvst,r=0.5,K=1000,p=1,cv=0.3)
+        mdply(data.frame(end=seq(30,50,5)), function(end,sim2) {
+                sim2       <-window(sim2,end=end)
+                index(sim2)<-jacknife(index(sim2))
+                sim2       <-fit(sim2)
+                as.data.frame(smryStats(sim2),drop=T)},sim2=sim)})
+ggplot(decline)+geom_histogram(aes(data))+facet_wrap(~params,scale="free") 
+save(decline,file="/home/lkell/decline1.RData")
+
+recovery=rdply(200, function() {
+        sim<-window(simBioDym("pellat",hvst,r=0.5,K=1000,p=1,cv=0.3),start=21)
+        mdply(data.frame(end=seq(40,60,1)), function(end,sim2) {
+                sim2       <-window(sim2,end=end)
+                index(sim2)<-jacknife(index(sim2))
+                sim2       <-fit(sim2)
+                as.data.frame(smryStats(sim2),drop=T)},sim2=sim)})
+ggplot(recovery)+geom_histogram(aes(data))+facet_wrap(~params,scale="free") 
+save(recovery,file="/home/lkell/recovery1.RData")
+
+mmm=rdply(200, function() 
+    mdply(p=1:2,cv=c(0.2,0.3)),
+       function(p,cv){
+          sim<-simBioDym("pellat",hvst,r=0.5,K=1000,p=p,cv=cv)
+          mdply(expand.grid(start=c(11,31),end=seq(30,50,1)),
+             function(start,end,sim){
+                sim<-window(sim,start=start,end=start+end)
+                index(sim)<-jacknife(index(sim))
+                sim       <-fit(sim)
+                as.data.frame(smryStats(sim),drop=T)},sim=sim)})
+save(mmm,file="/home/lkell/mmm.RData")
+
+save(t60,file="/home/lkell/sims5.RData")
 load("/home/lkell/sims5.RData")
 
-bdHat=mdply(data.frame(end=seq(25,40,1)), function(end) as.data.frame(smryStats(fit(simBioDym("pellat",window(hvst,end=end), r=0.5,K=100,p=1,cv=0)))))[,c(1,2,8)]
+bdHat=mdply(data.frame(end=seq(30,50,1)), function(end) as.data.frame(smryStats(fit(simBioDym("pellat",window(hvst,end=end), r=0.5,K=100,p=1,cv=0)))))[,c(1,2,8)]
 names(bdHat)[3]<-"true"
 s5<-cast(sims5,.n+params+end~qname,value="hat")
 s5<-merge(s5,bdHat)
@@ -243,17 +289,3 @@ ggplot(subset(s5,params=="stockMSY")) +
     geom_line( aes(end,true))         + 
     geom_point(aes(end,se))           +
     scale_y_continuous(limits=c(0,2))
-ggplot(subset(s5,params=="stockMSY")) + 
-    geom_line( aes(end,true))         + 
-    geom_boxplot(aes(end,se))           +
-    scale_y_continuous(limits=c(0,2))
-
-ggplot(subset(s5,params=="msy"))+geom_point(aes(end,mean))+facet_wrap(~params,scale="free")
-
-ggplot(subset(s5, params %in% c("msy","bmsy","fmay")))+geom_histogram(aes(1))+facet_wrap(~end,scale="free")
-
-ggplot(subset(s5, params %in% c("fmsy"))) + 
-   geom_histogram(aes(se))+facet_grid(end~params,scale="free") + 
-   scale_x_continuous(limits=c(0,50))
-
-ggplot(subset(s5,params=="stockMSY"))+ geom_line(aes(end,true))
