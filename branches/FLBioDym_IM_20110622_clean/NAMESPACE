@@ -14,6 +14,7 @@ export("FLBioDym",
   "bounds",
   "priors")
 exportMethods("FLBioDym",
+  "harvest",
   "sp",
 	"msy",
 	"fmsy",
