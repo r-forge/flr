@@ -1,6 +1,9 @@
 setGeneric('npv', function(object, ...)
 		standardGeneric('npv'))
 
+setMethod('npv', signature('FLQuant'),
+  function(object,d=0.05) sumsum(object/FLQuant(1+d,dimnames(object)))
+       
 setMethod('npv', signature('FLBRP'),
 	function(object,d=0.05,dfg=NULL,gen=100){
 
@@ -39,22 +42,18 @@ setMethod('npv', signature('FLBRP'),
 setMethod('npv', signature('FLStock'),
 	function(object,price,vcost,fcost,d=0.05){
 
-     res  <-profit(object)
-     res[]<-0
-     unts <-units(profit(object))
-
-        rev   <-apply(landings.n(object)*price,c(2:6),sum)
-        costs <-fcost+fbar(objects)*vcost
-        profit<-rev-profit
-        wt    <-FLQuant(cumprod(rep(1+0.05,100)),dimnames=list(year=2008:2107))
-        res   <-profit/wt
+    yrs   <-ac(dims(ple4)$minyear:dims(ple4)$maxyear)
+    rev   <-apply(landings.n(object)*price,c(2:6),sum)
+    costs <-fcost+fbar(object)*vcost
+    profit<-rev-costs
+    res    <-cumsum(profit*FLQuant(cumprod(rep(1-d,dim(profits)[2])),dimnames=list(year=yrs)))
         
-     for (i in 1:gen){
-        p<-i-as.integer(i/IG)*IG
-        if (p==0) p<-IG
-
-        res<-res+profit(object)/(1+d)^p}
-
-     units(res)<-unts
+#      for (i in 1:gen){
+#         p<-i-as.integer(i/IG)*IG
+#         if (p==0) p<-IG
+# 
+#         res<-res+profit(object)/(1+d)^p}
+# 
+#      units(res)<-unts
 
      return(res)})

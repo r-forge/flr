@@ -1,4 +1,10 @@
 #### Indicators ################################################################
+setGeneric("mnSwt", function(object,...)
+   standardGeneric("mnSwt"))
+setGeneric("mnCwt", function(object,...)
+   standardGeneric("mnCwt"))
+setGeneric("mnLwt", function(object,...)
+   standardGeneric("mnLwt"))
 setGeneric("mnLen", function(object,...)
    standardGeneric("mnLen"))
 setGeneric("wt2z", function(object,...)
@@ -6,9 +12,13 @@ setGeneric("wt2z", function(object,...)
 setGeneric("ln2z", function(object,Linf,...)
     standardGeneric("ln2z"))
 
+setMethod('mnSwt', signature(object='FLStock'), function(object) apply(stock.wt(   object)*stock.n(   object),2:6,sum)/apply(stock.n(   object),2:6,sum)) 
+setMethod('mnCwt', signature(object='FLStock'), function(object) apply(catch.wt(   object)*catch.n(   object),2:6,sum)/apply(catch.n(   object),2:6,sum)) 
+setMethod('mnLwt', signature(object='FLStock'), function(object) apply(landings.wt(object)*landings.n(object),2:6,sum)/apply(landings.n(object),2:6,sum)) 
+  
 setMethod('mnLen', signature(object='FLStock'), 
     function(object,a=0.001,b=3,wt="stock.wt") 
-	  mnLenFunc(object,a,b,wt))
+    mnLenFunc(object,a,b,wt))
 setMethod('wt2z', signature(object='FLStock'), 
     function(object,a=0.001,b=3,wt="stock.wt") 
           wt2zFunc(object,a,b,wt))
