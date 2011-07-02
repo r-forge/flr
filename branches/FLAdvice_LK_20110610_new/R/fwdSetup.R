@@ -23,7 +23,7 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
     object=trim(object,  year=start:range(object,"maxyear"))
     
     ## FLBRP option
-    if (is.null(flbrp)){
+    if (!is.null(flbrp)){
       object=expand(object,year=start:end)
   
       slot(object[,ac(years)],"stock.n")[]    <-NA  
@@ -33,11 +33,11 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
                        e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
                        
 #      t.<-FLQuants(mlply(args,function(y,x,br,sk) recycle6Dims(sk[[ac(y)]][[1]],br[[ac(x)]][[1]]),br=flbrp,sk=object))
+#      t.<-FLQuants(mlply(args,function(e1,e2,stk,flb) recycle6d(stk[[e1]][[1]],flb[[e2]][[1]]),flb=flbrp,stk=object))
+       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,ac(years)],flb=flbrp))
 
-
-      t.<-FLQuants(mlply(args,function(e1,e2,stk,flb) recycle6d(stk[[e1]][[1]],flb[[e2]][[1]]),flb=flbrp,stk=object))
-      names(t.)<-args[,2]
-      object[,ac(years)][[ac(args[,2])]]<-t.
+      names(t.)<-args[,1]
+      object[,ac(years)][[ac(args[,1])]]<-t.
     
     ## STF option
     }else if (!is.null(stf.control)){
@@ -56,7 +56,9 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
        slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
   
     return(object)}
-    
+
+#unlist(dims(fwdSetup(alb[[1]],flbrp=albBrp[[1]],nyears=23)))
+
 setAs('FLBRP', 'FLStock',
   function(from){
 

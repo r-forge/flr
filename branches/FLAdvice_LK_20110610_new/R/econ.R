@@ -2,7 +2,7 @@ setGeneric('npv', function(object, ...)
 		standardGeneric('npv'))
 
 setMethod('npv', signature('FLQuant'),
-  function(object,d=0.05) sumsum(object/FLQuant(1+d,dimnames(object)))
+  function(object,d=0.05) sumsum(object/FLQuant(1+d,dimnames(object))))
        
 setMethod('npv', signature('FLBRP'),
 	function(object,d=0.05,dfg=NULL,gen=100){
