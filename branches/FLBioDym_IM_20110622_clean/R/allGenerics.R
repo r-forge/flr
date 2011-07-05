@@ -25,3 +25,6 @@ setGeneric('refptSE', function(object,...)
 
 setGeneric('sp', function(object,...)
 		standardGeneric('sp'))
+
+setGeneric('admbBD', function(object,...)
+		standardGeneric('admbBD'))

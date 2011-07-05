@@ -7,12 +7,6 @@
 #   3) sr<- for passing sr(brp) to other objects 
 ###########################################################################################################################3
 
-#library(FLAdvice)
-#data(ple4)
-#x<-brp(FLBRP(ple4))
-#params(x)[]<-exp(mean(log(rec.obs(x)),na.rm=T))
-#x<-brp(x)
-
 setMethod("plot", signature(x="FLBRP", y="missing"),
  function(x,probs=c(0.95,0.50,0.05),size=c(0.5,1.0,0.5),lty=c(2,1,2),facet=facet_wrap(~qname,scale="free"),scale="msy",
                        fn=list("SSB"    =function(x) ssb.obs(  x)/refpts(x)[scale,    "ssb"],

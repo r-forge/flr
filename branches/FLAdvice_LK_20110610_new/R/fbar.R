@@ -1,3 +1,12 @@
+# fbar.R - 
+# FLAdvice/R/fbar.R
+
+# Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Iago Mosqueira, JRC
+# $Id:  $
+
+# fbar {{{
+
 setGeneric("fbar<-", function(object,value,...){
 	standardGeneric("fbar<-")})
 setMethod("fbar<-", signature(object="FLBRP", value="numeric"),
@@ -13,3 +22,4 @@ setMethod("fbar<-", signature(object="FLBRP", value="FLQuant"),
 		object@fbar<-value
 
 		return(object)})
+# }}}

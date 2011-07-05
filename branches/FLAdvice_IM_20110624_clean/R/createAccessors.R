@@ -3,9 +3,10 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 01 Mar 2009 14:02
+# Last Change: Fri Jul 01, 2011 at 02:38 PM +0200
 # $Id: createAccessors.R 888 2011-01-17 00:56:11Z lauriekell $
 
+# createFLAccessors {{{
 createFLAccesors <- function(class, exclude=character(1), include=missing) {
   
   object <- class
@@ -55,6 +56,6 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 			paste('\alias{"',xr, '"-methods}', sep='')
 		)
 	}
-	return(defined)}
+	return(defined)} # }}}
 
-invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","harvest", "refpts","stock.obs","landings.n", "stock.n", "discards.n")))
+invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc", "refpts","stock.obs")))

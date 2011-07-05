@@ -6,8 +6,6 @@
 # $Id: constructors.R 926 2011-04-26 14:23:22Z lauriekell $
 
 # FLBRP
-setGeneric('FLBRP', function(object,sr, ...)
-		standardGeneric('FLBRP'))
 
 # FLBRP(object='missing', sr='missing') {{{
 setMethod('FLBRP', signature(object='missing', sr='missing'),
@@ -97,9 +95,10 @@ setMethod('FLBRP', signature(object='missing', sr='FLSR'),
   }
 ) # }}}
 
+# FLBRP(object='FLStock', sr='FLSR')  {{{
 setMethod('FLBRP', signature(object='FLStock', sr='FLSR'),
   function(object, sr, ...){
-    FLBRP(object=object, model=sr@model, params=sr@params, ...)})
+    FLBRP(object=object, model=sr@model, params=sr@params, ...)}) # }}}
 
 # FLBRP(object=FLStock, sr=missing) {{{
 setMethod('FLBRP', signature(object='FLStock', sr='missing'),
@@ -263,22 +262,24 @@ setMethod('FLBRP', signature(object='data.frame', sr='missing'),
   }
 ) # }}}
 
+# FLBRP(object="FLStock", sr="list") {{{
 setMethod('FLBRP', signature(object='FLStock', sr='list'),
   function(object, sr, ...){
 
   if (!(all(c("model","params") %in% names(sr)))) stop("model and params not in sr list")
-  if (is(sr[["model"]],"charcater"))
+  if (is(sr[["model"]],"character"))
     sr[["model"]]<-do.call("bevholt", list())$model
 
     FLBRP(object=object, model=sr[["model"]], params=sr[["params"]], ...)})
+# }}}
 
-
+# FLBRP(object="FLBRP", sr="mssing") {{{
 setMethod('FLBRP', signature(object='FLBRP', sr='missing'),
   function(object, sr, ...){
 
      args <- list(...)
-     for (slt in names(args)) #[names(args) %in% names(getSlots("FLBRP"))[names(getSlots("FLBRP"))!="fbar"]])
+     for (slt in names(args))
        slot(object, slt)<-args[[slt]]
 
    return(object)})
-
+# }}}

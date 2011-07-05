@@ -1,5 +1,5 @@
 useDynLib("FLAdvice")
-importFrom("ggplotFL")
+import("ggplotFL")
 import("FLCore")
 importFrom("FLash",
   "SRchar2code")
@@ -127,7 +127,10 @@ exportMethods(
 export("f0.1",
        "fmax",
        "addPar",
-       "kobe","kobeM","kobeL","kobeS",
+       "kobe",
+       "kobeM",
+       "kobeL",
+       "kobeS",
        "reFac",
        "bvOrder",
        "ac",

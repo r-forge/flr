@@ -33,4 +33,5 @@ exportMethods("FLBioDym",
 	"params",
 	"vcov",
 	"logLik",
-  "fwd")
+  "fwd",
+  "residuals")

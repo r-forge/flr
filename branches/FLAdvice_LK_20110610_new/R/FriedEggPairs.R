@@ -1,5 +1,5 @@
 #FriedEggPairs.R
-require(KernSmooth)
+#require(KernSmooth)
 
 "fried.egg"<-function(xx,yy,bw=20, ...)
 {
