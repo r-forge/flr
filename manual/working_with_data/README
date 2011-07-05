@@ -1,2 +1,6 @@
-data/ RData files used by the Vignette
-Rnw/ The Sweave file
+data/       RData files used by the Vignette
+Rnw/        The Sweave file
+inputs/     Original inputs to create RData files or for testing
+inputs/db   Databases
+inputs/calc Spreadsheets
+inputs/XX   Any other file, like VPA input, with a script to create RData
