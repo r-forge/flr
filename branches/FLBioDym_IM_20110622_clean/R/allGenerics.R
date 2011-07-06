@@ -23,8 +23,5 @@ setGeneric('refpts', function(object,params,...)
 setGeneric('refptSE', function(object,...)
   standardGeneric('refptSE'))
 
-setGeneric('sp', function(object,...)
-		standardGeneric('sp'))
-
 setGeneric('admbBD', function(object,...)
 		standardGeneric('admbBD'))
