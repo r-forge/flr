@@ -1,12 +1,11 @@
 Package: FLBioDym
 Title: Biomass Dynamic Models
-Version: 0.1.1
+Version: 0.1.2
 Author: Laurence Kell
-Description: Fits Fox, Pella Tomlinson, Schaeffer, Fletcher and Shepherd models to ctach & CPUE
-Depends: methods, R(>= 2.7.1), FLCore(>= 2.0), minpack.lm, FLash(>= 0.7)
-LinkingTo: FLCore
-Maintainer: Laurence Kell <l.kell@cefas.co.uk>
-License: GPL 2 or above
-Collate:  class.R coerce.R constructors.R createAccessors.R fwd.R methods.R msy.R msyDeriv.R plot.R plotDiagnostics.R sp.R  pars.R
+Description: Fits Fox, Pella Tomlinson, Schaeffer, Fletcher and Shepherd biomass dynamics models to catch & CPUE
+Depends: methods, R(>= 2.10.1), FLCore(>= 2.2), FLash(>= 0.7), ggplotFL
+Maintainer: Laurence Kell <laurie.kell@iccat.int>
+License: GPL 2
+Collate:  class.R allGenerics.R constructors.R createAccessors.R coerce.R pars.R plot.R msy.R fwd.R sp.R functions.R methods.R
 LazyLoad: Yes
-LazyData: Yes
+LazyData: No

@@ -4,11 +4,10 @@
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell
 
-setGeneric('FLBioDym', function(object, ...)
-		standardGeneric('FLBioDym'))
 
+# FLBioDym() {{{
 setMethod('FLBioDym', signature(object='FLQuant'),
-  function(object,model="pellat",...)
+  function(object, model="pellat",...)
     {
     args <- list(...)
 
@@ -47,7 +46,9 @@ setMethod('FLBioDym', signature(object='missing'),
 
     return(FLBioDym(object, ...))
     }
-)
+) # }}}
 
+# is.FLBioDym {{{
 is.FLBioDym <- function(x)
 	return(inherits(x, "FLBioDym"))
+# }}}

@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, Cefas
-# Last Change: 01 Mar 2009 14:02
+# Last Change: Wed Jun 22, 2011 at 02:02 PM +0200
 # $Id: createAccessors.R 134 2009-03-03 14:25:24Z imosqueira $
 
 ## createFLAccesors		{{{
@@ -59,4 +59,5 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 	return(defined)
 }	# }}}
 
-invisible(createFLAccesors("FLBioDym", exclude=c("range","name","desc","distribution","hessian","LL","rsdlVar","dof","stats","stopmess"))) #,"params","hessian","LL")))
+invisible(createFLAccesors("FLBioDym", exclude=c("range","name","desc","fitted",
+  "distribution","hessian","rsdlVar","dof","stopmess")))

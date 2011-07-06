@@ -1,16 +1,27 @@
-parLst<-list(fox       =c("r","K"),
-             schaefer  =c("r","K"),
-             pellat    =c("r","K","p"),
-             shepherd  =c("r","K","m"),
-             gulland   =c("r","K"),
-             fletcher  =c("K","msy","p"))
+# .R - 
+# /R/.R
 
+# Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
+# Maintainer: Iago Mosqueira, JRC
+# $Id:  $
 
-setParams<-function(model="pellat",its=1){
-   return(FLPar(NA,dimnames=list(params=c(parLst[[model]],"b0","q","sigma"),iter=its)))
-   }
+# parLst {{{
+parLst<-list(
+  fox       =c("r","K"),
+  schaefer  =c("r","K"),
+  pellat    =c("r","K","p"),
+  shepherd  =c("r","K","m"),
+  gulland   =c("r","K"),
+  fletcher  =c("K","msy","p"))
+# }}}
 
-defaultPar<-function(object){
+# setParams {{{
+setParams<-function(model="pellat",its=1)
+  return(FLPar(NA,dimnames=list(params=c(parLst[[model]],"b0","q","sigma"),iter=its)))
+# }}}
+
+# defaultPar {{{
+defaultPar<-function(object) {
    params(object)<-FLPar(NA,dimnames=list(params=c(parLst[[model(object)]],"b0","q","sigma"),iter=1:dims(object)$iter))
 
    unt<-NULL
@@ -42,12 +53,12 @@ defaultPar<-function(object){
    units(params(object))<-unt
 
    invisible(params(object))
-   }
+   } # }}}
 
+# getPar {{{
 getPar<-function(params,nm){
    if (nm %in% dimnames(params)$params)
       return(c(params[nm,]))
    else
-      return(rep(as.numeric(NA),length=dims(params)$iter))
-   }
-   
+      return(rep(as.numeric(NA),length=dims(params)$iter))}
+# }}}
