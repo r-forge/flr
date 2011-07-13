@@ -64,49 +64,49 @@ library(FLBioDym)
 # Polacheck,T., Hilborn,R., and Punt.A.E, Fitting Surplus Production Models:
 # Comparing Methods and Measuring Uncertainty.
 # Can. J. Fish. Aquat. Sci. 50(12): 2597–2607 (1993)
-data(albSP)
+data(albBD)
 
 # Inspect the object
-summary(albSP)
+summary(albBD)
 
 # fit
-albSP<-fit(albSP,start=c(r=0.3,K=mean(catch(albSP))*10))
+albBD <- fit(albBD,start=c(r=0.3,K=mean(catch(albBD))*10))
 
 # Population estimates
-plot(   albSP)
+plot(albBD)
 
 # DGoodness of fit
-plot(albSP,type="diag")
+plot(albBD,type="diag")
 
 # Surplus production curve
-plot(albSP,type="equil")
+plot(albBD,type="equil")
 
 # parameters
-params(albSP)
+params(albBD)
 
 # Reference points
-refpts(albSP)
-msy( albSP)
-bmsy(albSP)
-fmsy(albSP)
+refpts(albBD)
+msy( albBD)
+bmsy(albBD)
+fmsy(albBD)
 
 # t tests
-albSP@stats
+albBD@stats
 
 # covariance estimates
-vcov(albSP)
+vcov(albBD)
 
 # Likilihood profile
 r.  <-seq(0.1, .6, length.out=100)
-logl<-tapply(r.,1:100,function(x) {fit(albSP,fixed=c(r=x),start=c(r=.3, K=mean(catch(albSP))*10))@logLik})
+logl<-tapply(r.,1:100,function(x) {fit(albBD,fixed=c(r=x),start=c(r=.3, K=mean(catch(albBD))*10))@logLik})
 plot(logl~r.,type="l")
-points(c(albSP@params["r",]),albSP@logLik,pch=16,col="red",cex=2)
+points(c(albBD@params["r",]),albBD@logLik,pch=16,col="red",cex=2)
 
 # Uncertainty in reference points
-refptSE(albSP)
+refptSE(albBD)
 
 # Jacknife
-albJK<-albSP
+albJK<-albBD
 index(albJK)<-jacknife(index(albJK))
 albJK<-fit(albJK,start=c(r=0.3,K=mean(catch(albJK))*10))
 
