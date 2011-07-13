@@ -8,7 +8,6 @@
 # fmsy {{{
 setMethod('fmsy', signature(object='character',params="FLPar"),
    function(object,params,...){
-
     fmsyPellaT  <-function(params) params["r"]*(1/(1+params["p"]))
     fmsyFox     <-function(params) params["r"]*(1-(log(params["K"])-1)/log(params["K"]))
     fmsySchaefer<-function(params) params["r"]/2
