@@ -70,7 +70,7 @@ data(albBD)
 summary(albBD)
 
 # fit
-albBD <- fit(albBD,start=c(r=0.3,K=mean(catch(albBD))*10))
+albBD <- admbBD(albBD,start=c(r=0.3,K=mean(catch(albBD))*10))
 
 # Population estimates
 plot(albBD)

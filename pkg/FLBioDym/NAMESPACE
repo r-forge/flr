@@ -12,7 +12,8 @@ export("FLBioDym",
 	"refptSE",
   "is.FLBioDym",
   "bounds",
-  "priors")
+  "priors",
+  "admbBD")
 exportMethods("FLBioDym",
   "harvest",
   "sp",
@@ -34,4 +35,5 @@ exportMethods("FLBioDym",
 	"vcov",
 	"logLik",
   "fwd",
-  "residuals")
+  "residuals",
+  "admbBD")
