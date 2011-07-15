@@ -27,7 +27,7 @@ setMethod('residuals', signature(object='FLBioDym'),
 
 # admbBD {{{
 setMethod('admbBD', signature(object='FLBioDym'),
-  function(object, cmdOps=paste("-maxfn 500"), dir=tempdir(), admbNm="pellat") {
+  function(object, cmdOps=paste("-maxfn 500"), dir=tempdir(), admbNm="pella") {
 
     # Linux
     if (R.version$os=="linux-gnu") {
@@ -72,8 +72,8 @@ setMethod('admbBD', signature(object='FLBioDym'),
     ###
     browser()
     # run
-    setADMBBioDym(object, paste(path, admbNm, '.dat', sep=""))
-    system(paste('.', admbNm, sep='/'))
+    years <- setADMBBioDym(object, paste(path, admbNm, '.dat', sep=""))
+    system(paste(paste('.', admbNm, sep='/'), cmdOps))
 
     # call across iters
     #t.<-m_ply(data.frame(x=seq(dims(object)$iter)),function(x) fitter(x))
@@ -117,14 +117,16 @@ runADMBBioDym <- function(iter, path) {
   # run
   res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
 
-  params <- readADMB(paste(path, admbNm, ".par", sep=""))
+  # params <- readADMB(paste(path, admbNm, ".par", sep=""))
       
   t1 <- read.table(paste(path, admbNm,".rep",sep=""),skip =18,header=T)
+
+  # params
   t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
-  
-  object@params[c("r","K","b0","p","q","sigma"),x] <- t2[1:6]
+  object@params[c("r","K","b0","p","q","sigma"), x] <- t2[1:6]
       
-  object@index.hat[,ac(idxYrs),,,,x][] <- unlist(c(t1[t1$Year %in% idxYrs,"IndexFit"]))
+  object@fitted[,ac(idxYrs),,,,x][] <- 
+  unlist(c(t1[,"IndexFit"]))
   object@stock[,1:dim(t1)[1],,,,x] <- unlist(c(t1["Biomass"]))
         
   object<<-object
