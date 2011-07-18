@@ -70,7 +70,6 @@ setMethod('admbBD', signature(object='FLBioDym'),
     setwd(path)
 
     ###
-    browser()
     # run
     years <- setADMBBioDym(object, paste(path, admbNm, '.dat', sep=""))
     system(paste(paste('.', admbNm, sep='/'), cmdOps))
