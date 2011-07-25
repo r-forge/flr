@@ -1,0 +1,15 @@
+Package: FLAdvice
+Title: Reference Points and Advice
+Version: 1.0
+Author: Laurence T. Kell
+Description: Calculates a range of biological reference points based upon yield per
+  recruit and stock recruit based equilibrium calculations. These include F based
+  reference points like F0.1, FMSY and biomass based reference points like BMSY.
+URL: http://flr-project.org
+Depends: methods, FLCore(>= 2.3), FLash, akima, ggplotFL
+LinkingTo: FLCore, FLash
+Collate: class.R generics.R constructors.R createAccessors.R setplusgroup.R coerce.R advicePlots.R fbar.R refpts.R spr.R functions.R growth.R indicators.R kobe.R ggplot.R fwdSetup.R lh.R methods.R
+Maintainer: Laurence T. Kell  <laurie.kell@iccat.int>
+License: GPL 2.0
+lazyLoad: Yes
+lazyData: No
