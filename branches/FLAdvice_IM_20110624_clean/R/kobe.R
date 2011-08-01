@@ -52,7 +52,7 @@ kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
             invisible(tapply(x[,3],x[,c(1,2)],mean))}
 
 ##### plot Kobe lines
-kobeL=function(x,image=list(levels=seq(0.0,1.0,0.05),
+kobeL <- function(x,image=list(levels=seq(0.0,1.0,0.05),
                             col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
                offSet  =1.5,
                cex.lgnd=0.75){

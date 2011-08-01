@@ -7,16 +7,19 @@
 
 # fbar {{{
 setMethod("fbar<-", signature(object="FLBRP", value="numeric"),
-	function(object, value,...) {
+	function(object, value) {
 
-		object@fbar<-FLQuant(value,quant="age")
+		object@fbar <- FLQuant(value, quant="age")
 
-		return(object)})
+		return(object)
+  }
+)
 
 setMethod("fbar<-", signature(object="FLBRP", value="FLQuant"),
-	function(object, value,...) {
+	function(object, value) {
 
 		object@fbar<-value
 
-		return(object)})
-# }}}
+		return(object)
+  }
+) # }}}
