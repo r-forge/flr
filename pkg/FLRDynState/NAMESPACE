@@ -1,0 +1,36 @@
+useDynLib("FLRDynState")
+
+import('FLCore')
+exportClasses("DynState.control",
+        "DynStateInput",
+	"Sim",
+	"DynState")
+exportMethods("Derivative",
+            	"Derivative<-",
+              "Spp1Hold",
+              "Spp1Hold<-",
+              "Spp2Hold",
+              "Spp2Hold<-",
+              "Spp1Discards",
+              "Spp1Discards<-",
+              "Spp2Discards",
+              "Spp2Discards<-",
+              "Effort",
+              "Effort<-",
+              "Choice",
+              "Choice<-",
+              "Spp1Landings",
+              "Spp1Landings<-",
+              "Spp2Landings",
+              "Spp2Landings<-",
+              "Sim",
+              "Sim<-",
+              "control",
+              "control<-",
+              "CatchMean",
+              "CatchMean<-",
+              "CatchSigma",
+              "CatchSigma<-"
+)
+export("DynState",
+       "DynState.control")

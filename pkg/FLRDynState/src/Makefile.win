@@ -1,0 +1,11 @@
+FLRDynState.dll: DynState
+
+DynState: matalloc.o RDynState.o
+	g++ -shared -s -mthreads -o FLRDynState.dll matalloc.o RDynState.o  -Lc:/progra~1/R/R-2.10.1/bin/ -lR -lgomp -lpthreadGC2
+
+RDynState.o: RDynState.cpp
+	g++  -Ic:/progra~1/R/R-2.10.1/include      -fpic  -g -O2 -c -fopenmp RDynState.cpp -o RDynState.o
+matalloc.o: matalloc.cpp
+	g++  -Ic:/progra~1/R/R-2.10.1/include       -fpic  -g -O2 -c -fopenmp matalloc.cpp -o matalloc.o
+
+
