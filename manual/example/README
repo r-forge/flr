@@ -1,0 +1,5 @@
+This is a proposal for a folder and file structure for the FLR manuals.
+
+- document.Rnw is the main Sweave file, which then includes other Rnw files
+  that run separate parts of the analyses. Text should be in document.Rnw only.
+

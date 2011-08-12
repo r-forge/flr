@@ -1,0 +1,41 @@
+% Usage: R CMD Sweave sweave.Rnw
+%
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{url,fancyvrb,Sweave}
+\title{Sweave Template}
+\author{Iago Mosqueira, JRC, Ispra}
+\date{March 2011}
+
+% Sweave options
+%  code output better formated
+\DefineVerbatimEnvironment{Sinput}{Verbatim} {xleftmargin=2em}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{xleftmargin=2em}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{xleftmargin=2em}
+\fvset{listparameters={\setlength{\topsep}{0pt}}}
+\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}}
+%  keep comments in output code
+\SweaveOpts{keep.source=TRUE}
+%  output only pdf to use with pdflatex
+\SweaveOpts{eps = FALSE, pdf = TRUE}
+%  output plots to plots dir
+\SweaveOpts{prefix.string=plots/} 
+
+
+\begin{document}
+
+% limits width of output to fit in page, avoids + sign on broken lines
+<<echo=false>>=
+options(width=60)
+options(continue=" ")
+@
+
+\maketitle
+\tableofcontents
+
+% Data section
+\include{data}
+
+\section{Section}
+
+\end{document}

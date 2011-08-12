@@ -1,0 +1,4 @@
+% Hidden R code chunk
+<<echo = false, results = hide>>=
+  library(xtable)
+@
