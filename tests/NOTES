@@ -1,0 +1,18 @@
+Class
+	Objects can be craeted with new()
+	Prototype passes validObject
+Constructor
+	missing
+		FL*() runs
+		Object returned is valid
+		Extra arguments & combinations are accepted and used
+		Wrong combinations fire off an error
+	class A
+		FL*(A) runs
+		Object returned is valid
+		Dimensions are right
+		Extra arguments & combinations are accepted and used
+		Wrong combinations fire off an error
+
+
+:vim: ft=vo_base
