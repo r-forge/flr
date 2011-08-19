@@ -13,12 +13,19 @@ context("FLQuant()")
 
 # FLQuant(missing)
 test_that("FLQuant() returns the right FLQuant", {
-    # class
-    expect_that(FLQuant(), is_a("FLQuant"))
-    # validObject
-    expect_that(validObject(FLQuant()), is_true())
-    # dim
-    expect_that(dim(FLQuant()), equals(c(1,1,1,1,1,1)))
+  # class
+  expect_that(FLQuant(), is_a("FLQuant"))
+  # validObject
+  expect_that(validObject(FLQuant()), is_true())
+  # dim
+  expect_that(dim(FLQuant()), equals(c(1,1,1,1,1,1)))
+  # quant
+  # units
+  # dimnames
+  # dim
+  # iter
+  # arg combinations
+  # imcompatible combinations
 }) 
 
 # FLQuant(vector)
