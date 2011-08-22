@@ -1,0 +1,785 @@
+% cd /home/lkell/flr/manual/ggplot2
+% R CMD Sweave ggplotFL.Rnw
+
+\documentclass[a4paper,10pt]{article}
+\usepackage{fullpage}
+\usepackage[latin1]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{graphicx}
+\usepackage{Sweave}
+
+
+\usepackage{framed}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{shadecolor}{rgb}{1,1,0.95}
+\definecolor{shade}{rgb}{1,1,0.95}
+\hypersetup{colorlinks, urlcolor=darkblue}
+
+\floatstyle{boxed}
+\newfloat{chunk}{thp}{lop}
+\floatname{chunk}{Chunk}
+ 
+\lstset{ %
+language=R,                     % the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=100,                 % the step between two line-numbers. If it's 1, each line 
+                                % will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{shade},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                % also try caption instead of title
+escapeinside={\%*}{*)},         % if you want to add a comment within your code
+morekeywords={*,...}            % if you want to add more keywords to the set
+}
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+% figs to be 75% of test width
+\setkeys{Gin}{width=0.75\textwidth}
+
+\begin{document}
+\SweaveOpts{engine=R}
+\title{\huge{Plotting with ggplot2}}
+\author{Laurence Kell \href{laurie.kell@iccat.int}{mail to:laurie.kell@iccat.int}\\
+Population Dynamics Expert, \\
+ICCAT Secretariat, C/Coraz\'{o}n de Mar\'{\i}a, 8. 28002 Madrid, Spain.}
+\date{}
+\maketitle
+
+
+\section*{Init}
+
+<<init, fig=false, echo=false>>=
+dirMy="/home/lkell/flr/manual/ggplotFL"
+source(paste(dirMy,"R/ggplotFL.R",sep="/"))
+@
+
+
+\section{Introduction}
+
+\href{ggplot2}{http://had.co.nz/ggplot2/} is an R graphics package. Searching for ggplot2 in google images throws up lots of examples with code and there
+is a very active \href{users mailing list}{}. ggplot2 is an alternative to \href{}{lattice} and for those already familar with lattice a comparison can be 
+found at \href{}{http://had.co.nz/ggplot/vs-lattice.html} and 
+\href{}{learning R}{http://learnr.wordpress.com/2009/06/28/ggplot2-version-of-figures-in-lattice-multivariate-data-visualization-with-r-part-1/}.
+
+The default graphics in FLR are based on lattice, although a secondary package ggplotFL allows ggplot to be used instead, see below for more details.
+
+You can install ggplot2 it from the CRAN repository then load the library e.g. 
+
+\begin{lstlisting}[caption={Installing ggplotFL}] 
+  install.package(ggplot2) 
+  library(ggplot2)
+\end{lstlisting}
+
+We first illustrate the features and flexibility of ggplot based on \href{}{example data sets}, then provide examples of using ggplot as part of FLR.
+
+\section[ggplot2]{ggplot2}
+
+There are two interfaces for ggplot  qplot, a quick form that is similar to plot in R and ggplot a more powerful generic interface based on the grammar of 
+graphics that once learnt allows considerable flexibility.
+
+qplot has the same syntax as plot 
+
+\begin{lstlisting}[caption={Simple plotting with qplot}] 
+  qplot(x, ..., data, geom) 
+\end{lstlisting}
+
+
+\begin{table}\caption{plot}\begin{tabular}{|l|p{12cm}|} 
+\hline\multicolumn{2}{|c|}{Syntax} \\
+\hline 
+x    	& \texttt{vector} values of one variable of interest \\ 
+data 		& \texttt{data.frame} other variables\\ 
+geom		& \texttt{ggplot object} that sets the type of plot to construct, i.e. “point”, “line”, “histogram”. \\ 
+\hline 
+\end{tabular}\end{table}
+
+
+Creating a scatter plot is therefore very similar to how it is done using base R, i.e.
+
+\begin{lstlisting}[caption={Simple plotting}]
+dat =data.frame(x=1:10,y=rnorm(10))
+plot(dat$x,dat$y)
+qplot(dat$x,dat$y)
+\end{lstlisting}
+
+\begin{figure}
+<<fig1,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+plot(dat$x,dat$y)
+@
+\caption{Plot using R base graphics} 
+\end{figure}
+
+\begin{figure}
+<<fig2,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(qplot(dat$x,dat$y))
+@
+\caption{Plot using ggplot2 qplot graphics} 
+\end{figure}
+
+
+\section[Grammar of Graphics]{Grammar of Graphics}
+
+When producing a graphic you have to map data to the visual properties of geometric shapes (e.g. points, lines areas). This
+may require statistical transformations of the data, a coordinate system that postions the geometric objects on the page
+and facetting where mutiple plots can be generated. Each of these tasks are independent and the grammar breaks theses into four 
+components \emph{Geoms, Aesthetics, Coordinates and Facetting}. 
+
+First we load up FLR and an example data set based on North Sea plaice. ggplot uses data in the form of a data.frame so we 
+next have to convert the FLR object to a data.frame. 
+
+\begin{lstlisting}[caption={Simple plotting}]
+## load FLR and example data set
+library(FLCore)
+
+data(ple4sex)
+
+## what is it?
+is(ple4sex)
+plot(ple4sex)
+
+## create a data.frame
+ple4mf=as.data.frame(stock.wt(ple4sex),drop=T)
+head(ple4mf)
+\end{lstlisting}
+
+You create a ggplot object using the ggplot creater, altough you have to add layers to this basic object (e.g. points, lines) before you can plot anything. 
+These can be added as geoms e.g. for points or lines \texttt{geom\_point, geom\_line}
+
+\begin{lstlisting}[caption={ggplot}]
+ggplot(data=ple4mf)
+
+p=ggplot(data=dat)
+is(p)
+names(p)
+
+p+geom_point(aes(x,y))
+\end{lstlisting}
+
+
+\subsubsection[Geoms]{Geoms}
+
+Therefore to actually do something with the ggplot object you need to add a geom layer. \emph{Geoms} determine what geometric shapes the data 
+will be mapped into e.g. \emph{point, path, line, polygon (connected path), interval (rectangle, bar, ribbon, area) and schema (box plot)}. 
+
+\begin{lstlisting}[caption={ggplot}]
+## scatter plot
+p + geom_point(aes(age,data))
+
+## box plot
+p + geom_boxplot(aes(age,data))
+\end{lstlisting}
+
+
+\begin{figure}
+<<fig3,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p1)
+@
+\caption{Scatter plot} 
+\end{figure}
+
+\begin{figure}
+<<fig4,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p2)
+@
+\caption{Box plot} 
+\end{figure}
+
+The basic plot hides a lot of detail and the aesthetic allows you to group by unit (i.e. sex) and colour code them, the jitter option makes
+the plot easier to interpret.
+
+\begin{lstlisting}[caption={ggplot}]
+p + geom_point(aes(age,data,group=unit,colour=unit),position="jitter")
+\end{lstlisting}
+
+\begin{figure}
+<<fig5,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p3)
+@
+\caption{Jittered scatter plot by sex} 
+\end{figure}
+
+Combining a Geom with a Statistic is a powerful tool since many graphic objects are actually combination of both, e.g.
+the boxplot above actually combined a statistic with the geom bar and a histogram combines the bin statistic bin with the bar geom, a smoother 
+combines the loess statistic with the line geom and a density plot 
+a kernel density statistic (kde) with the line and area geoms. There are existing geom do do these basic plots so you do not need to build up 
+the graphics from the different elements.
+
+You can either use statistics by themselves as in the boxplot or in combination to add layers to add in interpreation, e.g. a smoother 
+
+\begin{lstlisting}[caption={ggplot}]
+p + geom_point(aes(age,data,group=unit,colour=unit),position="jitter") +
+    stat_smooth(aes(age,data))
+\end{lstlisting}
+
+\begin{figure}
+<<fig6,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p4)
+@
+\caption{Scatter plot with smoother} 
+\end{figure}
+
+
+For publication in reports and papers most of the work will be with Scales, i.e. changing axes and colours from the default and labeling.
+However, ggplot by allowing you to build up a plot step by step using the grammar of graphics means that you can do this later once you have 
+explored and interpreted the data. The boring but important stuff can be left until later.
+
+Although default scales are applied you may wish to tidy up the axes and legends or change the cordinate system, e.g. to use a logrithmic scale
+
+
+\begin{lstlisting}[caption={ggplot}]
+p =p + geom_point(aes(age,data,group=unit,colour=unit),position="jitter") +
+       stat_smooth(aes(age,data,group=unit,colour=unit))                  + 
+       scale_x_continuous(name="Age")                                     + 
+       scale_y_log10(name="Weight (Kg)")                                  +
+       scale_colour_manual("Sex",values=c("blue","red"))
+p
+\end{lstlisting}
+
+\begin{figure}
+<<fig7,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p5)
+@
+\caption{Plot with modified legends and axes} 
+\end{figure}
+
+Facetting allows you to produce multiple plots by a covariate to better explore the structure of the data.
+
+\begin{lstlisting}[caption={ggplot}]
+## add a new variable for decade to the data in the ggplot object
+p$data =transform(p$data, decade=year-(year %% 10))
+
+## plots
+p + facet_wrap(~decade)  
+\end{lstlisting}
+
+\begin{figure}
+<<fig8	,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(p6)
+@
+\caption{Faccetted plot by decade} 
+\end{figure}
+
+
+\section[Examples]{Examples}
+
+A variety of examples based on fisheries data sets are provided to show the power and flexibility of ggplot for exploratory data analysis and presentation of results.
+
+\subsection[CAS]{Catch-at-size}
+
+Mediterannean swordfish catch-at-size data found at \href{}{} are used in this example to show how histograms can be used to explore how one or more 
+categorical variables are distributed. The data are in the form of length frequencies and so the lengths needed to be weighted by the frequency (n)
+
+geom_histogram() uses geom_bar() and  stat_bin() , i.e. first the bin statistic is used to create new statistics based on a “count” the number of points in a bin;
+more infomation can be found at \href{ggplot2 website}{http://had.co.nz/ggplot2/geom_histogram.html}
+
+
+\begin{lstlisting}[caption={Plotting catch-at-size}]
+load("cas.RData")
+head(cas)
+
+qplot(len,data=cas,geom.="histogram",weight=n)
+\end{lstlisting}
+
+We also add some additional variables to the data.frame used for plotting, i.e. decade and proportion, to allow the length frequencies to be more easily compared.
+The bin width is set by default, but can be changed and you can use ggplot so we can save the plot to modify later.
+
+\begin{lstlisting}[caption={Simple plotting}]
+## add new variables for plotting
+cas    =transform(cas, decade=(year %% 10),yr=year-(year %% 10))
+cas    =ddply(cas,.(year),transform, prop=n/sum(n))
+
+ggplot(cas) + geom_histogram(aes(len,weight=n))
+\end{lstlisting}
+
+Plotting by year can be done using facetting.
+\begin{lstlisting}[caption={Simple plotting}]
+cas2   =ggplot(cas) + geom_histogram(aes(len,weight=prop),binwidth=5) + facet_grid(decade~yr)
+\end{lstlisting}
+
+While the data within a year can be split by gear.
+\begin{lstlisting}[caption={Simple plotting}]
+cas3   =ggplot(cas) + geom_histogram(aes(len,weight=prop,group=gear,colour=gear),binwidth=5) + facet_grid(decade~yr)
+\end{lstlisting}
+
+
+\begin{figure}
+<<cas1,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(cas1)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+\begin{figure}
+<<cas2,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(cas2)
+@
+\caption{Catch-at-size by year and decade} 
+\end{figure}
+
+\begin{figure}
+<<cas3,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(cas3)
+@
+\caption{Catch-at-size by year, decade and gear} 
+\end{figure}
+
+
+\section{Time series}
+
+These time series plots are based on the Mediterannean bluefin assessment
+\begin{lstlisting}[caption={Simple plotting}]
+## Read in data
+bio       =read.table("BIO_f-1.STA",skip=1,header=T)
+
+## simple short names
+names(bio)=c("scen","yr","lower","median","upper","mean","det","sd")
+head( bio)
+\end{lstlisting}
+
+Identify scenarios
+\begin{lstlisting}[caption={Simple plotting}]
+## scenario key, i.e. quotas and constant Fs
+scen=c(0,2000,4000,6000,8000,10000,12000,13500,14000,16000,18000,20000,22000,
+         "F0.1","FMSY","FMax")
+scen=factor(scen,levels=scen)
+bio\$scen=scen[bio\$scen]
+\end{lstlisting}
+
+\begin{figure}
+<<ts1,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(ts1)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+
+\begin{figure}
+<<ts2,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(ts2)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+
+\begin{figure}
+<<ts3,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(ts3)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+
+\begin{figure}
+<<ts4,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(ts4)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+
+\begin{figure}
+<<ts5,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(ts5)
+@
+\caption{Catch-at-size} 
+\end{figure}
+
+
+Plot the data using qplot \& ggplot
+\begin{lstlisting}[caption={Simple plotting}]
+## plot
+
+qplot(yr,mean,data=subset(bio, scen %in% seq(0,22000,2000)))
+
+## save it and tidy up
+
+p=qplot(yr,mean,data=subset(bio, scen %in% seq(0,22000,2000)))
+p+geom_line(aes(yr,mean,group=scen,col=scen))
+p
+\end{lstlisting}
+
+
+Tidy up some more
+\begin{lstlisting}[caption={Simple plotting}]
+p+geom_line(aes(yr,mean,group=scen,col=scen))+
+            scale_x_continuous(limits=c(2000,2022))
+p
+\end{lstlisting}
+
+
+Confidence Intervals
+\begin{lstlisting}[caption={Simple plotting}]
+## how to plot CIs?
+head(bio)
+
+## change the shape of the data object using melt from reshape package
+head(melt(bio, measure.vars=c("lower","median","upper")))
+
+## get rid of variables we won´t use
+bio2=melt(subset(bio,scen %in% seq(0,22000,2000), 
+                      select=c(scen,yr,lower:upper)), 
+           measure.vars=c("lower","median","upper"))
+head(bio2)
+
+## Plot
+ggplot(bio2) + 
+       geom_line(aes(yr,value,group=scen:as.factor(variable),col=scen)) +
+       scale_x_continuous(limits=c(2000,2022))
+\end{lstlisting}
+
+\section{Diagnostics}
+
+\begin{lstlisting}[caption={Simple plotting}]
+## load up a R object
+load("glmPos.RData")
+\end{lstlisting}
+
+What is it?
+\begin{lstlisting}[caption={Simple plotting}]
+is(glmPos)
+
+names(glmPos)
+\end{lstlisting}
+
+Since it is an object we can plot it
+\begin{lstlisting}[caption={Simple plotting}]
+plot(glmPos)
+\end{lstlisting}
+
+What if we don´t like the plot? Create you own.
+
+First create a data.frame
+\begin{lstlisting}[caption={Simple plotting}]
+## create a data.frame with something you want to plot
+p=ggplot(data.frame(rsdl=residuals(glmPos),hat=fitted(glmPos)))
+p=p+geom_point(aes(hat,rsdl))
+p
+\end{lstlisting}
+
+how to check the residuals have no pattern?
+\begin{lstlisting}[caption={Simple plotting}]
+p+stat_smooth(aes(hat,rsdl))
+\end{lstlisting}
+
+i.e. add a layer with a statistic 
+
+More detailed checks by covariates
+\begin{lstlisting}[caption={Simple plotting}]
+## more detailed checks
+p+geom_point(aes(hat,rsdl))+stat_smooth(aes(hat,rsdl))+facet_wrap(~qtr)
+p+geom_point(aes(hat,rsdl))+stat_smooth(aes(hat,rsdl))+facet_wrap(~area)
+p+geom_point(aes(hat,rsdl))+stat_smooth(aes(hat,rsdl))+facet_wrap(qtr~area)
+\end{lstlisting}
+
+  \subsubsection{More Diagnostics}
+\begin{lstlisting}[caption={Simple plotting}]
+#### Diagnostics II
+## yet more residuals!
+
+## create a data.frame with both the observed and expected quantiles
+qq=qqnorm(rstandard(glmPos),plot.it=FALSE)
+
+rsdls=data.frame(resStd    =rstandard(glmPos),          ## standardised
+                  res       =glmPos$residuals,           ## raw
+                  hatLn     =glmPos$linear.predictors,   ## linear predictor 
+                  hat       =glmPos$fitted.values,       ## fitted
+                  y         =glmPos$y,                   ## observed dependent variable
+                  qqHat     =qq$x,                       ## expected quantile                 
+                  qqObs     =qq$y)                       ## observed qunatile
+head(rsdls)
+\end{lstlisting}
+
+This entails plotting standardised deviance residuals against the fitted values to check for systematic departures from the assumptions underlying the error distribution; the absolute values of the residuals against the fitted values as a check of the assumed variance function; and the dependent variable against the linear predictor function as a check of the assumed link function for the first four error models. 
+
+Check residual distribution is normal
+\begin{lstlisting}[caption={Simple plotting}]
+## QQ-plot
+p1=ggplot(rsdls) + geom_point(aes(qqHat,qqObs),size=0.5)   +
+                    opts(title = "Normal Q-Q Plot")         + 
+                    scale_x_continuous(name="Theoretical Quantiles") +
+                    scale_y_continuous(name="Sample Quantiles")  +
+                    geom_abline(intercept=0, slope=1)
+p1
+\end{lstlisting}
+
+Check the error distribution, are the standardised residual showing any pattern that may mean your assumptions are violated
+\begin{lstlisting}[caption={Simple plotting}]
+## Check Error distribution
+p2=ggplot(rsdls) + geom_point(aes(hat,resStd),size=0.5) + 
+                    stat_smooth(aes(hat,resStd),method="gam") +
+                    opts(title="Error Distributions")    + 
+                    scale_x_continuous(name="Predicted") +
+                    scale_y_continuous(name="Standardised Residuals")
+p2
+\end{lstlisting}
+
+
+Check the variance function?
+\begin{lstlisting}[caption={Simple plotting}]
+p3=ggplot(rsdls) + geom_point(aes(hatLn,res), size=0.5) + 
+                    stat_smooth(aes(hatLn,res),method="gam") +
+                    opts(title="Assumed Variance") + 
+                    scale_x_continuous(name="Predicted on Link") +
+                    scale_y_continuous(name="Absolute Residuals")
+p3                                                                                                                         
+\end{lstlisting}
+
+Check the assumed link function.
+\begin{lstlisting}[caption={Simple plotting}]
+p4=ggplot(rsdls) + geom_point(aes(hatLn,y), size=0.5) + 
+                    stat_smooth(aes(hatLn,y),method="gam") +
+                    opts(title="Link Function") + 
+                    scale_x_continuous(name="Predicted on Link") +
+                    scale_y_continuous(name="Observed")
+p4
+\end{lstlisting}
+
+Make a nice composite plot using grid
+\begin{lstlisting}[caption={Simple plotting}]
+vplayout =function(x, y) viewport(layout.pos.row=x, layout.pos.col=y)
+
+grid.newpage()
+pushViewport(viewport(layout=grid.layout(2,2)))
+print(p1, vp=vplayout(1,1))
+print(p2, vp=vplayout(2,1))
+print(p3, vp=vplayout(1,2))
+print(p4, vp=vplayout(2,2))
+\end{lstlisting}
+
+\subsection{Maps}
+
+\begin{lstlisting}[caption={Simple plotting}]
+library(ggplot2)
+library(mapproj)
+
+##### Mapping
+world      =data.frame(map("world", plot=FALSE)[c("x","y")])
+world      =ggplot(world) + geom_path(aes(x,y))  
+world
+\end{lstlisting}
+
+Mmm! What about coordinate system?
+
+\begin{lstlisting}[caption={Simple plotting}]
+world + coord_map() 
+\end{lstlisting}
+
+What about sub-areas?
+\begin{lstlisting}[caption={Simple plotting}]
+GG         =ggplot(world) + geom_path(aes(x,y))  + 
+             scale_x_continuous(limits=c(-20,20)) + 
+             scale_y_continuous(limits=c(-20,20)) + coord_map() 
+GG
+\end{lstlisting}
+
+\subsection{Kobe Phase plots}
+
+\begin{lstlisting}[caption={Simple plotting}]
+#### Kobe I ,Quadrants 
+### provides the back drop on which to overlay data
+kobeFn=function(x=NULL,xlim=c(0,2),ylim=xlim){
+       quads= rbind(data.frame(x   =c(-Inf,-Inf,Inf,Inf), 
+                                y   =c(-Inf,Inf,Inf,-Inf), 
+                                fill=as.factor("yellow")),
+                     data.frame(x   =c(   1,   1,Inf,Inf), 
+                                y   =c(-Inf,  1,  1,-Inf), 
+                                fill=as.factor("green")),
+                     data.frame(x   =c(-Inf,-Inf,  1,  1), 
+                                y   =c(   1,Inf,Inf,   1), 
+                                fill=as.factor("red")))
+
+       ggplot(x)+geom_polygon(data=quads,aes(x,y,fill=fill)) +
+                   scale_fill_manual(values = c("yellow","green","red"), legend=FALSE) +
+                   ylab(expression(F/F[MSY]))        +
+                   xlab(expression(SSB/B[MSY]))      +
+                   scale_y_continuous(limits=ylim)   +
+                   scale_x_continuous(limits=xlim)}
+\end{lstlisting}
+
+\subsection{Methods verses Functions}
+
+R is object orientated, so lets write some methods. http://developer.r-project.org/methodDefinition.html
+\begin{lstlisting}[caption={Simple plotting}]
+setMethod("kobe", signature(biomass="missing", harvest="missing", refpts="missing"),
+    function(xlim=c(0,2),ylim=xlim, ...)
+       kobeFn(NULL,xlim,ylim,...))
+       
+setMethod("kobe", signature(biomass="data.frame", harvest="missing", refpts="missing"),
+    function(biomass,xlim=c(0,2),ylim=xlim, ...)
+       kobeFn(biomass,xlim,ylim,...))
+
+load(file="bftE.RData")
+
+load(file="prj.RData")
+ggplot(prj)+geom_line(aes(Year,SSB,group=as.factor(Quantile),size=as.factor(Quantile))) +
+            scale_size_manual(values=c(0.5,1,0.5),name="Quantile") +
+            geom_hline(aes(yintercept=1)) +
+            geom_vline(aes(xintercept=2022)) +
+            facet_wrap(~TAC,nrow=4)
+                   
+df=subset(prj,Quantile=="50%" & Year>2007,select=c(SSB,F,TAC)
+kobe(df) + geom_line(aes(SSB,F,group=as.factor(TAC),col=as.factor(TAC)))
+\end{lstlisting}
+
+\subsection{Saving Plots}
+ 
+\begin{lstlisting}[caption={Simple plotting}]
+• There are a few ways to save your plots in R. 
+Using the GUI, choose ﬁle → save 
+png(filename, width, height) 
+jpeg(filename, width, height) 
+pdf(file, width, height) 
+• If the plot has already been rendered, then use 
+dev.copy(device, filename) 
+ggsave(filename, width, height) 
+\end{lstlisting}
+
+\subsection{Themes}
+
+\section{Using with FLR}
+
+FLR by default uses lattice for plotting, however ggplot allows more flexibility since a basic plot produced by plotting an FLR object can then be
+modified by a user. For example to change fonts or other stylistic features, to annotate plots, add additional layers such as smoothers through points
+or to plot the data by covariates either by changing the aesthetics of data values or by using facet to plot different panels.
+
+An optional package ggplotFL changes the default plots from lattice to ggplot. Some secondary packages use ggplot instead of lattice, depending on the preferences
+of the developer. 
+
+A comparison of the default (lattice) and ggplot plots
+  
+
+\begin{lstlisting}[caption={Simple plotting}]
+data(ple4)        \\
+plot(ple4)        \\
+library(ggpltFL)  \\
+plot(ple4)        
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Simple plotting}]
+   \\
+\end{lstlisting}
+
+\subsection{Coercion}
+\subsection{Utility Methods}
+\subsection{Egg Production}
+
+
+
+\subsection[fuji]{Appendix: Mt Fuji}
+
+A benefit of using ggplot is the flexibility it allows bybuilding up a plot in layers, as shown in this \href{example}{http://siguniang.wordpress.com/2010/12/19/rdraw-mt-fuji-in-r/]
+
+First create a data set then a ggplot2 object. The object can be plotted and saved for latter use or modified as you go along.
+
+\begin{lstlisting}[caption={Simple plotting}]
+## create some data
+dat=data.frame(x=seq(-8,8,.1),y=f(seq(-8,8,.1)),y2=g(seq(-8,8,.1)))
+head(dat)
+p=ggplot(dat)
+
+## what is it?
+is(p)
+names(p)
+
+head(p$data)
+\end{lstlisting}
+
+Add a background
+
+\begin{lstlisting}[caption={Simple plotting}]
+##  background gradation
+p=ggplot()+
+   geom_tile(aes(x, y, fill=y*3), data.frame(expand.grid(x=c(-4,4), y=seq(0.05, 6.95, 0.1))))
+p
+\end{lstlisting}
+
+and add some areas
+
+\begin{lstlisting}[caption={Simple plotting}]
+## Mt. Fuji
+f = function(x) ifelse (abs(x)<=1, x^4-x^2+6, 12/(abs(x)+1))
+g = function(x) ifelse (abs(x)<=2, 0.5*cos(2*x*pi)+7/2, 12/(abs(x)+1))
+x =seq(-8,8,0.1)
+y =f(x)
+y2=g(x)
+
+p =p+geom_area(aes(x,y),  fill='white', colour=NA, n=1000) +
+     geom_area(aes(x,y2), fill='black', colour=NA, n=1000)
+p
+\end{lstlisting}
+
+Modify the background 
+
+\begin{lstlisting}[caption={Simple plotting}]
+# The light of the sun
+p=p+ geom_tile(aes(x, y, fill=z),
+            transform(data.frame(expand.grid(x=seq(-7.95, 7.95, 0.1), 
+                                             y=seq(0.05, 6.95, 0.1))), 
+                                             z=-sqrt((5-x)^2+(5.5-y)^2)),alpha=0.25)
+p
+\end{lstlisting}
+
+add a point
+
+\begin{lstlisting}[caption={Simple plotting}]
+# The sun
+p=p+ geom_point(aes(x, y), data.frame(x=5, y=5.5), size=30, colour="yellow")
+p
+\end{lstlisting}
+
+add more data
+
+\begin{lstlisting}[caption={Simple plotting}]
+# The forests
+p=p+geom_area(aes(x=seq(-8,8,.1),y=sin(seq(-8,8,.1)*3)/2+2), fill="darkgreen", colour=NA)
+p
+\end{lstlisting}
+
+change the background again
+
+\begin{lstlisting}[caption={Simple plotting}]
+# use YlOrRd colormap from RColorBrewer
+library(RColorBrewer)
+p=p+scale_fill_gradientn(colour=rev(brewer.pal(7,"YlOrRd")))
+p
+\end{lstlisting}
+
+Tidy up labels etc.
+
+\begin{lstlisting}[caption={Simple plotting}]
+# hide labels and legend
+p=p+opts(legend.position = "none",
+       axis.text.x = theme_blank(),
+       axis.text.y = theme_blank(),
+       axis.title.x = theme_blank(),
+       axis.title.y = theme_blank())
+p
+\end{lstlisting}
+
+
+\end{document}

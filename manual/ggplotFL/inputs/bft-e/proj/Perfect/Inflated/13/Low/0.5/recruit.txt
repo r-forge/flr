@@ -1,0 +1,9 @@
+1  -7 1485665		0.5	       0.5     	    0     0      {enter one line for each area}
+   |  |          	|        	|           |     |
+   |  |          	|        	|           |     epsilon for autocorrelated recruitment in last year
+   |  |          	|        	|           rho- autocorrelation coefficient
+   |  |          	|        	standard error of random deviations in recruitment (appart from autocorrelation)
+   |  |          	ssb parameter (=ssb hinge for two-line)
+   |  recruitment parameter (= rmax for two-line)
+   spawner-recruit curve (1=Beverton & Holt, 2=Ricker, 3-5=Two-line, 6=resample observed recruitments), negative value tells program not to estimate
+This File is given the bounds for the 2-line SR model, such the top maximum line can't pass 220000 in any given boot

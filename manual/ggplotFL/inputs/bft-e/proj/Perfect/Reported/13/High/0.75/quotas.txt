@@ -1,0 +1,197 @@
+**Enter the number of catch/effort scenarios to run.			
+15
+#-------------------------------------------------------------------------			
+**1. 0			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*0
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**2. 2000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*2000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**3. 4000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*4000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**4. 6000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*6000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**5. 8000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*8000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**6. 10000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*10000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**7. 12000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*12000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**8. 13500			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*13500
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**9. 14000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*14000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**10. 16000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*16000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**11. 18000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*18000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------			
+**12. 20000			
+#-------------------------------------------------------------------------			
+**Enter the total allowable catch (mt) for each projection year			
+# area/stock			
+# | fishery			
+# | | quotas for each projection year			
+# | | |			
+1	1	13500	100*20000
+-1 end of catch quotas			
+**Enter the fixed fully-selected fishing mortality rates by year			
+1	1	3	100*3
+-1 end of F quotas			
+#-------------------------------------------------------------------------
+**13. F01
+#-------------------------------------------------------------------------
+**Enter the total allowable catch (mt) for each projection year
+# area/stock
+# | fishery
+# | | quotas for each projection year
+# | | |
+1	1	13500	100*2000000
+-1 end of catch quotas
+**Enter the fixed fully-selected fishing mortality rates by year
+1	1	3	100*-0.1
+-1 end of F quotas
+#-------------------------------------------------------------------------
+**14. Fmsy
+#-------------------------------------------------------------------------
+**Enter the total allowable catch (mt) for each projection year
+# area/stock
+# | fishery
+# | | quotas for each projection year
+# | | |
+1	1	13500	100*2000000
+-1 end of catch quotas
+**Enter the fixed fully-selected fishing mortality rates by year
+1	1	3	100*-2
+-1 end of F quotas
+#-------------------------------------------------------------------------
+**15. Fmax
+#-------------------------------------------------------------------------
+**Enter the total allowable catch (mt) for each projection year
+# area/stock
+# | fishery
+# | | quotas for each projection year
+# | | |
+1	1	13500	100*2000000
+-1 end of catch quotas
+**Enter the fixed fully-selected fishing mortality rates by year
+1	1	3	100*-1
+-1 end of F quotas
