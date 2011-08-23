@@ -14,6 +14,6 @@ yft <- FLStocks(mlply(runs, function(x) readVPA2Box(paste(x, 'yft2008.ctl', sep=
 names(yft) <- paste("Scenario", 0:12, sep=" ")
 attributes(yft) <- attributes(yft)[1:4]
 attr(yft, 'lock') <- TRUE
-attr(yft, 'desc') <- paste('YFT ATL SA runs. Created on', date())
+attr(yft, 'desc') <- paste('YFT ATL SA runs. Created on', date(), ".",  R.Version()$version.string)
 
 save(yft, file='yft.RData')

@@ -1,0 +1,5 @@
+ readfrq file
+ read nage
+ begin readpar file
+reached line 24 in .\lmul_io2.cpp
+ end readpar file
