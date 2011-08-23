@@ -9,9 +9,11 @@ library(ggplotFL)
 
 runs <- paste("S", 0:12, sep="")
 
-yft_mse <- FLStocks(mlply(runs, function(x) readVPA2Box(paste(x, 'yft2008.ctl', sep="/"), m=0.8)))
+yft <- FLStocks(mlply(runs, function(x) readVPA2Box(paste(x, 'yft2008.ctl', sep="/"), m=0.8)))
 
-names(yft_mse) <- runs
-attributes(yft_mse) <- attributes(yft_mse)[1:4]
+names(yft) <- paste("Scenario", 0:12, sep=" ")
+attributes(yft) <- attributes(yft)[1:4]
+attr(yft, 'lock') <- TRUE
+attr(yft, 'desc') <- paste('YFT ATL SA runs. Created on', date())
 
-save(yft_mse, file='yft.RData')
+save(yft, file='yft.RData')
