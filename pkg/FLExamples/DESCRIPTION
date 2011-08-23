@@ -1,0 +1,9 @@
+Package: FLExamples
+Title: Example datasets for FLR manuals and tutorials
+Version: 0.1
+Author: FLR Team.
+Description: Contains a number of datasets to be used in different FLR tutorials, manuals and pkgs.
+Depends: FLCore(>= 2.3)
+Maintainer: FLR Team <flr-team@flr-project.org>
+License: GPL 2
+LazyLoad: Yes
