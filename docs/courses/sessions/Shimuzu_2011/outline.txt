@@ -1,0 +1,38 @@
+Draft schedule (Those contents could be revised to concentrate a few important topics if needed) :
+
+1 Introductions
+  1.1 R & L
+  1.2 Participants
+  
+R and FLR
+  2.1 R & FLR (ppt)
+  2.2 MSE (ppt)
+.
+Using R
+.
+Installing FLR
+.
+Using FLR with case study data sets
+Icebreaker; Eating tuna party
+Modeling biological population
+.
+Non-linear modeling of stock recruitment data using FLSR
+.
+Modeling growth and maturity
+.
+Simulating a population
+Stock status, harvest control rules and management procedure
+.
+Biological productivity and limits to exploitation
+.
+Biological and economic, reference points from FLBRP
+.
+Stock assessment using FLXSA and FLXSA
+.
+Harvest control rules and management procedures
+Building operating models
+.
+MSE for a data-poor situation
+.
+MSE for a data-rich situation
+Putting together a simple MSE for your own data

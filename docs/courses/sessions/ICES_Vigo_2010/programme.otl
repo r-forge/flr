@@ -1,0 +1,84 @@
+Timetable
+	AM
+		09.00 - 11.00 Lectures
+		11.00 - 11.30 Cofee break
+		11.30 - 13.00 Tutorials
+	PM
+		14:30 - 16:00 Lectures/Tutorials
+		16:00 - 16:30 Cofee break
+		16:30 - 18:30 Assignment
+Monday
+	Introduction to R & FLR
+		09.00 Welcome
+		09.30 Presentation - Introduction to MSE, FLR and some other acronyms (LK)
+			The FLR project
+			A platform for quantitative fisheries science
+			MSE and simulation in fisheries
+		10.00 Presentation - The R language: installation and some advanced features (IM)
+			Getting ready: Installing R and a working environment
+			How is FLR built?
+			Looking into R packages
+			S4 classes and OOP
+			Using FLCore
+			Some useful computational statistics
+			Use of compiled code in FLR
+		10.30 BREAK
+		11.00 Tutorial - Installation and FLCore (IM)
+			Installing FLR packages
+			Using FLCore: classes and methods
+			Plotting using lattice
+			Loading data
+		13.00 LUNCH
+		14.30 Tutorial - Installation and FLCore (cont.)
+	Assignment - Loading data, plotting, building objects
+		Loading data into FLR
+		Summarizing and plotting
+		Writing some code: a population forward projection
+Tuesday
+	Modeling biological populations
+		09.00 Presentation - Modeling biological populations: FLBiol and conditioning (LK)
+		10.00 Presentation - Non-linear modeling in FLR (IM)
+			Modeling tools available in R & FLR
+			The FLModel class
+			optim() and its limitations
+			Analyzing residuals and model fit
+			Other methods
+			Extending it
+				FLGrowth
+				FLOgive
+		11.00 BREAK
+		11.30 Tutorial - Fitting SR models using FLSR (IM)
+			Model fitting
+			Output diagnostics
+			SR models in FLCore
+			Adding your own models
+		13.00 LUNCH
+		14.30 Tutorial - Simulating a population and extracting indicators (LK)
+	Assignment - FLSR and simulation
+Wednesday
+	Stock status, Harvest Control Rules & Management Procedures
+		09.00 Presentation - Biological productivity and limits to exploitation (LK)
+		10.00 Tutorial - Stock status using FLBRP (LK)
+		11.00 BREAK
+		11.30 Tutorial - Stock Assessment in FLR: FLXSA and FLSP (IM)
+		13.00 LUNCH
+		14.30 Tutorial - Harvest control rules (LK,IM)
+		15.30 Tutorial - Management procedures (LK,IM)
+Thursday
+	Building operating models
+		09.00 Presentation - Conditioning, OMs (IM)
+		10.00 Tutorial - MSE for a data-poor situation (IM)
+		11.00 BREAK
+		11.30 Tutorial - MSE for a data-poor situation (cont.)
+		13.00 LUNCH
+		14:30 Tutorial - MSE for a data-rich situation (LK)
+	Assignment - Putting together a simple MSE for your own data
+Friday
+	Translating models into advice
+		09.00 Presentation - Advice from MSE, communication (LK,IM)
+	Bio-economics
+		10.30 Tutorial - (LK)
+		11.00 BREAK
+	Extending FLR
+		14:30 Demonstration - Extending classes, new packages (IM)
+		16:30 Demonstration - ADMB (IM)

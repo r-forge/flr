@@ -1,0 +1,4 @@
+The equations.tex file contains equations in LaTeX format for the equations
+used in FLR documents and packages.
+
+Copy this file to your document folder and delete as appropriate, keeping only the equations you need.

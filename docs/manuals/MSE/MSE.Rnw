@@ -1,0 +1,245 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{framed}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\geometry{verbose,a4paper,tmargin=2cm,bmargin=1.5cm,lmargin=2cm,rmargin=3cm}
+\definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{shadecolor}{rgb}{1,1,0.95}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\onehalfspacing
+\hypersetup{colorlinks, urlcolor=darkblue}
+
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+\begin{document}
+  \SweaveOpts{engine=R}
+\title{\huge{Management Strategy Evaluation}}
+\author{Laurence Kell \href{laurie.kell@iccat.int}{mail to:laurie.kell@iccat.int}\\
+Population Dynamics Expert, \\
+ICCAT Secretariat, C/Coraz\'{o}n de Mar\'{\i}a, 8. 28002 Madrid, Spain.}
+\date{}
+\maketitle
+
+
+\section{Introduction}
+
+
+The adoption of the Precautionary Approach (FAO, 1996) requires fisheries management to formally consider uncertainty based upon 
+limit and target reference points. The precautionary Approach also recomends the use of harvest control rules (HCRs) to specify 
+in advance what actions should be taken when limits are reached. However, even though harvest control rules may include several 
+precautionary elements, it does not necessarily follow that they will be precautionary in practice (Kirkwood and Smith 1996). 
+This is because many harvest control rules are not evaluated formally to determine the extent to which they achieve the goals 
+for which they were designed, given the uncertainty inherent in the system being managed (Punt in prep).  Also the effects of 
+uncertainty increase as the fishery management system becomes more elaborate. Since in the absence of management, fishers are 
+mainly confronted with uncertainties related to the natural variability of the environment and the markets, while under active 
+management, uncertainties about management decisions, their effects and their implementation are added (Cunning and Maguire, 2002).
+
+Therefore it is important to consider uncertainty beyond just the assessment process, since under active management uncertainties about  
+management decisions, their effects and their implementation also have to be considered. However, Fisheries  management advice 
+traditionally takes a reductionist approach, where tasks are considered in a linear fashion e.g. collect the data, perform the  assessment, 
+compute reference points, then set the quota. However, just as  in ecology where it is argued that inappropriate use of reductionism limits 
+our understanding of complex systems,we need to understand  how systems work and in particular how feedback loops influence those systems (Mumford et al. xxx).
+
+Therefore simulation and Management Strategy Evaluatiomn (MSE) (Kirkwood and Smith 1996, Cooke 1999, McAllister et al. 1999, Kell et al. ), 
+has increasingly been used to evaluate the impact of uncertainty. Where simulation models that can represent alternative 
+hypotheses about stock and fishery dynamics are used to evaluate stock assessment methods and the advice based upon them. With the intention of 
+Thereby allowing a greater range of uncertainty and a higher level of knowlwdge and complexity than used by stock assessment models to be considered.
+An objective of MSE is not to make stock assessment advice frameworks more complicated but to ensure that they are robust to the main sources of uncertainty.
+Since stock assessment often requires a time-consuming re-evaluation of data and the trend of using increasingly complex models to produce advice 
+means that advice may deviate considerably from one year to the next unless assessment groups restrict the range of their analyses. 
+
+All terminology is based upon that of Rademeyer et al. (2007). 
+
+\section[Framework]{Management Strategy Evaluation Framework}
+
+An important aspect of MSE is that the management outcomes from the HCR are fed back into the operating model so that their influence 
+on the simulated stock and hence on the future simulated fisheries data is propagated through the stock dynamics (Figure 1). A reason for this 
+is because stock assessment mainly considers only uncertainty in observations and process (e.g. recruitment) and uncertainty 
+about the actual dynamics (i.e. model uncertainty) has a larger impact on achieving management objectives (Punt 2008). 
+ 
+Figure 1. Conceptual framework for Management Strategy Evaluation.
+
+Complex models are used primarily to test the robustness of simpler assessment–management rules before implementation, by conducting 
+computer-based experiments that embody how the whole system reacts to a variety of possible management actions (Hilborn, 2003). Population 
+and fleet dynamics are deduced from a  range of plausible hypotheses and available data sets, rather than being based on a singular 
+set of assumptions, because the objective  is to develop strategies that are robust to our uncertainty about the “true” dynamics and, hence, 
+to meet the requirements of the  precautionary approach. The challenge is no longer to build (and then justify) a single “best” model 
+but to identify an appropriate of range of plausible models, parameterise and assigning weights to them (Punt, 2008). There is also a 
+need to explore alternative model  structures and ways of assigning weights or probabilities to them for example using Bayesian and 
+meta-analytic techniques (Michielsens and McAllister, 2004). 
+
+
+FLR (Kell et al.) was designed to be be used to build simulation models representing alternative hypotheses about stock and fishery dynamics. 
+Thereby allowing a higher level of complexity and knowledge than used by stock assessment models and to explicitly include a greater range of uncertainty. 
+
+
+The three main elements of a MSE are theDominic WestDominic West
+
+\begin{description}
+ \item[Operating Model (OM);] that represents alternative plausible hypotheses about stock and fishery dynamics, allowing integration of 
+a higher level of complexity and knowledge than is generally used within stock assessment models;
+ \item[Observation-error Model (OEM);] that describes how simulated fisheries data, or pseudo-data, are sampled from the Operating Model; and
+ \item[Management Procedure (MP);] or management strategy which is the combination of the available pseudo-data, the stock assessment used 
+to derive estimates of stock status and the management model or Harvest Control Rule (HCR) that generates the management outcomes, 
+such as a target fishing mortality rate or Total Allowable Catch.
+\end{description}
+
+It is important to consider appropriate sources of uncertainty, since otherwise paradoxically uncertainty from a simple assessment that makes use of less data and 
+with less assumptions may be be less than that from more complex assessments. Traditional stock assessments mainly considers only uncertainty in observations and 
+process (e.g. recruitment). However, uncertainty about the actual dynamics (i.e. model uncertainty) has a larger impact on achieving management objectives (Punt 2008). 
+Therefore when providing management advice it is important to consider appropriate sources of uncertainty.  Rosenberg and Restrepo (1994) catagorised uncertainties in fish stock 
+assessment and management as:
+
+\begin{itemize}
+ \item Process error; caused by disregarding variability, temporal and spatial, in dynamic population and fisheries processes;
+ \item Observation error;  sampling error and measurement error;
+ \item Estimation error; arising when estimating parameters of the models used in the assessment procedure;
+ \item Model error; related to the ability of the model structure to capture the core of the system dynamics;
+ \item Implementation error;  where the effects of management actions may differ from those intended.
+\end{itemize}
+
+Sources of uncertainty related to \emph{Model Error} include
+    
+\begin{itemize}
+ \item structural uncertainty; due to inadequate models, incomplete or competing conceptual frameworks, or where significant processes or 
+relationships are wrongly specified or not considered. Such situations tend to be underestimated by experts (Morganand Henrion, 1990). and
+ \item value uncertainty; due to missing or inaccurate data or poorly known parameters.
+\end{itemize}
+
+While uncertainty related to how results are used (Francis and Shotton, 1997) include 
+
+\begin{itemize}
+ \item translational uncertainty; in explaining uncertain results and 
+ \item institutional uncertainty; due to lack of social capital (i.e. ways to handle these types of problems) in stakeholder organisations 
+to cope with management issues. 
+\end{itemize}
+
+\subsection[OM]{Operating model}
+
+
+Setting up and conditioning an Opertaing Model will depending on the objectives of any particular study; but there are four main ways, i.e.
+
+\begin{itemize}
+ \item base it on the most recent stock assessment
+ \item use an existing SA method to explore different assumptions and hypotheses about model structure, the data and parameter values
+ \item Explore the impact of alternative hypotheses and stock and fleet dynamics i.e. decided upon the hypotheses first then and create an appropriate simulation model
+ \item use a non stock assessment framework
+\end{itemize}
+.
+Here we provide examples of the first three and encourage work on the fourth.
+
+\subsection[OM1]{Stock assessment}
+
+If you have ploughed through the above text then you may be wondering why you would want to construct an Operating Model that is the same as the assessment model.
+There are several reasons for this, particulary when advice is determined on a single best fit. One is that if you generate a set of data based on exactly the 
+same assumptions as the assessment model and there are significant differences between the assumed parameters in the OM and those estimated by the assessment model 
+based on the data generated by the OM then there are important consquences for the use of that assessment model. 
+Secondly when evaluating how to incorporate additional objectives within current advice you may wish to only alter one element, e.g. 
+of a HCR being used as part of a recovery plan to make it easier to compare alternative management options. 
+
+\subsection[OM2]{Stock assessment for hypothesis exploration}
+
+When stock assessment working groups consider a variety of assessment runs based on different plausible assumptions about stock and fleet dynamics (e.g. the assumed value of 
+natural mortality or catchability of fleets) then alternative historical time series, reference points and projected management outcomes will result. Dealing with the consequences
+of such multiple realities can be as difficult as dealing with somebody with multiple personalities. 
+
+\subsection[OM3]{Exploration of Stock and Fleet Dynamics}
+
+Many stock assessments are conducted using a specific program that implements a particular set of assumptions with associated data needs. Even the more flexible integrated
+methods are doing essentially the same, just there are potentially more assumptions. However, the assumptions used for stock assessment may not be consistent with the biology
+or the behaviour of fishers. Rather they are from a restricted so that a model can be fitted to the available data or are consistent across models or with past assessments.
+Also just because a model gives a good statistical fit doesn´t mean that the parameters are correct, for example in assessments that rely upon only commetcial data where
+there are significant biases in those data, in such cases a good fit to the data means that the parameters will be biased 
+ 
+\subsection[OM4]{Non-Stock Assessment Framework}
+
+The population was originaly fished at a low level, i.e. below $F_{MSY}$, fishing mortality then increased linearly over twenty years until fishing was greater than $F_{MSY}$, 
+subsequently fishing mortality decreased linearly until F was again below $F_{MSY}$.  This results in a decrease in the stock and subsequent recovery with a corresponding 
+lags in catch and CPUE.
+
+The spatial and temporal distribution of population dependends on the assumed population dynamics and so alternative scenarios corresponding to different assumptions were
+modelled. There were two seasons corresponding to feeding and spawning and four areas which had different suitabilities (i.e. prefered habitat for spawning or feeding) and 
+carrying capacities. In an area with high suitability as the population declines a higher proprotion of the population will be found in that area. Suitability and carrying
+capacity of the different areas can change over time.     
+ 
+Scenarios corresponding to different ecological assumptions were considered
+\begin{enumerate}
+ \item Suitability was the same in all areas and did not vary over time
+ \item As 1 but areas had different suitabilities for feeding
+ \item As 1 but areas had different suitabilities for feeding and spawning
+ \item As 2 suitabilities change over time due to climate change
+ \item As 3 but catchability increased
+\end{enumerate}
+
+\section[MP]{Management Procedure}
+
+The Management Proceedure is linked to the operating model by the data and assumed level of knowledge, this is modelled by the Observation Error Model (OEM) and the dynamics 
+assumed in the Stock Assessment Procedure (SAP). Then depending upon the perceive stock status and reference points by the HCR which determines management action.
+
+In these examples the SAP cn either be a VPA or a biomass dynamic model. The latter requires total catch-at-age and assumptions about natural mortality and CPUE as data inputs and
+estimates numbers and fishing mortality-at-age from which time series of stock trends and stock recruitment relationships and reference points can be estimated. The latter requires
+total catch and CpUE and estimates $r$, $K$, $B0$ and $q$. These allow MSY based reference points and historic and current stock status to be estimated. 
+
+The Harvest Control Rule is based on limits and targets (figure 2). The OEM is OM specific and will be dealt with later on a case-by-case basis.
+
+\section[CS]{Case Studies}
+ 
+
+\subsection[CS1]{Stock assessment}
+
+If you have ploughed through the above text then you may be wondering why you would want to construct an Operating Model that is the same as the assessment model.
+There are several reasons for this, particulary when advice is determined on a single best fit. One is that if you generate a set of data based on exactly the 
+same assumptions as the assessment model and there are significant differences between the assumed parameters in the OM and those estimated by the assessment model 
+based on the data generated by the OM then there are important consquences for the use of that assessment model. 
+Secondly when evaluating how to incorporate additional objectives within current advice you may wish to only alter one element, e.g. 
+of a HCR being used as part of a recovery plan to make it easier to compare alternative management options. 
+
+\subsection[CS2]{Stock assessment for hypothesis exploration}
+
+When stock assessment working groups consider a variety of assessment runs based on different plausible assumptions about stock and fleet dynamics (e.g. the assumed value of 
+natural mortality or catchability of fleets) then alternative historical time series, reference points and projected management outcomes will result. Dealing with the consequences
+of such multiple realities can be as difficult as dealing with somebody with multiple personalities. 
+
+\subsection[CS3]{Exploration of Stock and Fleet Dynamics}
+
+Many stock assessments are conducted using a specific program that implements a particular set of assumptions with associated data needs. Even the more flexible integrated
+methods are doing essentially the same, just there are potentially more assumptions. However, the assumptions used for stock assessment may not be consistent with the biology
+or the behaviour of fishers. Rather they are from a restricted so that a model can be fitted to the available data or are consistent across models or with past assessments.
+Also just because a model gives a good statistical fit doesn´t mean that the parameters are correct, for example in assessments that rely upon only commetcial data where
+there are significant biases in those data, in such cases a good fit to the data means that the parameters will be biased 
+ 
+\subsection[CS4]{Non-Stock Assessment Framework}
+
+The population was originaly fished at a low level, i.e. below $F_{MSY}$, fishing mortality then increased linearly over twenty years until fishing was greater than $F_{MSY}$, 
+subsequently fishing mortality decreased linearly until F was again below $F_{MSY}$.  This results in a decrease in the stock and subsequent recovery with a corresponding 
+lags in catch and CPUE.
+
+The spatial and temporal distribution of population dependends on the assumed population dynamics and so alternative scenarios corresponding to different assumptions were
+modelled. There were two seasons corresponding to feeding and spawning and four areas which had different suitabilities (i.e. prefered habitat for spawning or feeding) and 
+carrying capacities. In an area with high suitability as the population declines a higher proprotion of the population will be found in that area. Suitability and carrying
+capacity of the different areas can change over time.     
+ 
+Scenarios corresponding to different ecological assumptions were considered
+\begin{enumerate}
+ \item Suitability was the same in all areas and did not vary over time
+ \item As 1 but areas had different suitabilities for feeding
+ \item As 1 but areas had different suitabilities for feeding and spawning
+ \item As 2 suitabilities change over time due to climate change
+ \item As 3 but catchability increased
+\end{enumerate}
+
+
+\end{document}
