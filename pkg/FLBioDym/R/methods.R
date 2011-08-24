@@ -94,11 +94,9 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
 
 } # }}}
 
-    # run
-    runADMBBioDym(object, 1, path, admbNm, cmdOps)
-
     # call across iters
-    res <- m_ply(data.frame(x=seq(dims(object)$iter)), function(x) runADMBBioDym(object, x, path, admbNm, cmdOps))
+    res <- m_ply(data.frame(x=seq(dims(object)$iter)), function(x)
+      runADMBBioDym(object, x, path, admbNm, cmdOps))
 
     setwd(oldwd)
   
