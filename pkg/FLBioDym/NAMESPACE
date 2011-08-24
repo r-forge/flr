@@ -3,7 +3,9 @@ import("FLash")
 importFrom("ggplotFL",
   "diags")
 exportClasses("FLBioDym")
-export("FLBioDym",
+export(
+  "simFLBioDym",
+  "FLBioDym",
   "sp",
 	"msy",
 	"fmsy",
