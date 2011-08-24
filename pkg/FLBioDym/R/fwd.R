@@ -23,12 +23,13 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
     } else {
       if (!(all(dimnames(harvest)$year %in% dimnames(catch(object))$year)))
         stop("years in harvest & stock dont match")
-      yrs<-dimnames(harvest)$year}
+      yrs <- dimnames(harvest)$year
+    }
 
       ## B0 in year 1?
       if (as.numeric(yrs[1]) == range(object,"minyear"))
-        stock(object)[,range(object,"minyear")] <- params(object)["K"] *
-          params(object)["b0"]
+        stock(object)[,ac(range(object,"minyear"))] <-
+          params(object)["K"] * params(object)["b0"]
 
       ## maxyear
       if (max(as.numeric(yrs)) == range(object,"maxyear"))
@@ -38,7 +39,7 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
         if (ctcNull)
           catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
         stock(object)[,ac(y+1)] <- stock(object)[,ac(y)]-catch(object)[,ac(y)] +
-          sp(model(object),stock(object)[,ac(y)],params(object))
+          sp(object)[, ac(y)]
       }
 
     stock(object)[stock(object) < 0] = 0
