@@ -69,23 +69,42 @@ setMethod('admbBD', signature(object='FLBioDym'),
     oldwd <- getwd()
     setwd(path)
 
-    ###
+# runADMBBioDym {{{
+runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
+
+  # create input .dat file
+  idxYrs <- setADMBBioDym(iter(object, iter),paste(path, admbNm,".dat",sep=""))
+  
+  # run
+  res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
+
+  t1 <- read.table(paste(path, admbNm,".rep",sep=""),skip =18,header=T)
+
+  # params
+  t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
+  object@params[c("r","K","b0","p","q","sigma"), iter] <- t2[1:6]
+      
+  # fitted
+  object@fitted[,ac(idxYrs),,,,iter][] <- unlist(c(t1[,"IndexFit"]))
+
+  # stock biomass
+  object@stock[,1:dim(t1)[1],,,,iter] <- unlist(c(t1["Biomass"]))
+        
+  object <<- object
+
+} # }}}
+
     # run
-    years <- setADMBBioDym(object, paste(path, admbNm, '.dat', sep=""))
-    system(paste(paste('.', admbNm, sep='/'), cmdOps))
+    runADMBBioDym(object, 1, path, admbNm, cmdOps)
 
     # call across iters
-    #t.<-m_ply(data.frame(x=seq(dims(object)$iter)),function(x) fitter(x))
-    ###
-
-    # output
+    res <- m_ply(data.frame(x=seq(dims(object)$iter)), function(x) runADMBBioDym(object, x, path, admbNm, cmdOps))
 
     setwd(oldwd)
   
     return(object)
   }
 ) # }}}
-
 
 # setADMBBioDym {{{
 setADMBBioDym <- function(object, file) {
@@ -105,28 +124,4 @@ setADMBBioDym <- function(object, file) {
   writeADMB(res, file)
    
   return(idx$year)
-} # }}}
-
-# runADMBBioDym {{{
-runADMBBioDym <- function(iter, path) {
-
-  # create input .dat file
-  idxYrs <- setADMBBioDym(iter(object, iter),paste(path,admbNm,".dat",sep=""))
-  
-  # run
-  res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
-
-  # params <- readADMB(paste(path, admbNm, ".par", sep=""))
-      
-  t1 <- read.table(paste(path, admbNm,".rep",sep=""),skip =18,header=T)
-
-  # params
-  t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
-  object@params[c("r","K","b0","p","q","sigma"), x] <- t2[1:6]
-      
-  object@fitted[,ac(idxYrs),,,,x][] <- 
-  unlist(c(t1[,"IndexFit"]))
-  object@stock[,1:dim(t1)[1],,,,x] <- unlist(c(t1["Biomass"]))
-        
-  object<<-object
 } # }}}
