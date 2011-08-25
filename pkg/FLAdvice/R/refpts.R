@@ -11,16 +11,26 @@ setMethod("refpts", signature(object="array"),
   function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'),
     quantity=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'),
     iter=1, dimnames=list(refpt=refpt, quantity=quantity, iter=iter), ...) {
-
+    
     # reshape object
     #  if 2D, object will get 3D with dim[3]=iter
-    if(length(dim(object)) == 2)
+    if(length(dim(object)) == 2) {
       if(is.null(dimnames(object)))
         object <- array(c(object), dim=c(dim(object), iter))
       # keeping dimnames if present
       else
         object <- array(c(object), dim=c(dim(object), iter),
           dimnames=c(dimnames(object), list(iter=1:iter)))
+    }
+    
+    # iter > 1 on array with 1 iter
+    else if(iter > 1 & dim(object)[3] == 1) {
+      if(is.null(dimnames(object)))
+        object <- array(c(object), dim=c(dim(object)[-3], iter))
+      else
+        object <- array(c(object), dim=c(dim(object)[-3], iter),
+          dimnames=c(dimnames(object)[-3], list(iter=1:iter)))
+    }
     
     # dimnames given
     if(!missing(dimnames))
@@ -38,7 +48,7 @@ setMethod("refpts", signature(object="array"),
       if (!missing(quantity))
         dmns$quantity <- quantity
       if (!missing(iter))
-        dmns$iter <- iter
+        dmns$iter <- seq(iter)
       dimnames(object) <- dmns
     }
 
@@ -107,8 +117,7 @@ setMethod('show', signature(object='refpts'),
 # propagate {{{
 setMethod('propagate', signature(object='refpts'),
   function(object, iter, fill.iter=TRUE){
-  
-    res <- refpts(object, iter=iter)
+    res <- refpts(object@.Data[,,,drop=TRUE], iter=iter)
     if(fill.iter== FALSE)
       res[,,2:iter] <- as.numeric(NA)
     return(res)
