@@ -9,3 +9,10 @@ exportMethods("harvest",
               "+",
               "show",
               "setSR")
+export(       "OEMStock",
+              "OEMSurvey",
+              "OEMCpue",
+              "biasLinear",
+              "vpaMP",
+              "hcr",
+              "runMSE")
