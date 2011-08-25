@@ -4,6 +4,13 @@ panelBrp<-function()  c("SSB v. F",     "Recruitment v. SSB", "Yield v. F",
 varBrp<-function() data.frame(x=rep(c("fbar","ssb"),3),y=c("ssb","rec","yield","yield","profit","profit"),pnl=panelBrp(),stringsAsFactors=FALSE)
 
 getBrp<-function(x,y,pnl,obj) {
+  
+    if (x %in% names(getSlots("FLBRP"))) if (dims(obj[[x]][[1]])$iter==1 & dims(obj)$iter>1)
+      obj[[x]][[1]]=propagate(obj[[x]][[1]],dims(obj)$iter)
+    if (y %in% names(getSlots("FLBRP"))) if (dims(obj[[y]][[1]])$iter==1 & dims(obj)$iter>1)
+      obj[[y]][[1]]=propagate(obj[[y]][[1]],dims(obj)$iter)
+ 
+    dim(obj[[x]])
     res<-cbind(model.frame(obj[[c(x,y)]]))[,-1]
     names(res)[6:7]<-c("x","y")
     res}

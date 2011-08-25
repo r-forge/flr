@@ -3,10 +3,12 @@ setGeneric("recycle6d<-", function(object,value){
   standardGeneric("recycle6d<-")})
 setMethod("recycle6d<-", signature(object="FLQuant", value="FLQuant"),
 	function(object, value) {
-    
-   if (any(dim(value)>dim(object)))
+  
+   if (any(dim(value)[-6]>dim(object)[-6]))
       stop("dims in 2nd arg can't be greater than those in 1st")
-      
+   if (dims(value)$iter>1 & dims(object)$iter==1)
+      object=propagate(object,dims(value)$iter)
+    
    ## dims to expand in value
    nDim<-(1:6)[dim(value)!=pmax(dim(object),dim(value))]
 
@@ -34,11 +36,20 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
                        
 #      t.<-FLQuants(mlply(args,function(y,x,br,sk) recycle6Dims(sk[[ac(y)]][[1]],br[[ac(x)]][[1]]),br=flbrp,sk=object))
 #      t.<-FLQuants(mlply(args,function(e1,e2,stk,flb) recycle6d(stk[[e1]][[1]],flb[[e2]][[1]]),flb=flbrp,stk=object))
-       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,ac(years)],flb=flbrp))
+       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {cat(ac(e1),ac(e2),"\n"); recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,ac(years)],flb=flbrp))
 
       names(t.)<-args[,1]
-      object[,ac(years)][[ac(args[,1])]]<-t.
-    
+
+      args=cbind(args[,1:2],ldply(ac(args[,1]),function(x,a,b)  data.frame("O"=dims(a[[x]][[1]])$iter,"I"=dims(b[[x]])$iter),a=object,b=t.))
+      
+      t..=FLQuants(mlply(args, function(e1,e2,O,I,x) if (I>O) propagate(x[[ac(e1)]][[1]],I) else x[[ac(e1)]][[1]],x=object))
+      names(t..)<-args[,1]
+      object[[ac(args[,1])]]=t..
+
+      
+      object[,ac(years)][[ac(args[,1])]]=t.
+
+      
     ## STF option
     }else if (!is.null(stf.control)){
       stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA, 

@@ -98,6 +98,8 @@ setMethod('catch.sel', signature(object='FLBRP'),
   function(object)
     return(landings.sel(object) + discards.sel(object)))
 
+setGeneric('catch.obs', function(object, ...)
+  	standardGeneric('catch.obs'))
 setMethod('catch.obs', signature(object='FLBRP'),
   function(object)
     return(discards.obs(object)+landings.obs(object)))
@@ -108,10 +110,14 @@ setMethod('biomass.obs', signature(object='FLBRP'),
   function(object)
     return(stock.obs(object)))
 
+setGeneric('yield.obs', function(object, ...)
+  	standardGeneric('yield.obs'))
 setMethod('yield.obs', signature(object='FLBRP'),
   function(object)
     return(landings.obs(object)))
 
+setGeneric('computeFbar', function(object, ...)
+  	standardGeneric('computeFbar'))
 setMethod('computeFbar', signature(object='FLBRP'),
   function(object)
     return(apply(harvest(object)[ac(object@range["minfbar"]:object@range["maxfbar"])],c(2:6),mean)))
@@ -120,6 +126,8 @@ setMethod('rec', signature(object='FLBRP'),
   function(object)
     return(stock.n(object)[1,]))
 
+setGeneric('rec.hat', function(object, ...)
+    standardGeneric('rec.hat'))
 setMethod('rec.hat', signature(object='FLBRP'),
    function(object)
     return(stock.n(object)[1,]))
@@ -325,25 +333,27 @@ setMethod('stock.hat', signature(object='FLBRP'),
 setMethod('ssb', signature(object='FLBRP'),
   function(object)
      {
-     f    <-sweep(harvest(object) %*% harvest.spwn(object)
-     M    <-sweep(      m(object) %*%       m.spwn(object)
-     expZ <-exp(-(f %+% M))
+     f    <-harvest(object) %*% harvest.spwn(object)
+     M    <-      m(object) %*%       m.spwn(object)
+     expZ <-exp(1/f) %*% exp(1/M)
 
-     return(apply((stock.n(object) %*% expZ) %*% stock.wt(object)*mat(object),2,sum))})
+     t1=stock.n(object) %*% expZ
+     t2=stock.wt(object)*mat(object)
+     
+     return(apply(t1 %*% t2,2,sum))})
 
 setMethod('ssb.hat', signature(object='FLBRP'),
   function(object) return(ssb(object)))
+
+setGeneric('revenue.hat', function(object, ...)
+    standardGeneric('revenue.hat'))
 setMethod('revenue.hat', signature(object='FLBRP'),
   function(object)
     return(revenue(object)))
 
 setMethod('revenue', signature(object='FLBRP'),
   function(object)
-    return(apply(sweep(landings.n(object),%*% setMethod('landings', signature(object='FLBRP'),
-  function(object){
-    return(apply(landings.n(object)%*%landings.wt(object),c(2:6),sum))})
-,price(object)*landings.wt(object),"*"),2,sum)))
-
+    apply(landings.n(object) %*% landings.wt(object) %*% price(object),2:6,sum))
 
 setMethod('cost', signature(object='FLBRP'),
   function(object){
