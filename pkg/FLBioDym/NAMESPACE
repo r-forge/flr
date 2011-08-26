@@ -16,6 +16,8 @@ export(
   "bounds",
   "plot.sp",
   "priors",
+  "smryStats",                 
+  "jacknife.summary",
   "admbBD")
 exportMethods("FLBioDym",
   "harvest",
