@@ -14,10 +14,10 @@ setMethod("plot", signature(x="FLBioDym", y="missing"),
     plotComp(x,fn,probs,size,lty,facet)
     )
 
-    plot.sp<-function(object){
+plot.sp<-function(object,stock=seq(0,params(object)["K"],length.out=101)){
 
-      p.<-ggplot(data.frame(stock=seq(0,params(object)["K"],length.out=101),
-                            yield=sp(object,seq(0,params(object)["K"],length.out=101)))) +
+      p.<-ggplot(data.frame(stock=stock(object),
+                            yield=sp(object,stock))) +
               geom_line(aes(stock,yield)) +
               geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data"))
       
