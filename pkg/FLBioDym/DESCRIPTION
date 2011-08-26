@@ -3,7 +3,7 @@ Title: Biomass Dynamic Models
 Version: 0.1.2
 Author: Laurence Kell
 Description: Fits Fox, Pella Tomlinson, Schaeffer, Fletcher and Shepherd biomass dynamics models to catch & CPUE
-Depends: methods, R(>= 2.10.1), ggplotFL, FLCore(>= 2.2), FLash(>= 0.7)
+Depends: methods, R(>= 2.10.1), ggplotFL, FLCore(>= 2.2), FLash(>= 0.7), FLAdvice
 Maintainer: Laurence Kell <laurie.kell@iccat.int>
 License: GPL 2
 Collate:  class.R allGenerics.R constructors.R createAccessors.R coerce.R pars.R plot.R msy.R fwd.R sp.R functions.R methods.R simFLBioDym.R
