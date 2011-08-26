@@ -20,12 +20,12 @@ setGeneric('kobe', function(object, ...)
 setMethod('kobe', signature(object='missing'),
   function(object,xlim=c(0,2),ylim=xlim){
     
-       inviible(kobeFn(NULL,xlim,ylim))})
+       invisible(kobeFn(NULL,xlim,ylim))})
 
 setMethod('kobe', signature(object='data.frame'),
   function(object,xlim=c(0,2),ylim=xlim){
     
-       inviible(kobeFn(object,xlim,ylim))})
+       invisible(kobeFn(object,xlim,ylim))})
 
 setMethod('kobe', signature(object='FLBRP'),
   function(object,xlim=c(0,2),ylim=xlim){
@@ -33,7 +33,7 @@ setMethod('kobe', signature(object='FLBRP'),
        object=model.frame(FLQuants(ssb    =sweep( ssb.obs(object),6,refpts(object)["msy","ssb"],    "/"),
                                    harvest=sweep(fbar.obs(object),6,refpts(object)["msy","harvest"],"/")))
 
-       inviible(kobeFn(object,xlim,ylim))})
+       invisible(kobeFn(object,xlim,ylim))})
 
 setMethod('kobe', signature(object='FLlst'),
   function(object,xlim=c(0,2),ylim=xlim){
@@ -42,7 +42,7 @@ setMethod('kobe', signature(object='FLlst'),
                               model.frame(FLQuants(ssb    =sweep( ssb.obs(object),6,refpts(object)["msy","ssb"],    "/"),
                                                    harvest=sweep(fbar.obs(object),6,refpts(object)["msy","harvest"],"/"))))
 
-       inviible(kobeFn(object,xlim,ylim))})
+       invisible(kobeFn(object,xlim,ylim))})
 
 kobeP<-function(biomass,harvest) {
             

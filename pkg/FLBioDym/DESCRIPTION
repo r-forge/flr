@@ -6,6 +6,6 @@ Description: Fits Fox, Pella Tomlinson, Schaeffer, Fletcher and Shepherd biomass
 Depends: methods, R(>= 2.10.1), ggplotFL, FLCore(>= 2.2), FLash(>= 0.7), FLAdvice
 Maintainer: Laurence Kell <laurie.kell@iccat.int>
 License: GPL 2
-Collate:  class.R allGenerics.R constructors.R createAccessors.R coerce.R pars.R plot.R msy.R fwd.R sp.R functions.R methods.R simFLBioDym.R
+Collate:  class.R allGenerics.R constructors.R createAccessors.R coerce.R pars.R plot.R msy.R fwd.R sp.R functions.R methods.R summaries.R simFLBioDym.R
 LazyLoad: Yes
 LazyData: No
