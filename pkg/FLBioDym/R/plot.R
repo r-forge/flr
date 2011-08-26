@@ -11,14 +11,13 @@ setMethod("plot", signature(x="FLBioDym", y="missing"),
     facet=facet_wrap(~qname,scale="free"),
     fn=list("stock"=stock, "harvest"=function(x) catch(x)/stock(x)[,dimnames(catch(x))$year],yield=catch),...)
    
-    plotComp(x,fn,probs,size,lty,facet)
-    )
+    plotComp(x,fn,probs,size,lty,facet))
 
-plot.sp<-function(object,stock=seq(0,params(object)["K"],length.out=101)){
+plot.sp<-function(object,biomass=seq(0,params(object)["K"],length.out=101)){
 
-      p.<-ggplot(data.frame(stock=stock(object),
-                            yield=sp(object,stock))) +
-              geom_line(aes(stock,yield)) +
+      p.<-ggplot(data.frame(biomass,
+                            yield=sp(object,biomass))) +
+              geom_line(aes(biomass,yield)) +
               geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data"))
       
       print(p.)

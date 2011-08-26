@@ -35,3 +35,6 @@ setMethod('sp', signature(stock="FLBioDym", catch="missing", harvest="missing"),
     return(res)
   }
 )  # }}}
+
+  
+
