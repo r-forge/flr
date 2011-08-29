@@ -121,3 +121,67 @@ setClass("FLBRP",
       fcost           =new("FLQuant"),
       validity        =validFLBRP
       ))  # }}}
+
+# FLBRPs {{{
+vFLBRPs <- setClass("FLBRPs", contains="FLComps",
+	validity=function(object) {
+    # All items are FLBRP
+    if(!all(unlist(lapply(object, is, 'FLBRP'))))
+      return("Components must be FLBRP")	
+	
+	  return(TRUE)
+  }
+)
+
+# constructor
+setMethod("FLBRPs", signature(object="FLBRP"), function(object, ...) {
+    lst <- c(object, list(...))
+    FLBRPs(lst)
+})
+
+setMethod("FLBRPs", signature(object="missing"),
+  function(...) {
+    # empty
+  	if(missing(...)){
+	  	new("FLBRPs")
+    # or not
+  	} else {
+      args <- list(...)
+      object <- args[!names(args)%in%c('names', 'desc', 'lock')]
+      args <- args[!names(args)%in%names(object)]
+      do.call('FLBRPs',  c(list(object=object), args))
+	  }
+  }
+)
+
+setMethod("FLBRPs", signature(object="list"),
+  function(object, ...) {
+    
+    args <- list(...)
+    
+    # names in args, ... 
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
+    # ... or in object,
+      if(!is.null(names(object))) {
+        names <- names(object)
+    # ... or in elements, ...
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
+
+    # desc & lock
+    args <- c(list(Class="FLBRPs", .Data=object, names=names),
+      args[!names(args)%in%'names'])
+
+    return(
+      do.call('new', args)
+      )
+
+}) # }}}

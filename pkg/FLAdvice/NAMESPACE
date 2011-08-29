@@ -4,6 +4,7 @@ import("FLCore")
 
 exportClasses(
   "FLBRP",
+  "FLBRPs",
   "refpts")
 
 export(
@@ -17,6 +18,7 @@ export(
 
 exportMethods(
 	"FLBRP",
+	"FLBRPs",
 	"model",
 	"model<-",
 	"params",
