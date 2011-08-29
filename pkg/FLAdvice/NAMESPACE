@@ -31,6 +31,7 @@ exportMethods(
 	"discards.obs<-",
 	"rec.obs",
 	"rec.obs<-",
+	"recycle6d<-",
 	"ssb.obs",
 	"ssb.obs<-",
 	"profit.obs",
