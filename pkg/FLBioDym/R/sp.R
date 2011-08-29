@@ -5,7 +5,8 @@ setGeneric('sp', function(object,bio,params,...)
 setMethod('sp', signature(object='character'),
   function(object,bio,params,...){
 
-    fox     <-function(bio,params)    params["r"]*bio*(1-log(bio)/log(params["K"]))
+    fox     <-function(bio,params)
+      params["r"]*bio*(1-log(bio)/log(params["K"]))
     schaefer<-function(bio,params)    params["r"]*bio*(1-bio/params["K"])
     pellat  <-function(bio,params)    params["r"]/params["p"]*bio*(1-(bio/params["K"])^params["p"])
     shepherd<-function(bio,params)    params["r"]*bio/(1+bio/params["K"])-params["m"]*bio
