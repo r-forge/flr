@@ -1,0 +1,34 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}
+\BOOKMARK [1][-]{section.2}{Surplus Production}{}
+\BOOKMARK [2][-]{subsection.2.1}{Schaefer}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Gompertz}{section.2}
+\BOOKMARK [2][-]{subsection.2.3}{Pella and Tomlinson}{section.2}
+\BOOKMARK [2][-]{subsection.2.4}{Theta-logistic}{section.2}
+\BOOKMARK [2][-]{subsection.2.5}{Fletcher}{section.2}
+\BOOKMARK [2][-]{subsection.2.6}{Polacheck}{section.2}
+\BOOKMARK [2][-]{subsection.2.7}{Shepherd}{section.2}
+\BOOKMARK [1][-]{section.3}{FLBioDym Class}{}
+\BOOKMARK [2][-]{subsection.3.1}{Slots}{section.3}
+\BOOKMARK [2][-]{subsection.3.2}{General Information}{section.3}
+\BOOKMARK [2][-]{subsection.3.3}{Data}{section.3}
+\BOOKMARK [2][-]{subsection.3.4}{Fitting}{section.3}
+\BOOKMARK [2][-]{subsection.3.5}{Results}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.5.1}{Reference Points}{subsection.3.5}
+\BOOKMARK [3][-]{subsubsection.3.5.2}{Diagnostics}{subsection.3.5}
+\BOOKMARK [1][-]{section.4}{Uncertainty}{}
+\BOOKMARK [2][-]{subsection.4.1}{Parametric}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Confidence Intervals}{subsection.4.1}
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Likelihood Ratio Test}{subsection.4.1}
+\BOOKMARK [2][-]{subsection.4.2}{Jacknife}{section.4}
+\BOOKMARK [2][-]{subsection.4.3}{Bootstrap}{section.4}
+\BOOKMARK [1][-]{section.5}{Management Advice}{}
+\BOOKMARK [2][-]{subsection.5.1}{Simulations}{section.5}
+\BOOKMARK [2][-]{subsection.5.2}{Projection}{section.5}
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Harvest Control Rules}{subsection.5.2}
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Kobe}{subsection.5.2}
+\BOOKMARK [1][-]{section.6}{Validation}{}
+\BOOKMARK [2][-]{subsection.6.1}{Validation}{section.6}
+\BOOKMARK [2][-]{subsection.6.2}{Testing}{section.6}
+\BOOKMARK [1][-]{section.7}{Examples}{}
+\BOOKMARK [2][-]{subsection.7.1}{I}{section.7}
+\BOOKMARK [2][-]{subsection.7.2}{Look up later}{section.7}
