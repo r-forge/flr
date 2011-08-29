@@ -1,0 +1,33 @@
+Runs of ATL YFT
+
+--------
+
+
+This is a description of the YFT VPA runs conducted in Florianopolis Brazil during the 2008 assessment.
+
+Author: Shannon L. Cass-Calay (NOAA Southeast Fisheries Science Center, Miami)
+
+Email: Shannon.Calay@noaa.gov
+
+Date: July 27, 2008.
+
+CONTINUITY: Intended to replicate the 2003 (Uxmal) assessment. Updated indices and data. Used the same indices used for the 2003 assessment. Used same model assumptions and parameter settings as the 2003 assessment. Indices were weighted equally and assigned a variance scalar = 1.0 (all indices).
+
+RUN 3: (Called “base” during some presentations because models 4-9 are sensitivity runs of the settings and data used in RUN 3.) Differs from the "CONTINUITY" run in following ways.
+1) Indices weighted equally by estimating a single index variance scalar for all indices.
+2) Used all the indices recommended by the 2008 assessment working group.
+3) Peak of spawning season set to Feb 14th. It had been set to March 1 during the 2003 assessment.
+
+RUN 4: Identical to Run 3 except that only one F-Ratio was estimated for the period 1970-2006. Run 3 (like the 2003 base assessment) allowed the F-Ratio to vary as a random walk from the 1970 estimate.
+
+RUN 5: Identical to Run 3 except that a penalty WAS USED to limit changes in the estimated vulnerability-at-age during the years 2004-2006. (Note: Run 3, like the 2003 base assessment also included a patch to limit changes in recruitment during the years 2003-2006. Run 5 preserves this setting).
+
+RUN 6: Identical to Run 3 except that the penalty to limit changes in recruitment during the years 2003-2006 was removed. Therefore, this run DID NOT USE penalties to limit changes in recruitment or vulnerability.
+
+RUN 7: Identical to Run 3 except that the penalty to limit changes in recruitment during the years 2003-2006 WAS NOT USED and a penalty to limit changes in the estimated vulnerability-at-age during the years 2004-2006 WAS USED.
+
+RUN 8: Identical to Run 3 except that index timing were adjusted to the month during which 50% of the total catch (pertaining to each CPUE series) was taken.
+
+RUN 9: Identical to Run 3 except that modifications were made to the 2006 total catch-at-age and the 2006 partial catches of the Japanese longline to adjust for incomplete reported catches during that year. 
+
+RUN 10: This run is identical to Run 5 (Penalties applied to deviations in recent recruitment and vulnerability) except that the LONGLINE and TROP_PS indices were assumed to have fixed “flat-topped” selectivity patterns rather than the steeply “dome-shaped” patterns estimated by Run 5. To accommodate this assumption, the selectivity patterns estimated during RUN 5 were used until full selectivity was reached. Then, full selection (1.0) was retained for older ages.
