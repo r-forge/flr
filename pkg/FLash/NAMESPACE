@@ -9,10 +9,6 @@ exportMethods("harvest",
               "+",
               "show",
               "setSR")
-export(       "OEMStock",
-              "OEMSurvey",
-              "OEMCpue",
-              "biasLinear",
-              "vpaMP",
-              "hcr",
-              "runMSE")
+export(       "CheckNor1",
+              "flqCon",
+              "flqVar")
