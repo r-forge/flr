@@ -1,0 +1,9 @@
+Package: FLIndexPM
+Title: Measurement and Process error
+Version: 0.1.1
+Author: Laurence Kell
+Description: Fits a variety of likelihoods to indices of abyndance
+Depends: methods, R(>= 2.7.1), FLCore(>= 1.99-6)
+LinkingTo: FLCore
+Maintainer: Laurence Kell <l.kell@cefas.co.uk>
+License: GPL 2 or above
