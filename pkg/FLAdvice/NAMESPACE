@@ -14,8 +14,14 @@ export(
   "kobeM",
   "kobeL",
   "kobeS",
-  "fwdSetup")
-
+  "fwdSetup",
+  "OEMStock",
+  "OEMSurvey",
+  "OEMCpue",
+  "biasLinear",
+  "vpaMP",
+  "hcr",
+  "runMSE")
 exportMethods(
 	"Arith",
 	"FLBRP",
