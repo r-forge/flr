@@ -17,6 +17,7 @@ export(
   "fwdSetup")
 
 exportMethods(
+	"Arith",
 	"FLBRP",
 	"FLBRPs",
 	"model",
