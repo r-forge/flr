@@ -2,8 +2,7 @@
 # This is for checking / forcing some slots to have 1 or multiple iterations
 # Only the Var slots can have multiple iterations
 
-flqVar <- function()
-{
+flqVar <- function(){
     res <- list()
     res[["FLStock"]] <- c("stock", "stock.n", "catch", "catch.n", "discards", "landings", "discards.n", "landings.n", "harvest")
     res[["FLIndex"]] <- c("index", "catch.n")
@@ -11,11 +10,11 @@ flqVar <- function()
     res[["FLFleet"]] <-c("effort")
     res[["FLMetier"]]<- c("effshare", "vcost")
     res[["FLCatch"]] <- c("landings", "landings.n", "discards", "discards.n")
-    return(res)
-}
+    
+    return(res)}
 
-flqCon <- function()
-{
+flqCon <- function(){
+  
     res<-list()
     res[["FLStock"]] <-c("catch.wt", "discards.wt", "landings.wt", "stock.wt", "m", "mat", "harvest.spwn", "m.spwn")
     res[["FLIndex"]] <-c("index.var", "catch.wt", "effort", "sel.pattern", "index.q")
@@ -23,11 +22,10 @@ flqCon <- function()
     res[["FLFleet"]] <-c("fcost", "capacity", "crewshare")
     res[["FLMetier"]]<-NULL
     res[["FLCatch"]] <-c("discards.wt", "landings.wt", "landings.sel", "discards.sel", "catch.q", "price")
-    return(res)
-}
+    
+    return(res)}
 
-CheckNor1<-function(x,Var=flqVar(),Con=flqCon())
-   {
+CheckNor1<-function(x,Var=flqVar(),Con=flqCon(),nDim="missing"){
    if (!validObject(x)) stop("Object not valid")
 
    cls  <-class(x)
@@ -35,15 +33,16 @@ CheckNor1<-function(x,Var=flqVar(),Con=flqCon())
    
    if (!(cls %in% nmFlq)) return(x)
    
-   if (dims(x)$iter>1)
-      for (i in Var[[class(x)]])
-         if (dims(slot(x,i))$iter==1) slot(x,i)<-propagate(slot(x,i),iter=dims(x)$iter)
-   else if (is(x,"FLlst"))
+   if (is(x,"FLlst"))
       for (i in 1:length(x))
          x[[i]]<-CheckNor1(x[[i]])
-
-   return(x)
-   }
+   else { 
+      if (missing(nDim))
+         nDim=max(laply(x[[Var[[class(x)]]]], function(x) dims(x)$iter))
+      for (i in Var[[class(x)]])
+         if (dims(slot(x,i))$iter==1) slot(x,i)<-propagate(slot(x,i),iter=nDim)}
+   
+   return(x)}
 
 # Used for burrowing into a Fleet list and checking the dims
 chkFLlst<-function(x){

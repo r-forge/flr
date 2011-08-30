@@ -3,7 +3,13 @@ fwdStock<-function(obj,fbar,sr,sr.residuals=NULL,distribution=NULL){
 
    if (is.null(sr.residuals))
       sr.residuals<-FLQuant(1,dimnames=dimnames(fbar))
+    
+   ## make sure slots have correct iters      
+   nDim=max(dims(sr)$iter, dims(sr.residuals)$iter, na.rm=TRUE)  
+   if (nDim>1) m(obj)=propagate(m(obj),nDim)
+   obj<-CheckNor1(obj)
 
+ 
    #### check dims
    if (!all(dimnames(fbar)$area   %in% dimnames(m(obj))$area))
       stop("Areas in FBar and obj don't match")

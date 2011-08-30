@@ -15,6 +15,10 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
                availability=NULL)
     {
+    ## make sure slots have correct iters 
+    if (is(sr,"FLSR")) nDim=dims(params(sr))$iter  else nDim=1
+    nDim=max(nDim, dims(sr.residuals)$iter, na.rm=TRUE)  
+    if (nDim>1) m(object)=propagate(m(object),nDim)
     object<-CheckNor1(object)
 
     if (!(units(object@harvest)=="f"))
@@ -40,7 +44,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
        object <- window(object, end=dims(object)$maxyear+1)}
     else
        endYr<-NULL
-
+ 
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
     
@@ -90,8 +94,9 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     landings(x)<-computeLandings(x)
     discards(x)<-computeDiscards(x)
     stock(   x)<-computeStock(   x)
-    name(    x)<-name(object)
-    desc(    x)<-desc(object)
+
+    #name@x<-name(object)
+    #desc@x<-desc(object)
     if (!is.null(endYr)) x <- window(x, end=endYr-1)
 
     return(x)
