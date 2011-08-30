@@ -135,7 +135,7 @@ runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fm
      #ctrl@trgtArray[2,"val", ]<-MPbrp@refpts["msy","harvest",drop=T]*fmult
 
      #print(refpts(MPbrp)@.Data["f0.1",,])
-     ctrl@trgtArray[2,"val", ]<-c(hcr(apply(ssb(MP[,ac(iYr)]),6,mean),MPbrp@refpts["f0.1",,],Fmin=0.025,Ftar=1.0,Btrig=0.75,Blim=0.25))
+     ctrl@trgtArray[2,"val", ]<-c(hcr(apply(ssb(MP[,ac(iYr)]),6,mean),MPbrp@refpts["f0.1",,],Fmin,Ftar,Btrig,Blim))
      
      SRrs<-FLQuant(c(apply(rec(MP)[,ac(range(MP,"minyear"):(iYr-1))],6,function(x) exp(mean(log(x))))),dimnames=list(year=0:2+iYr,iter=1:nits))
 
