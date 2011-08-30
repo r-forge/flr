@@ -18,11 +18,13 @@ setMethod("recycle6d<-", signature(object="FLQuant", value="FLQuant"),
    return(sweep(FLQuant(0,dimnames=dimnames(object)), (1:6)[!(1:6 %in% nDim)], value, "+"))})     
 
 fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf.control=NULL,...){
-
+   
     ## Year range for object passed in
     end   =range(object,"maxyear") + nyears
     years =range(object,"maxyear"):end
     object=trim(object,  year=start:range(object,"maxyear"))
+   
+    object=CheckNor1(object)
     
     ## FLBRP option
     if (!is.null(flbrp)){
