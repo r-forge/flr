@@ -8,7 +8,6 @@
 # simFLBioDym {{{
 simFLBioDym <- function(model='pellat', params=FLPar(r=0.5, K=100, p=1, b0=1.0, sigma=0,3),
                         harvest,bounds=c(0.1,10),...) {
-
     args <- list(...)
 
     nyr <- dims(harvest)$year
@@ -31,7 +30,6 @@ simFLBioDym <- function(model='pellat', params=FLPar(r=0.5, K=100, p=1, b0=1.0, 
     object@bounds["p", "phase"]=-1
     object@bounds["b0","phase"]=-1
     object@priors[,1]=-1
-   
     object <- fwd(object, harvest=harvest)
 
     # Load given slots

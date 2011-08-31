@@ -33,7 +33,9 @@ exportMethods("FLBioDym",
 	"model",
 	"catch",
 	"index",
+	"index<-",
 	"stock",
+	"stock<-",
 	"bounds",
 	"priors",
 	"params",
@@ -41,4 +43,7 @@ exportMethods("FLBioDym",
 	"logLik",
   "fwd",
   "residuals",
-  "admbBD")
+  "admbBD",
+  "fitted",
+  "fitted<-"
+  )

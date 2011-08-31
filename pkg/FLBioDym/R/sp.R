@@ -24,13 +24,13 @@ setMethod('sp', signature(stock="FLBioDym", catch="missing", harvest="missing"),
       lambda*msy*(catch/params["K"])-lambda*params["msy"]*(catch/params["K"])^params["p"]
     }
 
-    res <- switch(model(object),
-           fox     =fox(catch(object),params(object)),
-           schaefer=schaefer(catch(object),params(object)),
-           gulland =gulland( catch(object),params(object)),
-           fletcher=fletcher(catch(object),params(object)),
-           pellat  =pellat(  catch(object),params(object)),
-           shepherd=shepherd(catch(object),params(object)))
+    res <- switch(model(stock),
+           fox     =fox(catch(stock),params(stock)),
+           schaefer=schaefer(catch(stock),params(stock)),
+           gulland =gulland( catch(stock),params(stock)),
+           fletcher=fletcher(catch(stock),params(stock)),
+           pellat  =pellat(  catch(stock),params(stock)),
+           shepherd=shepherd(catch(stock),params(stock)))
 
     return(res)
   }

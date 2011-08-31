@@ -71,7 +71,7 @@ setMethod('admbBD', signature(object='FLBioDym'),
 
 # runADMBBioDym {{{
 runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
-
+  
   # create input .dat file
   idxYrs <- setADMBBioDym(iter(object, iter),paste(path, admbNm,".dat",sep=""))
   
@@ -94,9 +94,21 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
 
 } # }}}
 
+    # propagate as needed
+    its <- dims(object)$iter
+    # params
+    params(object) <- propagate(iter(params(object), 1), its)
+    # fitted
+    fitted(object) <- FLQuant(dimnames=dimnames(index(object))[1:5], iter=its)
+    # stock
+    stock(object) <- FLQuant(dimnames=dimnames(stock(object))[1:5], iter=its)
+
+
     # call across iters
-    res <- m_ply(data.frame(x=seq(dims(object)$iter)), function(x)
-      runADMBBioDym(object, x, path, admbNm, cmdOps))
+    # TODO foreach
+    res <- m_ply(data.frame(x=seq(its)), function(x)
+      runADMBBioDym(object, x, path, admbNm, cmdOps)
+      )
 
     setwd(oldwd)
   

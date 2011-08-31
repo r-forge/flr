@@ -57,3 +57,7 @@ setClass('FLBioDym', representation(
     priors      =array(rep(c(-1,0,0.3,1),each=6), dim=c(6,4), dimnames=list(param=c("r","K","p","b0","q","sigma"),c("weight","a","b","type")))
     ),
 	validity=validFLBioDym) # }}}
+
+# fitted {{
+#    return(sweep(stock(object), c(6), object@params["q",], "*"))
+# }}}

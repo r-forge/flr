@@ -16,8 +16,11 @@ setMethod('FLBioDym', signature(object='FLQuant'),
     dims    <- dims(object)
     res     <- new("FLBioDym")
 
-    catch(res)<-object
-    index(res)<-object
+    catch(res) <- object
+    index(res) <- object
+    fitted(res) <- object
+    stock(res) <- FLQuant(dimnames=c(dimnames(object)[-2], list(year=seq(dims$minyear,
+      dims$maxyear))))
     range(res)<-unlist(list(minyear=dims$minyear, maxyear=dims$maxyear))
 
     res@model <-model
