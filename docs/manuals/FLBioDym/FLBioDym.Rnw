@@ -1,0 +1,316 @@
+% cd /home/lkell/flr/manual/ggplot2
+% R CMD Sweave ggplotFL.Rnw
+
+\documentclass[a4paper,10pt]{article}
+\usepackage{fullpage}
+\usepackage[latin1]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{graphicx}
+\usepackage{Sweave}
+\usepackage{makeidx}
+
+\usepackage{framed}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{shadecolor}{rgb}{1,1,0.95}
+\definecolor{shade}{rgb}{1,1,0.95}
+\hypersetup{colorlinks, urlcolor=darkblue}
+
+\floatstyle{boxed}
+\newfloat{chunk}{thp}{lop}
+\floatname{chunk}{Chunk}
+ 
+\newcommand{\Rate}{\mathrm{Rate}}
+
+%\makeindex
+
+\lstset{ %
+language=R,                     % the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=100,                 % the step between two line-numbers. If it's 1, each line 
+                                % will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{shade},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=b,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                % also try caption instead of title
+escapeinside={\%*}{*)},         % if you want to add a comment within your code
+morekeywords={*,...}            % if you want to add more keywords to the set
+}
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+% figs to be 75% of test width
+\setkeys{Gin}{width=0.75\textwidth}
+
+\begin{document}
+
+\SweaveOpts{engine=R}
+\SweaveOpts{prefix.string=figs/FLBioDym} 
+
+\title{\huge{Biomass Dynamic Models}}
+\author{Laurence Kell \href{laurie.kell@iccat.int}{mail to:laurie.kell@iccat.int}\\
+Population Dynamics Expert, \\
+ICCAT Secretariat, C/Coraz\'{o}n de Mar\'{\i}a, 8. 28002 Madrid, Spain.}
+\date{}
+\maketitle
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+
+\section*{Init}
+
+<<init, fig=false, echo=false>>=
+library(FLBioDym)
+data(albBD)
+@
+
+\section{Introduction}{Introduction}
+
+\section{Surplus Production}{Surplus Production}
+
+The productivity (Pt) of a stock can be defined as the surplus production, i.e. following Hilborn (2001):
+
+\begin{eqnarray*}
+  P_t+B_{t+1}-B_t-C_t
+\end{eqnarray*}
+
+where $B_t$ is total stock biomass, and $B_t$ total catch weight (i.e yield) at time t. 
+
+Productivity is greatest at a biomass equivalent to $B_{MSY}$ with a yield equivalent to MSY.
+
+The same equation can be used to model stock dynamics
+
+\begin{eqnarray*}
+  B_{t+1}=B_t-P_t-C_t
+\end{eqnarray*}
+
+Where $P_t$ is then modelled by a production function; a review of such biomass models is given by Kingsland (1982).
+
+There are various functional forms for the production function that describes the relationship between surplus production and abundancee.g. Schaefer (1954), Gompertz (), Pella-Tomlinson (), Theta-logistic, Fletcher (), Pollacheck and Shepherd
+
+\subsection{Schaefer}{Schaefer}\index{Schaefer model}
+
+\begin{eqnarray*}
+  B_t &=& B_{t-1} \;+\; rB_t\!\left(\;\!\!1\!-\!\frac{B_t}{K}\right) \;-\; C_t
+\end{eqnarray*}
+
+Where in biological terms, the second surplus production term combines recruitment, body growth, and natural mortalities.
+
+Conceptually, the model describes the simplest case of linear recruitment, where all individuals have the 
+same body weight, and the natural mortality rate is constant. Individiuals reproduce as 1-year-olds and 
+then die. After a period of removals, the population rebuilds towards $K$ until the number of individuals
+dying from natural causes equals the recruitment.
+
+The relative growth rate, as a fraction of current abundance, is
+$\Rate(B)=g(B)/B$,
+
+\begin{eqnarray*}
+  B     &=& r \;-\; \frac{rB}{K}                        \\[1ex]
+\end{eqnarray*}
+
+so the relative growth rate approaches $r$ when the abundance is close to zero,
+and declines linearly with $B$ until zero growth occurs at abundance $K$ with a maximum at $K/2$
+
+\subsection{Gompertz}{Gompertz}
+
+The Gompertz (1825) growth equation as applied in stock assessment by Fox (1970)
+
+
+\subsection{Pella and Tomlinson}
+
+Pella and Tomlinson (1969)
+
+When $p\!=\!1$ we get Schaefer and  $p\!\to\!0$ we get Gompertz,
+
+
+The Pella-Tomlinson shape parameter $p$ does not only shift $B_{MSY}$ away from
+$0.5K$, but also changes the maximum height of the production curve. This is
+unfortunate, as the modeller might be interested in exploring different
+shapes without altering the maximum productivity.\\[1em]
+
+
+\subsection{Theta-logistic}{Theta-logistic}
+
+Gilpin and Ayala (1973)
+
+Different from Pella-Tomlinson, which has $\frac{r}{p}$ as the first term. The
+theta-logistic model has the nice property that $r$ is the initial growth rate,
+independent of $\theta$. The Pella-Tomlinson model has the nice property that it
+becomes the Gompertz model as $p\to 0$.\\[1em]
+
+The theta-logistic model has a problem with low $\theta$ values. Maximum
+production tends towards zero with decreasing $\theta$, so the model will need
+very large $K$ when $\theta$ is small.
+
+\subsection{Fletcher}{Fletcher}
+
+Prager (2002):
+
+
+The Schaefer model corresponds to $n\!=\!2$ where $\gamma\!=\!4$,
+
+Prager (2002) describes the shape of the production curve with the unitless
+ratio $\phi\!=\!\frac{B}{K}$, which has a more intuitive meaning than the
+$n$ exponent. The relationship is:
+
+Insert $n\!=\!2$ and note how the Schaefer model corresponds to $\phi=0.5$, as
+expected:
+
+
+\subsection{Polacheck}{Polacheck}
+
+Polacheck et al. (1993)
+
+where $p$ controls the asymmetry of the sustainable yield versus stock biomass
+relationship.\\[1em]
+
+The authors note that the $\frac{r}{p}$ term is often omitted when the formula is presented.
+
+\subsection{Shepherd}{Shepherd}
+
+
+
+\section[FLBioDym Class]{FLBioDym Class}
+
+\begin{lstlisting}[caption={Simple plotting with qplot}] 
+  qplot(x, ..., data, geom) 
+\end{lstlisting}
+
+\begin{table}\caption{plot}\begin{tabular}{|l|p{12cm}|} 
+\hline\multicolumn{2}{|c|}{Syntax} \\
+\hline 
+x    	& \texttt{vector} values of one variable of interest \\ 
+data 	& \texttt{data.frame} other variables\\ 
+geom	& \texttt{ggplot object} that sets the type of plot to construct, i.e. \emph{point}, \emph{line}, \emph{histogram}. \\ 
+\hline 
+\end{tabular}\end{table}
+
+\begin{figure}
+<<fig1,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+plot(albBD)
+@
+\caption{Plot using R base graphics} 
+\end{figure}
+
+\subsection[Slots]{Slots}
+\subsection[General Information]{General Information}
+\subsection[Data]{Data}
+\subsection[Fitting]{Fitting}
+\subsection[Results]{Results}
+\subsubsection[Reference Points]{Reference Points}
+\subsubsection[Diagnostics]{Diagnostics}
+
+\section[Uncertainty]{Uncertainty}
+\subsection[Parametric]{Parametric}
+\subsubsection[Confidence Intervals]{Confidence Intervals}
+\subsubsection[Likelihood Ratio Test]{Likelihood Ratio Test}
+\subsection[Jacknife]{Jacknife}
+\subsection[Bootstrap]{Bootstrap}
+
+\section[Management Advice]{Management Advice}
+\subsection[Simulations]{Simulations}
+\subsection[Projection]{Projection}
+\subsubsection[Harvest Control Rules]{Harvest Control Rules}
+\subsubsection[Kobe]{Kobe}
+
+
+\section[Validation]{Validation and Testing}
+\subsection[Validation]{Validation}
+\subsection[Testing]{Testing}
+\section[Examples]{Examples}
+\subsection[I]{I}
+
+
+\newpage
+
+%\printindex
+
+\begin{thebibliography}{}
+
+\small\sloppy\frenchspacing\setlength{\hyphenpenalty}{1000}
+\begin{description}
+  \item Fox, W.W., Jr. 1970. An exponential surplus-yield model for optimizing
+  exploited fish populations. Trans. Am. Fish. Soc. 99:80--88.
+
+  \item Garrod, D.J. 1969. Empirical assessments of catch effort relationships
+  in the North Atlantic cod stock. ICNAF Res. Bull. 6:26--34.
+
+  \item Gilpin, M.E. and F.J. Ayala. 1973. Global models of growth and
+  competition. Proc. Natl. Acad. Sci. USA 70:3590--3593.
+
+  \item Gompertz, B. 1825. On the nature of the function expressive of the law
+  of human mortality, and on a new mode of determining the value of life
+  contingencies. Phil. Trans. R. Soc. Lond. 115:513--583.
+
+  \item Kingsland, S. 1982. The refractory model: The logistic curve and the
+  history of population ecology. Q. Rev. Biol. 57:29--52.
+
+  \item Laloe, F. 1995. Should surplus production models be fishery description
+  tools rather than biological models? Aquat. Living Resour. 8:1--16.
+
+  \item Pella, J.J. and P.K. Tomlinson. 1969. A generalized stock production
+  model. IATTC Bull. 13:421--496.
+
+  \item Polacheck, T., R. Hilborn, and A.E. Punt. 1993. Fitting surplus
+  production models: Comparing methods and measuring uncertainty. Can. J. Fish.
+  Aquat. Sci. 50:2597--2607.
+
+  \item Prager, M.H. 2002. Comparison of logistic and generalized
+  surplus-production models applied to swordfish, Xiphias gladius, in the north
+  Atlantic Ocean. Fish. Res. 58:41--57.
+
+  \item Schaefer, M.B. 1954. Some aspects of the dynamics of populations
+  important to the management of the commercial marine fisheries. IATTC Bull.
+  1:27--56.
+\end{description}
+
+\subsection{Look up later}
+\small\sloppy\frenchspacing\setlength{\hyphenpenalty}{1000}
+\begin{description}
+  \item Fletcher, R.I. 1978. On the restructuring of the Pella-Tomlinson system.
+  Fish. Bull. 76:515--521.
+
+  \item Fox, W.W., Jr. 1970. An exponential surplus-yield model for optimizing
+  exploited fish populations. Trans. Am. Fish. Soc. 99:80--88.
+
+  \item Garrod, D.J. 1969. Empirical assessments of catch effort relationships
+  in the North Atlantic cod stock. ICNAF Res. Bull. 6:26--34.
+
+  \item Hilborn, R. and C.J. Walters. 1992. Quantitative fisheries stock
+  assessment: Choice, dynamics and uncertainty. New York: Chapman and Hall.
+
+  \item Quinn, T.J., II and R.B. Deriso. 1999. Quantitative fish dynamics. New
+  York: Oxford University Press.
+\end{description}
+
+\end{thebibliography} 
+
+\makeglossary
+
+\end{document}
