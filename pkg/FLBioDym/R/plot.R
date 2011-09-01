@@ -23,6 +23,7 @@ setMethod("plot", signature(x="FLBioDym", y="missing"),
       
       print(p.)
       invisible(p.)}
+# }}}
 
 # diags {{{
 setMethod("diags", signature(object="FLBioDym"),
@@ -47,3 +48,12 @@ setMethod("diags", signature(object="FLBioDym"),
 
     return(res)}) 
 # }}}
+
+# plotSP {{{
+plotSP <- function(object) {
+   p <-  ggplot(model.frame(FLQuants(stock=stock(object)[,-80], yield=sp(object)))) +
+    geom_line(aes(stock, yield)) +
+    geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),
+        iter~refpts,value="data"))
+   print(p)
+} # }}}

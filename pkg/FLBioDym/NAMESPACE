@@ -16,10 +16,11 @@ export(
   "bounds",
   "plot.sp",
   "priors",
-  "smryStats",                 
-  "jacknife.summary",
+  "summaryStats",                 
+  "jacknifeSummary",
   "admbBD")
-exportMethods("FLBioDym",
+exportMethods(
+  "FLBioDym",
   "harvest",
   "sp",
 	"msy",

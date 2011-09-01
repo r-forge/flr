@@ -77,6 +77,8 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
   
   # run
   res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
+  # std
+  # start  
 
   t1 <- read.table(paste(path, admbNm,".rep",sep=""),skip =18,header=T)
 
@@ -89,7 +91,7 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
 
   # stock biomass
   object@stock[,1:dim(t1)[1],,,,iter] <- unlist(c(t1["Biomass"]))
-        
+  return(object)      
   object <<- object
 
 } # }}}
