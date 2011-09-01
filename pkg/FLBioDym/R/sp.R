@@ -5,40 +5,34 @@
 # Maintainer: Laurie Kell, ICCAT
 # $Id:  $
 
-# sp {{{
-setMethod('sp', signature(stock="FLBioDym", catch="missing", harvest="missing"),
-  function(stock) {
-    sp(stock=stock, catch=catch(stock))
-  }
-)
 
-setMethod('sp', signature(stock="FLBioDym", catch="FLQuant", harvest="missing"),
-  function(stock, catch) {
+setMethod('sp', signature(stock="FLBioDym"),
+  function(stock)
+    sp(stock,stock(stock)))
+    
+setMethod('sp', signature(stock="FLBioDym",biomass="FLQuant"),
+  function(stock,biomass) {
 
-    #
-    fox <-function(catch, params)
-      params["r"]*catch*(1-log(catch)/log(params["K"]))
-    schaefer <- function(catch, params)
-      params["r"]*catch*(1-catch/params["K"])
-    pellat <- function(catch, params)
-      params["r"]/params["p"]*catch*(1-(catch/params["K"])^params["p"])
-    shepherd <- function(catch,params)
-      params["r"]*catch/(1+catch/params["K"])-params["m"]*catch
-    gulland <- function(catch,params)
-      params["r"]*catch*(params["K"]-catch)
-    fletcher <- function(catch,params) {
-      lambda <- (params["p"]^(params["p"]/(params["p"]-1)))/(params["p"]-1)
-      lambda*msy*(catch/params["K"])-lambda*params["msy"]*(catch/params["K"])^params["p"]
-    }
+    fox <-function(biomass, params)
+          params["r"]*biomass*(1-log(biomass)/log(params["K"]))
+    schaefer <- function(biomass, params)
+          params["r"]*biomass*(1-biomass/params["K"])
+    pellat <- function(biomass, params)
+          params["r"]/params["p"]*biomass*(1-(biomass/params["K"])^params["p"])
+    shepherd <- function(biomass,params)
+          params["r"]*biomass/(1+biomass/params["K"])-params["m"]*biomass
+    gulland <- function(biomass,params)
+          params["r"]*biomass*(params["K"]-biomass)
+    fletcher <- function(biomass,params) {
+          lambda <- (params["p"]^(params["p"]/(params["p"]-1)))/(params["p"]-1)
+          lambda*msy*(biomass/params["K"])-lambda*params["msy"]*(biomass/params["K"])^params["p"]}
 
     res <- switch(model(stock),
-           fox     =fox(catch,params(stock)),
-           schaefer=schaefer(catch,params(stock)),
-           gulland =gulland( catch,params(stock)),
-           fletcher=fletcher(catch,params(stock)),
-           pellat  =pellat(catch,params(stock)),
-           shepherd=shepherd(catch,params(stock)))
+           fox     =fox(     biomass,params(stock)),
+           schaefer=schaefer(biomass,params(stock)),
+           gulland =gulland( biomass,params(stock)),
+           fletcher=fletcher(biomass,params(stock)),
+           pellat  =pellat(  biomass,params(stock)),
+           shepherd=shepherd(biomass,params(stock)))
 
-    return(res)
-  }
-)  # }}}
+    return(res)}) 

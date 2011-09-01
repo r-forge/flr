@@ -16,7 +16,7 @@ setAs('FLBioDym', 'FLIndex',
 
     catch(res)<-apply(catch.n(from)*catch.wt(from),c(2,6),sum)
     if (type=="biomass")
-       index(res)[[1]]<-apply(index(from),c(2,6),sum)
+       index(res)<-apply(index(from),c(2,6),sum)
 
     return(res)
     })
@@ -32,5 +32,4 @@ setAs('FLBioDym', 'FLStock',
 
     catch(res)<-computeCatch.n(from)
 
-    return(res)
-    })
+    return(res)})
