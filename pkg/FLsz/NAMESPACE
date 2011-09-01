@@ -1,0 +1,30 @@
+useDynLib(FLlsz)
+import("FLCore")		
+importFrom("ggplotFL")	
+export("getMCMChst",
+       "summary",
+       "show",
+       "is.FLsz")
+exportClasses("FLlsz")
+exportMethods("ageIt",
+              "ageThem",
+              "breaks<-",
+              "doubleNormal",
+              "FLsz",
+              "hat",
+              "logistic",
+              "gompertz",
+              "ln2z",
+              "mnSln",
+              "mnCln",
+              "mnDln",
+              "mnLln",
+              "mnSwt",
+              "mnCwt",
+              "mnDwt",
+              "mnLwt",
+              "seine",
+              "residuals",
+              "plot",
+              "vonB")
+
