@@ -40,14 +40,7 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
           catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
         stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] +
           sp(object)[, ac(y)]
-        print(
-          paste(
-          stock(object)[,ac(y)],
-          catch(object)[,ac(y)],
-          sp(object)[,ac(y)],
-          stock(object)[,ac(y+1)],
-          sep=' = ')
-          )
+# print(paste(stock(object)[,ac(y)], catch(object)[,ac(y)], sp(object)[,ac(y)],   stock(object)[,ac(y+1)], sep=' = '))
       }
 
     stock(object)[stock(object) < 0] = 0
