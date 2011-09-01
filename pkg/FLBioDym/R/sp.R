@@ -10,8 +10,8 @@ setMethod('sp', signature(stock="FLBioDym"),
   function(stock)
     sp(stock,stock(stock)))
     
-setMethod('sp', signature(stock="FLBioDym",biomass="FLQuant"),
-  function(stock,biomass) {
+setMethod('sp', signature(stock="FLBioDym",catch="FLQuant"),
+  function(stock,catch,biomass=catch) {
 
     fox <-function(biomass, params)
           params["r"]*biomass*(1-log(biomass)/log(params["K"]))
