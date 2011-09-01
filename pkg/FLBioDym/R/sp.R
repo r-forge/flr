@@ -8,7 +8,14 @@
 # sp {{{
 setMethod('sp', signature(stock="FLBioDym", catch="missing", harvest="missing"),
   function(stock) {
+    sp(stock=stock, catch=catch(stock))
+  }
+)
 
+setMethod('sp', signature(stock="FLBioDym", catch="FLQuant", harvest="missing"),
+  function(stock, catch) {
+
+    #
     fox <-function(catch, params)
       params["r"]*catch*(1-log(catch)/log(params["K"]))
     schaefer <- function(catch, params)
@@ -25,12 +32,12 @@ setMethod('sp', signature(stock="FLBioDym", catch="missing", harvest="missing"),
     }
 
     res <- switch(model(stock),
-           fox     =fox(catch(stock),params(stock)),
-           schaefer=schaefer(catch(stock),params(stock)),
-           gulland =gulland( catch(stock),params(stock)),
-           fletcher=fletcher(catch(stock),params(stock)),
-           pellat  =pellat(  catch(stock),params(stock)),
-           shepherd=shepherd(catch(stock),params(stock)))
+           fox     =fox(catch,params(stock)),
+           schaefer=schaefer(catch,params(stock)),
+           gulland =gulland( catch,params(stock)),
+           fletcher=fletcher(catch,params(stock)),
+           pellat  =pellat(catch,params(stock)),
+           shepherd=shepherd(catch,params(stock)))
 
     return(res)
   }

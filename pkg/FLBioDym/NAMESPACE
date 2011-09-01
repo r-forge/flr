@@ -18,7 +18,8 @@ export(
   "priors",
   "summaryStats",                 
   "jacknifeSummary",
-  "admbBD")
+  "admbBD",
+  "plotSP")
 exportMethods(
   "FLBioDym",
   "harvest",

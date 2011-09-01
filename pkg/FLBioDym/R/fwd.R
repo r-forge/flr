@@ -38,8 +38,16 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
       for(y in as.numeric(yrs)) {
         if (ctcNull)
           catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
-        stock(object)[,ac(y+1)] <- stock(object)[,ac(y)]-catch(object)[,ac(y)] +
+        stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] +
           sp(object)[, ac(y)]
+        print(
+          paste(
+          stock(object)[,ac(y)],
+          catch(object)[,ac(y)],
+          sp(object)[,ac(y)],
+          stock(object)[,ac(y+1)],
+          sep=' = ')
+          )
       }
 
     stock(object)[stock(object) < 0] = 0
