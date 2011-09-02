@@ -7,13 +7,18 @@
 \usepackage[OT1]{fontenc}
 \usepackage{graphicx}
 \usepackage{Sweave}
-\usepackage{makeidx}
+%\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage[
+nonumberlist, %do not show page numbers
+toc,          %show listings as entries in table of contents
+section]      %use section level for toc entries
+{glossaries}
 
 \usepackage{framed}
 \usepackage{color}
 \usepackage{setspace}
 \usepackage{amsmath}
-\usepackage{hyperref}
 \usepackage{float}
 \usepackage{listings}
 
@@ -29,6 +34,7 @@
 \newcommand{\Rate}{\mathrm{Rate}}
 
 %\makeindex
+\makeglossaries
 
 \lstset{ %
 language=R,                     % the language of the code
@@ -83,8 +89,6 @@ ICCAT Secretariat, C/Coraz\'{o}n de Mar\'{\i}a, 8. 28002 Madrid, Spain.}
 
 \newpage
 
-\section*{Init}
-
 <<init, fig=false, echo=false>>=
 library(FLBioDym)
 data(albBD)
@@ -92,9 +96,13 @@ data(albBD)
 
 \section{Introduction}{Introduction}
 
+\cite{KellMG07}
+
 \section{Surplus Production}{Surplus Production}
 
-The productivity (Pt) of a stock can be defined as the surplus production, i.e. following Hilborn (2001):
+\newglossaryentry{prod}{name={productivity}, description={What is it}}
+
+The \gls{prod} ($P_t$) of a stock can be defined as the surplus production, i.e. following Hilborn (2001):
 
 \begin{eqnarray*}
   P_t+B_{t+1}-B_t-C_t
@@ -114,7 +122,8 @@ Where $P_t$ is then modelled by a production function; a review of such biomass 
 
 There are various functional forms for the production function that describes the relationship between surplus production and abundancee.g. Schaefer (1954), Gompertz (), Pella-Tomlinson (), Theta-logistic, Fletcher (), Pollacheck and Shepherd
 
-\subsection{Schaefer}{Schaefer}\index{Schaefer model}
+\subsection{Schaefer}{Schaefer}
+%\index{Schaefer model}
 
 \begin{eqnarray*}
   B_t &=& B_{t-1} \;+\; rB_t\!\left(\;\!\!1\!-\!\frac{B_t}{K}\right) \;-\; C_t
@@ -212,8 +221,8 @@ geom	& \texttt{ggplot object} that sets the type of plot to construct, i.e. \emp
 \end{tabular}\end{table}
 
 \begin{figure}
-<<fig1,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
-plot(albBD)
+<<FLBDplot,echo=FALSE,fig=TRUE,width=10,height=8,sanitize=TRUE>>=
+print(plot(albBD))
 @
 \caption{Plot using R base graphics} 
 \end{figure}
@@ -247,70 +256,14 @@ plot(albBD)
 \subsection[I]{I}
 
 
-\newpage
-
+\section{Index}
 %\printindex
 
-\begin{thebibliography}{}
+\section{Glossary}
+\printglossary[style=altlist, title=Glossary]
 
-\small\sloppy\frenchspacing\setlength{\hyphenpenalty}{1000}
-\begin{description}
-  \item Fox, W.W., Jr. 1970. An exponential surplus-yield model for optimizing
-  exploited fish populations. Trans. Am. Fish. Soc. 99:80--88.
+\bibliography{../../bibtex/flr.bib}
+\bibliographystyle{unsrt}
 
-  \item Garrod, D.J. 1969. Empirical assessments of catch effort relationships
-  in the North Atlantic cod stock. ICNAF Res. Bull. 6:26--34.
-
-  \item Gilpin, M.E. and F.J. Ayala. 1973. Global models of growth and
-  competition. Proc. Natl. Acad. Sci. USA 70:3590--3593.
-
-  \item Gompertz, B. 1825. On the nature of the function expressive of the law
-  of human mortality, and on a new mode of determining the value of life
-  contingencies. Phil. Trans. R. Soc. Lond. 115:513--583.
-
-  \item Kingsland, S. 1982. The refractory model: The logistic curve and the
-  history of population ecology. Q. Rev. Biol. 57:29--52.
-
-  \item Laloe, F. 1995. Should surplus production models be fishery description
-  tools rather than biological models? Aquat. Living Resour. 8:1--16.
-
-  \item Pella, J.J. and P.K. Tomlinson. 1969. A generalized stock production
-  model. IATTC Bull. 13:421--496.
-
-  \item Polacheck, T., R. Hilborn, and A.E. Punt. 1993. Fitting surplus
-  production models: Comparing methods and measuring uncertainty. Can. J. Fish.
-  Aquat. Sci. 50:2597--2607.
-
-  \item Prager, M.H. 2002. Comparison of logistic and generalized
-  surplus-production models applied to swordfish, Xiphias gladius, in the north
-  Atlantic Ocean. Fish. Res. 58:41--57.
-
-  \item Schaefer, M.B. 1954. Some aspects of the dynamics of populations
-  important to the management of the commercial marine fisheries. IATTC Bull.
-  1:27--56.
-\end{description}
-
-\subsection{Look up later}
-\small\sloppy\frenchspacing\setlength{\hyphenpenalty}{1000}
-\begin{description}
-  \item Fletcher, R.I. 1978. On the restructuring of the Pella-Tomlinson system.
-  Fish. Bull. 76:515--521.
-
-  \item Fox, W.W., Jr. 1970. An exponential surplus-yield model for optimizing
-  exploited fish populations. Trans. Am. Fish. Soc. 99:80--88.
-
-  \item Garrod, D.J. 1969. Empirical assessments of catch effort relationships
-  in the North Atlantic cod stock. ICNAF Res. Bull. 6:26--34.
-
-  \item Hilborn, R. and C.J. Walters. 1992. Quantitative fisheries stock
-  assessment: Choice, dynamics and uncertainty. New York: Chapman and Hall.
-
-  \item Quinn, T.J., II and R.B. Deriso. 1999. Quantitative fish dynamics. New
-  York: Oxford University Press.
-\end{description}
-
-\end{thebibliography} 
-
-\makeglossary
 
 \end{document}

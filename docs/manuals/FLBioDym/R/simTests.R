@@ -145,7 +145,7 @@ setMethod('fit', signature(object='FLBioDym'),
 bd       =simFLBioDym(model,params,hvst)
 index(bd)=OEMSurveyBD(bd)
 
-bd<-fit(bd)
+bd <- admbBD(bd)
 ggplot(model.frame(mcf(bd[[c("index","fitted","stock")]]))) + 
          geom_line(aes(year, fitted)) + 
          geom_point(aes(year,index))
@@ -166,14 +166,16 @@ dmns          =dimnames(index(bd))
 dmns[["iter"]]=its
 index(bd)     =FLQuant(index_bd,dimnames=dmns)
 
-t1000    =as.data.frame(smryStats(fit(bd)),drop=T)  
+t1000    =as.data.frame(smryStats(
+    admbBD(bd)
+    ),drop=T)  
   
 ## multiple fits with different length
 runWindow=function(start,end,object){
         object        =window(object,start=start,end=end)
         catch(object)=window(catch(object),end=end-1)
         index(object)=window(index(object),end=end-1)
-        res          =fit(object)
+        res          =admbBD(object)
         
         as.data.frame(smryStats(res),drop=T)}
        
