@@ -15,8 +15,9 @@ view: all
 	R CMD Sweave $<
 
 .tex.pdf:
-	pdflatex -interaction nonstopmode $*
+	pdflatex -interaction nonstopmode $<
 	makeindex -s $*.ist -t $*.glg -o $*.gls $*.glo
+	makeindex $*
 	bibtex $*
 	pdflatex $<
 	pdflatex $<
@@ -24,7 +25,7 @@ view: all
 clean:
 	rm -fv $(MAIN).pdf $(MAIN).tex
 	rm -fv *.aux *.dvi *.log *.toc *.bak *~ *.blg *.bbl *.lot *.lof *.idx *.ilg *.ind
-	rm -fv *.glo *.glg *.gls *.ist
+	rm -fv *.glo *.glg *.gls *.ist *.acn
 	rm -fv figs/$(MAIN)-*.pdf
 	rm -fv *.nav *.snm *.out *.pyc \#*\# _region_* _tmp.* *.vrb
 	rm -fv Rplots.pdf *.RData

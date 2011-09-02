@@ -7,7 +7,7 @@
 \usepackage[OT1]{fontenc}
 \usepackage{graphicx}
 \usepackage{Sweave}
-%\usepackage{makeidx}
+\usepackage[toc]{makeidx}
 \usepackage{hyperref}
 \usepackage[
 nonumberlist, %do not show page numbers
@@ -33,7 +33,7 @@ section]      %use section level for toc entries
  
 \newcommand{\Rate}{\mathrm{Rate}}
 
-%\makeindex
+\makeindex
 \makeglossaries
 
 \lstset{ %
@@ -123,7 +123,7 @@ Where $P_t$ is then modelled by a production function; a review of such biomass 
 There are various functional forms for the production function that describes the relationship between surplus production and abundancee.g. Schaefer (1954), Gompertz (), Pella-Tomlinson (), Theta-logistic, Fletcher (), Pollacheck and Shepherd
 
 \subsection{Schaefer}{Schaefer}
-%\index{Schaefer model}
+\index{Schaefer model}
 
 \begin{eqnarray*}
   B_t &=& B_{t-1} \;+\; rB_t\!\left(\;\!\!1\!-\!\frac{B_t}{K}\right) \;-\; C_t
@@ -255,13 +255,13 @@ print(plot(albBD))
 \section[Examples]{Examples}
 \subsection[I]{I}
 
+\clearpage
+\addcontentsline{toc}{section}{Index}
+\printindex
 
-\section{Index}
-%\printindex
-
-\section{Glossary}
 \printglossary[style=altlist, title=Glossary]
 
+\clearpage
 \bibliography{../../bibtex/flr.bib}
 \bibliographystyle{unsrt}
 
