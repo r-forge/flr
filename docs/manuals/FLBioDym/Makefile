@@ -16,9 +16,10 @@ view: all
 
 .tex.pdf:
 	pdflatex -interaction nonstopmode $<
+	bibtex $*
 	makeindex -s $*.ist -t $*.glg -o $*.gls $*.glo
 	makeindex $*
-	bibtex $*
+	pdflatex $<
 	pdflatex $<
 	pdflatex $<
 

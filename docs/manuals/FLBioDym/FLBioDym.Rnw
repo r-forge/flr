@@ -1,19 +1,13 @@
 % cd /home/lkell/flr/manual/ggplot2
 % R CMD Sweave ggplotFL.Rnw
 
-\documentclass[a4paper,10pt]{article}
-\usepackage{fullpage}
+\documentclass[a4paper,10pt]{refart}
 \usepackage[latin1]{inputenc}
 \usepackage[OT1]{fontenc}
 \usepackage{graphicx}
+\usepackage{natbib}
 \usepackage{Sweave}
-\usepackage[toc]{makeidx}
-\usepackage{hyperref}
-\usepackage[
-nonumberlist, %do not show page numbers
-toc,          %show listings as entries in table of contents
-section]      %use section level for toc entries
-{glossaries}
+\usepackage{makeidx}
 
 \usepackage{framed}
 \usepackage{color}
@@ -21,6 +15,14 @@ section]      %use section level for toc entries
 \usepackage{amsmath}
 \usepackage{float}
 \usepackage{listings}
+
+\usepackage{hyperref}
+\usepackage[
+nonumberlist, %do not show page numbers
+toc,          %show listings as entries in table of contents
+section]      %use section level for toc entries
+{glossaries}
+
 
 \definecolor{darkblue}{rgb}{0,0,0.5}
 \definecolor{shadecolor}{rgb}{1,1,0.95}
@@ -67,7 +69,6 @@ morekeywords={*,...}            % if you want to add more keywords to the set
 {\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
 {\end{list}}
 
-
 % figs to be 75% of test width
 \setkeys{Gin}{width=0.75\textwidth}
 
@@ -77,7 +78,7 @@ morekeywords={*,...}            % if you want to add more keywords to the set
 \SweaveOpts{prefix.string=figs/FLBioDym} 
 
 \title{\huge{Biomass Dynamic Models}}
-\author{Laurence Kell \href{laurie.kell@iccat.int}{mail to:laurie.kell@iccat.int}\\
+\author{Laurence Kell \href{laurie.kell@iccat.int}{laurie.kell@iccat.int}\\
 Population Dynamics Expert, \\
 ICCAT Secretariat, C/Coraz\'{o}n de Mar\'{\i}a, 8. 28002 Madrid, Spain.}
 \date{}
@@ -96,7 +97,7 @@ data(albBD)
 
 \section{Introduction}{Introduction}
 
-\cite{KellMG07}
+\citep{KellMG07}
 
 \section{Surplus Production}{Surplus Production}
 
@@ -122,7 +123,7 @@ Where $P_t$ is then modelled by a production function; a review of such biomass 
 
 There are various functional forms for the production function that describes the relationship between surplus production and abundancee.g. Schaefer (1954), Gompertz (), Pella-Tomlinson (), Theta-logistic, Fletcher (), Pollacheck and Shepherd
 
-\subsection{Schaefer}{Schaefer}
+\subsection{Schaefer}
 \index{Schaefer model}
 
 \begin{eqnarray*}
@@ -146,7 +147,7 @@ $\Rate(B)=g(B)/B$,
 so the relative growth rate approaches $r$ when the abundance is close to zero,
 and declines linearly with $B$ until zero growth occurs at abundance $K$ with a maximum at $K/2$
 
-\subsection{Gompertz}{Gompertz}
+\subsection{Gompertz}
 
 The Gompertz (1825) growth equation as applied in stock assessment by Fox (1970)
 
@@ -164,7 +165,7 @@ unfortunate, as the modeller might be interested in exploring different
 shapes without altering the maximum productivity.\\[1em]
 
 
-\subsection{Theta-logistic}{Theta-logistic}
+\subsection{Theta-logistic}
 
 Gilpin and Ayala (1973)
 
@@ -177,7 +178,7 @@ The theta-logistic model has a problem with low $\theta$ values. Maximum
 production tends towards zero with decreasing $\theta$, so the model will need
 very large $K$ when $\theta$ is small.
 
-\subsection{Fletcher}{Fletcher}
+\subsection{Fletcher}
 
 Prager (2002):
 
@@ -192,7 +193,7 @@ Insert $n\!=\!2$ and note how the Schaefer model corresponds to $\phi=0.5$, as
 expected:
 
 
-\subsection{Polacheck}{Polacheck}
+\subsection{Polacheck}
 
 Polacheck et al. (1993)
 
@@ -201,7 +202,7 @@ relationship.\\[1em]
 
 The authors note that the $\frac{r}{p}$ term is often omitted when the formula is presented.
 
-\subsection{Shepherd}{Shepherd}
+\subsection{Shepherd}
 
 
 
@@ -262,8 +263,8 @@ print(plot(albBD))
 \printglossary[style=altlist, title=Glossary]
 
 \clearpage
-\bibliography{../../bibtex/flr.bib}
-\bibliographystyle{unsrt}
+\bibliography{../../bibtex/flr}
+\bibliographystyle{plainnat}
 
 
 \end{document}
