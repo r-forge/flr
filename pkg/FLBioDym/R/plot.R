@@ -51,7 +51,7 @@ setMethod("diags", signature(object="FLBioDym"),
 
 # plotSP {{{
 plotSP <- function(object,biomass=FLQuant(seq(0,params(object)["K"],length.out=101))) {
-   p <-  ggplot(model.frame(FLQuants(stock=biomass, yield=sp(biomass,object)))) +
+   p <-  ggplot(model.frame(FLQuants(stock=biomass, yield=sp(object,biomass)))) +
              geom_line(aes(stock, yield)) +
              geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data"))
    print(p)
