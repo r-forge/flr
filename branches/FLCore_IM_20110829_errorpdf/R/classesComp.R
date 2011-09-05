@@ -340,13 +340,18 @@ setClass('FLModel',
     hessian='array',
     details='list',
     residuals='FLArray',
-    fitted='FLArray'),
+    fitted='FLArray',
+    errorpdf='factor'),
   prototype(name=character(0),
     desc=character(0),
     range=unlist(list(min=NA, max=NA, minyear=1, maxyear=1)),
     model=formula(NULL),
+    residuals=FLQuant(),
     fitted=FLQuant(),
-    residuals=FLQuant())
+    errorpdf=factor(levels=c('beta', 'binom', 'cauchy', 'chisq', 'exp', 'f',
+        'gamma', 'geom', 'hyper', 'lnorm', 'multinom', 'nbinom', 'norm',
+        'pois', 't', 'unif', 'weibull'))
+    )
 )
 invisible(createFLAccesors("FLModel", exclude=c('name', 'desc', 'range', 'params')))  # }}}
 
