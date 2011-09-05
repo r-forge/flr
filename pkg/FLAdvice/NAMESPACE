@@ -18,6 +18,7 @@ export(
   "OEMStock",
   "OEMSurvey",
   "OEMCpue",
+  "misAgeing",
   "biasLinear",
   "vpaMP",
   "hcr",
