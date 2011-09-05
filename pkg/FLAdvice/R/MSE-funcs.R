@@ -53,9 +53,17 @@ biasLinear<-function(x,obj){
       res  <-1-(sort(cumsum(rep(x, dims(obj)$year)),d=T)-x)
    else
       res  <-sort(1-(sort(cumsum(rep(x, dims(obj)$year)),d=T)-x),d=T)
-
+ 
    return(obj*FLQuant(rep(res,each=dims(obj)$age),dimnames=dimnames(obj)))}
 
+misAgeing=function(x,misAge){
+   tmp=function(x,misAge) t(t(x[,drop=T])%*%as.matrix(misAge))
+
+   for (i in 1:10)
+     x[,,,,,i]=tmp(x[,,,,,i],misAge)
+
+   return(x)}
+ 
 ## VPA Based MP
 vpaMP<-function(MP,harvest,fratio=1,CV=0.25){
    harvest(MP)          =harvest
@@ -67,12 +75,13 @@ vpaMP<-function(MP,harvest,fratio=1,CV=0.25){
    return(MP)}
 
 ## PA HCR
-hcr<-function(SSB,refpt,Btrig=0.75,Blim=0.25,Fmin=0.025,Ftar=0.8){
+hcr<-function(SSB,refpt,Ftar=0.8,Btrig=0.75,Fmin=0.025,Blim=0.25){
     Btrig=refpt[1,    "ssb"]*Btrig
     Blim =refpt[1,    "ssb"]*Blim
     Fmin =refpt[1,"harvest"]*Fmin
     Ftar =refpt[1,"harvest"]*Ftar
- 
+
+    if (Blim>=Btrig) stop("Btrig must be greater than Blim")
     a= FLPar((Ftar-Fmin)/(Btrig-Blim))
     b= FLPar(Ftar-a*Btrig)
     
@@ -82,7 +91,8 @@ hcr<-function(SSB,refpt,Btrig=0.75,Blim=0.25,Fmin=0.025,Ftar=0.8){
     return(val)}
 
 runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fmult=0.6,test=FALSE,fratio=1.0,CV=0.3,
-                 Ftar=0.75,Fmin=Ftar*0.1,Btrig=0.50,Blim=Btrig*0.0){
+                 Ftar=0.75,Btrig=0.50,Fmin=Ftar*0.1,Blim=Btrig*0.0,biasM=FLQuant(1,dimnames=dimnames(m(OM)[1])),biasU=biasM,
+                 misAge=diag(1,dims(OM)$age,dims(OM)$age)){
 
   ## Get number of iterations in OM
   nits  =dims(OM)$iter
@@ -93,8 +103,13 @@ runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fm
   OM.   =transform(OM, catch.n=catch.n(OM)*ctcDev)
   OM.   =setPlusGroup(OM.,plusgroup)
   MPstk =OEMStock(OM., start=range(OM,"minyear"),end=range(OM,"maxyear"))
+  m(MPstk)=sweep(m(OM.),2,biasM,"*")
+  catch.n(MPstk)=misAgeing(catch.n(MPstk),misAge)
+  
   MPidx =OEMCpue( OM., start=range(OM,"minyear"),end=start)
-
+  ## bug
+  MPidx@index=sweep(MPidx@index,2,biasU[,ac(range(OM,"minyear"):start)],"*")
+  
   ## Loop round years
   for (iYr in start:(range(OM,"maxyear")-2)){
   #iYr = (start:(range(OM,"maxyear")-2))[1]
@@ -105,10 +120,15 @@ runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fm
 
      MPidx=window(MPidx,end=iYr)
      MPstk[,ac(iYr)]=OEMStock(OM.,start=iYr)
+     m(MPstk)[,ac(iYr)]=sweep(m(OM.),2,biasM,"*")[,ac(iYr)]
+     catch.n(MPstk)[,ac(iYr)]=misAgeing(catch.n(MPstk)[,ac(iYr)],misAge)
+ 
      MPidx[,ac(iYr)]=OEMCpue(transform(OM.[,ac(iYr)],catch.n=(catch.n(OM.)[,ac(iYr)]*ctcDev[,ac(iYr)])),start=iYr)
-     
+     MPidx@index[,ac(iYr)]=sweep(MPidx@index[,ac(iYr)],2,biasU[,ac(iYr)],"*")
+ 
      #### Stock Assessment
      MPstk=vpaMP(window(MPstk,end=iYr),harvest(OM.)[,ac(range(MPstk,"minyear"):iYr)],fratio=fratio,CV=CV)
+     #MPstk=MPstk+FLXSA(MPstk,FLIndices(MPidx),FLXSA.control(),diag.flag=FALSE)
 
      #### In 1st year calculate reference points
      #if (iYr==start)
@@ -135,7 +155,7 @@ runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fm
      #ctrl@trgtArray[2,"val", ]<-MPbrp@refpts["msy","harvest",drop=T]*fmult
 
      #print(refpts(MPbrp)@.Data["f0.1",,])
-     ctrl@trgtArray[2,"val", ]<-c(hcr(apply(ssb(MP[,ac(iYr)]),6,mean),MPbrp@refpts["f0.1",,],Fmin,Ftar,Btrig,Blim))
+     ctrl@trgtArray[2,"val", ]<-c(hcr(apply(ssb(MP[,ac(iYr)]),6,mean),MPbrp@refpts["f0.1",,],Ftar,Btrig,Fmin,Blim))
      
      SRrs<-FLQuant(c(apply(rec(MP)[,ac(range(MP,"minyear"):(iYr-1))],6,function(x) exp(mean(log(x))))),dimnames=list(year=0:2+iYr,iter=1:nits))
 

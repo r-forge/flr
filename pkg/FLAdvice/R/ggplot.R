@@ -52,11 +52,8 @@ setMethod("plot", signature(x="FLBRP", y="missing"),
 #ggplot(lhBrp[[c("m","mat","stock.wt","catch.sel")]]) + 
 #      geom_line(aes(age,data))+facet_wrap(~qname,scale="free_y")
 
-setMethod("plot", signature(x="FLlst", y="missing"),
+setMethod("plot", signature(x="FLBRPs", y="missing"),
                function(x,y,obs=FALSE,refpts=TRUE,...){
-
-   if (inherits(x[[1]],"FLBRP")){
-     print("brp")
 
      if ("split_labels" %in% names(attributes(x)))
        attributes(x)[["split_labels"]]<-NULL
@@ -76,12 +73,10 @@ setMethod("plot", signature(x="FLlst", y="missing"),
       obs.=ldply(x, function(x) mdply(varBrp(),getBrpObs,     obj=x))
       obs.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
       p<-p+geom_point(aes(x,y,group=iter:.id,col=.id),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))} 
-   }
 
      print(p)
 
      invisible(p)})
-
 
 ## Bivariate CI
 bvOrder<-function(dt)
