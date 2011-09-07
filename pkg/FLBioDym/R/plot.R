@@ -5,7 +5,6 @@
 # Maintainer: Laurence Kell, ICCAT
 # $Id:  $
 
-# plot {{{
 setMethod("plot", signature(x="FLBioDym", y="missing"),
   function(x, y, probs=c(0.95,0.50,0.05), size=c(0.5,1.0,0.5), lty=c(2,1,2),
     facet=facet_wrap(~qname,scale="free"),
@@ -13,17 +12,6 @@ setMethod("plot", signature(x="FLBioDym", y="missing"),
    
     plotComp(x,fn,probs,size,lty,facet)
     )
-
-    plot.sp<-function(object){
-
-      p.<-ggplot(data.frame(stock=seq(0,params(object)["K"],length.out=101),
-                            yield=sp(object,seq(0,params(object)["K"],length.out=101)))) +
-              geom_line(aes(stock,yield)) +
-              geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data"))
-      
-      print(p.)
-      invisible(p.)}
-# }}}
 
 # diags {{{
 setMethod("diags", signature(object="FLBioDym"),
@@ -55,4 +43,5 @@ plotSP <- function(object,biomass=FLQuant(seq(0,params(object)["K"],length.out=1
              geom_line(aes(stock, yield)) +
              geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data"))
    print(p)
+   invisible(p)
 } # }}}
