@@ -1,0 +1,6 @@
+flr/tools
+
+A number of development tools
+
+pkg/Makefile = Makefile for flr/pkg
+pkg/pkg_file.R = function to create PACKAGES file for a repository
