@@ -35,15 +35,15 @@ setMethod('admbBD', signature(object='FLBioDym'),
       exe <- paste(system.file("bin", "linux", package="FLBioDym", mustWork=TRUE),
         admbNm, sep="/")
       file.copy(exe, dir)
-      # cmd <- paste(paste(dir, admbNm, sep="/"), cmdOps)
       path <- paste(dir, "/", sep="")
 
     # Wind0ws
     } else if (.Platform$OS.type == "windows") {
       # executable
       exe <- paste(system.file("bin", "windows", package="FLBioDym", mustWork=TRUE),
-        admbNm, sep="\"")
+        paste(admbNm, ".exe", sep=""), sep="/")
       file.copy(exe, dir)
+      path <- paste(dir, "\\", sep="")
     }
     # Mac OSX
     # or fail!
@@ -70,10 +70,10 @@ setMethod('admbBD', signature(object='FLBioDym'),
     setwd(path)
 
 # runADMBBioDym {{{
-runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
+runADMBBioDym <- function(object, path, admbNm, cmdOps) {
   
   # create input .dat file
-  idxYrs <- setADMBBioDym(iter(object, iter),paste(path, admbNm,".dat",sep=""))
+  idxYrs <- setADMBBioDym(object, paste(path, admbNm,".dat",sep=""))
   
   # run
   res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
@@ -84,17 +84,18 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
 
   # params
   t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
-  object@params[c("r","K","b0","p","q","sigma"), iter] <- t2[1:6]
+  object@params[c("r","K","b0","p","q","sigma")] <- t2[1:6]
       
   # fitted
-  object@fitted[,ac(idxYrs),,,,iter][] <- unlist(c(t1[,"IndexFit"]))
+  object@fitted[,ac(idxYrs)][] <- unlist(c(t1[,"IndexFit"]))
 
   # stock biomass
-  object@stock[,1:dim(t1)[1],,,,iter] <- unlist(c(t1["Biomass"]))
-  return(object)      
-  object <<- object
+  object@stock[,1:dim(t1)[1]] <- unlist(c(t1["Biomass"]))
+
+  return(object@stock)      
 
 } # }}}
+
 
     # propagate as needed
     its <- dims(object)$iter
@@ -108,13 +109,11 @@ runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
 
     # call across iters
     # TODO foreach
-    res <- m_ply(data.frame(x=seq(its)), function(x)
-      runADMBBioDym(object, x, path, admbNm, cmdOps)
-      )
+    res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(iter(object, i), path, admbNm, cmdOps)
 
     setwd(oldwd)
   
-    return(object)
+    return(res)
   }
 ) # }}}
 
