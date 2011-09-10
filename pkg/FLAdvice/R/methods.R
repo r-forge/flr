@@ -333,9 +333,9 @@ setMethod('stock.hat', signature(object='FLBRP'),
 setMethod('ssb', signature(object='FLBRP'),
   function(object)
      {
-     f    <-harvest(object) %*% harvest.spwn(object)
-     M    <-      m(object) %*%       m.spwn(object)
-     expZ <-exp(1/f) %*% exp(1/M)
+     f    =harvest(object) %*% harvest.spwn(object)
+     M    =      m(object) %*%       m.spwn(object)
+     expZ = exp(-f)%*%exp(-M)
 
      t1=stock.n(object) %*% expZ
      t2=stock.wt(object)*mat(object)

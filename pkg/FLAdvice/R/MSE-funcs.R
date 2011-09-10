@@ -65,11 +65,15 @@ misAgeing=function(x,misAge){
    return(x)}
  
 ## VPA Based MP
-vpaMP<-function(MP,harvest,fratio=1,CV=0.25){
+vpaMP<-function(MP,harvest,fratio=1,CV=0.25,bias=NULL){
    harvest(MP)          =harvest
    iYr                  =range(MP,"maxyear")
    harvest(MP)[,ac(iYr)]=apply(harvest(MP)[,ac(range(MP,"maxyear"))]*rlnorm(prod(unlist(dims(stock.n(MP)))[c(1,10)]),0,CV),c(1,6),mean)
 
+   
+   if (!is.null(bias))
+      harvest(MP)[,ac(iYr)]=sweep(harvest(MP)[,ac(iYr)],2,bias[,ac(iYr)]/bias[,ac(iYr-1)],"/")
+   
    MP<-MP+VPA(MP,fratio=fratio)
 
    return(MP)}
@@ -91,7 +95,7 @@ hcr<-function(SSB,refpt,Ftar=0.8,Btrig=0.75,Fmin=0.025,Blim=0.25){
     return(val)}
 
 runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fmult=0.6,test=FALSE,fratio=1.0,CV=0.3,
-                 Ftar=0.75,Btrig=0.50,Fmin=Ftar*0.1,Blim=Btrig*0.0,biasM=FLQuant(1,dimnames=dimnames(m(OM)[1])),biasU=biasM,
+                 Ftar=0.75,Btrig=0.50,Fmin=Ftar*0.1,Blim=Btrig*0.0,biasM=FLQuant(1,dimnames=dimnames(m(OM)[1])),biasU=NULL,
                  misAge=diag(1,dims(OM)$age,dims(OM)$age)){
 
   ## Get number of iterations in OM
@@ -127,7 +131,7 @@ runMSE<-function(OM,start,srPar,srRsdl=srRsdl,plusgroup=range(OM,"plusgroup"),fm
      MPidx@index[,ac(iYr)]=sweep(MPidx@index[,ac(iYr)],2,biasU[,ac(iYr)],"*")
  
      #### Stock Assessment
-     MPstk=vpaMP(window(MPstk,end=iYr),harvest(OM.)[,ac(range(MPstk,"minyear"):iYr)],fratio=fratio,CV=CV)
+     MPstk=vpaMP(window(MPstk,end=iYr),harvest(OM.)[,ac(range(MPstk,"minyear"):iYr)],fratio=fratio,CV=CV,bias=biasU)
      #MPstk=MPstk+FLXSA(MPstk,FLIndices(MPidx),FLXSA.control(),diag.flag=FALSE)
 
      #### In 1st year calculate reference points
