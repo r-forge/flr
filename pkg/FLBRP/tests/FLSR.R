@@ -1,4 +1,4 @@
-library(FLBRP)
+library(FLCore)
 
 ref  <-FLlst()
 srr  <-FLlst()
