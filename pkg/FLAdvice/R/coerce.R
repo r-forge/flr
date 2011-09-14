@@ -55,7 +55,7 @@ signature(x="FLBRP", row.names="ANY", optional="character"),
 # as(FLStock) {{{
 setAs('FLBRP', 'FLStock',
   function(from){
-
+ 
     years <- dimnames(fbar(from))$year
     flq<-landings.n(from)
     flq[]<-NA
@@ -68,20 +68,23 @@ setAs('FLBRP', 'FLStock',
     range(res)<-range(from)
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear','maxyear')])
 
+    
+    for (i in c("stock.n","catch.n","landings.n","discards.n","harvest"))
+        res[[i]]<-from[[i]]
+    
     years<-dimnames(slot(res,"m"))$year
     for (i in c("stock.wt","m","mat","harvest.spwn","m.spwn")){
         dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
-        slot(res,i)                <- expand(slot(from,i), year=years)
+        slot(res,i)                <- FLCore::expand(slot(from,i), year=years)
         recycle6d(slot(res,i))     <- slot(from,i)}
-
-    for (i in c("stock.n","catch.n","landings.n","discards.n","harvest"))
-        recycle6d(slot(res,i))<-do.call(i,list(from))
-        
+     
+ 
     recycle6d(   catch.wt(res))<-catch.wt(from)
     recycle6d(discards.wt(res))<-discards.wt(from)
     recycle6d(landings.wt(res))<-landings.wt(from)
     catch(res)                 <-computeCatch(res,"all")
     
+    units(harvest(res))=units(catch.sel(from))
     if(validObject(res))
       return(res)
     else

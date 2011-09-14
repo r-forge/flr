@@ -31,7 +31,7 @@ setMethod('ln2z', signature(object='numeric',Linf="FLPar"),
 
 mnLenFunc<-function(object,a=0.001,b=3,wt="stock.wt"){
     wt.=slot(object,wt)
-    n. =slot(object,gsub(wt,".n","stock.wt"))
+    n. =slot(object,gsub(".wt",".n",wt))
 
     apply((wt./a)^(1/b)*n.,c(2,6),sum)/apply(n.,c(2,6),sum)}
 
