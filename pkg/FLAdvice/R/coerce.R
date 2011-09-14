@@ -3,7 +3,7 @@
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, Cefas & Santiago Cervi?o, IEO
-# Last Change: Fri Jul 01, 2011 at 03:10 PM +0200
+# Last Change: Wed Sep 14, 2011 at 11:21 AM +0200
 # $Id: coerce.R 995 2011-06-03 15:29:02Z lauriekell $
 
 # as(FLSR) {{{
@@ -52,4 +52,38 @@ signature(x="FLBRP", row.names="ANY", optional="character"),
   }
 ) # }}}
 
+# as(FLStock) {{{
+setAs('FLBRP', 'FLStock',
+  function(from){
 
+    years <- dimnames(fbar(from))$year
+    flq<-landings.n(from)
+    flq[]<-NA
+    res <- FLStock(flq,
+      # TODO extend slots for years: check all slots present
+      name=name(from))
+      #, desc=paste("Created by coercion from 'FLBRP'", desc(from)))
+
+    # range
+    range(res)<-range(from)
+    range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear','maxyear')])
+
+    years<-dimnames(slot(res,"m"))$year
+    for (i in c("stock.wt","m","mat","harvest.spwn","m.spwn")){
+        dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
+        slot(res,i)                <- expand(slot(from,i), year=years)
+        recycle6d(slot(res,i))     <- slot(from,i)}
+
+    for (i in c("stock.n","catch.n","landings.n","discards.n","harvest"))
+        recycle6d(slot(res,i))<-do.call(i,list(from))
+        
+    recycle6d(   catch.wt(res))<-catch.wt(from)
+    recycle6d(discards.wt(res))<-discards.wt(from)
+    recycle6d(landings.wt(res))<-landings.wt(from)
+    catch(res)                 <-computeCatch(res,"all")
+    
+    if(validObject(res))
+      return(res)
+    else
+     stop("invalid object created. Please check input object")})
+# }}}
