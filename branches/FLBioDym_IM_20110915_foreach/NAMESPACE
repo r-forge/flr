@@ -1,0 +1,51 @@
+import("FLCore")
+import("FLash")
+importFrom("ggplotFL",
+  "diags")
+exportClasses("FLBioDym")
+export(
+  "simFLBioDym",
+  "FLBioDym",
+  "sp",
+	"msy",
+	"fmsy",
+	"bmsy",
+	"refpts",
+	"refptSE",
+  "is.FLBioDym",
+  "bounds",
+  "plot.sp",
+  "priors",
+  "summaryStats",                 
+  "jacknifeSummary",
+  "admbBD",
+  "plotSP")
+exportMethods(
+  "FLBioDym",
+  "harvest",
+  "sp",
+	"msy",
+	"fmsy",
+	"bmsy",
+	"refpts",
+	"refptSE",
+  "plot",
+  "diags",
+  "coerce",
+	"model",
+	"catch",
+	"index",
+	"index<-",
+	"stock",
+	"stock<-",
+	"bounds",
+	"priors",
+	"params",
+	"vcov",
+	"logLik",
+  "fwd",
+  "residuals",
+  "admbBD",
+  "fitted",
+  "fitted<-"
+  )
