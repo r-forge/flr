@@ -25,6 +25,41 @@ setMethod('residuals', signature(object='FLBioDym'),
   }
 ) # }}}
 
+    # runADMBBioDym {{{
+    runADMBBioDym <- function(object, iter, path, admbNm, cmdOps) {
+      
+      # create input .dat file
+      idxYrs <- setADMBBioDym(iter(object, iter),paste(path, admbNm,".dat",sep=""))
+      
+      # run
+      res <- system(paste("./", admbNm, " ", cmdOps, sep=""))
+      # std
+      # start  
+    
+      t1 <- read.table(paste(path, admbNm,".rep",sep=""),skip =18,header=T)
+
+      # params
+      t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
+      object@params[c("r","K","b0","p","q","sigma"), iter] <- t2[1:6]
+      
+#       t3 =read.table(paste(path,admbNm,".std",sep=""),skip=1,nrows=8)[,4]
+#       
+#       object@vcov["r","r",iter]   <- t2[1:6]
+#       object@vcov["K","r",iter]   <- t2[1:6]
+#       object@vcov["b","r",iter]   <- t2[1:6]
+#       object@vcov["p","r",iter]   <- t2[1:6]
+#       object@vcov["q","r",iter]   <- t2[1:6]
+#       object@vcov["r","r",iter]   <- t2[1:6]
+#      
+      # fitted
+      object@fitted[,ac(idxYrs),,,,iter][] <- unlist(c(t1[,"IndexFit"]))
+    
+      # stock biomass
+      object@stock[,1:dim(t1)[1],,,,iter] <- unlist(c(t1["Biomass"]))
+      
+      object <<- object
+      } # }}}
+
 # admbBD {{{
 setMethod('admbBD', signature(object='FLBioDym'),
   function(object, cmdOps=paste("-maxfn 500"), dir=tempdir(), admbNm="pella") {
@@ -106,11 +141,15 @@ runADMBBioDym <- function(object, path, admbNm, cmdOps) {
     # stock
     stock(object) <- FLQuant(dimnames=dimnames(stock(object))[1:5], iter=its)
 
+    # vcov
+    vcov(object)=FLPar(array(NA,dim=     c(dim(params(object))[1],dim(params(object))[1],dims(object)$iter), 
+                                dimnames=list(params=dimnames(params(object))[[1]],params=dimnames(params(object))[[1]],iter=1:dims(object)$iter)))
 
     # call across iters
     # TODO foreach
     res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(iter(object, i), path, admbNm, cmdOps)
 
+    
     setwd(oldwd)
   
     return(res)

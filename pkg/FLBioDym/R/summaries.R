@@ -20,7 +20,7 @@ jacknifeSummary<-function (flx) {
   bias<-(n - 1) * (mnU - mn)
   se  <-sqrt(((n-1)/n)*SS)
   
-  return(list("1"=mn,mean=mnU,se=se,bias=bias))
+  return(FLQuants("1"=mn,mean=mnU,se=se,bias=bias))
 }
 # }}}
   
@@ -30,6 +30,7 @@ summaryStats <- function(bd) {
   hvt   =as.data.frame(catch(bd)[,dims(bd)$year-1]/stock(bd)[,dims(bd)$year-1])[,6:7]
   stkRel=as.data.frame(stock(bd)[,dims(bd)$year-1]/c(refpts(bd)["bmsy"]))[,6:7]
   hvtRel=as.data.frame((catch(bd)[,dims(bd)$year-1]/stock(  bd)[,dims(bd)$year-1])/c(refpts(bd)["fmsy"]))[,6:7]
+  stkK  =as.data.frame(stock(bd)[,dims(bd)$year-1]/c(params(bd)["K"]))[,6:7]
   rps   =as.data.frame(refpts(bd))
   par   =as.data.frame(params(bd))
     
@@ -40,7 +41,8 @@ summaryStats <- function(bd) {
     data.frame(params="stock",     stk),
     data.frame(params="harvest",   hvt),
     data.frame(params="stockMSY",  stkRel),
-    data.frame(params="harvestMSY",hvtRel))
+    data.frame(params="harvestMSY",hvtRel),
+    data.frame(params="stockK",    stkK))
  
    return(as.FLQuant(res))
 }

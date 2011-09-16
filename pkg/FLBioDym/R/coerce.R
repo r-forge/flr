@@ -32,4 +32,6 @@ setAs('FLBioDym', 'FLStock',
 
     catch(res)<-computeCatch.n(from)
 
+    index(res)<-stock(from)
+      
     return(res)})

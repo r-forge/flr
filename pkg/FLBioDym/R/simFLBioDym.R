@@ -6,8 +6,8 @@
 # $Id:  $
 
 # simFLBioDym {{{
-simFLBioDym <- function(harvest, model='pellat', params=FLPar(r=0.5, K=100, p=1, b0=1.0,
-    sigma=0,3), bounds=c(0.1,10), ...) {
+simFLBioDym <- function(model='pellat', params=FLPar(r=0.5, K=100, p=1, b0=1.0,
+    sigma=0,3), harvest, bounds=c(0.1,10), ...) {
 
     args <- list(...)
 
