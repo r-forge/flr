@@ -85,7 +85,7 @@ setMethod('admbBD', signature(object='FLBioDym'),
 
     # call across iters
     # TODO foreach
-    #res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(FLCore::iter(object, i), path, admbNm, cmdOps)
+    # res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(FLCore::iter(object, i), path, admbNm, cmdOps)
     for(i in seq(its)) {
       res <- runADMBBioDym(iter(object, i), path, admbNm, cmdOps)
       iter(stock(object), i) <- res@stock
