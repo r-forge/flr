@@ -24,4 +24,10 @@ setGeneric('refptSE', function(object,...)
   standardGeneric('refptSE'))
 
 setGeneric('admbBD', function(object,...)
-		standardGeneric('admbBD'))
+  standardGeneric('admbBD'))
+  
+setGeneric('hcr', function(object, ...)
+  standardGeneric('hcr'))
+
+setGeneric('TAC', function(object, ...)
+  standardGeneric('TAC'))

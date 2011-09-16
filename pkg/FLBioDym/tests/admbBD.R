@@ -7,9 +7,9 @@
 
 library(FLBioDym)
 
-library(doMC)
+#library(doMC)
 
-registerDoMC()
+#registerDoMC(3)
 
 #
 params <- FLPar(r=0.5, K=1000, p=1, b0=1, q=1, sigma=0.3)
@@ -32,4 +32,4 @@ bd <- propagate(bd, 5)
 
 index(bd) <- OEMSurveyBD(bd)
 
-bd <- admbBD(bd)
+res <- admbBD(bd)

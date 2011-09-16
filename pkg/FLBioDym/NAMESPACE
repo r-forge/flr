@@ -1,7 +1,8 @@
-import("FLCore")
 import("FLash")
 importFrom("ggplotFL",
   "diags")
+#importFrom("foreach", "foreach")
+import("FLCore")
 exportClasses("FLBioDym")
 export(
   "simFLBioDym",
@@ -49,5 +50,6 @@ exportMethods(
   "residuals",
   "admbBD",
   "fitted",
-  "fitted<-"
+  "fitted<-",
+  "combine"
   )

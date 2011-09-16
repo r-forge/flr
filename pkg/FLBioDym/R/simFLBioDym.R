@@ -6,10 +6,11 @@
 # $Id:  $
 
 # simFLBioDym {{{
-simFLBioDym <- function(model  ='pellat', 
-                        params =FLPar(r=0.5, K=100, p=1, b0=1.0,sigma=0.3), 
-                        harvest=FLQuant(c(seq(0,1.5,length.out=30),rev(seq(0.5,1.5,length.out=15))[-1],rep(0.5,5)))*fmsy(model,params), 
-                        bounds =c(0.1,10), ...) {
+simFLBioDym <- function(model='pellat', 
+  params=FLPar(r=0.5, K=100, p=1, b0=1.0,sigma=0.3),
+  harvest=FLQuant(c(seq(0,1.5,length.out=30), rev(seq(0.5,1.5,length.out=15))[-1],
+      rep(0.5,5)))*fmsy(model,params),
+  bounds =c(0.1,10), ...) {
 
     args <- list(...)
 

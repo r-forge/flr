@@ -1,7 +1,5 @@
-
-setGeneric('hcr', function(object, ...) standardGeneric('hcr'))
 setMethod( 'hcr', signature(object='FLBioDym'),
-  function(object,Ftar=0.8,Btrig=0.75,Fmin=0.025,Blim=0.25,...){
+  function(object, Ftar=0.8, Btrig=0.75, Fmin=0.025, Blim=0.25,...){
       ## Reference Points
       Btrig=refpts(object)["bmsy"]*Btrig
       Blim =refpts(object)["bmsy"]*Blim
@@ -20,7 +18,6 @@ setMethod( 'hcr', signature(object='FLBioDym'),
       return(val)})
 
 
-setGeneric('TAC', function(object, ...) standardGeneric('TAC'))
 setMethod( 'TAC', signature(object='FLBioDym'),
   function(object,harvest,...){
   ## gets TAC
