@@ -14,7 +14,7 @@ export(
 	"refptSE",
   "is.FLBioDym",
   "bounds",
-  "plot.sp",
+  "plotSP",
   "priors",
   "summaryStats",                 
   "jacknifeSummary",
@@ -23,6 +23,8 @@ export(
 exportMethods(
   "FLBioDym",
   "harvest",
+  "hcr",
+  "TAC",
   "sp",
 	"msy",
 	"fmsy",
