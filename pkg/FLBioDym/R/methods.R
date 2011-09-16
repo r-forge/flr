@@ -93,7 +93,6 @@ setMethod('admbBD', signature(object='FLBioDym'),
       iter(params(object), i) <- res@params[,1]
     }
 
-
     setwd(oldwd)
   
     return(object)
@@ -138,7 +137,7 @@ runADMBBioDym <- function(object, path, admbNm, cmdOps) {
   object@params[c("r","K","b0","p","q","sigma")] <- t2[1:6]
       
   # fitted
-  object@fitted[,ac(idxYrs)][] <- unlist(c(t1[,"IndexFit"]))
+  object@fitted[] <- unlist(c(t1[,"IndexFit"]))
 
   # stock biomass
   object@stock[,1:dim(t1)[1]] <- unlist(c(t1["Biomass"]))
@@ -152,9 +151,9 @@ setMethod("combine", signature(x="FLBioDym", y="FLBioDym"),
   function(x, y) {
 
     # FLQuants
-    catch(x) <- combine(catch(x), catch(y))
-    stock(x) <- combine(stock(x), stock(y))
-    index(x) <- combine(index(x), index(y))
+    catch(x)  <- combine(catch(x), catch(y))
+    stock(x)  <- combine(stock(x), stock(y))
+    index(x)  <- combine(index(x), index(y))
     fitted(x) <- combine(fitted(x), fitted(y))
 
     # params
