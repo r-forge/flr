@@ -14,14 +14,15 @@ setMethod("plot", signature(x="FLBioDym", y="missing"),
     )
 
 # diags {{{
+## diagnostics
 setMethod("diags", signature(object="FLBioDym"),
-  function(object, i=NULL) {
-    
+  function(object){
+  
     #
     x    <- stock(    object)
     y    <- index(    object)
-    yHat <- object@index.hat
-    residual <- log(y/yHat)
+    hat  <- object@fitted
+    residual <- log(y/hat)
 
     dmns <- dimnames(x)
 
@@ -32,10 +33,16 @@ setMethod("diags", signature(object="FLBioDym"),
     qqx <- FLQuant(qq.$x,dimnames=dimnames(residual))
     qqy <- FLQuant(qq.$y,dimnames=dimnames(residual))
 
-    res <- drop(model.frame(mcf(FLQuants(x=x,y=y,yHat=yHat,residual=residual,residualLag=residualLag,qqx=qqx,qqy=qqy)),drop=T))
+    res <- drop(model.frame(mcf(FLQuants(x=x,y=y,hat=hat,residual=residual,residualLag=residualLag,qqx=qqx,qqy=qqy)),drop=T))
 
-    return(res)}) 
-# }}}
+    p.=ggplot(getDiag(res,diagPlots[[class(object)]])) + 
+        geom_point(aes(x,y))                           +
+        facet_wrap(~name,scale="free")                 +
+        geom_line(aes(x,hat,colour="red"))+geom_smooth(aes(x,y))
+ 
+  print(p.)
+  return(invisible(p.))})
+
 
 # plotSP {{{
 plotSP <- function(object,biomass=FLQuant(seq(0,params(object)["K"],length.out=101))) {
@@ -45,3 +52,5 @@ plotSP <- function(object,biomass=FLQuant(seq(0,params(object)["K"],length.out=1
    print(p)
    invisible(p)
 } # }}}
+
+

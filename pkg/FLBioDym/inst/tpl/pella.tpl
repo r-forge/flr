@@ -197,18 +197,18 @@ FUNCTION get_neglogL
   neglogL = halfnlog2pi + ni*log(sigma) + RSS/(2*sigma*sigma);
 
   // weighted likelihood priors
-  //	if (r_prior[1]>0) 
-  //    neglogL += log(r_prior[1]*dnorm(r,    r_prior[2],     r_prior[3]));
-  //if (k_prior[1]>0)
-  //    neglogL += log(k_prior[1]*dnorm(k,    k_prior[2],     k_prior[3]));
-  //if (p_prior[1]>0)
-  //    neglogL += log(p_prior[1]*dnorm(p,    p_prior[2],     p_prior[3]));
-  //if (a_prior[1]>0) 
-  //    neglogL += log(a_prior[1]*dnorm(a,    a_prior[2],     a_prior[3]));
-  //if (q_prior[1]>0)
-  //    neglogL += log(q_prior[1]*dnorm(q,    q_prior[2],     q_prior[3]));
-  //if (sigma_prior[1]>0)
-  //    neglogL += log(sigma_prior[1]*dnorm(sigma,sigma_prior[2], sigma_prior[3]));
+  if (r_prior[1]>0) 
+      neglogL += log(r_prior[1]*dnorm(r,    r_prior[2],     r_prior[3]));
+  if (k_prior[1]>0)
+      neglogL += log(k_prior[1]*dnorm(k,    k_prior[2],     k_prior[3]));
+  if (p_prior[1]>0)
+      neglogL += log(p_prior[1]*dnorm(p,    p_prior[2],     p_prior[3]));
+  if (a_prior[1]>0) 
+      neglogL += log(a_prior[1]*dnorm(a,    a_prior[2],     a_prior[3]));
+  if (q_prior[1]>0)
+      neglogL += log(q_prior[1]*dnorm(q,    q_prior[2],     q_prior[3]));
+  if (sigma_prior[1]>0)
+      neglogL += log(sigma_prior[1]*dnorm(sigma,sigma_prior[2], sigma_prior[3]));
    
 
 
