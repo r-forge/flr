@@ -17,8 +17,13 @@ setMethod('sp', signature(stock="FLBioDym",catch="FLQuant"),
           params["r"]*biomass*(1-log(biomass)/log(params["K"]))
     schaefer <- function(biomass, params)
           params["r"]*biomass*(1-biomass/params["K"])
-    pellat <- function(biomass, params)
-          params["r"]/params["p"]*biomass*(1-(biomass/params["K"])^params["p"])
+#     pellat <- function(biomass, params)
+#           params["r"]/params["p"]*biomass*(1-(biomass/params["K"])^params["p"])
+     pellat <- function(biomass, params){
+           a=sweep(biomass,6,params["r"]/params["p"],"*")
+           b=sweep(biomass,6,params["K"],"/")
+           c=sweep(b,      6,params["p"],"^")
+           a*(1-c)}
     shepherd <- function(biomass,params)
           params["r"]*biomass/(1+biomass/params["K"])-params["m"]*biomass
     gulland <- function(biomass,params)
