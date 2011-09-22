@@ -15,6 +15,8 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
                sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
                availability=NULL)
     {
+    if (is(sr,"FLBRP")) sr=list(params=params(x),model=SRModelName(model(x)))
+  
     ## make sure slots have correct iters 
     if (is(sr,"FLSR")) nDim=dims(params(sr))$iter  else nDim=1
     nDim=max(nDim, dims(sr.residuals)$iter, na.rm=TRUE)  
