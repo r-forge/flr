@@ -4,25 +4,6 @@
 # Copyright 2003-2011 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, JRC
 # $Id:  $
-
-# jacknifeSummary{{{
-jacknifeSummary<-function (flx) {
-  nms     <-names(dimnames(flx))
-  idx     <-seq(length(nms))[nms != 'iter']
-  n       <-dims(flx)$iter-1
-      
-  mn      <-iter(flx,  1)
-  u       <-iter(flx, -1)
-  mnU     <-apply(u,idx,mean)   
-  
-  SS      <-apply(sweep(u,idx, mnU,"-")^2,idx,sum)
-  
-  bias<-(n - 1) * (mnU - mn)
-  se  <-sqrt(((n-1)/n)*SS)
-  
-  return(FLQuants("1"=mn,mean=mnU,se=se,bias=bias))
-}
-# }}}
   
 # summaryStats {{{
 summaryStats <- function(bd) {

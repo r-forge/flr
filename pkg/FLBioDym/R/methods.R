@@ -164,3 +164,73 @@ setMethod("combine", signature(x="FLBioDym", y="FLBioDym"),
 )
 
 # }}}
+
+
+calcSigma<-function(obs,hat=rep(0,length(obs)),error="log"){
+   yrs=dimnames(obs)$year
+   yrs=yrs[yrs %in% dimnames(hat)$year]
+   hat=hat[,yrs]
+   obs=obs[,yrs]
+ 
+   SS =sum((obs-hat)^2,na.rm=T)
+
+   return((SS/length(hat))^.5)
+   }
+
+#### Calculate Q for use in constricted likelihoods etc
+calcQ<-function(bio,idx,error="log"){
+
+   ####  Biomass mid year
+   mnBio<-function(x) (x[,-dim(x)[2],,,,,drop=FALSE]+x[,-1,,,,,drop=FALSE])/2
+
+   ####  Biomass mid year
+   bio<-mnBio(bio)
+   yrs<-dimnames(idx)$year[dimnames(idx)$year %in% dimnames(bio)$year]
+
+   bio<-bio[,yrs,,,,,drop=FALSE]
+   idx<-idx[,yrs,,,,,drop=FALSE]
+
+   if (error=="log"){
+      q <- sum(bio*idx, na.rm=T)/sum(bio*bio, na.rm=T)}
+   else if (error=="normal"){
+      q <- exp(sum(log(idx)-log(bio), na.rm=T)/(sum(ifelse(is.na(c(idx)),1,0))))}
+   else if (error=="cv"){
+      res   <-sum(idx/bio)
+      sigma2<-calcSigma(res)
+      q     <-(-res+(res^2+4*length(idx)*sigma2*sum((idx/bio)^2)))/(2*length(idx)*sigma2)
+      }
+
+   return(q)}
+
+calcB0<-function(index,params,nyrB0,error="log"){
+   if (is.null(nyrB0)) return(params["b0"])
+
+   if (error=="log")
+      t.<-sweep(log(index[,1:nyrB0,,,,,drop=FALSE]),c(1,6),params["q"],"/")
+   else if (error=="normal")
+      t.<-sweep(index[,1:nyrB0,,,,,drop=FALSE],c(1,6),params["q"],"/")
+
+   return(exp(apply(t.,c(1,6),mean))/params["K"])}
+
+setInit=function(object){
+  params(object)["K"]     =mean(catch(object))*10
+  params(object)["b0"]    =0.5
+  params(object)["r"]     =0.5
+  params(object)["p"]     =1.0
+ 
+#   bio                     =stock(fwd(object,catch=catch(object)))
+#   params(object)["q"]     =calcQ(    bio,index(object))
+#   params(object)["sigma"] =calcSigma(bio,index(object))
+#   
+  params(object)["q"]     =1
+  params(object)["sigma"] =0.3
+
+  object@bounds[,"start"]=params(object)
+  object@bounds[,"lower"]=object@bounds[,"start"]*0.1
+  object@bounds[,"upper"]=object@bounds[,"start"]*10.0
+    
+  object@bounds["p", "phase"]=-1
+  object@bounds["b0","phase"]=-1
+  object@priors[,1]=-1
+ 
+  return(object)}

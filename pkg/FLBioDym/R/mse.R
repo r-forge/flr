@@ -1,11 +1,18 @@
 
 mseFLBioDym<-function(OM,start,sr,srRsdl,
-                    CV   =0.3,
-                    Ftar =0.75,    Btrig=0.75,
-                    Fmin =Ftar*0.1,Blim =Btrig*0.0,
-                    Bpct =0.5,     Fpct =0.5,
-                    jk    =FALSE,
-                    bounds=NULL){
+                      CV   =0.3,
+                      Ftar =0.75,    Btrig=0.75,
+                      Fmin =Ftar*0.1,Blim =Btrig*0.0,
+                      Bpct =0.5,     Fpct =0.5,
+                      jk    =FALSE,
+                      bounds=NULL){
+  
+#   OM   =iter(OM,1)
+#   CV   =0.3;
+#   Ftar =0.75;     Btrig=0.75;        
+#   Fmin =Ftar*0.1; Blim =Btrig*0.0; 
+#   Bpct =0.5;      Fpct =0.5;
+#   jk   =FALSE;
   
   ## Get number of iterations in OM
   nits  =dims(OM)$iter

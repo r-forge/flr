@@ -23,10 +23,10 @@ setAs('FLBioDym', 'FLIndex',
 )
 
 setAs('FLStock', 'FLBioDym',
-	function(from)
-	  {
-    return(FLBioDym(catch=catch(from), index=stock(from), name=name(from),
-      desc=paste("created from FLStock", desc(from)),
-      range=range(from, c("minyear","maxyear"))))
-  }
-)
+	function(from){
+    res=FLBioDym(catch=catch(from), index=stock(from), name=name(from),
+      #desc=paste("created from FLStock", desc(from)),
+      range=range(from, c("minyear","maxyear")))
+    #return(res)})
+    return(setInit(res))})
+

@@ -1,10 +1,12 @@
 import("FLash")
 importFrom("ggplotFL",
-  "diags")
+  "diags",
+  "getDiag")
 #importFrom("foreach", "foreach")
 import("FLCore")
 exportClasses("FLBioDym")
 export(
+  "mseFLBioDym",
   "simFLBioDym",
   "FLBioDym",
   "sp",
@@ -17,8 +19,7 @@ export(
   "bounds",
   "plotSP",
   "priors",
-  "summaryStats",                 
-  "jacknifeSummary",
+  "summaryStats",
   "admbBD",
   "plotSP")
 exportMethods(
@@ -26,6 +27,7 @@ exportMethods(
   "FLBioDym",
   "harvest",
   "hcr",
+  "hcrJK",
   "TAC",
   "sp",
 	"msy",
