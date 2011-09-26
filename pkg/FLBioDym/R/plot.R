@@ -7,7 +7,7 @@
 
 setMethod("plot", signature(x="FLBioDym", y="missing"),
   function(x, y, probs=c(0.95,0.50,0.05), size=c(0.5,1.0,0.5), lty=c(2,1,2),
-    facet=facet_wrap(~qname,scale="free"),
+    facet=facet_wrap(~qname,scale="free",nrow=3),
     fn=list("stock"=stock, "harvest"=function(x) catch(x)/stock(x)[,dimnames(catch(x))$year],yield=catch),...)
    
     plotComp(x,fn,probs,size,lty,facet)
