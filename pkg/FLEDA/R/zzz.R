@@ -1,6 +1,5 @@
 .onLoad <- function(lib,pkg) {
-	require(methods)
-	cat("FLEDA 2.0 \"The Swordfish hobnobber\"\n")
+	cat("FLEDA 2.4 \"The Duke's hobnobber\"\n")
   cat("------------------------------------\n")
 }
 

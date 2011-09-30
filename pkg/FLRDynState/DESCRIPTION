@@ -5,6 +5,6 @@ Author: Jan Jaap Poos
 Description: Package contains a 2 species Dynamic State Variable Model 
 Maintainer: Jan Jaap Poos <janjaap.poos@wur.nl>
 License: GPL 2.0
-Depends: FLCore, methods
+Depends: FLCore(>= 2.4), methods
 LazyLoad: Yes
 LazyData: Yes
