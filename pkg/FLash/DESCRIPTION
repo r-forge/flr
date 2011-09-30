@@ -1,6 +1,6 @@
 Package: FLash
 Title: Aaaaahhhhhhh
-Version: 2.4
+Version: 2.5.0
 Author: Freddy Mercury
 Description: Saviour of the universe
 Depends: FLCore(>= 2.4), methods
