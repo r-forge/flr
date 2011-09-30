@@ -1,0 +1,12 @@
+Package: SQLiteFL
+Title: Storing FLR objects in SQLite.
+Version: 2.4
+Date: 2011
+Author: Iago Mosqueira & Finlay Scott
+Description: SQLite for FLR
+Depends: methods, FLCore
+Conflicts: RSQLite
+Maintainer: Iago Mosqueira <iago.mosqueira@cefas.co.uk>
+License: GPL 2
+LazyLoad: Yes
+Collate: classes.R FLComp.R FLStock.R FLBiol.R FLIndex.R FLQuant.R

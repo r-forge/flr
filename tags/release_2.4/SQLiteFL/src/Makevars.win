@@ -1,0 +1,49 @@
+# -*- Makefile -*-
+#  $Id: Makevars.win 1069 2011-06-24 09:53:43Z fscott $
+#PKG_CFLAGS=-Wunused
+#PKG_LIBS = $(SUBLIBS)
+
+#ifneq ($(strip $(BUILD)),CROSS)
+#PKG_HOME = $(shell $(RHOME)/src/gnuwin32/Rpwd.exe .)
+#else
+#PKG_HOME = $(shell pwd)
+#endif
+
+#MkInclude = $(R_HOME)/etc${R_ARCH}/Makeconf
+
+#include $(RHOME)/src/gnuwin32/MkRules
+
+#SOURCES_C = functions.c insert.c select.c init.c methods.c update.c
+
+#OBJECTS = $(SOURCES_C:.c=.o)
+#DEPS = $(SOURCES_C:.c=.d)
+
+#SUBDIRS = sqlite
+#SUBLIBS = $(SUBDIRS:=.a)
+
+#before:
+#	@for d in $(SUBDIRS); do \
+#	  (cd $${d} && CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" MkInclude="$(MkInclude)" $(MAKE) library) || exit 1; \
+#	done
+#
+#clean:
+#	@-rm -f *.o $(SHLIB) *.a
+#	@for d in $(SUBDIRS); do \
+#	  (cd $${d} && MkInclude="$(MkInclude)" $(MAKE) clean) || exit 1; \
+#	done
+
+
+PKG_CPPFLAGS=-DRSQLITE_USE_BUNDLED_SQLITE -DSQLITE_ENABLE_RTREE -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_SOUNDEX
+
+.PHONY: all do_includes
+
+all: $(SHLIB)
+
+$(SHLIB): do_includes
+
+do_includes:
+	mkdir -p ../inst/include
+	cp sqlite/sqlite3.h ../inst/include
+	#cp sqlite/sqlite3ext.h ../inst/include
+
+
