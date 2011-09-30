@@ -1,0 +1,9 @@
+Package: FLash
+Title: Aaaaahhhhhhh
+Version: 2.4
+Author: Freddy Mercury
+Description: Saviour of the universe
+Depends: FLCore(>= 2.4), methods
+LinkingTo: FLCore
+Maintainer: Prince Baron <t.dalton@arboria.ac.uk>
+License: GPL 2
