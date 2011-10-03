@@ -1,6 +1,6 @@
 Package: FLRDynState
 Title: 2 spec Dynamic State Variable Model 
-Version: 0.3-6
+Version: 2.4
 Author: Jan Jaap Poos
 Description: Package contains a 2 species Dynamic State Variable Model 
 Maintainer: Jan Jaap Poos <janjaap.poos@wur.nl>
