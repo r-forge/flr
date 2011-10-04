@@ -121,3 +121,22 @@ plotBeer=function(v){
       }
     }
 
+    
+# plot(FLStock) {{{
+setMethod("plot", signature(x="FLStock", y="missing"),
+  function(x, probs=c(0.75,0.50,0.25), size=c(0.5,1.0,0.5), lty=c(2,1,2),
+    facet=facet_wrap(~qname,scale="free"),
+    fn=list("SSB"=ssb, "Recruits" = rec, "Yield"=catch, F=fbar),...) {
+    
+    plotComp(x,fn,probs,size,lty,facet)
+  }
+) # }}}
+
+
+# plot(FLStocks) {{{
+setMethod("plot", signature(x="FLStocks", y="missing"),
+  function(x, probs=c(0.75,0.50,0.25), size=c(0.5,1.0,0.5), lty=c(2,1,2),
+    facet=facet_wrap(~qname,scale="free"),
+    fn=list("SSB"=ssb, "Recruits"=rec, "Yield"=catch, F=fbar),...)
+    plotComps(x,fn,probs,size,lty,facet)
+) # }}}

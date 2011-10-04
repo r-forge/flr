@@ -65,10 +65,12 @@ setAs('FLBRP', 'FLStock',
       #, desc=paste("Created by coercion from 'FLBRP'", desc(from)))
 
     # range
-    range(res)<-range(from)
+    nmsF=names(range(res))
+    nmsT=names(range(from))
+    nms =nmsT[nmsT %in% nmsF]
+    range(res)[nms]<-range(from)[nms]
     range(res, c('minyear', 'maxyear')) <- unlist(dims(fbar(from))[c('minyear','maxyear')])
 
-    
     for (i in c("stock.n","catch.n","landings.n","discards.n","harvest"))
         res[[i]]<-from[[i]]
     
@@ -77,14 +79,13 @@ setAs('FLBRP', 'FLStock',
         dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
         slot(res,i)                <- FLCore::expand(slot(from,i), year=years)
         recycle6d(slot(res,i))     <- slot(from,i)}
-     
  
     recycle6d(   catch.wt(res))<-catch.wt(from)
     recycle6d(discards.wt(res))<-discards.wt(from)
     recycle6d(landings.wt(res))<-landings.wt(from)
     catch(res)                 <-computeCatch(res,"all")
     
-    units(harvest(res))=units(catch.sel(from))
+    units(harvest(res))=units(harvest(from))
     if(validObject(res))
       return(res)
     else
