@@ -6,7 +6,7 @@ flqVar <- function(){
     res <- list()
     res[["FLStock"]] <- c("stock", "stock.n", "catch", "catch.n", "discards", "landings", "discards.n", "landings.n", "harvest")
     res[["FLIndex"]] <- c("index", "catch.n")
-    res[["FLBiol"]] <-c("n")
+    res[["FLBiol"]]  <-c("n")
     res[["FLFleet"]] <-c("effort")
     res[["FLMetier"]]<- c("effshare", "vcost")
     res[["FLCatch"]] <- c("landings", "landings.n", "discards", "discards.n")
