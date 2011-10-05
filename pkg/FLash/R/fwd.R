@@ -12,7 +12,7 @@ if (!isGeneric("fwd"))
 
 setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     function(object, ctrl,
-               sr =NULL, sr.residuals=NULL, sr.residuals.mult=TRUE,
+               sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
                availability=NULL)
     {
     if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
@@ -23,7 +23,7 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     if (nDim>1) m(object)=propagate(m(object),nDim)
 
     object<-CheckNor1(object)
-
+        
     if (!(units(object@harvest)=="f"))
        stop("harvest slot has to have units of type 'f'")
     if (!validObject(ctrl))

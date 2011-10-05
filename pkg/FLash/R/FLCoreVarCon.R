@@ -38,7 +38,7 @@ CheckNor1<-function(x,Var=flqVar(),Con=flqCon(),nDim="missing"){
          x[[i]]<-CheckNor1(x[[i]])
    else { 
       if (missing(nDim))
-         nDim=max(laply(x[[Var[[class(x)]]]], function(x) dims(x)$iter))
+         nDim=dims(x)$iter
       for (i in Var[[class(x)]])
          if (dims(slot(x,i))$iter==1) slot(x,i)<-propagate(slot(x,i),iter=nDim)}
    
