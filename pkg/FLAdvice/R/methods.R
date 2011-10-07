@@ -202,7 +202,7 @@ function(object)
       #refpts <- propagate(refpts(object), iter, fill.iter=TRUE)
      dmns=dimnames(refpts(object))
      dmns$iter=1:iter
-     refpts=refpts(array(c(refpts(object)),dim=unlist(lapply(dmns, length)),dimnames=dmns)) 
+     refpts=FLPar(array(c(refpts(object)),dim=unlist(lapply(dmns, length)),dimnames=dmns)) 
     }else if(iter > 1 && dims(refpts(object))$iter != iter)
       stop("iters in refpts and object slots do not match")
     else

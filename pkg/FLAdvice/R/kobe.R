@@ -58,7 +58,7 @@ kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
                                 col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
                    contour=list(levels=c(.6,.7,1.0,.9),
                                 col   =c("black")),
-                   nIterp=501,xlab=NULL,ylab=NULL){
+                   nIterp=501,xlab="Year",ylab="TAC"){
 
             x=subset(x, !is.na(x[,1]) & !is.na(x[,2]) & !is.na(x[,3]))
 
@@ -71,12 +71,17 @@ kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
             if (!is.null(image)){      
 	      ## Check ##################################################
               if (!(length(image$levels)-1 == length(image$col))) stop("image options differ")
-            
               image(t., breaks=image$levels,col=image$col,
-			xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
-			ylab  =ifelse(is.null(ylab),names(x)[2],ylab))}
+			            xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
+			            ylab  =ifelse(is.null(ylab),names(x)[2],ylab))}
 	
-            contour(t.,levels=contour$levels,col=contour$col,lwd=2,method="edge",labcex=1,add=!is.null(image$col))
+            contour(t.,levels=contour$levels,
+                       col   =contour$col,lwd=2,
+                       method="edge",
+                       labcex=2,
+                       add   =!is.null(image$col),
+  		            xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
+			            ylab  =ifelse(is.null(ylab),names(x)[2],ylab))
        
             grid()
        

@@ -1,32 +1,32 @@
-# class - «Short one line description»
+# class - ?Short one line description?
 # FLBRP/R/class.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainers: Laurence Kell, ICCAT & Santiago Cerviño, IEO
+# Maintainers: Laurence Kell, ICCAT & Santiago Cervi?o, IEO
 # $Id: class.R 945 2011-05-10 13:22:49Z lauriekell $
 
 
-# refpts class {{{
-validrefpts <- function(object)
-{
-  # array must have 3 dims
-  if(length(dim(object)) != 3 )
-    return('object array must have 3 dimensions')
-
-  # names of dimnames must be refpt, quantity and iter
-  if(!all.equal(names(dimnames(object)), c('refpt', 'quantity', 'iter')))
-    return('dimnames must be refpt, quantity and iter')
-
-  return(TRUE)
-}
-
-setClass('refpts', representation('FLPar'),
-  prototype=prototype(new('FLPar', array(as.numeric(NA), dim=c(5,8,1),
-  dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), quantity=c('harvest', 
-  'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
-  validity=validrefpts)
-
-# }}}
+# # refpts class {{{
+# validrefpts <- function(object)
+# {
+#   # array must have 3 dims
+#   if(length(dim(object)) != 3 )
+#     return('object array must have 3 dimensions')
+# 
+#   # names of dimnames must be refpt, quantity and iter
+#   if(!all.equal(names(dimnames(object)), c('refpt', 'quantity', 'iter')))
+#     return('dimnames must be refpt, quantity and iter')
+# 
+#   return(TRUE)
+# }
+# 
+# setClass('refpts', representation('FLPar'),
+#   prototype=prototype(new('FLPar', array(as.numeric(NA), dim=c(5,8,1),
+#   dimnames=list(refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'), quantity=c('harvest', 
+#   'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'), iter=1)))),
+#   validity=validrefpts)
+# 
+# # }}}
 
 # FLBRP {{{
 validFLBRP <- function(object){
@@ -61,7 +61,7 @@ setClass("FLBRP",
       "FLComp",
       model          ="formula",
       params         ="FLPar",
-      refpts         ="refpts",
+      refpts         ="FLPar",
       fbar           ="FLQuant",
       fbar.obs       ="FLQuant",
       landings.obs   ="FLQuant",
@@ -93,7 +93,11 @@ setClass("FLBRP",
                                    plusgroup=as.numeric(NA), minfbar=as.numeric(NA), maxfbar=as.numeric(NA))),
       model        =formula(rec~a),
       params       =FLPar(1),
-      refpts          =new('refpts'),
+      refpts          =  FLPar(array(as.numeric(NA), 
+                                         dim     =c(5,8,1),
+                                         dimnames=list(refpt   =c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'),
+                                                       quantity=c('harvest', 'yield', 'rec', 'ssb', 'biomass', 'revenue', 'cost', 'profit'),
+                                                       iter    =1))),
       fbar            =new("FLQuant"),
       landings.sel    =new("FLQuant"),
       fbar.obs        =new("FLQuant"),
@@ -121,6 +125,8 @@ setClass("FLBRP",
       fcost           =new("FLQuant"),
       validity        =validFLBRP
       ))  # }}}
+
+  
 
 # FLBRPs {{{
 vFLBRPs <- setClass("FLBRPs", contains="FLComps",

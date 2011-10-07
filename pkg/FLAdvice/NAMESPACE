@@ -4,8 +4,7 @@ import("FLCore")
 
 exportClasses(
   "FLBRP",
-  "FLBRPs",
-  "refpts")
+  "FLBRPs")
 
 export(
   "shepherdCovB",

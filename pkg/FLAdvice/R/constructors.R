@@ -106,8 +106,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
     fbar=seq(0, 4, 0.04), nyears=3, biol.nyears=nyears, fbar.nyears=nyears,
     sel.nyears=fbar.nyears, na.rm=TRUE, mean='arithmetic', ...)
     {
-
-    warning("Currently sr params set to 1, i.e. per recruit")
+    #warning("Currently sr params set to 1, i.e. per recruit")
 
     # dims & dimnames
     dims <- dims(object)

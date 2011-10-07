@@ -1605,7 +1605,7 @@ SEXP FLBRP::brp(SEXP Object)
 
    SEXP refpts;
 
-   PROTECT(refpts = NEW_OBJECT(MAKE_CLASS("refpts")));
+   PROTECT(refpts = NEW_OBJECT(MAKE_CLASS("FLPar")));
 
    refpts = R_do_slot_assign(refpts, install(".Data"), v3);
    
