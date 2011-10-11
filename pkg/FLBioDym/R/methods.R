@@ -82,13 +82,13 @@ setMethod('admbBD', signature(object='FLBioDym'),
     vcov(object)=FLPar(array(NA, dim=c(dim(params(object))[1],dim(params(object))[1],
       dims(object)$iter), dimnames=list(params=dimnames(params(object))[[1]],
       params=dimnames(params(object))[[1]],iter=1:its)))
-
+    
     # call across iters
     # TODO foreach
     # res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(FLCore::iter(object, i), path, admbNm, cmdOps)
     for(i in seq(its)) {
       res <- runADMBBioDym(iter(object, i), path, admbNm, cmdOps)
-      iter(stock(object), i) <- res@stock
+      iter(stock(object), i)  <- res@stock
       iter(fitted(object), i) <- res@fitted
       iter(params(object), i) <- res@params[,1]
     }
@@ -101,7 +101,7 @@ setMethod('admbBD', signature(object='FLBioDym'),
 
 # setADMBBioDym {{{
 setADMBBioDym <- function(object, file) {
-  
+
   #
   ctc <- as.list(model.frame(object[["catch"]], drop=TRUE))
   ctc <- c(nYrs=length(ctc[[1]]), ctc)
@@ -137,10 +137,10 @@ runADMBBioDym <- function(object, path, admbNm, cmdOps) {
   object@params[c("r","K","b0","p","q","sigma")] <- t2[1:6]
       
   # fitted
-  object@fitted[] <- unlist(c(t1[,"IndexFit"]))
+  object@fitted[] <- unlist(c(t1[,"IndexFit"])) 
 
   # stock biomass
-  object@stock[,1:dim(t1)[1]] <- unlist(c(t1["Biomass"]))
+  object@stock[,1:dim(t1)[1]] <- unlist(c(t1["Biomass"])) 
 
   return(object)
 
