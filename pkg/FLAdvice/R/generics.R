@@ -17,8 +17,11 @@ setGeneric('refpts', function(object, ...)
 setGeneric("refpts<-", function(object, ..., value){
 	standardGeneric("refpts<-")})
 
-setGeneric('msy', function(object, ...)
-		standardGeneric('msy'))
+setGeneric('msy', function(object,params, ...)
+  	standardGeneric('msy'))
+# 
+# setGeneric('hcr', function(object, ...)
+#  	standardGeneric('hcr'))
 
 setGeneric('spr', function(object, ...)
 		standardGeneric('spr'))

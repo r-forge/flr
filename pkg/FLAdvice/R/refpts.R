@@ -5,6 +5,16 @@
 # Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
 # $Id: refpts.R 888 2011-01-17 00:56:11Z lauriekell $
 
+
+# msy {{{
+setMethod("msy", signature(object="FLBRP"),
+  function(object) {
+    refpts(object) <- refpts(as.numeric(NA), refpt='msy',
+      iter=as.numeric(dimnames(object@refpts)$iter))
+    computeRefpts(object)
+  }
+) # }}}
+
 # # array
 # setMethod("refpts", signature(object="array"),
 #   function(object, refpt=c('f0.1', 'fmax', 'spr.30', 'msy', 'mey'),
@@ -129,67 +139,58 @@
 #   }
 # ) # }}}
 
-# refpts<- {{{
-setMethod('refpts<-', signature(object='FLBRP', value='FLPar'),
-  function(object, value) {
-    slot(object, 'refpts') <- value
-    return(object)
-  }
-)
-    
-setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
-  function(object, ..., value) {
-
-    #
-    args <- list(...)
-
-    # selection required
-    if(length(args) > 0) {
-      # match and sort args names
-      if(!is.null(names(args)))
-        args <- args[match(names(dimnames(refpts(object))), names(args))]
-      names(args) <- c('i', 'j', 'k')[seq(length(args))]
-      args <- args[!unlist(lapply(args, is.null))]
-      args <- lapply(args, as.character)
-
-      refpts(object) <- do.call('[<-', c(list(x=refpts(object)), args, list(value=value)))
-    } else {
-      refpts(object)[] <- value
-    }
-      
-    return(object)})
-# }}}
-
-# refpts(FLBRP) {{{
-setMethod('refpts', signature(object='FLBRP'),
-  function(object, ...) {
-
-    args <- list(...)
-    refpts <- slot(object, 'refpts')
-    
-    # selection required
-    if(length(args) > 0){
-      # match and sort args names
-      if(!is.null(names(args)))
-        args <- args[match(names(dimnames(refpts)), names(args))]
-      names(args) <- c('i', 'j', 'k')[seq(length(args))]
-      args <- args[!unlist(lapply(args, is.null))]
-      args <- lapply(args, as.character)
-
-      return(do.call('[', c(list(x=refpts), args)))
-    } else
-      return(refpts)
-  }
-) # }}}
-
-# msy {{{
-setMethod("msy", signature(object="FLBRP"),
-  function(object) {
-    refpts(object) <- refpts(as.numeric(NA), refpt='msy',
-      iter=as.numeric(dimnames(object@refpts)$iter))
-    computeRefpts(object)
-  }
-) # }}}
+# # refpts<- {{{
+# setMethod('refpts<-', signature(object='FLBRP', value='FLPar'),
+#   function(object, value) {
+#     slot(object, 'refpts') <- value
+#     return(object)
+#   }
+# )
+#     
+# setMethod('refpts<-', signature(object='FLBRP', value='numeric'),
+#   function(object, ..., value) {
+# 
+#     #
+#     args <- list(...)
+# 
+#     # selection required
+#     if(length(args) > 0) {
+#       # match and sort args names
+#       if(!is.null(names(args)))
+#         args <- args[match(names(dimnames(refpts(object))), names(args))]
+#       names(args) <- c('i', 'j', 'k')[seq(length(args))]
+#       args <- args[!unlist(lapply(args, is.null))]
+#       args <- lapply(args, as.character)
+# 
+#       refpts(object) <- do.call('[<-', c(list(x=refpts(object)), args, list(value=value)))
+#     } else {
+#       refpts(object)[] <- value
+#     }
+#       
+#     return(object)})
+# # }}}
+# 
+# # refpts(FLBRP) {{{
+# setMethod('refpts', signature(object='FLBRP'),
+#   function(object, ...) {
+# 
+#     args <- list(...)
+#     refpts <- slot(object, 'refpts')
+#     
+#     # selection required
+#     if(length(args) > 0){
+#       # match and sort args names
+#       if(!is.null(names(args)))
+#         args <- args[match(names(dimnames(refpts)), names(args))]
+#       names(args) <- c('i', 'j', 'k')[seq(length(args))]
+#       args <- args[!unlist(lapply(args, is.null))]
+#       args <- lapply(args, as.character)
+# 
+#       return(do.call('[', c(list(x=refpts), args)))
+#     } else
+#       return(refpts)
+#   }
+# ) # }}}
 
 # ## Arith    {{{
 # setMethod("Arith", ##  "+", "-", "*", "^", "%%", "%/%", "/"

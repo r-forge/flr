@@ -5,8 +5,12 @@ import("FLCore")
 exportClasses(
   "FLBRP",
   "FLBRPs")
-
 export(
+  "aav",
+  "antiCurve",
+  "beer",
+  "biOrder",
+  "calcR",
   "shepherdCovB",
   "kobe",
   "kobeP",
@@ -21,9 +25,11 @@ export(
   "biasLinear",
   "vpaMP",
   "hcr",
-  "runMSE")
+  "runMSE",
+  "plotCatches")
 exportMethods(
-	"Arith",
+        "simAR",
+        "Arith",
 	"FLBRP",
 	"FLBRPs",
 	"model",
@@ -38,6 +44,7 @@ exportMethods(
 	"landings.obs<-",
 	"discards.obs",
 	"discards.obs<-",
+        "refpts",
 	"rec.obs",
 	"rec.obs<-",
 	"recycle6d<-",
