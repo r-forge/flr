@@ -1,10 +1,10 @@
 #### Plots ##########################################################################################
 
-setMethod('plot', signature(x='FLln2z',y="missing"),
+setMethod('plot', signature(x='FLsz',y="missing"),
     function(x,y,...){
-    p.=ggplot(cbind(getHat(x),bhz=as.data.frame(ln2z(x),drop=T)[,"data"]))+
-                geom_point( aes(year,bhz))  +
-                geom_smooth(aes(year,bhz))  +
+    p.=ggplot(merge(getHat(x),as.data.frame(ln2z(x),drop=T)))+
+                geom_point( aes(year,data))  +
+                geom_smooth(aes(year,data))  +
                 expand_limits(y = 0) +
                 theme_flr(size=12.5)   +
                 scale_y_continuous(name="Z") +
@@ -35,10 +35,10 @@ plots.=function(x,...){
     
 setGeneric('diags', function(object,...)
    standardGeneric('diags'))
-setMethod("diags", signature(object="FLln2z"),
+setMethod("diags", signature(object="FLsz"),
   function(object, i=NULL) {
     
-    res=cbind(gethat(object),
+    res=cbind(getHat(object),
               model.frame(FLQuants(y=object@obs,yHat=object@hat,residual=object@residuals),drop=T)[,-1])
     
     res$residualLag <-c(residuall[-1],NA)

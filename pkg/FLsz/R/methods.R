@@ -1,5 +1,84 @@
 pathNm="/home/lkell/flr/experimental/FLsz/inst/admb"
 
+iters=function(what=NULL){
+  it=c("model",         FALSE,   FALSE,    FALSE,    
+       "obs",           TRUE,    TRUE,     FALSE,
+       "hat",           TRUE,    FALSE,    TRUE,
+       "n",             TRUE,    TRUE,     FALSE,
+       "residuals",     TRUE,    FALSE,    TRUE,
+      
+       "grw",           TRUE,    TRUE,     FALSE,
+       "params",        TRUE,    FALSE,    TRUE,
+       "bounds",        TRUE,    TRUE,     FALSE,
+       "priors",        FALSE,   FALSE,    FALSE,
+      
+       "vcov",          TRUE,    FALSE,    TRUE,
+       "hessian",       TRUE,    FALSE,    TRUE,
+      
+       "logLik",        TRUE,    FALSE,    TRUE,
+       "rsdlVar",       TRUE,    FALSE,    TRUE,
+       "dof",           TRUE,    FALSE,    TRUE,
+       "stopmess",      TRUE,    FALSE,    TRUE)
+  
+  it=t(array(it,c(4,15)))
+
+  it=data.frame(array(as.logical(it[,-1]),dim=c(15,3),dimnames=list(slot=it[,1],iter=c("n","write","read"))))
+
+  if (is.null(what)) return(it) else return(it[what,])}
+
+
+chkIters=function(object){
+  nIts=dims(object)$iter
+  
+  ## any inputs iters>1
+  slts=dimnames(subset(iters(),read))[[1]]
+  maply(slts, function(x) dims(slot(object,x)))
+  
+  ## any outputs iters>1
+  slts=dimnames(subset(iters(),write))[[1]]
+  maply(slts, function(x) dims(slot(object,x)))
+  
+  }
+
+
+ini=function(object,breaks){
+    its    = 1:max(dim(object@obs)[6],dim(object@n)[6])
+    nbreaks=length(breaks)
+    parNms =c(paste("z",1:(length(breaks)+1),sep=""),paste("brk",1:nbreaks,sep=""),"sigma")
+    nPar   =length(parNms)  
+    
+    par       =c(rep(0.5,nbreaks+1),breaks,10) 
+    names(par)=parNms
+    par       =FLPar(par)
+    se        =par
+    bounds    =array(NA, dim=c(length(parNms),4),dimnames=list(param=parNms,c("phase","lower","initial","upper")))
+    priors    =array(NA, dim=c(length(parNms),3),dimnames=list(param=parNms,c("a","b","pdf")))
+    
+    object@params=par
+    object@se    =se
+    object@priors=priors
+    object@bounds=bounds 
+    
+    object@bounds[,"phase"]  =c(rep(1,nbreaks+1),rep(-1,nbreaks),1)
+    object@bounds[,"initial"]=apply(object@params,1,mean,na.rm=TRUE)
+    
+    dm  =c(dim(object@params)[1],dim(object@params)[1],dims(object)$iter)  
+    dmns=list(params=dimnames(params(object))$params,
+              params=dimnames(params(object))$params,
+              iter  =dimnames(params(object))$iter)
+    object@vcov   =FLPar(array(as.numeric(NA),dim=dm,dimnames=dmns))
+    
+    object@hessian=object@vcov 
+    
+    # "logLik":
+    # "rsdlVar":
+    # "dof":
+    # "stopmess": 
+    # "name":
+    # "desc"
+    
+    return(object)}
+
 # jk=mdply((1:length(n))[n!=0],
 #     function(x,obs,n,rng,breaks,grw){
 #        n[x]=0
@@ -169,32 +248,6 @@ setMethod('seine', signature(object='FLsz'),
     return(res)}
 #)
 
-ini=function(object,breaks){
-    its    = 1:max(dim(object@obs)[6],dim(object@n)[6])
-    nbreaks=length(breaks)
-    parNms =c(paste("z",1:(length(breaks)+1),sep=""),paste("brk",1:nbreaks,sep=""),"sigma")
-    nPar   =length(parNms)  
-    
-    par       =c(rep(0.5,nbreaks+1),breaks,10) 
-    names(par)=parNms
-    par       =FLPar(par)
-    se        =par
-    bounds    =array(NA, dim=c(length(parNms),4),dimnames=list(param=parNms,c("phase","lower","initial","upper")))
-    priors    =array(NA, dim=c(length(parNms),3),dimnames=list(param=parNms,c("a","b","pdf")))
-    
-    object@params=par
-    object@se    =se
-    object@priors=priors
-    object@bounds=bounds 
-    
-    object@bounds[,"phase"]  =c(rep(1,nbreaks+1),rep(-1,nbreaks),1)
-    object@bounds[,"initial"]=apply(object@params,1,mean,na.rm=TRUE)
- 
-    object@vcov   =array(NA,c(length(nPar),length(nPar),length(its))) 
-    object@hessian=object@vcov 
-    
-    return(object)}
-
 setGeneric("breaks<-", function(object,value){
   standardGeneric("breaks<-")})
 setMethod("breaks<-", signature(object="FLsz", value="numeric"),
@@ -205,6 +258,8 @@ setGeneric("breaks=", function(object,value){
 setMethod("breaks=", signature(object="FLsz", value="numeric"),
   function(object, value) ini(object,value))
 
+setGeneric("sz", function(object){
+  standardGeneric("sz")})
 setMethod("sz", signature(object="FLsz"),
   function(object) sz(object@obs,object@grw))
 
@@ -251,3 +306,32 @@ readADMBMCMChst=function(fl){
   return(data)}
 
   #return(list(param=ary,pdf=pdf,summary=smry,restart=restart))}
+
+
+
+# data=readADMBMCMChst(fl)
+# 
+# 
+#    nPar=length(data[[4]])          
+#   
+#    ary=array(NA,c(nPar,5), list(param=sub("std_","",names(data)[10+1:nPar]),c("mean","sd","lower","upper","step")))          
+#    ary[,"mean"] =data$means
+#    ary[,"sd"]   =data$standarddevs
+#    ary[,"lower"]=data$lowerbounds
+#    ary[,"upper"]=data$upperbounds
+#    ary[,"step"] =data$stepsizes
+#      
+#    pdf=mdply(names(data)[10+1:nPar], function(x,data) data[[x]], data=data)
+#    pdf=transform(pdf,param=dimnames(ary)$param[X1])
+#    pdf=transform(pdf,aprox=qnorm(value,ary[param,"mean"],ary[param,"sd"]))[,c("param","value","density","aprox")]
+# 
+#    smry=c("samplessize"=data[[ 1]],
+#           "scaling"    =data[[ 2]],
+#           "nPar"       =data[[ 8]],   
+#           "seed"       =data[[10]])
+#   
+#   restart=data[[9]]   
+#  
+# 
+# ggplot(data[[12]])+geom_line(aes(value,density))
+

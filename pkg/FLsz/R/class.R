@@ -5,8 +5,8 @@
 # Maintainers: Laurence Kell
 # Last Change: 7 July 2009 16:17
 
-validFLsz <- function(object)
-  { 
+
+validFLsz <- function(object){ 
   ## no ages
   if (dim(object@obs)[1]!=dim(object@n)[1] & dim(object@obs)[1]!=1)
     warning("obs & n slots must have 1st dim size of 1")
@@ -44,7 +44,6 @@ setClass('FLsz',
     
     grw           ='FLPar',
     params        ='FLPar',
-    se            ='FLPar',
     bounds        ='array',
     priors        ='array',
     
@@ -55,5 +54,5 @@ setClass('FLsz',
     rsdlVar       ='numeric',
     dof           ='array',
     stopmess      ="character"),
-  prototype(model="vonB"),
-	validity=validFLsz)
+  prototype(model ="vonB"),
+  validity=validFLsz)

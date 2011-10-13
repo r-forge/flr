@@ -21,6 +21,11 @@ setMethod('ln2z', signature(object='FLQuant',param="FLPar"),
     function(object,param) {
     dimnames(param)$params=tolower(dimnames(param)$params)  
     ln2zFunc(object,param["linf"],param["lc"],param["k"])})
+setMethod('ln2z', signature(object='FLsz'),
+    function(object) {
+    param=object@grw
+    dimnames(param)$params=tolower(dimnames(param)$params)  
+    ln2zFunc(object@obs,param["linf"],param["lc"],param["k"])})
 
 setMethod('mnSwt', signature(object='FLStock'), function(object) apply(stock.wt(   object)*stock.n(   object),2:6,sum)/apply(stock.n(   object),2:6,sum)) 
 setMethod('mnCwt', signature(object='FLStock'), function(object) apply(catch.wt(   object)*catch.n(   object),2:6,sum)/apply(catch.n(   object),2:6,sum)) 
