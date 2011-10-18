@@ -1,17 +1,60 @@
-setGeneric('admbWrite', function(object,...)
-   standardGeneric('admbWrite'))
-setMethod('admbWrite', signature(object='FLsz'),
-  function(object,pathNm,cmdOps=paste("-maxfn 500")) .admbWrite(object,pathNm,cmdOps))
+setGeneric('admbDat', function(object,...)
+   standardGeneric('admbDat'))
+setMethod('admbDat', signature(object='FLsz'),
+  function(object,admbNm="seine") seineDat(object,admbNm))
     
-setGeneric('admbRead', function(object,...)
-   standardGeneric('admbRead'))
-setMethod('admbRead', signature(object='FLsz'),
-  function(object,pathNm) .admbWrite(object,pathNm))
+setGeneric('admbRep', function(object,...)
+   standardGeneric('admbRep'))
+setMethod('admbRep', signature(object='FLsz'),
+  function(object,i,admbNm="seine") seineRep(object,i,admbNm))
     
 setGeneric('admbFit', function(object,...)
    standardGeneric('admbFit'))
 
-.admbWrite = function(object) {
+setMethod('admbFit', signature(object='FLsz'),
+  function(object, package=class(object), admbNm="seine", cmdOps=paste("-maxfn 500"), dir=tempdir()) {
+
+    ##### set up temp dir with exe for data files
+    # Linux
+    if (R.version$os=="linux-gnu") {
+      # executable
+      exe <- paste(system.file("bin", "linux", package=package, mustWork=TRUE),admbNm, sep="/")
+      file.copy(exe, dir)
+      path <- paste(dir, "/", sep="")
+
+    # Wind0ws
+    } else if (.Platform$OS.type == "windows") {
+      # executable
+      exe <- paste(system.file("bin", "windows", package=package, mustWork=TRUE),
+        paste(admbNm, ".exe", sep=""), sep="/")
+      file.copy(exe, dir)
+      path <- paste(dir, "\\", sep="")
+    
+    # Mac OSX
+    # or fail!
+    }else 
+      stop()
+        
+    # change wd to avoid ADMB case bug
+    oldwd <- getwd()
+    setwd(dir)
+
+    object=chkIters(object)
+    for(i in seq(dims(object)$iter)) {
+        # create ADMB input files
+       admbDat(iter(object, i))
+       
+       # run
+       system(paste("./", admbNm, " ", cmdOps, sep=""))
+ 
+       # read ADMB output files
+       object=admbRep(object, i)}
+    
+    setwd(oldwd)
+   
+    return(object)})
+
+seineDat = function(object,admbNm) {
 
     ## Data
     ObsLength    = object@obs
@@ -56,27 +99,27 @@ setGeneric('admbFit', function(object,...)
                      "stepsize"                                    =5,
                      "casenum"                                     =10)
    
-  writeADMB(dat,"seine.dat")
+  writeADMB(dat,paste(admbNm,".dat",sep=""))
     
   # ctl file
   ctl <- object@bounds 
   ctl[,2:4] <- log(ctl[,2:4])
   ctl <- alply(ctl,1)
   names(ctl) <- dimnames(object@bounds)$params
-  writeADMB(ctl, "seine.ctl")
+  writeADMB(ctl,paste(admbNm,".ctl",sep=""))
     
   # prr file
   prr <- object@priors 
   prr <- alply(prr,1)
   names(prr) <- dimnames(object@priors)$params
-  writeADMB(prr, "seine.prr")
+  writeADMB(prr,paste(admbNm,".prr",sep=""))
   }
   
-.admbRead = function(object,i) {
+seineRep = function(object,i,admbNm) {
 
-     rep=readADMB("seine.rep")
+     rep=readADMB(paste(admbNm,".rep",sep=""))
 
-     std=read.table("seine.std",skip=1)[,-1]
+     std=read.table(paste(admbNm,".std",sep=""),skip=1)[,-1]
      names(std)=c("param","value","sd")
  
      params(object)[,i]=bounds(object)[,"initial"]
@@ -96,47 +139,4 @@ setGeneric('admbFit', function(object,...)
       # object@aic     =rep$aic
 
      return(object)}
-
-setMethod('admbFit', signature(object='FLsz'),
-  function(object, cmdOps=paste("-maxfn 500"), admbNm="seine", package="FLsz", dir=tempdir()) {
-
-    ##### set up temp dir with exe for data files
-    # Linux
-    if (R.version$os=="linux-gnu") {
-      # executable
-      exe <- paste(system.file("bin", "linux", package=package, mustWork=TRUE),admbNm, sep="/")
-      file.copy(exe, dir)
-      path <- paste(dir, "/", sep="")
-
-    # Wind0ws
-    } else if (.Platform$OS.type == "windows") {
-      # executable
-      exe <- paste(system.file("bin", "windows", package=package, mustWork=TRUE),
-        paste(admbNm, ".exe", sep=""), sep="/")
-      file.copy(exe, dir)
-      path <- paste(dir, "\\", sep="")
-    
-    # Mac OSX
-    # or fail!
-    }else 
-      stop()
-        
-    # change wd to avoid ADMB case bug
-    oldwd <- getwd()
-    setwd(dir)
-
-    object=chkIters(object)
-    for(i in seq(dims(object)$iter)) {
-        # create ADMB input files
-       .admbWrite(iter(object, i))
-       
-       # run
-       system(paste("./", admbNm, " ", cmdOps, sep=""))
  
-       # read ADMB output files
-       object=.admbRead(object, i)
-      }
-    
-    setwd(oldwd)
-   
-    return(object)}) 
