@@ -47,8 +47,9 @@ setClass('FLsz',
     bounds        ='array',
     priors        ='array',
     
-    vcov          ='array',
-    hessian       ='array',
+    se            ='FLPar',
+    vcov          ='FLPar',
+    hessian       ='FLPar',
     
     logLik        ='numeric',
     rsdlVar       ='numeric',

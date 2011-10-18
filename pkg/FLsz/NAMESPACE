@@ -1,11 +1,11 @@
-useDynLib(FLlsz)
+useDynLib(FLsz)
 import("FLCore")		
 importFrom("ggplotFL")	
-export("getMCMChst",
+export("readADMBMCMChst",
        "summary",
        "show",
        "is.FLsz")
-exportClasses("FLlsz")
+exportClasses("FLsz")
 exportMethods("ageIt",
               "ageThem",
               "breaks<-",

@@ -51,10 +51,11 @@ setMethod('FLsz', signature(object='FLStock'),
   function(object,model="vonb",nbreaks=4,
                   breaks=rev(rev(round(seq(dims(object)$minyear,dims(object)$maxyear,length.out=nbreaks+1)))[-1]),...){
     args = list(...)
-
+print(names(args))
     n  =apply(stock.n(object),2:6,sum)
-    if ("grw" %in% names(list(...))) 
-       obs=apply(wt2len(grw,stock.wt(object))*stock.n(object),2:6,mean)/n
+    if ("grw" %in% names(args)){ 
+       obs=apply(wt2len(grw,stock.wt(object))*stock.n(object),2:6,sum)/n
+      }
     else
        obs=apply(stock.wt(object)*stock.n(object),2:6,mean)/n
     res=FLsz(obs,n=n,breaks=breaks)

@@ -1,38 +1,23 @@
-simFLsz <- function(model='pellat', 
-  params=FLPar(r=0.5, K=100, p=1, b0=1.0,q=1,sigma=0.3),
-  harvest=FLQuant(c(seq(0,1.5,length.out=30), rev(seq(0.5,1.5,length.out=15))[-1],rep(0.5,5)))*fmsy(model,params),
-  bounds =c(0.1,10), ...) {
+simFLsz=function(grwPar =FLPar(linf=122.8,t0=-0.9892,k=0.3013445,a=1.3718e-5,b=3.1066),
+                 harvest=FLQuant(  c(seq(0,2.0,length.out=40),
+                                 rev(seq(0.5,2.0,length.out=15))[-1],rep(0.5,10))),...){
 
-    args <- list(...)
+  args <- list(...)
 
-    nyr <- dims(harvest)$year
+  res      =gislaSim(grwPar,...)
+  fbar(res)=harvest*refpts(res)["msy","harvest"]
 
-    object <- FLsz(model='pellat',
-      stock =FLQuant(rep(params["K"], nyr), dimnames=dimnames(harvest)),
-      params=params)
+  res=brp(res)
 
-    # bounds
-    object@bounds["r",     "start"]=params["r"]
-    object@bounds["K",     "start"]=params["K"]
-    object@bounds["p",     "start"]=params["p"]
-    object@bounds["b0",    "start"]=params["b0"]
-    object@bounds["q",     "start"]=1.0
-    object@bounds["sigma", "start"]=params["sigma"]
+  # Load given slots
+  for(i in names(args))
+		slot(res, i) <- args[[i]]
   
-    object@bounds[,"lower"]=object@bounds[,"start"]*bounds[1]
-    object@bounds[,"upper"]=object@bounds[,"start"]*bounds[2]
-    
-    object@bounds["p", "phase"]=-1
-    object@bounds["b0","phase"]=-1
-    object@priors[,1]=-1
-    object <- fwd(object, harvest=harvest)
+  ctrl=fwdControl(data.frame(quantity="f",year=as.numeric(ac(dimnames(harvest)$year[-1])),quantity=c(harvest)[-1]))
+  om  =fwd(as(res,"FLStock"),ctrl=ctrl,sr=res)
 
-    index(object)=(c(stock(object)[,-dim(index(object))[2]])+c(stock(object)[,-1]))/2
-    print(index(object))
-    print(stock(object))
-    # Load given slots
-    for(i in names(args))
-			slot(object, i) <- args[[i]]
-
-    return(object)
-} # }}}
+  grw=FLPar("linf"=c(grwPar["linf"]),"k"=c(grwPar["k"]),"lc"=c(grwPar["linf"])*0.05,"a"=c(grwPar["a"]),"b"=c(grwPar["b"]))
+  
+  zA=FLsz(om,grw=grw)
+  
+  return(list(om=om,zA=zA))}

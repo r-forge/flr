@@ -8,54 +8,51 @@ iters=function(what=NULL){
        "residuals",     TRUE,    FALSE,    TRUE,
       
        "grw",           TRUE,    TRUE,     FALSE,
+       "se",            TRUE,    FALSE,    TRUE,
        "params",        TRUE,    FALSE,    TRUE,
-       "bounds",        TRUE,    TRUE,     FALSE,
+       "bounds",        FALSE,   FALSE,    FALSE,
        "priors",        FALSE,   FALSE,    FALSE,
       
        "vcov",          TRUE,    FALSE,    TRUE,
-       "hessian",       TRUE,    FALSE,    TRUE,
-      
-       "logLik",        TRUE,    FALSE,    TRUE,
-       "rsdlVar",       TRUE,    FALSE,    TRUE,
-       "dof",           TRUE,    FALSE,    TRUE,
-       "stopmess",      TRUE,    FALSE,    TRUE)
+       "hessian",       TRUE,    FALSE,    TRUE)
   
-  it=t(array(it,c(4,15)))
+  it=t(array(it,c(4,12)))
 
-  it=data.frame(array(as.logical(it[,-1]),dim=c(15,3),dimnames=list(slot=it[,1],iter=c("n","write","read"))))
+  it=data.frame(array(as.logical(it[,-1]),dim=c(12,3),dimnames=list(slot=it[,1],iter=c("n","write","read"))))
 
-  if (is.null(what)) return(it) else return(it[what,])}
-
+  if (is.null(what)) return(it) else return(dimnames(it)[[1]][it[,what]])}
 
 chkIters=function(object){
-  nIts=dims(object)$iter
   
   ## any inputs iters>1
-  slts=dimnames(subset(iters(),read))[[1]]
-  maply(slts, function(x) dims(slot(object,x)))
+  itersW=maply(iters("write"), function(x) dims(slot(object,x))$iter)
   
-  ## any outputs iters>1
-  slts=dimnames(subset(iters(),write))[[1]]
-  maply(slts, function(x) dims(slot(object,x)))
+  ## set outputs
+  if (!all(itersW %in% c(1,max(itersW)))) stop("Iter not ´1 or n´")
+  nits=max(itersW)
+  for (i in iters("read"))
+    slot(object, i) = propagate(slot(object, i),nits)
   
-  }
-
+  object}
+  
 
 ini=function(object,breaks){
     its    = 1:max(dim(object@obs)[6],dim(object@n)[6])
     nbreaks=length(breaks)
     parNms =c(paste("z",1:(length(breaks)+1),sep=""),paste("brk",1:nbreaks,sep=""),"sigma")
     nPar   =length(parNms)  
-    
+    object@hat      =FLQuant(NA, dimnames=dimnames(object@obs))
+    object@residuals=FLQuant(NA, dimnames=dimnames(object@obs))
+
     par       =c(rep(0.5,nbreaks+1),breaks,10) 
     names(par)=parNms
     par       =FLPar(par)
-    se        =par
     bounds    =array(NA, dim=c(length(parNms),4),dimnames=list(param=parNms,c("phase","lower","initial","upper")))
     priors    =array(NA, dim=c(length(parNms),3),dimnames=list(param=parNms,c("a","b","pdf")))
     
     object@params=par
-    object@se    =se
+    object@se    =par 
+    object@se[]  =NA
     object@priors=priors
     object@bounds=bounds 
     

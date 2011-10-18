@@ -8,7 +8,10 @@ setGeneric('admbRead', function(object,...)
 setMethod('admbRead', signature(object='FLsz'),
   function(object,pathNm) .admbWrite(object,pathNm))
     
-.admbWrite = function(object, pathNm, cmdOps) {
+setGeneric('admbFit', function(object,...)
+   standardGeneric('admbFit'))
+
+.admbWrite = function(object) {
 
     ## Data
     ObsLength    = object@obs
@@ -53,22 +56,36 @@ setMethod('admbRead', signature(object='FLsz'),
                      "stepsize"                                    =5,
                      "casenum"                                     =10)
    
-  writeADMB(dat, paste(pathNm,"seine.dat",sep="/"))}
+  writeADMB(dat,"seine.dat")
+    
+  # ctl file
+  ctl <- object@bounds 
+  ctl[,2:4] <- log(ctl[,2:4])
+  ctl <- alply(ctl,1)
+  names(ctl) <- dimnames(object@bounds)$params
+  writeADMB(ctl, "seine.ctl")
+    
+  # prr file
+  prr <- object@priors 
+  prr <- alply(prr,1)
+  names(prr) <- dimnames(object@priors)$params
+  writeADMB(prr, "seine.prr")
+  }
   
-.admbRead = function(object,pathNm) {
+.admbRead = function(object,i) {
 
-     rep=readADMB(paste(pathNm,"/seine.rep",sep=""))
+     rep=readADMB("seine.rep")
 
-     std=read.table(paste(pathNm,"/seine.std",sep=""),skip=1)[,-1]
+     std=read.table("seine.std",skip=1)[,-1]
      names(std)=c("param","value","sd")
  
-     params(object)=bounds(object)[,"initial"]
-     params(object)[bounds(object)[,"phase"]>0]=std[,"value"]
+     params(object)[,i]=bounds(object)[,"initial"]
+     params(object)[bounds(object)[,"phase"]>0,i]=std[,"value"]
      
-     object@se[]= 0
-     object@se[object@bounds[,"phase"]>0]=std[,"sd"]
-     object@hat      =FLQuant(rep$hat,      dimnames=dimnames(object@obs))
-     object@residuals=FLQuant(rep$Residuals,dimnames=dimnames(object@obs))
+     object@se[,i]= 0
+     object@se[object@bounds[,"phase"]>0,i]=std[,"sd"]
+     object@hat[,,,,,i]      =FLQuant(rep$hatLen,   dimnames=dimnames(iter(object@obs,i)))
+     object@residuals[,,,,,i]=FLQuant(rep$Residuals,dimnames=dimnames(iter(object@obs,i)))
       
       # object@vcov    =rep$vcov     
       # object@hessian =rep$hessian      
@@ -80,75 +97,46 @@ setMethod('admbRead', signature(object='FLsz'),
 
      return(object)}
 
+setMethod('admbFit', signature(object='FLsz'),
+  function(object, cmdOps=paste("-maxfn 500"), admbNm="seine", package="FLsz", dir=tempdir()) {
 
-setMethod('admbBD', signature(object='FLsz'),
-  function(object, cmdOps=paste("-maxfn 500"), admbNm="seine", dir=tempdir()) {
-
+    ##### set up temp dir with exe for data files
     # Linux
     if (R.version$os=="linux-gnu") {
       # executable
-      exe <- paste(system.file("bin", "linux", package="FLBioDym", mustWork=TRUE),
-        admbNm, sep="/")
+      exe <- paste(system.file("bin", "linux", package=package, mustWork=TRUE),admbNm, sep="/")
       file.copy(exe, dir)
       path <- paste(dir, "/", sep="")
 
     # Wind0ws
     } else if (.Platform$OS.type == "windows") {
       # executable
-      exe <- paste(system.file("bin", "windows", package="FLBioDym", mustWork=TRUE),
+      exe <- paste(system.file("bin", "windows", package=package, mustWork=TRUE),
         paste(admbNm, ".exe", sep=""), sep="/")
       file.copy(exe, dir)
       path <- paste(dir, "\\", sep="")
-    }
+    
     # Mac OSX
     # or fail!
-    else {
+    }else 
       stop()
-    }
-
-    # create input files
-    # ctl file
-    ctl <- object@bounds 
-    ctl[,2:4] <- log(ctl[,2:4])
-    ctl <- alply(ctl,1)
-    names(ctl) <- dimnames(object@bounds)$params
-    writeADMB(ctl, paste(path, "/", admbNm, ".ctl", sep=""))
-    
-    # prr file
-    prr <- object@priors 
-    prr <- alply(prr,1)
-    names(prr) <- dimnames(object@priors)$params
-    writeADMB(prr, paste(path, "/", admbNm, ".prr", sep=""))
-   
+        
     # change wd to avoid ADMB case bug
     oldwd <- getwd()
-    setwd(path)
+    setwd(dir)
 
-    # propagate as needed
-    its <- dims(object)$iter
-    # params
-    params(object) <- propagate(params(object)[,1], its)
-    # fitted
-    fitted(object) <- FLQuant(dimnames=dimnames(index(object))[1:5], iter=its)
-    # stock
-    stock(object) <- FLQuant(dimnames=dimnames(stock(object))[1:5], iter=its)
-
-    # vcov
-    vcov(object)=FLPar(array(NA, dim=c(dim(params(object))[1],dim(params(object))[1],
-      dims(object)$iter), dimnames=list(params=dimnames(params(object))[[1]],
-      params=dimnames(params(object))[[1]],iter=1:its)))
+    object=chkIters(object)
+    for(i in seq(dims(object)$iter)) {
+        # create ADMB input files
+       .admbWrite(iter(object, i))
+       
+       # run
+       system(paste("./", admbNm, " ", cmdOps, sep=""))
+ 
+       # read ADMB output files
+       object=.admbRead(object, i)
+      }
     
-    # call across iters
-    # TODO foreach
-    # res <- foreach(i = seq(its), .combine='combine') %dopar% runADMBBioDym(FLCore::iter(object, i), path, admbNm, cmdOps)
-    for(i in seq(its)) {
-      res <- runADMBBioDym(iter(object, i), path, admbNm, cmdOps)
-      iter(stock(object), i)  <- res@stock
-      iter(fitted(object), i) <- res@fitted
-      iter(params(object), i) <- res@params[,1]
-    }
-
     setwd(oldwd)
-  
+   
     return(object)}) 
-
