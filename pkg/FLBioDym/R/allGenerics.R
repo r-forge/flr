@@ -8,9 +8,9 @@
 setGeneric('FLBioDym', function(object, ...)
   standardGeneric('FLBioDym'))
 
-# setGeneric( 'msy', function(object,params,...)
-#    standardGeneric( 'msy'))
-# 
+setGeneric( 'msy', function(object,params,...)
+    standardGeneric( 'msy'))
+ 
 setGeneric('fmsy', function(object,params,...)
   standardGeneric('fmsy'))
 
