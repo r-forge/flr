@@ -8,12 +8,15 @@ mseFLBioDym<-function(OM,start,sr,srRsdl,
                       bounds=NULL){
     
   ## Get number of iterations in OM
-  nits  =dims(OM)$iter
-
+  nits=c(OM=dims(OM)$iter, sr=dims(params(sr))$iter, rsdl=dims(srRsdl)$iter)
+  if (length(unique(nits))>=2 & !(1 %in% nits)) ("Stop, iters not '1 or n' in OM")
+  nits=max(nits)
+  stock(OM)=propagate(stock(OM),nits)
+ 
   #### Observation Error (OEM) setup #######################
   ## Random variation for Catch & CPUE, CV=0.25%
   bd       =as(OM,"FLBioDym")
-  bd       =propagate(bd,dims(object)$iter)
+  bd       =propagate(bd,nits)
  
   index(bd)=index(bd)*rlnorm(prod(dim(index(bd))),0,CV)
   
