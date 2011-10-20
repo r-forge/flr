@@ -62,6 +62,7 @@ setMethod( 'TAC', signature(object='FLBioDym'),
   function(object,harvest,...){
   ## gets TAC
   yr    =dims(object)$maxyear
+  catch(object)=propagate(catch(object),dims(object)$iter)
   object=fwd(window(object,end=yr), harvest=harvest)
 
   return(catch(object)[,ac(yr)])})
