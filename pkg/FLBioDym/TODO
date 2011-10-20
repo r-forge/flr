@@ -20,9 +20,13 @@ stock(bd)/bmsy(bd)
 2.8 Iters for bounds
 2.9 Iter checking methods
 2.10 Multiple Stocks for RH
+2.11 MCMC
+2.12 backward projection so to estimate STD of BMSY 
 
 3) Genericfaction
-see FLsz admb.R, these are generic methods based on FLBioDym
+3.1 see FLsz admb.R, these are generic methods based on FLBioDym
+3.2 DLL interface
+3.3 MCMC
 
 DONE
 ----
