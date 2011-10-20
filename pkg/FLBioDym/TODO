@@ -11,9 +11,19 @@ stock(bd)/bmsy(bd)
 
 2) Enhancements to add
 2.1 Multi-processor stuff
+2.2 Kobe methods
+2.3 FLBioDyms
+2.4 plot for FLBioDyms
+2.5 Other SP functions
+2.6 Process error & REs
+2.7 FLIndexPMs
+2.8 Iters for bounds
+2.9 Iter checking methods
+2.10 Multiple Stocks for RH
 
 3) Genericfaction
 see FLsz admb.R, these are generic methods based on FLBioDym
+
 DONE
 ----
 20.10.2011 - To add a TODO file
