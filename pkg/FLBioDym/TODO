@@ -1,8 +1,16 @@
 TODO
 ----
+1) bugs to fix
 
+# 1.1 operators with iters
+bd=simFLBioDym()
+params(bd)=propagate(params(bd),10)
+stock(bd)/bmsy(bd)
+stock(bd)=propagate(stock(bd),10)
+stock(bd)/bmsy(bd)
 
-
+2) Enhancements to add
+3) Genericfaction
 
 DONE
 ----
