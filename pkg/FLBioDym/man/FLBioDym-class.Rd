@@ -29,7 +29,6 @@
 \item{hessian}{Hessian matrix. \code{array}.}
 \item{rsdlVar}{Residual Variance. \code{numeric}.}
 \item{dof}{Degress of freedom. \code{array}.}
-\item{stats}{Statistics for estimated parameters. \code{array}.}
 \item{details}{extra information on the model fit procedure. \code{list}.}
 }}
 \section{Extends}{\describe{
@@ -84,9 +83,6 @@ refpts(albBD)
 msy( albBD)
 bmsy(albBD)
 fmsy(albBD)
-
-# t tests
-albBD@stats
 
 # covariance estimates
 vcov(albBD)
