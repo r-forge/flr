@@ -35,9 +35,8 @@ simFLBioDym <- function(model='pellat',
     object@priors[,1]=-1
     object <- fwd(object, harvest=harvest)
 
-    index(object)=(c(stock(object)[,-dim(index(object))[2]])+c(stock(object)[,-1]))/2
-    print(index(object))
-    print(stock(object))
+    index(object) <- (c(stock(object)[,-dim(index(object))[2]])+c(stock(object)[,-1]))/2
+    
     # Load given slots
     for(i in names(args))
 			slot(object, i) <- args[[i]]

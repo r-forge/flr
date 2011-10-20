@@ -165,8 +165,8 @@ setMethod("combine", signature(x="FLBioDym", y="FLBioDym"),
 
 # }}}
 
-
-calcSigma<-function(obs,hat=rep(0,length(obs)),error="log"){
+# calcSigma et al {{{
+calcSigma <- function(obs,hat=rep(0,length(obs)),error="log"){
    yrs=dimnames(obs)$year
    yrs=yrs[yrs %in% dimnames(hat)$year]
    hat=hat[,yrs]
@@ -233,4 +233,5 @@ setInit=function(object){
   object@bounds["b0","phase"]=-1
   object@priors[,1]=-1
  
-  return(object)}
+  return(object)
+} # }}}

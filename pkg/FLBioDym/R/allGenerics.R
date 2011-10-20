@@ -16,10 +16,7 @@ setGeneric('fmsy', function(object,params,...)
 
 setGeneric('bmsy', function(object,params,...)
   standardGeneric('bmsy'))
-# 
-# setGeneric('refpts', function(object,params,...)
-#   standardGeneric('refpts'))
-# 
+
 setGeneric('refptSE', function(object,...)
   standardGeneric('refptSE'))
 
