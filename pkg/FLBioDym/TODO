@@ -10,8 +10,10 @@ stock(bd)=propagate(stock(bd),10)
 stock(bd)/bmsy(bd)
 
 2) Enhancements to add
-3) Genericfaction
+2.1 Multi-processor stuff
 
+3) Genericfaction
+see FLsz admb.R, these are generic methods based on FLBioDym
 DONE
 ----
 20.10.2011 - To add a TODO file
