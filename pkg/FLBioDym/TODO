@@ -9,6 +9,9 @@ stock(bd)/bmsy(bd)
 stock(bd)=propagate(stock(bd),10)
 stock(bd)/bmsy(bd)
 
+#1.2
+check jacknife bias
+
 2) Enhancements to add
 2.1 Multi-processor stuff
 2.2 Kobe methods
@@ -22,6 +25,7 @@ stock(bd)/bmsy(bd)
 2.10 Multiple Stocks for RH
 2.11 MCMC
 2.12 backward projection so to estimate STD of BMSY 
+2.13 add jacknife stuff
 
 3) Genericfaction
 3.1 see FLsz admb.R, these are generic methods based on FLBioDym
