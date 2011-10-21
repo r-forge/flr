@@ -1,36 +1,32 @@
-TODO
+ADD
+---
+
+- Using foreach and multicore/OpenMPI
+- Kobe methods *
+- FLBioDyms
+- plot(FLBioDyms)
+- sp methods *
+- Process error & REs *
+- FLIndexPMs *
+- iters for @bounds
+- iter checking *
+- multiple stocks for RH *
+- McMC
+- Backwards projection to estimate std of B_MSY
+- make admb* methods generic and reusable
+- DLL interface
+- jacknife
+
+
+BUGS
 ----
-1) bugs to fix
 
-# 1.1 operators with iters
-bd=simFLBioDym()
-params(bd)=propagate(params(bd),10)
-stock(bd)/bmsy(bd)
-stock(bd)=propagate(stock(bd),10)
-stock(bd)/bmsy(bd)
-
-#1.2
-check jacknife bias
-
-2) Enhancements to add
-2.1 Multi-processor stuff
-2.2 Kobe methods
-2.3 FLBioDyms
-2.4 plot for FLBioDyms
-2.5 Other SP functions
-2.6 Process error & REs
-2.7 FLIndexPMs
-2.8 Iters for bounds
-2.9 Iter checking methods
-2.10 Multiple Stocks for RH
-2.11 MCMC
-2.12 backward projection so to estimate STD of BMSY 
-2.13 add jacknife stuff
-
-3) Genericfaction
-3.1 see FLsz admb.R, these are generic methods based on FLBioDym
-3.2 DLL interface
-3.3 MCMC
+21.10.2011 - Operators with iters
+  bd=simFLBioDym()
+  params(bd)=propagate(params(bd),10)
+  stock(bd)/bmsy(bd)
+  stock(bd)=propagate(stock(bd),10)
+  stock(bd)/bmsy(bd)
 
 DONE
 ----
