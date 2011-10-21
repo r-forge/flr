@@ -2,24 +2,27 @@ ADD
 ---
 
 - Using foreach and multicore/OpenMPI
-- Kobe methods *
+- Kobe methods for producing probabilities etc. (FLQuant/FLPar operators broken) 
 - FLBioDyms
 - plot(FLBioDyms)
-- sp methods *
-- Process error & REs *
-- FLIndexPMs *
+- Alternative Stock Production functions, e.g. fox, ...
+- ADMB-RE to implement Randon effects to allow modelling of process error
+- Add process error in projections
+- FLIndexPMs, alternative likelihood formualtions & more than i index
 - iters for @bounds
-- iter checking *
-- multiple stocks for RH *
+- iter checking "1 or n" depends on what is being done! i.e. fitting, projection or MSE
+- multiple stocks for Robin Hood assessments
 - McMC
 - Backwards projection to estimate std of B_MSY
-- make admb* methods generic and reusable
+- make admb methods generic and reusable, i.e. currentkly admb methods are specific to    FLBioDym
 - DLL interface
 - jacknife
 
 
 BUGS
 ----
+2.14 replace fwd with C++ code
+2.15 replace stock slot with a method
 
 21.10.2011 - Operators with iters
   bd=simFLBioDym()
