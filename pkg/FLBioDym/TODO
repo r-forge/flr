@@ -1,8 +1,11 @@
 ADD
 ---
 
+- vcov & hessian are arrays make FLPar objects  
+- sort out 1 & n iters and add validation
+- fwd to work with iters
 - Using foreach and multicore/OpenMPI
-- Kobe methods for producing probabilities etc. (FLQuant/FLPar operators broken) 
+- Kobe methods for producing probabilities etc. (FLQuant/FLPar needs to be fixed) 
 - FLBioDyms
 - plot(FLBioDyms)
 - Alternative Stock Production functions, e.g. fox, ...
@@ -26,11 +29,19 @@ BUGS
 
 21.10.2011 - Operators with iters
   bd=simFLBioDym()
+  class(stock(bd)/bmsy(bd))
   params(bd)=propagate(params(bd),10)
   stock(bd)/bmsy(bd)
   stock(bd)=propagate(stock(bd),10)
+
+- window(bdTrue, start=20)
   stock(bd)/bmsy(bd)
+
+̣
+- bd=simFLBioDym()
+- sp(), messes up iters in params & FLquants
 
 DONE
 ----
+
 20.10.2011 - To add a TODO file

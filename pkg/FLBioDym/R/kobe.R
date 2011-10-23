@@ -1,7 +1,10 @@
 setMethod('kobe', signature(object='FLBioDym'),
-  function(object,xlim=c(0,2),ylim=xlim){
-    
-    res=model.frame(FLQuants("biomass"=stock(object)/bmsy(object),
-                             "harvest"=harvest(object)/fmsy(object)),drop=TRUE)    
-    invisible(kobe(res,xlim,ylim))})
+  function(object,lim=c(0,2),xlim=lim,ylim=xlim){
+      
+  res=model.frame(mcf(FLQuants(stock  =sweep(stock(  object),6,bmsy(object),"/"),
+                               harvest=sweep(harvest(object),6,fmsy(object),"/"))),drop=TRUE)
+  
+  res=cbind(res,kobeP(res$stock,res$harvest))
+  
+  invisible(kobe(res,xlim,ylim))})
 

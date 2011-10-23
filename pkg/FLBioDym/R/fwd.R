@@ -35,13 +35,17 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
       if (max(as.numeric(yrs)) == range(object,"maxyear"))
         stock(object) <- window(stock(object),end=range(object,"maxyear")+1)
 
+     nits=max(dims(object)$iter,dims(harvest)$iter)
+     if (nits>1){ 
+               catch(object)=propagate(catch(object),nits)
+               stock(object)=propagate(stock(object),nits)
+               params(object)=propagate(params(object),nits)}   
+    
       for(y in as.numeric(yrs)) {
         if (ctcNull)
-          catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
-        stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] +
-          sp(object)[, ac(y)]
-# print(paste(stock(object)[,ac(y)], catch(object)[,ac(y)], sp(object)[,ac(y)],   stock(object)[,ac(y+1)], sep=' = '))
-      }
+           catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
+         stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] + sp(object)[, ac(y)]
+         }
 
     stock(object)[stock(object) < 0] = 0
 
