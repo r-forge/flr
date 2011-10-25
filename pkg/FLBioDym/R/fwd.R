@@ -17,7 +17,7 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
     ## check year range
     if (!ctcNull) {
       if (!(all(dimnames(catch)$year %in% dimnames(catch(object))$year)))
-        stop("years in catch & stock dont match")
+         object = window(object,end=dims(catch)$maxyear)
       catch(object)[,dimnames(catch)$year] <- catch
       yrs <- dimnames(catch)$year
     } else {
@@ -35,7 +35,8 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
       if (max(as.numeric(yrs)) == range(object,"maxyear"))
         stock(object) <- window(stock(object),end=range(object,"maxyear")+1)
 
-     nits=max(dims(object)$iter,dims(harvest)$iter)
+     if (!is.null(harvest)) nits=max(dims(object)$iter,dims(harvest)$iter) else
+                            nits=max(dims(object)$iter,dims(catch  )$iter)
      if (nits>1){ 
                catch(object) =propagate(catch(object),nits)
                stock(object) =propagate(stock(object),nits)
