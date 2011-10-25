@@ -1,9 +1,10 @@
 ADD
 ---
 
-- vcov & hessian are arrays make FLPar objects  
+- vcov & hessian are arrays make them FLPar objects  
 - sort out 1 & n iters and add validation
-- fwd to work with iters
+- jacknife and to work with iters
+- admbBD to work with iters
 - Using foreach and multicore/OpenMPI
 - Kobe methods for producing probabilities etc. (FLQuant/FLPar needs to be fixed) 
 - FLBioDyms
@@ -19,8 +20,6 @@ ADD
 - Backwards projection to estimate std of B_MSY
 - make admb methods generic and reusable, i.e. currentkly admb methods are specific to    FLBioDym
 - DLL interface
-- jacknife
-
 
 BUGS
 ----
@@ -41,7 +40,9 @@ BUGS
 - bd=simFLBioDym()
 - sp(), messes up iters in params & FLquants
 
+- bounds(object)<- etc not working
 DONE
 ----
+- fwd to work with iters
 
 20.10.2011 - To add a TODO file

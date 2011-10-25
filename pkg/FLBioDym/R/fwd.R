@@ -7,7 +7,7 @@
 
 # fwd(FLBioDym) {{{
 setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
-  function(object, catch=NULL, harvest=NULL) {
+  function(object, catch=NULL, harvest=NULL, pe=NULL, peMult=TRUE) {
 
     ## catch or harvest?
     ctcNull=is.null(catch) 
@@ -44,7 +44,12 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
       for(y in as.numeric(yrs)) {
         if (ctcNull)
            catch(object)[,ac(y)] <- stock(object)[,ac(y)]*harvest[,ac(y)]
-         stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] + sp(object)[, ac(y)]
+        
+         if (!is.null(pe)) {
+             if (peMult) sp.=sp(object)[, ac(y)]*pe[, ac(y)] 
+             else        sp.=sp(object)[, ac(y)]+pe[, ac(y)]
+         }else sp.=sp(object)[, ac(y)]
+         stock(object)[,ac(y+1)] <- stock(object)[,ac(y)] - catch(object)[,ac(y)] + sp.
          }
 
     stock(object)[stock(object) < 0] = 0

@@ -4,7 +4,7 @@
 # Copyright 2003-2011 FLR Team. Distributed under the GPL 2 or later
 # Maintainer: Iago Mosqueira, JRC
 # $Id:  $
-       
+
 # simFLBioDym {{{
 simFLBioDym <- function(model='pellat', 
   params=FLPar(r=0.5, K=100, p=1, b0=1.0,q=1,sigma=0.3),
