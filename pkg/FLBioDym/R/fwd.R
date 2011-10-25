@@ -37,9 +37,9 @@ setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
 
      nits=max(dims(object)$iter,dims(harvest)$iter)
      if (nits>1){ 
-               catch(object)=propagate(catch(object),nits)
-               stock(object)=propagate(stock(object),nits)
-               params(object)=propagate(params(object),nits)}   
+               catch(object) =propagate(catch(object),nits)
+               stock(object) =propagate(stock(object),nits)
+               if (dims(params(object))$iter==1) params(object)=propagate(params(object),nits)}   
     
       for(y in as.numeric(yrs)) {
         if (ctcNull)
