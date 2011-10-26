@@ -4,7 +4,6 @@ double calcSP(FLRConstBD model, double stock, double *params)
    {
    double sp=0.0;
 
-
    switch(model) {
       case FLRConst_BDPellaT:
   	     sp = params[0]*stock;
@@ -15,7 +14,58 @@ double calcSP(FLRConstBD model, double stock, double *params)
 
    return sp;}
 
-extern "C" SEXPDLLExport fwdFLBioDym(SEXP xBD, SEXP xCatch, SEXP xHarvest, SEXP xPE, SEXP xMult){
+// 
+// extern "C" SEXPDLLExport SP(SEXP xModel, SEXP xPar, SEXP xStock, SEXP xCatch, SEXP xHarvest, SEXP xPE, SEXP xMult)
+//    {
+//    SEXP RtnVal = R_NilValue;
+// 
+//    FLQuant catch_(xCatch);
+//    FLQuant catch_(xHarvest);
+//    FLQuant catch_(xStock);
+//    FLQuant catch_(xPE);
+//    FLQuant par(xPar);
+// 
+// 
+//    FLRConstBD *model;
+// 
+//    if (!isInteger(xModel)){
+//       UNPROTECT(2);
+//       return RtnVal;}
+// 
+//    // Check that we have a model specified for each year & stock
+//    if (LENGTH(xModel)<(ssb.maxyr()-ssb.minyr()+1)){
+//       UNPROTECT(3);
+//       return RtnVal;}
+// 
+//    int *dmodel = INTEGER_POINTER(xModel);
+//    model = new FLRConstSRR[1] - 1;
+// 
+//    model[1]=(FLRConstSRR)((int)dmodel[0]);
+// 
+//    // Recruits as a function of SSB
+//    for (int iIter = 1; iIter<=ssb.niters(); iIter++)
+//      for (int iArea = 1; iArea <= ssb.nareas(); iArea++)
+//       for (int iSeason = 1; iSeason <= ssb.nseasons(); iSeason++)
+//  		    for (int iUnit = 1; iUnit <= ssb.nunits(); iUnit++)
+// 				  for (int iYr =ssb.minyr(); iYr<=ssb.maxyr(); iYr++){
+// 
+//        	    //para [0] = a, para[1] = b, ... para[n] = rho
+// 	          int nPar = par.maxquant()-par.minquant() + 1;
+// 				    double* para = new double[nPar];
+// 
+//             for (int i=1; i<=nPar;i++)
+//  	            para[i-1] = par(i,1,iUnit,iSeason,iArea,iIter);
+// 
+//             double ssb_=ssb(1,iYr,iUnit,iSeason,iArea,iIter);
+//   				  double rec_=srr((FLRConstSRR)model[1], ssb_, para);
+// 
+//             rec(1,iYr,iUnit,iSeason,iArea,iIter)=rec_;}
+// 
+//     delete [] (model+1);
+// 
+//     return rec.Return();}
+
+extern "C" SEXPDLLExport fwdFLBioDym(SEXP xModel, SEXP xParams, SEXP xCatch, SEXP xHarvest, SEXP xPE, SEXP xMult){
    SEXP biomass = R_NilValue;
    
    FLQuant  _catch(xCatch);
