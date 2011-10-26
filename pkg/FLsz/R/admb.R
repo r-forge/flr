@@ -35,20 +35,22 @@ setMethod('admbFit', signature(object='FLsz'),
     }else 
       stop()
         
-    # change wd to avoid ADMB case bug
     oldwd <- getwd()
-    setwd(dir)
-
-    object=chkIters(object)
-    for(i in seq(dims(object)$iter)) {
-        # create ADMB input files
-       admbDat(iter(object, i))
-       
-       # run
-       system(paste("./", admbNm, " ", cmdOps, sep=""))
  
-       # read ADMB output files
-       object=admbRep(object, i)}
+    object=chkIters(object)
+    for (i in seq(dims(object)$iter)) {
+        # change wd to avoid ADMB case bug
+        setwd(dir)
+
+        # create ADMB input files
+        admbDat(iter(object, i))
+       
+        # run
+        system(paste("./", admbNm, " ", cmdOps, sep=""))
+ 
+        # read ADMB output files
+        object=admbRep(object, i)
+        }
     
     setwd(oldwd)
    
