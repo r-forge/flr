@@ -3,13 +3,16 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1.0in]{geometry}
 \usepackage{url}
-\title{SQLiteFl internals}
+\usepackage{Sweave}
+\usepackage{fancyvrb} 
+
+\title{SQLiteFL internals}
 \author{Iago Mosqueira\\\smaller EC JRC, Ispra}
 \date{June 2011}
 
 % Sweave options
 %  code output better formated
-\DefineVerbatimEnvironment{Sinput}{Verbatim} {xleftmargin=2em}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{xleftmargin=2em}
 \DefineVerbatimEnvironment{Soutput}{Verbatim}{xleftmargin=2em}
 \DefineVerbatimEnvironment{Scode}{Verbatim}{xleftmargin=2em}
 \fvset{listparameters={\setlength{\topsep}{0pt}}}
@@ -61,10 +64,6 @@ Objects belonging to any FLR \emph{complex} class are commonly based on the \tex
 % R commands shown in document
 <<echo = TRUE, results = hide>>=
   library(SQLiteFL)
-@
-
-% R commands shown in document & output too
-<<echo = TRUE, results = tex>>=
 @
 
 \end{document}

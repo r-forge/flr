@@ -117,7 +117,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d1, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -141,7 +141,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -153,7 +153,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d2, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -177,7 +177,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -189,7 +189,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d3, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -213,7 +213,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -225,7 +225,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d4, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -249,7 +249,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -261,7 +261,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d5, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -285,7 +285,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -297,7 +297,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
     SET_STRING_ELT(d6, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -322,7 +322,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -352,7 +352,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -375,7 +375,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
   }
   rc = sqlite3_step(stmt);
   /* Can SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -390,7 +390,7 @@ SEXP getSlotFLComp(sqlite3 *db, const char *name, const char *slot)
       REAL(v)[i] = sqlite3_column_double(stmt, 0);
     rc = sqlite3_step(stmt);
     /* Can SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -435,7 +435,7 @@ SEXP getMetaFLComp(sqlite3 *db, const char *name, const char *field)
   }
   rc = sqlite3_step(stmt);
   /* Can statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -474,7 +474,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
   }
   rc = sqlite3_step(stmt);
   /* Can statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -501,7 +501,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%s", "HERE");
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
@@ -516,7 +516,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
     REAL(Range)[i] = sqlite3_column_double(stmt, 1);
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -536,7 +536,7 @@ SEXP getRangeFLComp(sqlite3 *db, const char *name)
 /* Function int finalizeAllstmt(sqlite3 *db)  {{{*/
 int finalizeAllstmt(sqlite3 *db)
 {
-  int rc;
+  int rc=0;
   sqlite3_stmt *stmt;
     
   while((stmt = sqlite3_next_stmt(db, 0))!=0)
@@ -578,7 +578,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -615,7 +615,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -627,7 +627,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     SET_STRING_ELT(d1, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -651,7 +651,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -663,7 +663,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     SET_STRING_ELT(d2, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -687,7 +687,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -699,7 +699,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     SET_STRING_ELT(d3, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
     rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -723,7 +723,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -735,7 +735,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     SET_STRING_ELT(d4, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
     /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -759,7 +759,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -770,8 +770,8 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   while(rc == SQLITE_ROW) {
     SET_STRING_ELT(d5, i++, mkChar((char *)sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
-    /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  /* Can quant SELECT statement be run? */
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -795,7 +795,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -807,7 +807,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
     SET_STRING_ELT(d6, i++, mkChar((char *) sqlite3_column_text(stmt, 0)));
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -832,7 +832,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -862,7 +862,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can quant SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -885,7 +885,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
   }
   rc = sqlite3_step(stmt);
   /* Can SELECT statement be run? */
-  if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+  if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
     Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -900,7 +900,7 @@ SEXP getFromSlotFLComp(sqlite3 *db, const char *name, const char *slot, const ch
       REAL(v)[i] = sqlite3_column_double(stmt, 0);
     rc = sqlite3_step(stmt);
     /* Can SELECT statement be run? */
-    if(rc != SQLITE_DONE & rc != SQLITE_ROW) {
+    if((rc != SQLITE_DONE) & (rc != SQLITE_ROW)) {
       Rprintf("%i: %s\n %s\n", rc, sqlite3_errmsg(db), sql);
       sqlite3_finalize(stmt);
       sqlite3_close(db);
@@ -931,4 +931,3 @@ SEXP getRangeElement(SEXP range, const char *str)
     }
   return elmt;
 } /*  }}} */
-
