@@ -13,13 +13,13 @@ public:
 	fwdStk(void);
 	~fwdStk(void);
 
-    SEXP Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail);    
+  SEXP Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail,SEXP xMaxFBar);    
 
-	void InitAvail(SEXP x); 
+	void InitAvail(  SEXP x); 
 
 	double getVal(FLRConst_Target quantity,  int iyr, int iunit, int iseason, int iarea, int iter);
 
-	void project(double  *x,                int iyr, int iunit, int iseason, int iarea, int iter, bool OnlyReplaceNA=FALSE, bool OnlyCalcN=FALSE);
+	void project(double  *x,                 int iyr, int iunit, int iseason, int iarea, int iter, bool OnlyReplaceNA=FALSE, bool OnlyCalcN=FALSE);
     void project(adouble *x, adouble *func, double *Trgt, int iTrgt, int nrow, double *Ary, int iter);
 
 	adouble computeStock(   FLQuant_adolc &n, FLQuant_adolc &f, int iyr, int iunit, int iseason, int iarea, int iter);      
@@ -36,10 +36,11 @@ public:
 	double SSB(                                                 int iyr, int iunit, int iseason, int iarea, int iter);
 	double Fbar(                                                int iyr, int iunit, int iseason, int iarea, int iter);
 
-    SEXP run(SEXP xTrgt, SEXP xAry) ;   
+  SEXP run(SEXP xTrgt, SEXP xAry) ;   
 protected:        
 	FLStock stk;
 	FLQuant avail;
+  FLQuant MaxF;
 
 	bool indepLastYr;
 

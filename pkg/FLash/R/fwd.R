@@ -7,14 +7,14 @@
 
 ## fwd(FLStock)
 if (!isGeneric("fwd"))
-  setGeneric("fwd", function(object, fleets, ...)
+  setGeneric("fwd", function(object, ctrl, ...)
 	  standardGeneric("fwd"))
 
-setMethod("fwd", signature(object="FLStock", fleets = "missing"),
+setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
     function(object, ctrl,
                sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
-               availability=NULL)
-    {
+               availability=NULL,maxF=2.0)
+    {      
     if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
 
     ## make sure slots have correct iters 
@@ -86,7 +86,13 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
           stop("dim year mismatch in availability")
        }
 
-    x<-.Call("fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]], availability)
+   if (class(maxF)=="numeric" & length(maxF)==1) {
+      dmns=dimnames(rec(object))
+      dmns$age=1
+      maxf=FLQuant(maxF, dimnames=dmns)}
+   else maxf=maxF
+        
+    x<-.Call("fwd_adolc_FLStock", object, matrixTarget(ctrl@target), ctrl@trgtArray, yrs, sr$model, sr$params, sr$residuals, sr$residuals.mult[[1]], availability,maxF=maxf)
 
     if (is.numeric(x)) stop(x)
 
@@ -102,8 +108,76 @@ setMethod("fwd", signature(object="FLStock", fleets = "missing"),
     #desc@x<-desc(object)
     if (!is.null(endYr)) x <- window(x, end=endYr-1)
 
-    return(x)
-    }) 
+    return(x)}) 
+
+# setMethod("fwd", signature(object="FLStock", ctrl="FLQuant"),
+#     function(object, ctrl,
+#                sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
+#                availability=NULL,quantity="f",maxF=2.0)
+#     {
+#     ctrl.=apply(ctrl,1:5,mean,na.rm=TRUE)
+#    
+#     ctrl.=cbind(quantity=quantity,as.data.frame(ctrl.,drop=T))
+#     names(ctrl.)[seq(dim(ctrl.)[2])[names(ctrl.)=="data"]]="val"
+#     
+#     ctrl.=fwdControl(ctrl.)
+#     dmns=dimnames(ctrl.@trgtArray)
+#     dm  =dim(ctrl.@trgtArray)
+#     dmns$iter=dimnames(ctrl)$iter
+#     dm[3]    =dim(ctrl)[3]
+#  
+#     ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
+# 
+#     res=fwd(object,ctrl=ctrl.,
+#             sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
+#                availability=availability,maxF=maxF)  
+#     
+#     return(res)})
+
+setMethod("fwd", signature(object="FLStock", ctrl="missing"),
+    function(object, ctrl,
+               sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
+               availability=NULL,maxF=2.0,...)
+    {
+    args=list(...)
+    if (class(args[[1]])=="FLQuant"){
+      ctrl=args[[1]]
+      quantity=names(args)[[1]]}
+    
+    ctrl.=apply(ctrl,1:5,mean,na.rm=TRUE)
+   
+    ctrl.=cbind(quantity=quantity,as.data.frame(ctrl.,drop=T))
+    names(ctrl.)[seq(dim(ctrl.)[2])[names(ctrl.)=="data"]]="val"
+    
+    ctrl.=fwdControl(ctrl.)
+    dmns=dimnames(ctrl.@trgtArray)
+    dm  =dim(ctrl.@trgtArray)
+    dmns$iter=dimnames(ctrl)$iter
+    dm[3]    =dim(ctrl)[3]
+ 
+    ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
+
+    res=fwd(object,ctrl=ctrl.,
+            sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
+               availability=availability,maxF=maxF)  
+    
+    return(res)})
+
+setMethod("fwd", signature(object="FLStock", ctrl="FLQuants"),
+    function(object, ctrl,
+               sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
+               availability=NULL,maxF=2.0){    
+      
+    res=FLStocks(mlply(seq(length(ctrl)),
+                   function(x,object,ctrl,sr,sr.residuals,sr.residuals.mult,availability,maxF) {
+                      fwd(object,ctrl=ctrl[[x]],quantity=names(ctrl)[x],
+                          sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,availability=availability,maxF=maxF)
+                      
+          },
+          object=object,ctrl=ctrl,sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,availability=availability,maxF=maxF))                          
+                                
+    return(res)})
+
 
 #************ FLBiol and fleet methods ***********************************************
 # 

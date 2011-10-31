@@ -63,13 +63,16 @@ extern "C" SEXPDLLExport SepVPA_ad(SEXP xStock, SEXP xControl, SEXP xRefHarvest)
 
 
 // Uses fwdFLStock
-extern "C" SEXPDLLExport fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail) 
+extern "C" SEXPDLLExport fwd_adolc_FLStock(SEXP xStk,SEXP xTrgt,SEXP xAry,SEXP xYrs,SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail,SEXP xMaxF) 
     {
 	  fwdStk fwd;
 
-    fwd.Init(xStk, xYrs, xSRModel, xSRParam, xSRResiduals, xMult, xAvail);    
-    
+    fwd.Init(xStk, xYrs, xSRModel, xSRParam, xSRResiduals, xMult, xAvail,xMaxF);    
+
+    //MaxFBar = 2.0;
+
 	  return fwd.run(xTrgt, xAry);}
+
 
 extern "C" SEXPDLLExport fwd_adolc_FLBiol(SEXP xBiols, SEXP xFleets, SEXP xTrgt, SEXP xAryTrgt, SEXP xCtrl, SEXP xAryCtrl, SEXP xYrs, SEXP xDims, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail)    
     {
@@ -431,5 +434,4 @@ extern "C" SEXPDLLExport AdaptTapeGrad(SEXP xQ)
    
    return Grad.Return();
 	
-   return RtnVal;
-   }
+   return RtnVal;}

@@ -4,7 +4,7 @@
 #include "flc_adolc.hpp"
 #include "flc.hpp"
 
-#define MaxFBar 2.0
+//#define MaxFBar 2.0
 
 double norm(double *, int);
 

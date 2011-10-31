@@ -215,9 +215,9 @@ void fwdStk::project(double *x, int iyr, int iunit, int iseason, int iarea, int 
 
    double _fbar = stk.Fbar(iyr,iunit,iseason,iarea,iter);
    
-   if (_fbar>MaxFBar)
+   if (_fbar>MaxF(1,iyr,iunit,iseason,iarea,iter))
   	  for (int iage=stk.minquant; iage<=stk.maxquant; iage++)
-   	     stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*MaxFBar/_fbar;
+   	     stk.harvest(iage,iyr,iunit,iseason,iarea,iter)=stk.harvest(iage,iyr,iunit,iseason,iarea,iter)*MaxF(1,iyr,iunit,iseason,iarea,iter)/_fbar;
 	  
    // recruits
    int SSB_yr = __min(__max(iyr-stk.minquant,stk.minyr),stk.maxyr);
@@ -533,8 +533,7 @@ adouble fwdStk::MnSz(FLQuant_adolc &n, int iyr, int iunit, int iseason, int iare
       }
 
 
-   return mnsz/sumN;
-   }  
+   return mnsz/sumN;}  
 
 void fwdStk::InitAvail(SEXP x) 
    {
@@ -558,7 +557,7 @@ void fwdStk::InitAvail(SEXP x)
              }   
    }
 
-SEXP fwdStk::Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail)    
+SEXP fwdStk::Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResiduals,SEXP xMult,SEXP xAvail, SEXP xMaxF)    
     {
     SEXP Err = PROTECT(NEW_NUMERIC(1)); 
 
@@ -577,6 +576,7 @@ SEXP fwdStk::Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResi
        return Err;}
     
     avail.Init(xAvail);
+    MaxF.Init(xMaxF);
 
     UNPROTECT(1);
 
