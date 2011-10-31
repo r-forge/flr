@@ -115,10 +115,12 @@ setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
  
      return(object)})
 
-setMethod('fwdWindow', signature(x='FLStock',y="character"),
-  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear,
-           control=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE), ...){
-      if (y!="stf") stop("Only stf for now")
+setMethod('fwdWindow', signature(x='FLStock',y="missing"),
+  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear, ...){
+      stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
+
+      args=list(...)
+      if (!("stf" %in% names(args))) stop("Only stf for now")
       
       x@range["minyear"] <- start
       x@range["maxyear"] <- end
@@ -127,7 +129,8 @@ setMethod('fwdWindow', signature(x='FLStock',y="character"),
       
       stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
     
-      stfCtrl[names(control)]<-control
+      args[["stf"]]=args[["stf"]][args[["stf"]] %in% names(stfCtrl)]     
+      stfCtrl[args[["stf"]]]<-args[["stf"]]
       if (is.na(stfCtrl$fbar.nyears)) 
          stfCtrl$fbar.nyears<-stfCtrl$wt.nyears
  

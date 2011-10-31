@@ -282,3 +282,17 @@ setMethod('FLBRP', signature(object='FLBRP', sr='missing'),
 
    return(object)})
 # }}}
+
+setMethod('FLBRP', signature(object='FLBRP', sr='list'),
+  function(object, sr, ...){
+     
+     if ("model"  %in% names(sr)) model(object) =do.call(sr[["model"]], list())$model
+     if ("params" %in% names(sr)) params(object)=sr[["params"]]
+     
+     args <- list(...)
+     if ("fbar" %in% names(args))
+       args[["fbar"]]=FLQuant(args[["fbar"]])
+     for (slt in names(args))
+       slot(object, slt)<-args[[slt]]
+
+   return(object)})
