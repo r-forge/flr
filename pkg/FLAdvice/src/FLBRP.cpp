@@ -139,7 +139,7 @@ extern "C" SEXPDLLExport brp(SEXP xbrp, SEXP xref, SEXP xSR, SEXP xPar)
    
    SEXP RtnVal = brp.Return(xbrp);
 
-   SET_SLOT(RtnVal, install("refpts"), brp.brp(xref));       
+   SET_SLOT(RtnVal, install("FLPar"), brp.brp(xref));       
 
    return RtnVal; 
    }
