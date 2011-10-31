@@ -14,11 +14,10 @@ obj3=fwd(obj1,maxF=4)
 obj4=fwd(obj2,sr=obj1,f=FLQuant(.5,dimnames=list(year=80:101)))
 
 
-
 plot(FLStocks("as"=obj2,"fwd"=obj3))
 
 ## Run an MSE with biomass dynamic model
-obj3=mseFLBioDym(obj3, start=80, sr=obj1, CV = 0.3) 
+obj5=mseFLBioDym(obj3, start=80, sr=obj1, CV = 0.3) 
 
 ## 
 ctrl =FLQuant(.5,dimnames=list(year=80:101))
@@ -34,6 +33,6 @@ ctrls=FLQuants("f"=FLQuant(0.5,dimnames=list(year=80:101)),
                "f"=FLQuant(2.5,dimnames=list(year=80:101)),
                "f"=FLQuant(3.5,dimnames=list(year=80:101)))
 
-obj4=fwd(obj3,ctrls,sr=obj1)
+obj6=fwd(obj3,ctrls,sr=obj1)
 
 plot(fwd(obj2,ctrls,sr=obj))
