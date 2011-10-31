@@ -15,8 +15,8 @@ setGeneric('gislaSim', function(grw,...)
    standardGeneric('gislaSim'))
 setMethod('gislaSim', signature(grw="FLPar"),
    function(grw,
-            m  =function(L,Linf,k) exp(0.55 - 1.61*log(L) + 1.44*log(Linf) + log(k)),
-            mat=function(Linf,ato50=3) FLPar(a50=0.8776*Linf-0.038-ato50,ato95=ato50),
+            m  =function(L,linf,k) exp(0.55 - 1.61*log(L) + 1.44*log(linf) + log(k)),
+            mat=function(linf,ato50=3) FLPar(a50=0.8776*linf-0.038-ato50,ato95=ato50),
             sel=FLPar(a=1,sl=1,sr=1e6),
             sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40,ageOffset=0.5,...){
@@ -30,16 +30,16 @@ setMethod('gislaSim', signature(grw="FLPar"),
 
 gislaSim.=function(grw,mat,sel,m,sr,age,...){
    ## Biological processes
-   grw.=addPar(grw[!(dimnames(grw)$params=="Linf")],"sinf",grw["a"]*grw["Linf"]^grw["b"])
+   grw.=addPar(grw[!(dimnames(grw)$params=="linf")],"sinf",grw["a"]*grw["linf"]^grw["b"])
    wts =vonB(grw.,age)
 
    ## m
    if (is.function(m)){
-      L=wt2len(grw[c("a","b")],wts)
-      m=m(L,grw["Linf"],grw["k"])}
+      l=wt2len(grw[c("a","b")],wts)
+      m=m(l,grw["linf"],grw["k"])}
    
    if (is.function(mat)){
-      mat=addPar(mat(grw["Linf"]),"asym",1)
+      mat=addPar(mat(grw["linf"]),"asym",1)
       mat["a50"]=invVonB(grw,c(mat["a50"]))
       mat.=logistic(mat,age)}
 

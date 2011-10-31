@@ -11,10 +11,8 @@
 # TODO Fri 22 Jan 2010 11:13:59 AM CET IM:
 
 
-# spr {{{
 setMethod('spr', signature(object='FLBRP'),
-  function(object)
-  {
+  function(object){
     params(object)<-FLPar(1)
     model(object)<-formula(rec~a)
     
@@ -22,14 +20,10 @@ setMethod('spr', signature(object='FLBRP'),
       FLQuant(c(params(object)), dimnames=dimnames(params(object))), 
       PACKAGE = "FLAdvice")
 
-    return(res)
-  }
-) # }}}
+    return(res)})
 
-# spr0(FLBRP,missing,missing) {{{
 setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
-  function(ssb)
-  {
+  function(ssb){
     params(ssb)<-FLPar(1)
     model(ssb)<-formula(rec~a)
     fbar(ssb) <- FLQuant(0, quant=quant(fbar(ssb)))
@@ -38,11 +32,8 @@ setMethod('spr0', signature(ssb='FLBRP', rec='missing', fbar='missing'),
       FLQuant(c(params(ssb)),dimnames=dimnames(params(ssb))),
       PACKAGE = "FLAdvice")
 
-    return(res)
-  }
-) # }}}
+    return(res)})
 
-# spr0(FLQuant, FLQuant, FLQuant) {{{
 setMethod('spr0', signature(ssb='FLQuant', rec='FLQuant', fbar='FLQuant'),
   function(ssb, rec, fbar) {
 
@@ -68,25 +59,17 @@ setMethod('spr0', signature(ssb='FLQuant', rec='FLQuant', fbar='FLQuant'),
     spr0 <- lm(c(ssb/rec)~c(fbar))$coefficients[1]
     names(spr0) <- "spr0"
 
-    return(spr0)
-  }
-) # }}}
+    return(spr0)})
 
-# spr0(FLStock, missing, missing) {{{
 setMethod('spr0', signature(ssb='FLStock', rec='missing', fbar='missing'),
   function(ssb) {
     sr <-as.FLSR(ssb)
     res<-spr0(ssb=ssb(ssb), rec=rec(sr), fbar=fbar(ssb))
 
-    return(res)
-  }
-) # }}}
+    return(res)})
 
-# spr0(FLSR, missing, FLQuant) {{{
 setMethod('spr0', signature(ssb='FLSR', rec='missing', fbar='FLQuant'),
   function(ssb, fbar){
     res<-spr0(ssb=ssb(ssb), rec=rec(ssb), fbar=fbar)
 
-    return(res)
-  }
-) # }}}
+    return(res)})

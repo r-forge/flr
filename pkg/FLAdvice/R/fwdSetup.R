@@ -72,6 +72,50 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
 
 #unlist(dims(fwdSetup(alb[[1]],flbrp=albBrp[[1]],nyears=23)))
 
+setGeneric("window.", function(x,y,...){
+  standardGeneric("window.")})
+
+setMethod('window.', signature(x='FLStock',y="FLBRP"),
+  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear, extend=TRUE, frequency=1,...){
+      object =qapply(x, window, start=start, end=end, extend=extend, frequency=frequency)
+ 
+      x@range["minyear"] <- start
+     	x@range["maxyear"] <- end
+      
+      yrs =dimnames(object)$year[!(dimnames(object)$year %in% dimnames(x)$year)]
+ 
+      object=CheckNor1(res)
+    
+
+      slot(object[,yrs],"stock.n")[]    <-NA  
+      slot(object[,yrs],"catch.n")[]    <-NA      
+   
+      args<-data.frame(e1=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.n",  "discards.n",   "m","mat","harvest"  ,"harvest.spwn","m.spwn"),    
+                       e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
+                       
+       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {cat(ac(e1),ac(e2),"\n"); recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,yrs],flb=flbrp))
+
+       names(t.)<-args[,1]
+
+       args=cbind(args[,1:2],ldply(ac(args[,1]),function(x,a,b)  data.frame("O"=dims(a[[x]][[1]])$iter,"I"=dims(b[[x]])$iter),a=object,b=t.))
+      
+       t..=FLQuants(mlply(args, function(e1,e2,O,I,x) if (I>O) propagate(x[[ac(e1)]][[1]],I) else x[[ac(e1)]][[1]],x=object))
+       names(t..)<-args[,1]
+       object[[ac(args[,1])]]=t..
+
+       object[,yrs][[ac(args[,1])]]=t.
+
+      return(object)})
+
+
+if (FALSE){
+  tmp=FLStock(m=FLQuant(0.1,dimnames=list(age=1:5,year=2001:2020)))
+  units(harvest(tmp))="f"
+  tmp2=window.(tmp,FLBRP(tmp),end=2000:2030)
+  }
+
+
+
 
     
     

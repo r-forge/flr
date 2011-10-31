@@ -331,13 +331,11 @@ setMethod('stock.hat', signature(object='FLBRP'),
   function(object) return(stock(object)))
 
 setMethod('ssb', signature(object='FLBRP'),
-  function(object)
-     {
+  function(object){
      f    =harvest(object) %*% harvest.spwn(object)
      M    =      m(object) %*%       m.spwn(object)
-     expZ = exp(-f)%*%exp(-M)
-
-     t1=stock.n(object) %*% expZ
+     
+     t1=stock.n(object) %*% exp(-f) %*% exp(-M)
      t2=stock.wt(object)*mat(object)
      
      return(apply(t1 %*% t2,2,sum))})

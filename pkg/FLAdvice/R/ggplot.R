@@ -35,16 +35,15 @@ setMethod("plot", signature(x="FLBRP", y="missing"),
   obs.$pnl=factor(paste("Equilibrium",obs.$pnl),levels=paste("Equilibrium",panelBrp()))
 
   ref.=mdply(varBrp(),getBrpRefpts,  obj=x)
-print(1)
+
   ref.$pnl=factor(paste("Equilibrium",ref.$pnl),levels=paste("Equilibrium",panelBrp()))
 
-print(1)
   p<-ggplot(subset(hat.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))+geom_line(aes(x,y,group=iter)) +facet_wrap(~pnl,ncol=2,scale="free")
   if (obs)
     p<-p+geom_point(aes(x,y,group=iter),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y))) 
+
   if (refpts & !all(is.na(refpts(x))))
     p<-p+geom_point(aes(x,y,group=iter,colour=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))
-print(1)
 
   print(p)
 
@@ -69,7 +68,7 @@ setMethod("plot", signature(x="FLBRPs", y="missing"),
      if (refpts){
       ref.=ldply(x, function(x) mdply(varBrp(),getBrpRefpts,   obj=x))
       ref.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
-      #if (!all(is.na(refpts(x))))
+      if (!all(is.na(ref.$x) & is.na(ref.$y)))
         p=p+geom_point(aes(x,y,group=iter:.id,colour=.id,shape=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))}
 
      if (obs){

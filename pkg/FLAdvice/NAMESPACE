@@ -30,7 +30,8 @@ export(
 exportMethods(
         "simAR",
         "Arith",
-	"FLBRP",
+	"fwd",
+  "FLBRP",
 	"FLBRPs",
 	"model",
 	"model<-",

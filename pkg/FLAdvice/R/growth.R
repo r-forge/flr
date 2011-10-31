@@ -118,7 +118,7 @@ setGeneric('vonB', function(params,data, ...)
   standardGeneric('vonB'))
 
 vonBParams<-function(params){
-         dimnames(params)$params<-tolower(dimnames(params)$params)
+         dimnames(params)$params=tolower(dimnames(params)$params)
          if (!("b"  %in% dimnames(params)$params)) params<-addPar(params,"b" ,1)
          if (!("t0" %in% dimnames(params)$params)) params<-addPar(params,"t0",0)
          dimnames(params)$params[substr(dimnames(params)$params,2,nchar(dimnames(params)$params)) %in% "inf"]<-"sinf"
