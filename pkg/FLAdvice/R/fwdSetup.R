@@ -72,28 +72,30 @@ fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf
 
 #unlist(dims(fwdSetup(alb[[1]],flbrp=albBrp[[1]],nyears=23)))
 
-setGeneric("window.", function(x,y,...){
-  standardGeneric("window.")})
+setGeneric("fwdWindow", function(x,y,...){
+  standardGeneric("fwdWindow")})
 
-setMethod('window.', signature(x='FLStock',y="FLBRP"),
+setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
   function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear, extend=TRUE, frequency=1,...){
       object =qapply(x, window, start=start, end=end, extend=extend, frequency=frequency)
  
       x@range["minyear"] <- start
      	x@range["maxyear"] <- end
       
-      yrs =dimnames(object)$year[!(dimnames(object)$year %in% dimnames(x)$year)]
+      yr1 =dimnames(m(object))$year
+      yr2 =dimnames(m(x))$year
+      yrs =yr1[!(yr1 %in% yr2)]
  
-      object=CheckNor1(res)
-    
+      object=CheckNor1(object)
 
+    
       slot(object[,yrs],"stock.n")[]    <-NA  
       slot(object[,yrs],"catch.n")[]    <-NA      
-   
+    
       args<-data.frame(e1=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.n",  "discards.n",   "m","mat","harvest"  ,"harvest.spwn","m.spwn"),    
                        e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
                        
-       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {cat(ac(e1),ac(e2),"\n"); recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,yrs],flb=flbrp))
+       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {cat(ac(e1),ac(e2),"\n"); recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,yrs],flb=y))
 
        names(t.)<-args[,1]
 
@@ -105,13 +107,43 @@ setMethod('window.', signature(x='FLStock',y="FLBRP"),
 
        object[,yrs][[ac(args[,1])]]=t.
 
-      return(object)})
+                       
+     ## replace any slot passed in as an arg option
+     args<-list(...)
+     for (slt in names(args)[names(args) %in% names(getSlots(class(object)))]) 
+        slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
+ 
+     return(object)})
 
+setMethod('fwdWindow', signature(x='FLStock',y="character"),
+  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear,
+           control=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE), ...){
+      if (y!="stf") stop("Only stf for now")
+      
+      x@range["minyear"] <- start
+      x@range["maxyear"] <- end
+      
+      x=CheckNor1(x)
+      
+      stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
+    
+      stfCtrl[names(control)]<-control
+      if (is.na(stfCtrl$fbar.nyears)) 
+         stfCtrl$fbar.nyears<-stfCtrl$wt.nyears
+ 
+      object<-do.call("stf",c(object=object,stfCtrl))
+      
+      ## replace any slot passed in as an arg option
+      args<-list(...)
+      for (slt in names(args)[names(args) %in% names(getSlots(class(object)))]) 
+        slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
+  
+    return(object)})
 
 if (FALSE){
   tmp=FLStock(m=FLQuant(0.1,dimnames=list(age=1:5,year=2001:2020)))
   units(harvest(tmp))="f"
-  tmp2=window.(tmp,FLBRP(tmp),end=2000:2030)
+  tmp2=fwdWindow(tmp,FLBRP(tmp),end=2030)
   }
 
 
