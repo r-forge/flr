@@ -1,24 +1,22 @@
 ADD
 ---
 
+- diagnostics
 - vcov & hessian are arrays make them FLPar objects  
 - sort out 1 & n iters and add validation
 - jacknife and to work with iters
 - admbBD to work with iters
 - Using foreach and multicore/OpenMPI
 - Kobe methods for producing probabilities etc. (FLQuant/FLPar needs to be fixed) 
-- FLBioDyms
-- plot(FLBioDyms)
 - Alternative Stock Production functions, e.g. fox, ...
 - ADMB-RE to implement Randon effects to allow modelling of process error
-- Add process error in projections
 - FLIndexPMs, alternative likelihood formualtions & more than i index
 - iters for @bounds
 - iter checking "1 or n" depends on what is being done! i.e. fitting, projection or MSE
 - multiple stocks for Robin Hood assessments
 - McMC
-- Backwards projection to estimate std of B_MSY
-- make admb methods generic and reusable, i.e. currentkly admb methods are specific to    FLBioDym
+- Backwards projection to estimate std of BMSY
+- make admb methods generic and reusable, i.e. currentkly admb methods are specific to FLBioDym
 - DLL interface
 
 BUGS
@@ -43,6 +41,10 @@ BUGS
 - bounds(object)<- etc not working
 DONE
 ----
+
 - fwd to work with iters
+- ̣Add process error in projections
+- FLBioDyms
+- plot(FLBioDyms)
 
 20.10.2011 - To add a TODO file

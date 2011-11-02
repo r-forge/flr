@@ -1,5 +1,6 @@
 
-mseFLBioDym<-function(OM,start,sr,srRsdl,
+mseFLBioDym<-function(OM,start,
+                      sr,srRsdl=FLQuant(1,dimnames=dimnames(window(rec(OM),start=start))),
                       CV   =0.3,
                       Ftar =0.75,    Btrig=0.75,
                       Fmin =Ftar*0.1,Blim =Btrig*0.0,

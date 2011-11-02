@@ -6,7 +6,7 @@
 # $Id:  $
 
 # fwd(FLBioDym) {{{
-setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
+setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
   function(object, catch=NULL, harvest=NULL, pe=NULL, peMult=TRUE) {
 
     ## catch or harvest?

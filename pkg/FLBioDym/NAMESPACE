@@ -9,6 +9,7 @@ export(
   "mseFLBioDym",
   "simFLBioDym",
   "FLBioDym",
+  "FLBioDyms",
   "sp",
 	"msy",
 	"fmsy",
@@ -24,6 +25,7 @@ export(
 exportMethods(
   "diags",
   "FLBioDym",
+  "FLBioDyms",
   "harvest",
   "hcr",
   "hcrJK",

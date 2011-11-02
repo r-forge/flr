@@ -65,14 +65,14 @@ double calcSP(FLRConstBD model, double stock, double *params)
 // 
 //     return rec.Return();}
 
-extern "C" SEXPDLLExport fwdFLBioDym(SEXP xModel, SEXP xParams, SEXP xCatch, SEXP xHarvest, SEXP xPE, SEXP xMult){
-   SEXP biomass = R_NilValue;
-   
-   FLQuant  _catch(xCatch);
-   FLQuant  harvest(xHarvest);
-   FLQuant  PE(xPE);
-
-   return biomass;}
+//extern "C" SEXPDLLExport fwdFLBioDym(SEXP xModel, SEXP xParams, SEXP xCatch, SEXP xHarvest, SEXP xPE, SEXP xMult){
+//   SEXP biomass = R_NilValue;
+//   
+//   FLQuant  _catch(xCatch);
+//   FLQuant  harvest(xHarvest);
+//   FLQuant  PE(xPE);
+//
+//   return biomass;}
 
 // setMethod("fwd", signature(object="FLBioDym", fleets = "missing"),
 //  function(object, catch=NULL, harvest=NULL, pe=NULL, peMult=TRUE) {
