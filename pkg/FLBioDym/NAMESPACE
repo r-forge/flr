@@ -4,7 +4,7 @@ importFrom("ggplotFL",
   "getDiag")
 #importFrom("foreach", "foreach")
 import("FLCore")
-exportClasses("FLBioDym")
+exportClasses("FLBioDym","FLBioDyms","FLBDEcon")
 export(
   "mseFLBioDym",
   "simFLBioDym",
@@ -26,6 +26,7 @@ exportMethods(
   "diags",
   "FLBioDym",
   "FLBioDyms",
+  "harvest<-",
   "harvest",
   "hcr",
   "hcrJK",
@@ -39,7 +40,8 @@ exportMethods(
   "diags",
   "coerce",
 	"model",
-	"catch",
+  "catch",
+  "catch<-",
 	"index",
 	"index<-",
   "refpts",
