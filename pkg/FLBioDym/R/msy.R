@@ -23,6 +23,7 @@ setMethod('fmsy', signature(object='character',params="FLPar"),
                pellat  =fmsyPellaT(  params),
                shepherd=fmsyShepherd(params))
 
+    dimnames(res)$params="fmsy"
     return(res)
   }
 )
@@ -68,6 +69,7 @@ setMethod('msy', signature(object='character',params="FLPar"),
       pellat   = msyPellaT(params),
       shepherd = msyShepherd(params))
 
+    dimnames(res)$params="msy"
     return(res)
   }
 )
@@ -112,6 +114,8 @@ setMethod('bmsy', signature(object='character',params="FLPar"),
       pellat  =bmsyPellaT(params),
       shepherd=bmsyShepherd(params))
 
+    dimnames(res)$params="bmsy"
+    
     return(res)
   }
 )
