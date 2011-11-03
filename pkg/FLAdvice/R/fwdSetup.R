@@ -1,3 +1,4 @@
+
 ## expands & fills
 setGeneric("recycle6d<-", function(object,value){
   standardGeneric("recycle6d<-")})
@@ -17,70 +18,15 @@ setMethod("recycle6d<-", signature(object="FLQuant", value="FLQuant"),
        
    return(sweep(FLQuant(0,dimnames=dimnames(object)), (1:6)[!(1:6 %in% nDim)], value, "+"))})     
 
-fwdSetup<-function(object,flbrp=NULL,nyears=20,start=range(object,"minyear"),stf.control=NULL,...){
-   
-    ## Year range for object passed in
-    end   =range(object,"maxyear") + nyears
-    years =range(object,"maxyear"):end
-    object=trim(object,  year=start:range(object,"maxyear"))
-   
-    object=CheckNor1(object)
-    
-    ## FLBRP option
-    if (!is.null(flbrp)){
-      object=expand(object,year=start:end)
-  
-      slot(object[,ac(years)],"stock.n")[]    <-NA  
-      slot(object[,ac(years)],"catch.n")[]    <-NA      
-   
-      args<-data.frame(e1=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.n",  "discards.n",   "m","mat","harvest"  ,"harvest.spwn","m.spwn"),    
-                       e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
-                       
-#      t.<-FLQuants(mlply(args,function(y,x,br,sk) recycle6Dims(sk[[ac(y)]][[1]],br[[ac(x)]][[1]]),br=flbrp,sk=object))
-#      t.<-FLQuants(mlply(args,function(e1,e2,stk,flb) recycle6d(stk[[e1]][[1]],flb[[e2]][[1]]),flb=flbrp,stk=object))
-       t. <-FLQuants(mlply(args,function(e1,e2,stk,flb) {cat(ac(e1),ac(e2),"\n"); recycle6d(stk[[ac(e1)]][[1]])<-flb[[ac(e2)]][[1]]; return(stk[[ac(e1)]][[1]])},stk=object[,ac(years)],flb=flbrp))
-
-      names(t.)<-args[,1]
-
-      args=cbind(args[,1:2],ldply(ac(args[,1]),function(x,a,b)  data.frame("O"=dims(a[[x]][[1]])$iter,"I"=dims(b[[x]])$iter),a=object,b=t.))
-      
-      t..=FLQuants(mlply(args, function(e1,e2,O,I,x) if (I>O) propagate(x[[ac(e1)]][[1]],I) else x[[ac(e1)]][[1]],x=object))
-      names(t..)<-args[,1]
-      object[[ac(args[,1])]]=t..
-
-      
-      object[,ac(years)][[ac(args[,1])]]=t.
-
-      
-    ## STF option
-    }else if (!is.null(stf.control)){
-      stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA, 
-                   f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
-    
-      stfCtrl[names(stf.control)]<-stf.control
-      if (is.na(stfCtrl$fbar.nyears)) 
-         stfCtrl$fbar.nyears<-stfCtrl$wt.nyears
-         
-      object<-do.call("stf",c(object=object,stfCtrl))}
-      
-    ## replace any slot passed in as an arg option
-    args<-list(...)
-    for (slt in names(args)[names(args) %in% names(getSlots(class(object)))]) 
-       slot(object, slt)[,ac(years)]<-fn(args[[slt]],slot(object, slt)[,ac(years)])
-  
-    return(object)}
-
-#unlist(dims(fwdSetup(alb[[1]],flbrp=albBrp[[1]],nyears=23)))
-
 setGeneric("fwdWindow", function(x,y,...){
   standardGeneric("fwdWindow")})
 
 setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
   function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear, extend=TRUE, frequency=1,...){
-      object =qapply(x, window, start=start, end=end, extend=extend, frequency=frequency)
- 
-      x@range["minyear"] <- start
-     	x@range["maxyear"] <- end
+      object =qapply(x, FLCore::window, start=start, end=end, extend=extend, frequency=frequency)
+     
+      object@range["minyear"] <- start
+     	object@range["maxyear"] <- end
       
       yr1 =dimnames(m(object))$year
       yr2 =dimnames(m(x))$year
@@ -116,26 +62,28 @@ setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
      return(object)})
 
 setMethod('fwdWindow', signature(x='FLStock',y="missing"),
-  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear, ...){
+  function(x,y,start=dims(x)$minyear, end=dims(x)$maxyear,...){
       stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
-
       args=list(...)
       if (!("stf" %in% names(args))) stop("Only stf for now")
       
-      x@range["minyear"] <- start
-      x@range["maxyear"] <- end
+      object=CheckNor1(x)
       
-      x=CheckNor1(x)
-      
-      stfCtrl=list(nyears=3, wts.nyears=3, fbar.nyears=NA,f.rescale=FALSE, arith.mean=TRUE, na.rm=TRUE)
-    
-      args[["stf"]]=args[["stf"]][args[["stf"]] %in% names(stfCtrl)]     
-      stfCtrl[args[["stf"]]]<-args[["stf"]]
+      stfCtrl[names(args[["stf"]])[names(args[["stf"]]) %in% names(stfCtrl)]]=args[["stf"]][names(args[["stf"]]) %in% names(stfCtrl)]     
       if (is.na(stfCtrl$fbar.nyears)) 
-         stfCtrl$fbar.nyears<-stfCtrl$wt.nyears
- 
-      object<-do.call("stf",c(object=object,stfCtrl))
+         stfCtrl$fbar.nyears<-stfCtrl$wts.nyears
+
+      nyears=stfCtrl$nyears     
+      stfCtrl$nyears=max(nyears,c(end-x@range["maxyear"]))
       
+      if (nyears!=stfCtrl$nyears) warning("end and stf$nyears mismatch, max used")
+      
+      object@range["minyear"] <- start
+      object@range["maxyear"] <- end
+      
+ 
+      object<-do.call("stf",c(list(object=object),stfCtrl))
+
       ## replace any slot passed in as an arg option
       args<-list(...)
       for (slt in names(args)[names(args) %in% names(getSlots(class(object)))]) 
@@ -143,11 +91,33 @@ setMethod('fwdWindow', signature(x='FLStock',y="missing"),
   
     return(object)})
 
+setMethod('window', signature(x='FLStock'),
+    function(x,start=dims(x)$minyear, end=dims(x)$maxyear, extend=TRUE, frequency=1,...){
+  
+      args=list(...)
+      if ("FLBRP" %in% names(args)) {
+        return(fwdWindow(x,args[["FLBRP"]],  start=start,end=end,extend=extend,frequency=frequency)) 
+      }else if ("stf"   %in% names(args)) {
+        return(fwdWindow(x,start=start,end=end,extend=extend,frequency=frequency,stf=args[["stf"]]))  
+        }
+       
+      x =qapply(x, FLCore::window, start,end,extend,frequency)
+      x@range["minyear"] = start
+	  	x@range["maxyear"] = end
+      
+      return(x)})
+
 if (FALSE){
+  library(FLAssess)
+  library(FLAdvice)
+  
   tmp=FLStock(m=FLQuant(0.1,dimnames=list(age=1:5,year=2001:2020)))
   units(harvest(tmp))="f"
   tmp2=fwdWindow(tmp,FLBRP(tmp),end=2030)
-  }
+  tmp3=fwdWindow(tmp,stf=list(nyears=3),end=2020)
+  tmp2=window(tmp,FLBRP=FLBRP(tmp),end=2030)
+  tmp3=window(tmp,stf=list(nyears=3),end=2030)
+ }
 
 
 

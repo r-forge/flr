@@ -58,4 +58,4 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 	}
 	return(defined)} # }}}
 
-invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc","stock.obs")))
+invisible(createFLAccesors("FLBRP", exclude=c("range","name","desc")))

@@ -17,7 +17,6 @@ export(
   "kobeM",
   "kobeL",
   "kobeS",
-  "fwdSetup",
   "OEMStock",
   "OEMSurvey",
   "OEMCpue",
@@ -30,7 +29,9 @@ export(
 exportMethods(
         "simAR",
         "Arith",
-	"fwd",
+  "fwd",
+  "fwdWindow",
+  "window",
   "FLBRP",
 	"FLBRPs",
 	"model",

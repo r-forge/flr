@@ -276,11 +276,18 @@ setMethod('FLBRP', signature(object='FLStock', sr='list'),
 setMethod('FLBRP', signature(object='FLBRP', sr='missing'),
   function(object, sr, ...){
 
+     newObj=FLBRP()
+     
+     slts=names(getSlots("FLBRP"))
+     slts=slts[slts != "refpts"]
+     for (i in slts) slot(newObj,i)=slot(object,i)
+     refpts(newObj)=FLPar(array(c(object@refpts), dim=dim(object@refpts), dimnames=dimnames(object@refpts)))
+    
      args <- list(...)
      for (slt in names(args))
-       slot(object, slt)<-args[[slt]]
+       slot(newObj, slt)<-args[[slt]]
 
-   return(object)})
+   return(newObj)})
 # }}}
 
 setMethod('FLBRP', signature(object='FLBRP', sr='list'),
@@ -289,10 +296,18 @@ setMethod('FLBRP', signature(object='FLBRP', sr='list'),
      if ("model"  %in% names(sr)) model(object) =do.call(sr[["model"]], list())$model
      if ("params" %in% names(sr)) params(object)=sr[["params"]]
      
+     newObj=FLBRP()
+     
+     slts=names(getSlots("FLBRP"))
+     slts=slts[slts != "refpts"]
+     for (i in slts) slot(newObj,i)=slot(object,i)
+     refpts(newObj)=FLPar(array(c(object@refpts), dim=dim(object@refpts), dimnames=dimnames(object@refpts)))
+ 
+          
      args <- list(...)
      if ("fbar" %in% names(args))
        args[["fbar"]]=FLQuant(args[["fbar"]])
      for (slt in names(args))
-       slot(object, slt)<-args[[slt]]
+       slot(newObj, slt)<-args[[slt]]
 
-   return(object)})
+   return(newObj)})
