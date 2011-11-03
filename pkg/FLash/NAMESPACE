@@ -1,8 +1,9 @@
 useDynLib("FLash")
 import("FLCore")
 export("SRchar2code")
-exportClasses("fwdControl")
-exportMethods("harvest",
+exportClasses("fwdControl","FLAssess")
+exportMethods( "assess",
+ "harvest",
               "computeHarvest",
               "fwd",
               "fwdControl",

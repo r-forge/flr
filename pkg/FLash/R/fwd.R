@@ -23,7 +23,7 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
     if (nDim>1) m(object)=propagate(m(object),nDim)
 
     object<-CheckNor1(object)
-        
+
     if (!(units(object@harvest)=="f"))
        stop("harvest slot has to have units of type 'f'")
     if (!validObject(ctrl))
@@ -44,9 +44,11 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
     ## Need year+1 in FLStock object
     if (max(yrs) == dims(object)$maxyear){
        endYr<-dims(object)$maxyear+1
-       object <- window(object, end=dims(object)$maxyear+1)}
+       object <- FLCore::window(object, end=dims(object)$maxyear+1)
+       #object =qapply(object, FLCore::window, end=dims(object)$maxyear+1)
+       }
     else
-       endYr<-NULL
+       endYr<-NULL     
  
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
@@ -107,6 +109,7 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
     #name@x<-name(object)
     #desc@x<-desc(object)
     if (!is.null(endYr)) x <- window(x, end=endYr-1)
+      #object =qapply(x, FLCore::window, end=endYr-1)
 
     return(x)}) 
 
@@ -156,7 +159,7 @@ setMethod("fwd", signature(object="FLStock", ctrl="missing"),
     dm[3]    =dim(ctrl)[3]
  
     ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
-
+   
     res=fwd(object,ctrl=ctrl.,
             sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
                availability=availability,maxF=maxF)  
