@@ -1,0 +1,17 @@
+importClassesFrom("FLCore",
+                  "FLQuant")
+importFrom(       "FLCore",
+	          "FLQuant",
+	          "as.FLQuant")
+exportClasses(    "aspic",
+	          "aspics",
+	          "aspicControl")
+exportMethods(    "aspic",
+                  "aspicControl",
+                   "aspicCpues",
+                  "fwd",
+                  "sp..",
+                  "runExe"	)
+export(           
+                  "is.aspic",
+                  "is.aspicControl")
