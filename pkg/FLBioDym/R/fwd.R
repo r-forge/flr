@@ -109,11 +109,12 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
      stock(object) <- window(stock(object),end=range(object,"maxyear")+1)
 
   ## niters
-  if (hvtTrgt) nits=max(dims(object)$iter,dims(params(object))$iter,dims(pe)$iter,dims(harvest)$iter) else
-  if (ctcTrgt) nits=max(dims(object)$iter,dims(params(object))$iter,dims(pe)$iter,dims(catch  )$iter) else
-  if (stkTrgt) nits=max(dims(object)$iter,dims(params(object))$iter,dims(pe)$iter,dims(stock  )$iter) else
-  if (hcrTrgt) nits=max(dims(object)$iter,dims(params(object))$iter,dims(pe)$iter)
-
+  nits=dims(object)$iter
+  if (!is.null(pe)) nits=max(nits,dims(pe)$iter)
+  
+  if (hvtTrgt) nits=max(nits,dims(harvest)$iter) else
+  if (ctcTrgt) nits=max(nits,dims(catch  )$iter) else
+  if (stkTrgt) nits=max(nits,dims(stock  )$iter) 
   if (nits>1){ 
      catch(object) =propagate(catch(object),nits)
      stock(object) =propagate(stock(object),nits)
