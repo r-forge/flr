@@ -4,38 +4,39 @@
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # $Id:  $
 
-setMethod('sp..', signature(biomass="FLQuant",params="FLPar"),
-  function(biomass,params,model="pellat") {
-    fox <-function(biomass, params)
+setMethod('spFn', signature(biomass="FLQuant",params="FLPar"),
+ function(biomass,params,model="pellat") {
+    foxFn <-function(biomass, params)
           params["r"]*biomass*(1-log(biomass)/log(params["k"]))
-    schaefer <- function(biomass, params) { #logistic
+    schaeferFn <- function(biomass, params) { #logistic
+     
           if ("msy" %in% dimnames(params)$param) { 
-              params=rbind("r"=4*params["msy"]/params["k"],params)
-              dimnames(params)$param[1]="r"}
-
+            params["msy"]=4*params["msy"]/params["k"]
+            dimnames(params)$param[1]="r"
+            }
           params["r"]*biomass*(1-biomass/params["k"])}
 #     pellat <- function(biomass, params)
 #           params["r"]/params["p"]*biomass*(1-(biomass/params["k"])^params["p"])
-     pellat <- function(biomass, params){
+     pellatFn <- function(biomass, params){
            a=biomass*params["r"]/params["p"]
            b=biomass/params["k"]
            c=b^params["p"]
            a*(1-c)}
-    shepherd <- function(biomass,params)
+    shepherdFn <- function(biomass,params)
           params["r"]*biomass/(1+biomass/params["k"])-params["m"]*biomass
-    gulland <- function(biomass,params)
+    gullandFn <- function(biomass,params)
           params["r"]*biomass*(params["k"]-biomass)
-    fletcher <- function(biomass,params) {
+    fletcherFn <- function(biomass,params) {
           lambda <- (params["p"]^(params["p"]/(params["p"]-1)))/(params["p"]-1)
           lambda*msy*(biomass/params["k"])-lambda*params["msy"]*(biomass/params["k"])^params["p"]}
 
     res <- switch(model,
-           fox     =fox(     biomass,params),
-           schaefer=schaefer(biomass,params),
-           gulland =gulland( biomass,params),
-           fletcher=fletcher(biomass,params),
-           pellat  =pellat(  biomass,params),
-           shepherd=shepherd(biomass,params))
+           "fox"     =foxFn(     biomass,params),
+           "schaefer"=schaeferFn(biomass,params),
+           "gulland" =gullandFn( biomass,params),
+           "fletcher"=fletcherFn(biomass,params),
+           "pellat"  =pellatFn(  biomass,params),
+           "shepherd"=shepherdFn(biomass,params))
 
     return(res)}) 
 
@@ -163,9 +164,11 @@ setMethod("fwd", signature(object="aspic",ctrl="missing"),
   for(y in as.numeric(yrs)) {
      ## sp & process error
      if (!is.null(pe)) {
-        if (peMult) sp.=sp..(stock(object),object@params,object@model)[, ac(y)]*pe[, ac(y)] 
-        else        sp.=sp..(stock(object),object@params,object@model)[, ac(y)]+pe[, ac(y)]
-     }else          sp.=qmax(sp..(stock(object),object@params,object@model)[, ac(y)],0)
+        if (peMult) sp.=spFn(stock(object),object@params,object@model)[, ac(y)]*pe[, ac(y)] 
+        else        sp.=spFn(stock(object),object@params,object@model)[, ac(y)]+pe[, ac(y)]
+     }else{
+       sp.=qmax(spFn(stock(object),object@params,object@model)[, ac(y)],0)
+       }
      
      ## targets 
      if (hcrTrgt)

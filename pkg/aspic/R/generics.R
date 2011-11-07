@@ -4,8 +4,8 @@ setGeneric("aspic", function(object, ...){
 setMethod("aspics", signature(object="aspic"), function(object, ...) {
    lst <- c(object, list(...))
    aspics(lst)})
-setGeneric("sp..", function(biomass,params,...){
-    value  <-  standardGeneric("sp..")
+setGeneric("spFn", function(biomass,params,...){
+    value  <-  standardGeneric("spFn")
   	return(value)})
 setGeneric('fwd', function(object,ctrl,...)
   standardGeneric('fwd'))
