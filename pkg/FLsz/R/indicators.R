@@ -39,9 +39,9 @@ setMethod('mnLln', signature(object='FLStock',param="FLPar"), function(object,pa
 
 mnLenFunc<-function(object,param,what="stock"){
     dimnames(param)$params=tolower(dimnames(param)$params)  
-    ln=(slot(object,paste(wt,".wt",sel=""))/param["a"])^(1/param["b"])
-    n =slot(object,paste(slot(object,paste(wt,".n",sel=""))))
+    ln=(slot(object,paste(what,".wt",sep=""))/param["a"])^(1/param["b"])
+    n =slot(object,paste(what,".n",sep=""))
 
-    apply(ln*n,c(2,6),sum)/apply(n,c(2,6),sum)}
+    FLQuant(apply(ln*n,c(2,6),sum)/apply(n,c(2,6),sum),dimnames=dimnames(stock(object)))}
 ################################################################################
 

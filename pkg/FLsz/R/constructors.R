@@ -15,15 +15,19 @@ setMethod('FLsz', signature(object='FLQuant'),
 
     # empty object
     res     =new("FLsz")
-    res@obs =object
-    res@n   =n
+
+    print(breaks)
+    res=ini(res,breaks)
+
+    res@obs      =object
+    res@n        =n
+    res@hat      =FLQuant(NA, dimnames=dimnames(n))
+    res@residuals=res@hat
     range(res)[c("minyear","maxyear","min","max","plusgroup")]=c(unlist(list(minyear=dims(object)$minyear, 
                                                                              maxyear=dims(object)$maxyear)),rep(NA,3))
 
     res@model =model
     #res@params=setParams(model)
-
-    res=ini(res,breaks)
     
     # Load given slots
   	for(i in names(args))
@@ -51,21 +55,16 @@ setMethod('FLsz', signature(object='FLStock'),
   function(object,model="vonb",nbreaks=4,
                   breaks=rev(rev(round(seq(dims(object)$minyear,dims(object)$maxyear,length.out=nbreaks+1)))[-1]),...){
     args = list(...)
-print(names(args))
+
     n  =apply(stock.n(object),2:6,sum)
-    if ("grw" %in% names(args)){ 
-       obs=apply(wt2len(grw,stock.wt(object))*stock.n(object),2:6,sum)/n
-      }
-    else
-       obs=apply(stock.wt(object)*stock.n(object),2:6,mean)/n
+    
+    if ("grw" %in% names(args))
+       obs=apply(wt2len(args[["grw"]],stock.wt(object))*stock.n(object),2:6,sum)/n
+    
     res=FLsz(obs,n=n,breaks=breaks)
      
     range(res)[c("minyear","maxyear","min","max","plusgroup")]=c(unlist(list(minyear=dims(obs)$minyear, 
-                                                                             maxyear=dims(obs)$maxyear)),rep(NA,3))
-    res@model =model
- 
-    res=ini(res,breaks)
-    
+                                                                             maxyear=dims(obs)$maxyear)),rep(NA,3))   
     # Load given slots
     for(i in names(args))
 			slot(res, i) = args[[i]]

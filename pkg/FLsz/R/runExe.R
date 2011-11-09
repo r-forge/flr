@@ -1,16 +1,8 @@
-setGeneric('runExe', function(object,writeFn,readFn,...)
-   standardGeneric('runEx'))
+setMethod('fit', signature(object='FLsz'),
+  function(object, package="FLsz", exeNm="seine", dir=tempdir(),...) 
+      runExe(object, package, exeNm, dir,...))
 
-setGeneric('fit',  function(object,ctrl,...)
-   standardGeneric('fit'))
-
-setMethod('fit', signature(object='sz'),
-  function(object, package=attributes(class(object[[1]]))$package, exeNm=package, dir=tempdir(),...){
-   
-  }) 
-
-
-writeDat=function(object,admbNm="seine") {
+writeFn=function(object,exeNm="seine") {
 
     ## Data
     ObsLength    = object@obs
@@ -55,27 +47,27 @@ writeDat=function(object,admbNm="seine") {
                      "stepsize"                                    =5,
                      "casenum"                                     =10)
    
-  writeADMB(dat,paste(admbNm,".dat",sep=""))
+  writeADMB(dat,paste(exeNm,".dat",sep=""))
     
   # ctl file
   ctl <- object@bounds 
   ctl[,2:4] <- log(ctl[,2:4])
   ctl <- alply(ctl,1)
   names(ctl) <- dimnames(object@bounds)$params
-  writeADMB(ctl,paste(admbNm,".ctl",sep=""))
+  writeADMB(ctl,paste(exeNm,".ctl",sep=""))
     
   # prr file
   prr <- object@priors 
   prr <- alply(prr,1)
   names(prr) <- dimnames(object@priors)$params
 
-  writeADMB(prr,paste(admbNm,".prr",sep=""))}
+  writeADMB(prr,paste(exeNm,".prr",sep=""))}
   
-readFn=function(object,i,admbNm="seine") {
+readFn=function(object,i,exeNm="seine") {
 
-     rep=readADMB(paste(admbNm,".rep",sep=""))
+     rep=readADMB(paste(exeNm,".rep",sep=""))
 
-     std=read.table(paste(admbNm,".std",sep=""),skip=1)[,-1]
+     std=read.table(paste(exeNm,".std",sep=""),skip=1)[,-1]
      names(std)=c("param","value","sd")
  
      params(object)[,i]=bounds(object)[,"initial"]
@@ -83,9 +75,10 @@ readFn=function(object,i,admbNm="seine") {
      
      object@se[,i]= 0
      object@se[object@bounds[,"phase"]>0,i]=std[,"sd"]
+
      object@hat[,,,,,i]      =FLQuant(rep$hatLen,   dimnames=dimnames(iter(object@obs,i)))
      object@residuals[,,,,,i]=FLQuant(rep$Residuals,dimnames=dimnames(iter(object@obs,i)))
-      
+     
       # object@vcov    =rep$vcov     
       # object@hessian =rep$hessian      
       # object@logLik  =rep$logLik     
@@ -96,10 +89,8 @@ readFn=function(object,i,admbNm="seine") {
 
      return(object)}
       
-setMethod('runExe', signature(object='list',writeFn="function",readFn="function"),
-  function(object, writeFn, readFn, package=attributes(class(object[[1]]))$package, exeNm=package, dir=tempdir(),cmdOps=paste("-maxfn 500"),...){
+runExe=function(object, package="FLszS", exeNm="seine", dir=tempdir(),cmdOps=paste("-maxfn 500"),...){
    
-
     ##### set up temp dir with exe for data files
     # Linux
     if (R.version$os=="linux-gnu") {
@@ -120,22 +111,31 @@ setMethod('runExe', signature(object='list',writeFn="function",readFn="function"
     # or fail!
     }else 
       stop()
-        
+   
     oldwd <- getwd()
  
     # change wd to avoid exe case bug
     setwd(dir)
 
-    # create exe input files
-    do.call("writeFn", object)
-       
-    # run
-    system(paste("./", exeNm, sep=""))
- 
-    # read exe output files
-    res=do.call("readFn")
-
+    nits=dims(object)$iter
+    if (dims(    se(   object))$iter==1)        se(object)=propagate(    se(   object),nits)
+    if (dims(params(   object))$iter==1)    params(object)=propagate(params(   object),nits)
+    if (dims(    hat(  object))$iter==1)       hat(object)=propagate(  hat(    object),nits)
+    if (dims(residuals(object))$iter==1) residuals(object)=propagate(residuals(object),nits)
+    
+    if (nits>1) nits=seq(nits)
+    for (i in nits){
+      # create exe input files
+      do.call("writeFn", list(object=iter(object,i)))
+         
+      # run
+      system(paste("./", exeNm, sep=""))
+   
+      # read exe output files
+      object=readFn(object=object,i=i)
+      }
+          
     setwd(oldwd)
    
-    return(res)})
+    return(object)}
  

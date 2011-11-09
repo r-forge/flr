@@ -83,10 +83,10 @@ ini=function(object,breaks){
 #     obs=obs,n=n,rng=rng,breaks=breaks,grw=grw)
 
 
-getHat=function(object){
+hatFn=function(object){
   rng  =range(object)[c("minyear","maxyear")]
   nbrks=dim(object@params)[1]/2
-  brks =object@params[1:(nbrks-1)+nbrks]
+  brks =iter(object@params,1)[1:(nbrks-1)+nbrks]
                       
   t.=data.frame(from=c(rng[1],brks),to=c(brks-1,rng[2]),bit=1:(length(brks)+1))
   std=object@params[1:nbrks]
@@ -94,8 +94,10 @@ getHat=function(object){
             data.frame(std,bit=1:(dim(std)[1])),all=TRUE)
   
   std=object@se[1:nbrks]
-  se =merge(mdply(t.,function(from,to,bit) data.frame(year=seq(from,to),bit=bit))[,3:4],
-            data.frame(std,bit=1:(dim(std)[1])),all=TRUE)
+  
+  se =merge(mdply(t.,function(from,to,bit) 
+              data.frame(year=seq(from,to),bit=bit))[,3:4],
+              data.frame(std,bit=1:(dim(std)[1])),all=TRUE)
   
   res=cbind(z,se[,3])
   names(res)[3:4]=c("z","sd")
@@ -103,124 +105,9 @@ getHat=function(object){
   res=res[,c("year","z","sd","bit")]
   
   return(res[order(res$year),])}
-        
-#############################################################################################
-setGeneric('seine', function(object,...)
-   standardGeneric('seine'))
-setMethod('seine', signature(object='FLsz'),
-  function(object,cmdOps=paste("-maxfn 500"),admbNm="seine")
-  {  
-  object=window(object,start=range(object)["minyear"],end=range(object)["maxyear"])
-  dimnames(object@grw)$params=tolower(dimnames(object@grw)$params)  
-  
-  fn=function(object,cmdOps,admbNm){  
-    
-    ## Data
-    ObsLength    = object@obs
-    SampleSize   = object@n
-   
-    ObsLength[ is.na(ObsLength)]=mean(ObsLength,na.rm=T)
-    SampleSize[is.na(SampleSize)]=0
- 
-    ## Parameters
-    nbreaks= dim(object@params)[1]/2 -1
-    zguess =array(c(object@bounds[,"initial"][1:(nbreaks+1)],
-                    object@bounds[,  "phase"][1:(nbreaks+1)]),c(nbreaks+1,2))
- 
-    yguess =array(c(object@bounds[,"initial"][1+nbreaks+(1:(nbreaks))],
-                    object@bounds[,  "phase"][1+nbreaks+(1:(nbreaks))]),c(nbreaks,2))
- 
-    sigma  =rev(object@bounds[,"initial"])[1]
-   
-    ## Growth
-    KParm        = object@grw["k"]
-    LInf         = object@grw["linf"]
-    Lc           = object@grw["lc"]
-        
-    ## Output data file
-    dat<-       list("Number of Breaks"                            =nbreaks,
-                     "First Year of Data"                          =range(object)["minyear"],
-                     "Last Year of Data"                           =range(object)["maxyear"],
-        
-                     "(1,NYears Observed Mean Lengths)"            =ObsLength,
-                     "(1,NYears Observed Sample Sizes)"            =SampleSize,
-          
-                     "VB K Parameter"                              =KParm,
-                     "VB L-Infinity"                               =LInf,
-          
-                     "Critical Length - Length at first capture"   =Lc,
-        
-                     "(1,NBreaks+1,1,2)"                           =c(t(zguess)),
-                     "(1,NBreaks,  1,2)"                           =c(t(yguess)),
-          
-                     "sigma"                                       =sigma,
-                     "stepsize"                                    =5,
-                     "casenum"                                     =10)
-  
-     #### Run ADMB.exe
-     writeADMB(dat,file=paste(pathNm,"/seine.dat",sep=""))
-               
-     pathOrg<-getwd()
-     setwd(pathNm)
-          
-     sys.result=system(paste("./", admbNm, " ", cmdOps, sep=""))
-             
-     setwd(pathOrg)
-        
-     rep=readADMB(paste(pathNm,"/seine.rep",sep=""))
 
-     std=read.table(paste(pathNm,"/seine.std",sep=""),skip=1)[,-1]
-     names(std)=c("param","value","sd")
- 
-      params(object)=bounds(object)[,"initial"]
-      params(object)[bounds(object)[,"phase"]>0]=std[,"value"]
-      object@se[]= 0
-      object@se[object@bounds[,"phase"]>0]=std[,"sd"]
-      object@hat      =FLQuant(rep$hat,      dimnames=dimnames(object@obs))
-      object@residuals=FLQuant(rep$Residuals,dimnames=dimnames(object@obs))
-      
-      # object@vcov    =rep$vcov     
-      # object@hessian =rep$hessian      
-      # object@logLik  =rep$logLik     
-      # object@rsdlvar =rep$rsdlVar         
-      # object@dof     =rep$dof    
-      # object@stopmess=rep$stopmess
-      # object@aic     =rep$aic
-
-     return(object)}
-      
-  ### TO DO #####################################################
-  ##  doesnt yet work with iterations!
-  ##  If either n or obs have more than 1 iteration then need to 
-  ##  make iters match for other slots i.e.  
-    
-  iterSlots=c("obs","hat","n","residuals",
-              "grw",
-              "params","se","vcov","hessian",
-              "logLik","rsdlVar","stopmess")
-  
-  iters=mlply(iterSlots, function(x,object) dimnames(slot(object,x))$iter, object=object)
-
-  if (dim(object@obs)[6]>1 | dim(object@n)[6]>1) {
-
-    ## check all iters are 1 or n            
-    nits=laply(iters,length)
-              
-    ## make 1s Ns                                   
-    #   m_ply(iterSlots[nits>1], function(x,object,nIts) { 
-    #           if (dim( slot(object,x))|=nits)    
-    #              slot(object,x)=propagate(slot(object,x),nits)) 
-    #          object        <<-object},
-    #           object=object,nIts=max(nits))
-              
-    ## then do an FLComp::apply over iter iter dim   
-    ##res=qqply(object, 6,  fn(object),cmdOps=cmdOps,admbNm=admbNm)
-    }
-  
-  ##############################################################
-  object=fn(object,cmdOps=cmdOps,admbNm=admbNm)
-                       
-  return(object)})
+getHat=function(object)
+  mdply(seq(dims(object)$iter), function(x,obj) cbind(iter=x,hatFn(iter(obj,x))), obj=res2)[,-1]
 
 #setMethod("diags", signature(object="data.frame"),
   diags.=function(object, i=NULL) {
