@@ -36,7 +36,8 @@ setMethod("diags", signature(object="FLsz"),
 
       return(x)}
            
-    res=ddply(res, .(iter), rsdls)
+    res=ddply(res, .(iter), rsdls)[,c("year","bit","iter","sd","y","yHat","residual","residualLag","qqx","qqy")]
+
     
     if (!plotIt) return(res)
     
@@ -59,7 +60,7 @@ setMethod("diags", signature(object="FLsz"),
     names(tmp6)[2:3]=c("x","y")
     
     tmp=rbind(tmp1,tmp2,tmp3,tmp4,tmp5,tmp6)
-
+    
     p.=ggplot(tmp)+geom_point(aes(x,y,colour=factor(bit)))+facet_wrap(~title,scale="free")+
         geom_smooth(aes(x,y),se=FALSE)
     
