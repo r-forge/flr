@@ -60,7 +60,7 @@ setMethod('FLsz', signature(object='FLStock'),
     
     if ("grw" %in% names(args))
        obs=apply(wt2len(args[["grw"]],stock.wt(object))*stock.n(object),2:6,sum)/n
-    
+   
     res=FLsz(obs,n=n,breaks=breaks)
      
     range(res)[c("minyear","maxyear","min","max","plusgroup")]=c(unlist(list(minyear=dims(obs)$minyear, 
@@ -74,14 +74,14 @@ setMethod('FLsz', signature(object='FLStock'),
 setMethod('FLsz', signature(object='data.frame'),
   function(object,model="vonb",nbreaks=4,
                   breaks=rev(rev(round(seq(dims(object)$minyear,dims(object)$maxyear,length.out=nbreaks+1)))[-1]),...){
-  if (c("n","ln","year") %in% names(object)){  
+  if (all(c("n","ln","year") %in% names(object))){  
     ln=FLQuant(object$ln, dimnames=list(year=object$year))
     n =FLQuant(object$n,  dimnames=list(year=object$year))}
   else{
     ln=FLQuant(object[,3], dimnames=list(year=object[,1]))
     n =FLQuant(object[,2], dimnames=list(year=object[,1]))}
  
-  FLsz(ln,n=n,model=model,...)})
+  FLsz(ln,n=n,model=model,breaks=breaks,...)})
 
     is.FLsz = function(x)
 	return(inherits(x, "FLsz"))

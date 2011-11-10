@@ -122,7 +122,8 @@ runExe=function(object, package="FLszS", exeNm="seine", dir=tempdir(),cmdOps=pas
     if (dims(params(   object))$iter==1)    params(object)=propagate(params(   object),nits)
     if (dims(    hat(  object))$iter==1)       hat(object)=propagate(  hat(    object),nits)
     if (dims(residuals(object))$iter==1) residuals(object)=propagate(residuals(object),nits)
-    
+print(nits)
+print(dims(params(object)))    
     if (nits>1) nits=seq(nits)
     for (i in nits){
       # create exe input files
@@ -136,6 +137,10 @@ runExe=function(object, package="FLszS", exeNm="seine", dir=tempdir(),cmdOps=pas
       }
           
     setwd(oldwd)
+
+
+    if (chkJK(object))
+       attributes(object)$jacknife=TRUE
    
     return(object)}
  

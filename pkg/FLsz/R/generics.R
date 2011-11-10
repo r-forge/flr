@@ -17,6 +17,7 @@ setGeneric('residuals', function(object,  ...) standardGeneric('residuals'))
 setGeneric('bounds',    function(object,  ...) standardGeneric('bounds'))
 setGeneric('grw',       function(object,  ...) standardGeneric('grw'))
 setGeneric('fit',       function(object,  ...) standardGeneric('fit'))
+setGeneric('FLszs',       function(object,  ...) standardGeneric('FLsz'))
 
 setMethod("obs",       signature(object="FLsz"),             function(object) object@obs)
 setMethod("hat",       signature(object="FLsz"),             function(object) object@hat)

@@ -102,12 +102,12 @@ hatFn=function(object){
   res=cbind(z,se[,3])
   names(res)[3:4]=c("z","sd")
   
-  res=res[,c("year","z","sd","bit")]
+  res=res[,c("year","bit","z","sd")]
   
   return(res[order(res$year),])}
 
 getHat=function(object)
-  mdply(seq(dims(object)$iter), function(x,obj) cbind(iter=x,hatFn(iter(obj,x))), obj=res2)[,-1]
+  mdply(seq(dims(object)$iter), function(x,obj) cbind(iter=x,hatFn(iter(obj,x))), obj=object)[,-1]
 
 #setMethod("diags", signature(object="data.frame"),
   diags.=function(object, i=NULL) {
@@ -191,8 +191,26 @@ readADMBMCMChst=function(fl){
 
   #return(list(param=ary,pdf=pdf,summary=smry,restart=restart))}
 
+setMethod("jacknife", signature(object="FLQuant"),
+  function(object,...) {
+    
+    # get dimensions
+    dmo <- dim(object)
 
+    # propagate
+    res <- propagate(object, prod(dmo) + 1)
+  
+    # create array with 1 at each location by iter
+    idx <- array(c(TRUE, rep(NA, prod(dmo[-6]))), dim=c(dmo[-6], prod(dmo)))
+    res[,,,,,-1][idx] <- NA
 
+    attributes(res)$jacknife=TRUE
+    return(res)}) 
+  
+chkJK=function(x)
+  any(unlist(qapply(x, function(x)
+            ifelse("jacknife" %in% names(attributes(x)), return(attributes(x)$jacknife), return(FALSE)))))
+  
 # data=readADMBMCMChst(fl)
 # 
 # 
