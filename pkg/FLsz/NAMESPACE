@@ -1,2 +1,34 @@
 useDynLib(FLsz)
-exportPattern("^[[:alpha:]]+")
+importFrom("ggplotFL")
+#importFrom("foreach", "foreach")
+import("FLCore")
+exportClasses("FLsz","FLszs")
+exportMethods(
+  "FLsz",
+  "FLszs",
+  "plot",
+  "diags",
+  "diags",
+  "ln2z",
+  "coerce",
+  "model",
+  "n",
+  "n<-",
+  "obs",
+  "obs<-",
+  "bounds",
+  "bounds<-",
+  "priors",
+  "params",
+  "params<-",
+  "se",
+  "se<-",
+  "hat",
+  "hat<-",
+  "residuals",
+  "residuals<-",
+  "vcov",
+  "vcov<-",
+  "logLik",
+  "residuals",
+  "fit")
