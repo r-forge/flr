@@ -30,5 +30,3 @@ tests = test suite assembled by pkg using testthat
 tools = Various useful makefiles and other bits & pieces
 
 www = Unused, stores html pages for r-forge
-
-
