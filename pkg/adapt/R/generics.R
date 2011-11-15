@@ -11,11 +11,10 @@ setGeneric('FLAdaptControls',  function(object, ...) standardGeneric('FLAdaptCon
 setGeneric('FLAdapt',  function(object, ...) standardGeneric('FLAdapt'))
 setGeneric('FLAdapts', function(object, ...) standardGeneric('FLAdapts'))
 
-
 setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
 
-
 setGeneric('diags', function(object, ...)    standardGeneric('diags'))
+setGeneric('fit',   function(object, ...)    standardGeneric('fit'))
 
 
 
