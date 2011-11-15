@@ -1,0 +1,14 @@
+useDynLib(adapt)
+
+importFrom(   "ggplotFL")
+import(       "FLCore")
+exportClasses("FLAdapt",
+              "FLAdapts",
+	      "FLAdaptControl",
+              "FLAdaptControls")
+exportMethods("FLAdapt",
+              "FLAdapts",
+              "readPro2Box")
+export(       "readVPA2Box",
+              "readVPA2BoxIndices",
+              "readVPA2BoxDiags")
