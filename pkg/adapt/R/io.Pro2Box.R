@@ -1,16 +1,31 @@
 #### Pro2Box ############################################################################
 setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
 setMethod("readPro2Box",   signature(x="character", type="character"), 
-          function(x,type=c("ref","sta","out","kobe"),     files=c("BIO_f-1",  ## Biomass ? by iteration and year
+          function(x,type=c("ref","sta","out","kobe"),proxy="msy",     
+                                                    files=c("BIO_f-1",  ## Biomass ? by iteration and year
                                                             "BIO_t-1",  ## Biomass ? by iteration and year
                                                             "Fapex-1",  ## F Apex by iteration and year
                                                             "RECRT-1",  ## Recuits by iteration and year
                                                             "SSBIO-1",  ## SSB by iteration and year
                                                             "SSNUM-1",  ## ? by iteration and year
                                                             "YIELD-1"), ## Yield by iteration and year
-                   minyear=1,data.frame=TRUE,...) .readPro2Box(x,type,files,minyear,data.frame,rel=FALSE,...))
+                   minyear=1,data.frame=TRUE,...){
+            
+            .readPro2Box(x,type,proxy,files,minyear,data.frame,rel=FALSE,...)})
 
-.readPro2Box<-function(x,type=c("ref","sta","out","kobe"),files=c("BIO_f-1",  ## Biomass ? by iteration and year
+readPro2BoxKobe=function(x,proxy){
+    vpaOut=readPro2Box(x,type="out")
+    vpaRef=readPro2Box(x,type="ref")
+
+    res=transform(merge(       vpaOut[,c("year","iter","tac","ssb","fapex")], 
+                        subset(vpaRef, refpt==proxy, select=c(iter,ssb,harvest)),by="iter"),
+                    ssb    =ssb.x/ssb.y, 
+                    harvest=fapex/harvest)[,c("year","iter","tac","ssb","harvest")]
+    
+    return(res)}
+
+.readPro2Box<-function(x,type=c("ref","sta","out","kobe"),proxy="msy",
+                                                   files=c("BIO_f-1",  ## Biomass ? by iteration and year
                                                            "BIO_t-1",  ## Biomass ? by iteration and year
                                                            "Fapex-1",  ## F Apex by iteration and year
                                                            "RECRT-1",  ## Recuits by iteration and year
@@ -19,20 +34,8 @@ setMethod("readPro2Box",   signature(x="character", type="character"),
                                                            "YIELD-1"), ## Yield by iteration and year
                       minyear=1,data.frame=TRUE,rel=FALSE){
 
-  readPro2BoxKobe=function(x){
-    vpaOut=readPro2Box(x,type="out")
-    vpaRef=readPro2Box(x,type="ref")
-
-    res=transform(merge(       vpaOut[,c("year","iter","scen","ssb","fapex")], 
-                        subset(vpaRef, refpt=="msy", select=c(iter,ssb,harvest)),by="iter"),
-                    ssb    =ssb.x/ssb.y, 
-                    harvest=fapex/harvest)[,c("year","iter","scen","ssb","harvest")]
-    
-    return(res)}
-
-
   res<-switch(type[1],
-              "kobe"=readPro2BoxKobe(x),
+              "kobe"=readPro2BoxKobe(x,proxy=proxy),
               "ref" =createRefpts(   x,              data.frame),
               "sta" =pro2Sta(        x,files,minyear,data.frame),
               "out" =pro2Out(        x,files,minyear,data.frame,rel))
@@ -116,7 +119,7 @@ createRefpts<-function(x,data.frame=FALSE,file="BENCH-1.OUT"){
 pro2Sta<-function(x,files,minyear=1,data.frame=TRUE){
        getSta<-function(x,dir){ 
            res<-read.table(paste(dir,x,sep=.Platform$file.sep),skip=1,header=F)
-           names(res)<-c("scen","year","lowerCL","Median","upperCL","mean","det","sd")
+           names(res)<-c("tac","year","lowerCL","Median","upperCL","mean","det","sd")
            return(res)}
 
        res<-mdply(paste(files,"STA",sep="."),getSta,dir=x)
@@ -128,14 +131,14 @@ pro2Sta<-function(x,files,minyear=1,data.frame=TRUE){
 
        if (!data.frame){
 
-  tmp<-melt(res,id.vars=c("quantity","scen","year"))
+  tmp<-melt(res,id.vars=c("quantity","tac","year"))
          names(tmp)[4:5]<-c("quant","data")
 
-         res2<-array(list(),dim=c(length(unique(res[,"scen"])),7),
-                                dimnames=list(scen=unique(res[,"scen"]),
+         res2<-array(list(),dim=c(length(unique(res[,"tac"])),7),
+                                dimnames=list(tac=unique(res[,"tac"]),
                                               val =c("biomFish","biomass","fapex","rec","ssb","ssn","yield")))
 
-         tmp<-dlply(tmp,.(quantity,scen),function(x) as.FLQuant(x[,3:5]))
+         tmp<-dlply(tmp,.(quantity,tac),function(x) as.FLQuant(x[,3:5]))
          k<-0
          for (i in dimnames(res2)[[1]])
             for (j in dimnames(res2) [[2]]){
@@ -158,7 +161,7 @@ pro2Out<-function(x,files,minyear=1,data.frame=TRUE,rel=FALSE){
        res6<-read.table(paste(x,files[6],sep="/"))
        res7<-read.table(paste(x,files[7],sep="/"))
 
-       res<-data.frame(scen     =rep(res1[,1],                        dim(res1)[2]-2),
+       res<-data.frame(tac     =rep(res1[,1],                        dim(res1)[2]-2),
                        iter     =rep(res1[,2],                        dim(res1)[2]-2),
                        year     =rep((1:(dim(res1)[2]-2))+(minyear-1),each=dim(res1)[1]  ),
                        biomFish =unlist(res1[,3:dim(res1)[2]]),
@@ -171,15 +174,15 @@ pro2Out<-function(x,files,minyear=1,data.frame=TRUE,rel=FALSE){
 
        if (rel) {;}
        if (!data.frame){
-          res2<-array(list(),dim=c(length(unique(res[,"scen"])),7),
-                                dimnames=list(scen=unique(res[,"scen"]),
+          res2<-array(list(),dim=c(length(unique(res[,"tac"])),7),
+                                dimnames=list(tac=unique(res[,"tac"]),
                                               val =c("biomFish","biomass","fapex","rec","ssb","ssn","yield")))
 
           for (i in dimnames(res2)[2]){
-             res3<-res[,c("scen","year","iter",i)]
+             res3<-res[,c("tac","year","iter",i)]
              names(res3)[4]<-"data"
 
-          res2[,i]<-dlply(res3, "scen", function(x) as.FLQuant(x[,c("iter","year","data")]))}
+          res2[,i]<-dlply(res3, "tac", function(x) as.FLQuant(x[,c("iter","year","data")]))}
           return(res2)}
 
        return(res)}

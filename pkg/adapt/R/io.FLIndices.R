@@ -194,7 +194,7 @@ getIdx=function(i,smry){
   flq1=FLQuant(NA, dimnames=list(age ="all",
                                  year=smry$smry[i,"minyear"]:smry$smry[i,"maxyear"]))
   
-  index    =as.FLQuant(subset(smry$cpue, index==i)[,c("year","data")])
+  index    =as.FLQuant(subset(smry$cpue, index==i)[,c("year","data")],quant="age")
   index.var=index
   index.var[]=subset(smry$cpue, index==i)[,"cv"]
   units(index)=type(i,smry$smry)
@@ -219,19 +219,19 @@ getIdx=function(i,smry){
               name        =dimnames(smry$smry)[[1]][i],
               desc        ="read in via text file",
               distribution=pdf( i,smry$smry),
-              sel         =type(i,smry$smry))
-  
-  ## years
-  if (smry$smry[i,"minyear"]<range$minyear) | smry$smry[i,"maxyear"]<range$maxyear))
-     idx=trim(idx,year=range$minyear:range$maxyear)
-  
-  ## plus group
-  if (smry$smry[i,"plusgroup"]>range$plusgroup)
-    idx=setPlusGroup(idx,range$plusgroup)
-
-  ## ages
-  if (smry$smry[i,"min"]<range$min) | smry$smry[i,"max"]<range$max))
-     idx=trim(idx,age=range$minyear:range$maxyear)
+              sel.pattern =type(i,smry$smry))
+print(smry$range)  
+   ## years
+   if (smry$smry[i,"minyear"]<smry$range["minyear"] | smry$smry[i,"maxyear"]>smry$range["maxyear"])
+      idx=trim(idx,year=smry$range["maxyear"]:smry$range["maxyear"])
+   
+   ## plus group
+#    if (smry$smry[i,"plusgroup"]>smry$range$plusgroup)
+#      idx=setPlusGroup(idx,smry$range$plusgroup)
+ 
+   ## ages
+#    if (smry$smry[i,"min"]<smry$range["minyear"] | smry$smry[i,"max"]>smry$range["minyear"])
+#       idx=trim(idx,age=smry$range["minyear"]:smry$range["maxyear"])
  
   return(idx)}
 
