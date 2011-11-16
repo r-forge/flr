@@ -23,7 +23,8 @@ setMethod("readPro2Box",   signature(x="character", type="character"),
     vpaOut=readPro2Box(x,type="out")
     vpaRef=readPro2Box(x,type="ref")
 
-    res=transform(merge(vpaOut[,c("year","iter","scen","ssb","fapex")], subset(vpaRef, refpt=="msy", select=c(iter,harvest,ssb)),by="iter"),
+    res=transform(merge(       vpaOut[,c("year","iter","scen","ssb","fapex")], 
+                        subset(vpaRef, refpt=="msy", select=c(iter,ssb,harvest)),by="iter"),
                     ssb    =ssb.x/ssb.y, 
                     harvest=fapex/harvest)[,c("year","iter","scen","ssb","harvest")]
     

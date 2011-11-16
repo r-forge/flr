@@ -1,7 +1,5 @@
- 
-# FLIndex    {{{
 validFLIndex <- function(object) {
-return(TRUE)
+#return(TRUE)
   dimnms <- qapply(object, function(x) dimnames(x))
 
   # iters are 1 or N
@@ -61,8 +59,7 @@ return(TRUE)
      stop(paste("maxyear is lower than minyear in FLQuant slot", i))
 
   # Everything is fine
-  return(TRUE)
-  }
+  return(TRUE)}
 
 setClass("FLIndex",
     representation(
@@ -72,161 +69,171 @@ setClass("FLIndex",
         index        = "FLQuant",
         index.var    = "FLQuant",
         catch.n      = "FLQuant",
-		catch.wt     = "FLQuant",
-		effort       = "FLQuant",
-		sel.pattern  = "FLQuant",
-		index.q      = "FLQuant"),
+		    catch.wt     = "FLQuant",
+		    effort       = "FLQuant",
+		    sel.pattern  = "FLQuant",
+		    index.q      = "FLQuant"),
     prototype=prototype(
         name         = character(0),
         desc         = character(0),
         type         = character(0),
-        range        = unlist(list(min=0, max=0, plusgroup=NA,
-			minyear=1, maxyear=1, startf=NA, endf=NA)),
+        range        = unlist(list(min=0,     max=0,     plusgroup=NA,
+			                             minyear=1, maxyear=1, startf=NA, endf=NA)),
         distribution = character(0),
         index        = new("FLQuant"),
         index.var    = new("FLQuant"),
-		catch.n      = new("FLQuant"),
-		catch.wt     = new("FLQuant"),
-		effort       = new("FLQuant"),
-		sel.pattern  = new("FLQuant"),
-		index.q      = new("FLQuant")),
-    validity=validFLIndex
-)
-
-# setValidity("FLIndex", validFLIndex)
-# remove(validFLIndex)    #   }}}
+		    catch.n      = new("FLQuant"),
+		    catch.wt     = new("FLQuant"),
+		    effort       = new("FLQuant"),
+		    sel.pattern  = new("FLQuant"),
+		    index.q      = new("FLQuant")),
+    validity=validFLIndex)
 
 
-## readVPA2BoxIndices		{{{
-readVPA2BoxIndices <- function(file.,na.strings="NA") {
-file.="/home/lkell/Dropbox/adapt/inputs/Bootstraps/Inflated/run13/bfte2010.d1"
-    
-    skip.hash<-function(i) {
+setValidity("FLIndex", validFLIndex)
+ remove(validFLIndex)    #   }}}
+
+
+skip.hash<-function(i,x) {
         i<-i+1
-        while (substr(scan(file.,skip=i,nlines=1,what=("character"),quiet=TRUE)[1],1,1)=="#")
+        while (substr(scan(x,skip=i,nlines=1,what=("character"),quiet=TRUE)[1],1,1)=="#")
             i<-i+1
         return(i)}
     
-    skip.until.minus.1<-function(i) {
+skip.until.minus.1<-function(i,x) {
         i<-i+1
-        while (scan(file.,skip=i,nlines=1,what=("character"),quiet=TRUE)[1]!="-1")
+        while (scan(x,skip=i,nlines=1,what=("character"),quiet=TRUE)[1]!="-1")
             i<-i+1
         return(i)}
 
-  # range
+timing=function(i,smry){
+  # TIMING (-1 = AVERAGE DURING YEAR, POSITIVE INTEGER = NUMBER OF MONTHS ELAPSED)
+  if   (smry[i,"timing"]==-1) return(data.frame(startf=-1,endf=-1))
+  else                        return(data.frame(startf=smry[i,"timing"]/12,endf=smry[i,"timing"]/12))}
+
+pdf=function(i,smry){
+    # PDF   (0= do not use,1=lognormal, 2=normal)
+    if (smry[i,"pdf"]==0) return("notused")
+    if (smry[i,"pdf"]==2) return("normal")
+    else return("lognormal")}
+
+type=function(i,smry){
+    # UNITS       (1 = numbers, 2 = biomass)
+    if (smry[i,"units"]==2) return("biomass") 
+    else                    return("numbers")}
+
+sel=function(i,smry){
+    # SELECTIVITY (1 = fixed, 2 = fractional catches, 
+    # 3 = Powers and Restrepo partial catches,4=Butterworth and Geromont eq 4)
+    if (smry[i,"type"]==1)  return("sel") 
+    if (smry[i,"type"]==2)  return("catches")
+    if (smry[i,"type"]==3)  return("Powers")
+    if (smry[i,"type"]==4)  return("Butterworth")}
+          
+getIdxData=function(x,na.strings="NA") {
+
+# INDEX PDF  (0= do not use,1=lognormal, 2=normal)
+# |     |    UNITS (1 = numbers, 2 = biomass)
+# |     |    |      VULNERABILITY (1=fixed, 2=frac.catches, 3=part. catches, 4=Butt. & Gero.
+# |     |    |      |     TIMING (-1=average, +integer = number of months elapased}
+# |     |    |      |     |     FIRST AGE  LAST AGE   TITLE (IN SINGLE QUOTES)
+
   range<-numeric(5)
-	names(range)<-c("min","max","plusgroup","minyear","maxyear")
+  names(range)<-c("min","max","plusgroup","minyear","maxyear")
 	
-  i <- skip.hash(0)
-    range[c("minyear", "maxyear")] <- scan(file.,skip = i, nlines = 1, nmax = 2, quiet = TRUE,na.strings=na.strings)
-  i <- skip.hash(i)
-    range[c("min", "max", "plusgroup")] <- scan(file.,skip = i, nlines = 1, nmax = 3, quiet = TRUE,na.strings=na.strings)
-  i <- skip.hash(i+1)
-    NIndex <- scan(file.,skip=i,nlines=1,nmax=1,quiet=TRUE)
-  i <- skip.until.minus.1(i)
-  i <- skip.hash(i)
-    smry. <- array(0,dim=c(NIndex,7))
+  i <- skip.hash(0,x)
+  range[c("minyear", "maxyear")] = scan(x,skip = i, nlines = 1, nmax = 2, quiet = TRUE,na.strings=na.strings)
+  i <- skip.hash(i,x)
+  range[c("min", "max", "plusgroup")] = scan(x,skip = i, nlines = 1, nmax = 3, quiet = TRUE,na.strings=na.strings)
+  i =skip.hash(i,  x)
+
+  NIndex =scan(x,skip=i,nlines=1,nmax=1,quiet=TRUE)
+  i =skip.until.minus.1(i,x)
+  i =skip.hash(         i,x)
+
+  smry=array(0,dim     =c(NIndex,6),
+               dimnames=list(index=1:NIndex,c("pdf","units","vulnerability","timing","min","max")))
       
-    j <- numeric(1)
-    for (i in i:(i+NIndex-1)) {
-        j<-j+1
-        smry.[j,]<-scan(file.,skip=i,nlines=1,nmax=7,quiet=TRUE,na.strings=na.strings)
-    }
+  k =numeric(1)
+  nms=NULL
+  for (i in i:(i+NIndex-1)) {
+     k=k+1
+     smry[k,]=      scan(x,skip=i,                 nlines=1,nmax=7,quiet=TRUE,na.strings=na.strings)[-1]
+     nms     =c(nms,scan(x,skip=i,what=character(),nlines=1,nmax=8,quiet=TRUE,na.strings=na.strings)[ 8])}
 
-    i<-skip.hash(i)
-    i<-skip.hash(i)
-    index.<-array(0,dim=c(skip.until.minus.1(i)-i, 4))
-    for (j in i:(skip.until.minus.1(i)-1))
-        index.[j-i+1,]<-scan(file.,skip=j,nlines=1,nmax=4,quiet=T,na.strings=na.strings)
-    i<-skip.until.minus.1(i)+1	   	
-    p.<-read.table(file.,skip=i,fill=T,nrows=(skip.until.minus.1(i)-i-3),colClasses="numeric",na.strings=na.strings)
-	  l. <- FLIndices()
-    for (i in 1:NIndex)
-        l.[[i]]<-FLIndex(sel.pattern=FLQuant(NA,dimnames=list(age=range["min"]:range["max"],year=range["minyear"]:range["maxyear"])))
-    
-    return(set.index(smry.,index.,p.,l.,range))
-}
+  dimnames(smry)$index=nms
 
+  i=skip.hash(i,x)
+  i=skip.hash(i,x)
+ 
+  series=array(0,dim=c(skip.until.minus.1(i,x)-i, 4))
+  for (j in i:(skip.until.minus.1(i,x)-1))
+    series[j-i+1,]<-scan(x,skip=j,nlines=1,nmax=4,quiet=T,na.strings=na.strings)
 
-set.index <- function(smry.,index.,p.,l.,range) {
-    yr.range  <- tapply(index.[,2],index.[,1],range)
-	     for (i in seq(length(l.))) {
-print(i)    	   
-          l.[[i]]@range[1:2]<-smry.[i,6:7]
-    	    l.[[i]]@range[4:5]<-yr.range[[i]]
-         
-    	    # TIMING (-1 = AVERAGE DURING YEAR, POSITIVE INTEGER = NUMBER OF MONTHS ELAPSED)
-    	    if (smry.[i,5]==-1) 
-    	        l.[[i]]@range[6:7]<-c(-1,-1)
-    	    else   
-    	        l.[[i]]@range[6:7]<-c(smry.[i,5]/12,smry.[i,5]/12)
-    	    names(l.[[i]]@range)[6:7]<-c("startf","endf")
-    	    # PDF         (0= do not use,1=lognormal, 2=normal)
-    	    if (smry.[i,2]==2)
-    	        l.[[i]]@distribution<-"normal"
-    	    else 
-    	        l.[[i]]@distribution<-"lognormal"
+  dimnames(series)=list(NULL,c("index","year","data","cv"))
+  i  =skip.until.minus.1(i,x)+1     	
+  vul=read.table(x,skip=i,fill=T,nrows=(skip.until.minus.1(i,x)-i-3),colClasses="numeric",na.strings=na.strings)
+  i  =skip.until.minus.1(i,x)+1       
+  i  =skip.hash(i,x)
+  wts=read.table(x,skip=i,fill=T,nrows=(skip.until.minus.1(i,x)-i),  colClasses="numeric",na.strings=na.strings)
+  
+  names(vul)=c("index","year",range["min"]:range["max"])
+  names(wts)=c("index","year",range["min"]:range["max"])
 
-    	    # UNITS       (1 = numbers, 2 = biomass)
-    	    if (smry.[i,3]==2) 
-    	        l.[[i]]@type<-"biomass" 
-    	    else 
-    	        l.[[i]]@type<-"numbers"
+  smry=data.frame(smry,daply(as.data.frame(series), .(index), function(x) range(x$year)))
+  smry$plusgroup=range["plusgroup"]
+  smry$plusgroup[smry[,"max"]<range["plusgroup"]]=NA
 
-    	    # SELECTIVITY (1 = fixed, 2 = fractional catches, 
-    	    # 3 = Powers and Restrepo partial catches,4=Butterworth and Geromont eq 4)
-            if (smry.[i,4]==1) 
-                l.[[i]]@type<-c(l.[[i]]@type,"sel") 
-            if (smry.[i,4]==2) 
-                l.[[i]]@type<-c(l.[[i]]@type,"catches")
-            if (smry.[i,4]==3) 
-                l.[[i]]@type<-c(l.[[i]]@type,"Powers")
-            if (smry.[i,4]==4) 
-                l.[[i]]@type<-c(l.[[i]]@type,"Butterworth")  
-            names(l.[[i]]@type)<-c("type")
+  names(smry)[7:8]=c("minyear","maxyear")
 
-flq =FLQuant(c(index.[index.[,1]==i,3]),     dim     =c(1,range(l.[[i]],"maxyear")-range(l.[[i]],"minyear")+1),
-                    dimnames=list(age ="all",
-                                  year=range(l.[[i]],"minyear"):range(l.[[i]],"maxyear")))
-flq2=FLQuant(NA,    dim     =c(range(l.[[i]],"max")-range(l.[[i]],"min")+1,range(l.[[i]],"maxyear")-range(l.[[i]],"minyear")+1),
-                    dimnames=list(age =range(l.[[i]],"min"):range(l.[[i]],"max"),
-                                  year=range(l.[[i]],"minyear"):range(l.[[i]],"maxyear")))
+return(list(range=range,smry=smry,"cpue"=data.frame(series),vul=vul,wts=wts))}
 
-#print(range(l.[[i]])) 
-        if (range(l.[[i]],"max")<range(l.[[i]],"plusgroup")) range(l.[[i]])["plusgroup"]=NA
-#print(range(l.[[i]]))    
+getIdx=function(i,smry){
+  flq2=FLQuant(NA, dimnames=list(age =smry$smry[i,"min"    ]:smry$smry[i,"max"],
+                                 year=smry$smry[i,"minyear"]:smry$smry[i,"maxyear"]))
+  flq1=FLQuant(NA, dimnames=list(age ="all",
+                                 year=smry$smry[i,"minyear"]:smry$smry[i,"maxyear"]))
+  
+  index    =as.FLQuant(subset(smry$cpue, index==i)[,c("year","data")])
+  index.var=index
+  index.var[]=subset(smry$cpue, index==i)[,"cv"]
+  units(index)=type(i,smry$smry)
+  catch.wt=flq2
+  if (i %in% smry$wts$index) {
+      catch.wt=melt(subset(wts, i==index & year %in% smry$smry[i,"minyear"]:smry$smry[i,"maxyear"])[,-1],id.var="year",variable_name="age")
+      names(catch.wt)[3]="data"
+      catch.wt=as.FLQuant(catch.wt)
+      }
+  
+  catch.n=flq2
+  if (i %in% smry$vul$index) {
+      catch.n=melt(subset(vul, i==index & year %in% smry$smry[i,"minyear"]:smry$smry[i,"maxyear"])[,-1],id.var="year",variable_name="age")
+      names(catch.n)[3]="data"
+      catch.n=as.FLQuant(catch.n)
+      }
+  flq2=FLQuant(NA,dimnames=dimnames(catch.n))
+                                 
+  idx=FLIndex(index      =index,index.var=index.var,index.q=flq1,effort=flq1,
+              sel.pattern=flq2,catch.n  =catch.n,catch.wt=catch.wt,
+              range       =unlist(smry$smry[i,c(5,6,9,7,8)]),
+              name        =dimnames(smry$smry)[[1]][i],
+              desc        ="read in via text file",
+              distribution=pdf( i,smry$smry),
+              sel         =type(i,smry$smry))
+  
+  ## years
+  if (smry$smry[i,"minyear"]<range$minyear) | smry$smry[i,"maxyear"]<range$maxyear))
+     idx=trim(idx,year=range$minyear:range$maxyear)
+  
+  ## plus group
+  if (smry$smry[i,"plusgroup"]>range$plusgroup)
+    idx=setPlusGroup(idx,range$plusgroup)
 
-       l.[[i]] = FLIndex(index=flq,range=l.[[i]]@range,
-                              catch.n =flq2,
-                              catch.wt=flq2,
-                              sel.pattern=flq2)
-
-# 			l.[[i]]@catch.wt <- FLQuant(l.[[i]]@index)
-# 			l.[[i]]@catch.n  <- FLQuant(l.[[i]]@index)
-# 			l.[[i]]@sel.pattern<- FLQuant(l.[[i]]@index)
-
-         l.[[i]]@effort <- FLQuant(array(1,
-                dim=c(1,yr.range[[i]][2]-yr.range[[i]][1]+1),
-                dimnames=list(age="all",year=index.[index.[,1]==i,2])))
-
-            l.[[i]]@index.var <- FLQuant(array(ifelse(index.[index.[,1]==i,4]<0,
-                -1,index.[index.[,1]==i,4]), dim=c(1,yr.range[[i]][2]-yr.range[[i]][1]+1),
-                dimnames=list(age="all",year=index.[index.[,1]==i,2])))
-            
-           l.[[i]]@index.q <-FLQuant(NA,dimnames=dimnames(l.[[i]]@effort))
-            
-        if (any(p.[,1]==i)){
-				l.[[i]]@sel.pattern <-FLQuant(array(t(as.matrix(p.[p.[,1]==i,3:length(p.[1,])])),
-								  dim=c(length(p.[1,])-2,yr.range[[i]][2]-yr.range[[i]][1]+1),
-                                  dimnames=list(age=as.character(range["min"]:range["max"]),year=index.[index.[,1]==i,2])))
-		  	
-        l.[[i]]@sel.pattern <-l.[[i]]@sel.pattern[as.character(smry.[i,6]:smry.[i,7]),,,,]
-      	l.[[i]]@catch.n =FLQuant(NA, dimnames=list(age=as.character(smry.[i,6]:smry.[i,7]),year=index.[index.[,1]==i,2]))
-   	    l.[[i]]@catch.wt=FLQuant(NA, dimnames=list(age=as.character(smry.[i,6]:smry.[i,7]),year=index.[index.[,1]==i,2]))
-				}
-			}
-    return(l.)
-}	# }}}
+  ## ages
+  if (smry$smry[i,"min"]<range$min) | smry$smry[i,"max"]<range$max))
+     idx=trim(idx,age=range$minyear:range$maxyear)
+ 
+  return(idx)}
 
 # read.FLIndex
 read.FLIndex <- function(...){
@@ -241,3 +248,16 @@ read.FLIndices <- function(...){
 #idx=readVPA2BoxIndices("/home/lkell/Dropbox/adapt/inputs/Bootstraps/Inflated/run13/bfte2010.d1")
 #validFLIndex(idx[[2]])
 
+readVPA2BoxIndices=function(x){
+  smry=getIdxData(x)
+
+  res=FLIndices(mlply(data.frame(i=seq(dim(smry$smry)[1])), getIdx, smry=smry))
+  names(res)=laply(res, function(x) name(x))
+  
+  return(res)}
+
+#x="/home/lkell/Dropbox/adapt/inputs/Bootstraps/Inflated/run13/bfte2010.d1"
+#smry=getIdxData(x)
+#idx=FLIndices(mlply(data.frame(i=seq(dim(smry$smry)[1])), getIdx, smry=smry))
+
+  
