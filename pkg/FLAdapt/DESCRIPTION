@@ -1,0 +1,13 @@
+Package: FLAdapt
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2011-11-14
+Author: Who wrote it
+Collate:  generics.R classes.R FLAdapts.R io.FLIndices.R  io.Pro2Box.R  io.VPA2Box.R diags.R writeFuncs.R
+Maintainer: <lauriekell@gmail.com>
+Description: Implementation of VPA2box (adapt-vpa) as an R package
+License: What Licence is it under ?
+LazyLoad: yes
+Depends: Rcpp (>= 0.9.7), FLCore, ggplotFL
+LinkingTo: Rcpp

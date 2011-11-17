@@ -1,0 +1,23 @@
+importFrom(   "ggplotFL")
+import(       "FLCore")
+exportClasses("FLAdapt",
+              "FLAdapts",
+	      "FLAdaptControl",
+              "FLAdaptControls")
+exportMethods("FLAdapt",
+              "FLAdaptControl",
+              "FLAdapts",
+              "fit",
+              "fwd",
+              "readPro2Box")
+export(       "readVPA2Box",
+              "readVPA2BoxIndices",
+              "readVPA2BoxDiags",
+              "write_c1VPA",
+              "write_d1VPA",
+              "write_p1VPA",
+	      "write_quotas",
+	      "write_disc",
+	      "write_prjctlVPA",
+	      "write_sel",
+	      "write_recruit")
