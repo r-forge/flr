@@ -28,9 +28,8 @@ setClass('pro2boxControl', representation(
     ci            =80,
     seed          =-911,
     patch         =0,
-    files         =fls)
-    ),
-  validity=validpro2boxControl) # }}}
+    files         =fls),
+  validity=validpro2boxControl) 
   
 is.pro2boxControl <- function(x)
   return(inherits(x, "pro2boxControl"))
