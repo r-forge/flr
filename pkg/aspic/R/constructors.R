@@ -52,7 +52,9 @@ setMethod('aspic', signature(object='character'),
       ctc=ctc+u@catch
     
     res=aspic(catch=as.FLQuant(ctc),ctrl=ctrl)
-  
+    res@name=scan(inpFile,what=character(),sep="\n")[2]
+    res@desc="read in from aspic inp file"
+ 
     if ("bio" %in% names(args)){
       if (!file.exists(args[["bio"]])) stop(paste("file", bio, "does not exist"))
       bio        =readASPIC(args[["bio"]])
@@ -66,7 +68,7 @@ setMethod('aspic', signature(object='character'),
       res@params       =propagate(res@params, dims(res@stock)$iter)
       res@params["msy"]=bio$fmsy*bio$bmsy
       if (model(res)=="schaefer")
-        res@params["k"]  =bio$bmsy*2
+         res@params["k"]  =bio$bmsy*2
       
       res@params["b0"]=bio$biomass[,1]/bio$bmsy
       }

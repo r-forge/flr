@@ -4,7 +4,7 @@ Title: What the package does (short line)
 Version: 1.0
 Date: 2011-11-03
 Author: Who wrote it
-Collate: class-aspic.R generics.R fwd.R aspics.R createAccessors.R constructors.R cpue.R cpues.R aspicCpue.R runExe.R plot.R msy.R rcpp_hello_world.R
+Collate:  class-aspicControl.R class-aspic.R generics.R fwd.R aspics.R createAccessors.R constructors.R cpue.R cpues.R aspicCpue.R runExe.R plot.R msy.R rcpp_hello_world.R class-aspicpControl.R
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What Licence is it under ?

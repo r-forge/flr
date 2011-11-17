@@ -1,18 +1,24 @@
-importClassesFrom("FLCore",
-                  "FLQuant",
-                  "FLPar")
-importFrom(       "FLCore",
-	                "FLQuant",
-	                "as.FLQuant",
-                  "rbind")
+useDynLib(aspic)
+
+importFrom("ggplotFL")
+#importFrom("foreach", "foreach")
+import("FLCore")
+
 exportClasses(    "aspic",
 	                "aspics",
-	                "aspicControl")
+                  "aspicControl",
+                  "aspicpControl",
+                  "cpue",
+                  "cpues")
 exportMethods(    "aspic",
                   "aspicControl",
+                  "aspicp",
+                  "fit",
+                  "boot",
+                  "diags",
+                  "aspicpControl",
                   "aspicCpues",
                   "fwd",
-                  "runExe",
                   "spFn")
 export(           "is.aspic",
                   "is.aspicControl")
