@@ -1,12 +1,20 @@
 #file<-"/home/lkell/Dropbox/jrciccat/inputs/VPA2Box/BFT/bfte2010.d1"  
 
 
+setGeneric('diags<-', function(object, ..., value) standardGeneric('diags<-'))
+
+setMethod("diags<-", signature(object="FLAdapt", value="character"),
+  function(object, value) {
+		slot(object, "diags") <- readVPA2BoxDiags(value)
+		
+  return(object)}) 
+
 readVPA2BoxDiags<-function(x){
 
     tab5<-scan(x,what="",sep="\n")
     tab5<-tab5[grep("TABLE 5.",tab5): length(tab5)]
 
-    pos  <-grep("Chi-sq. discrepancy=",tab5)
+    os  <-grep("Chi-sq. discrepancy=",tab5)
     nms  <-substr(tab5[pos-7],10,30)
     str  <-pos+5
     end  <-grep("Selectivities",tab5)-2
@@ -24,14 +32,14 @@ readVPA2BoxDiags<-function(x){
     uDiag<-data.frame(cpue=unlist(mapply(rep, nms,(end-str)+1)),uDiag,row.names=NULL)
 
     #uDiag$cpue<-factor(uDiag$cpue)
-    if (nVar==9) names(uDiag)<-c("cpue","year","obs","hat","rsdl","sd","q","obs2","hat2","chi2")
-    if (nVar==7) names(uDiag)<-c("cpue","year","obs","hat","rsdl","sd","q","chi2")
+    if (nVar==9) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","obs2","hat2","chi2")
+    if (nVar==7) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","chi2")
 
-    uDiag$rsdl2<-c(uDiag$rsdl[-1],NA)
-    uDiag[!duplicated(uDiag[,"cpue"]),"rsdl2"]<-NA
+    uDiag$residual2<-c(uDiag$residual[-1],NA)
+    uDiag[!duplicated(uDiag[,"cpue"]),"residual2"]<-NA
 
     fnQQ<-function(object){
-       qq.          =qqnorm(c(object$rsdl),plot.it=FALSE)
+       qq.          =qqnorm(c(object$residual),plot.it=FALSE)
        qqx          =qq.$x
        qqy          =qq.$y
 

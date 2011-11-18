@@ -18,12 +18,13 @@ validFLAdapt <- function(object){
 
 setClass("FLAdapt",
 	representation(
-    "FLComp",
+               "FLComp",
 		call     ="character",
 		control  ="FLAdaptControl",
 		stock.n  ="FLQuant",
 		harvest  ="FLQuant",
-    diags    ="data.frame"),
+                diags    ="data.frame",
+                refpts   ="FLPar"),
 	prototype=prototype(
 		call     ="new(\"FLAdapt\")",
 		control  =new("FLAdaptControl"),
@@ -33,3 +34,7 @@ setClass("FLAdapt",
 
 setValidity("FLAdapt", validFLAdapt)
 remove(validFLAdapt)	# We do not need this function any more
+
+is.FLAdapt = function(x)
+	return(inherits(x, "FLAdapt"))
+

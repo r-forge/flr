@@ -1,0 +1,34 @@
+setMethod('fit', signature(object='FLAdapt'),
+  function(object, package="adapt", exeNm="vpa-2box", dir=tempdir(),...) 
+      runExe(object, package, exeNm, dir,...))
+setMethod('boot', signature(object='FLAdapt'),
+  function(object, package="adapt", exeNm="vpa-2box", dir=tempdir(),...) 
+      runExe(object, package, exeNm, dir,...))
+setMethod('pro2box', signature(object='FLAdapt'),
+  function(object, package="adapt", exeNm="pro-2box", dir=tempdir(),...) 
+      runExe(object, package, exeNm, dir,...))
+
+writeFn=function(object,exeNm="adapt") {
+   return()}
+  
+readFn=function(object,exeNm="adapt") {
+
+   return()}
+
+setMethod('readVpa2box', signature(x='character'),
+    function(x,m=NULL,nRet=0,...) readVPA2boxFn(x, args=list(...),m=m,nRet=nRet))
+
+
+setGeneric('refpts<-', function(object, ..., value) standardGeneric('refpts<-'))
+
+setMethod("refpts<-", signature(object="FLAdapt", value="character"),
+  function(object, value) {
+  	slot(object, "refpts") <- readPro2box(value,type="ref",data.frame=FALSE)[,1:4,]
+		
+  return(object)}) 
+
+# setMethod("FLAdaptControl<-", signature(object="FLAdaptControl", value="character"),
+#   function(object, value) {
+#     slot(object, "FLAdaptControl") <- new("FLAdaptControl")
+# 		
+#   return(object)})

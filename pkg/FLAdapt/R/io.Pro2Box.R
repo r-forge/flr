@@ -1,6 +1,8 @@
 #### Pro2Box ############################################################################
-setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
-setMethod("readPro2Box",   signature(x="character", type="character"), 
+setMethod("readPro2box",   signature(x="character", type="missing"),
+   function(x,type) readPro2box(x,type="kobe")) 
+
+setMethod("readPro2box",   signature(x="character", type="character"), 
           function(x,type=c("ref","sta","out","kobe"),proxy="msy",     
                                                     files=c("BIO_f-1",  ## Biomass ? by iteration and year
                                                             "BIO_t-1",  ## Biomass ? by iteration and year

@@ -5,18 +5,17 @@
 # Maintainer: Iago Mosqueira, JRC & Laurie Kell, ICCAT
 # $Id:  $
 
-readVPA2Box <- function(file, args=missing,m=NULL,...) {
-
-  if(!missing(args))
+readVPA2boxFn <- function(file,args=missing,m=NULL,...) {
+ if(!missing(args))
     args <- c(args, list(...))
 
   # control file 
   dir  <- getDir(file)
   files <- paste(dir, .Platform$file.sep, vpa2BoxFiles(file), sep="")
   
-  nS  <- getNBootRetro(file)
+  nS   <- getNBootRetro(file)
   nits <- max(1, nS[2])
-  nRet <- max(1, nS[1])
+  nRet <- 0:max(1, nS[1])
 
   # "csv" file
   # data
@@ -138,9 +137,8 @@ readVPA2Box <- function(file, args=missing,m=NULL,...) {
   discards(stk) <- computeDiscards(stk)
 
   units(harvest(stk)) <- "f"
-
-  if (nRet > 1)
-    stk <- getRetros(stk,files[3],n=nRet)
+  if (length(nRet) > 1)
+    stk <- getRetros(paste(dir,"/",sep=""),stk,nRet=nRet)
 
   return(stk)}
  

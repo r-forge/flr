@@ -1,18 +1,23 @@
-importFrom(   "ggplotFL")
 import(       "FLCore")
+import(       "ggplotFL")
 exportClasses("FLAdapt",
               "FLAdapts",
 	      "FLAdaptControl",
               "FLAdaptControls")
-exportMethods("FLAdapt",
-              "FLAdaptControl",
-              "FLAdapts",
+exportMethods("+",
               "fit",
-              "fwd",
-              "readPro2Box")
-export(       "readVPA2Box",
-              "readVPA2BoxIndices",
-              "readVPA2BoxDiags",
+              "pro2box",
+              "boot",
+              "readPro2Box",
+              "diags",
+              "diags<-",
+              "refpts",
+              "refpts<-",
+	      "FLAdaptControl")
+export(       "is.FLAdapt",
+              "is.FLAdaptControl",
+              "is.FLAdapts",
+              "is.FLAdaptControls",
               "write_c1VPA",
               "write_d1VPA",
               "write_p1VPA",

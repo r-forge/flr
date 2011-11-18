@@ -31,10 +31,7 @@ setMethod("FLAdaptControls", signature(object="missing"),
       args <- list(...)
       object <- args[!names(args)%in%c('names', 'desc', 'lock')]
       args <- args[!names(args)%in%names(object)]
-      do.call('FLAdaptControls',  c(list(object=object), args))
-	  }
-  }
-)
+      do.call('FLAdaptControls',  c(list(object=object), args))}})
 
 setMethod("FLAdaptControls", signature(object="list"),
   function(object, ...) {
@@ -64,4 +61,7 @@ setMethod("FLAdaptControls", signature(object="list"),
 
     return(do.call('new', args))}) 
 
+
+is.FLAdaptControls = function(x)
+	return(inherits(x, "FLAdaptControls"))
 

@@ -14,11 +14,11 @@
 #modified to output minus0.r  
 #|--------must be 50 characters or fewer----------|
 'BFT East 55-06 test'               TITLE OF RUN  #**
-'bfte2010.d1'                   DATA FILE
-'bfte2010.p1'                   PARAMETER FILE
-'minus0.r'                      RESULTS
-'bfte2010.e1'                   PARAMETER ESTIMATES
-'bfte2010.csv'                  spreadsheet
+'adapt.d'                   DATA FILE
+'adapt.p'                   PARAMETER FILE
+'adapt.r'                   RESULTS
+'adapt.e'                   PARAMETER ESTIMATES
+'adapt.csv'                 spreadsheet
 'none'                    		     TAGGING DATA FILE (INPUT)
 #############################################
 # MODEL TYPE OPTIONS

@@ -5,18 +5,15 @@
 # Maintainer: Iago Mosqueira, JRC
 # $Id:  $
 
-setGeneric('FLAdaptControl',   function(object, ...) standardGeneric('FLAdaptControl'))
-setGeneric('FLAdaptControls',  function(object, ...) standardGeneric('FLAdaptControls'))
-
-setGeneric('FLAdapt',  function(object, ...) standardGeneric('FLAdapt'))
-setGeneric('FLAdapts', function(object, ...) standardGeneric('FLAdapts'))
-
-setGeneric("readPro2Box",  function(x,type,...)      standardGeneric("readPro2Box"))
-
-setGeneric('diags', function(object, ...)         standardGeneric('diags'))
-setGeneric('fit',   function(object, ...)         standardGeneric('fit'))
-setGeneric('boot',  function(object, ...)         standardGeneric('boot'))
-setGeneric('fwd',   function(object, ctrl,...)    standardGeneric('fwd'))
-
+setGeneric("readPro2box",  function(x,type,...)   standardGeneric("readPro2box"))
+setGeneric("readVpa2box",  function(x,type,...)   standardGeneric("readVpa2box"))
+ 
+setGeneric('fit',    function(object, ...)         standardGeneric('fit'))
+setGeneric('boot',   function(object, ...)         standardGeneric('boot'))
+setGeneric('pro2box',function(object, ctrl,...)    standardGeneric('pro2box'))
+ 
+setGeneric('FLAdapt',        function(object, ...)         standardGeneric('FLAdapt'))
+setGeneric('FLAdaptControl', function(object, ...)         standardGeneric('FLAdaptControl'))
+#setGeneric('FLAdaptControl<-', function(object,...,value)  standardGeneric('FLAdaptControl<-'))
 
 

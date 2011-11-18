@@ -1,3 +1,5 @@
+
+
 ##########################################################################
 ### FLAdapt
 ### This file contains code just for the class FLAdapt
@@ -93,5 +95,10 @@ setClass("FLAdaptControl",
 
 setValidity("FLAdaptControl", validFLAdaptControl)
 remove(validFLAdaptControl)	# We do not need this function any more
+
+
+is.FLAdaptControl = function(x)
+	return(inherits(x, "FLAdaptControl"))
+
 
 
