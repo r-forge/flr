@@ -5,7 +5,6 @@
 # Maintainer: Iago Mosqueira, JRC & Laurie Kell, ICCAT
 # $Id:  $
 
-# readVPA2Box {{{
 readVPA2Box <- function(file, args=missing,m=NULL,...) {
 
   if(!missing(args))
@@ -143,19 +142,15 @@ readVPA2Box <- function(file, args=missing,m=NULL,...) {
   if (nRet > 1)
     stk <- getRetros(stk,files[3],n=nRet)
 
-  return(stk)
-} # }}}
-
-# getDir {{{
+  return(stk)}
+ 
 getDir <- function(file) {
   if (!grepl(.Platform$file.sep,file))
     res <- getwd()
   else
     res <- substr(file,1,max(gregexpr(.Platform$file.sep,file)[[1]])-1)
-  return(res)
-} # }}}
+  return(res)} 
 
-# vpa2boxfiles {{{
 vpa2BoxFiles <- function(file) {
   i <- skip.hash(0,file)
   j <- skip.until.hash(i,file)
@@ -165,36 +160,16 @@ vpa2BoxFiles <- function(file) {
    
   print(res)
   
-  return(res)
-} # }}}
+  return(res)}
 
-# skip.hash {{{
-skip.hash <- function(i,file) {
-    i <- i+1
-    while (substr(scan(file,skip=i,nlines=1,what=("character"),quiet=TRUE)[1],1,1)=="#")
-        i <- i+1
-
-    return(i)}
-
-skip.until.hash <- function(i,file) {
-    i <- i+1
-    while (substr(scan(file,skip=i,nlines=1,what=("character"),quiet=TRUE)[1],1,1)!="#")
-        i <- i+1
-
-    return(i)
-} # }}}
-
-# getNBootRetro {{{
 getNBootRetro <- function(file) {
 
     tmp <- scan(file,what=character(),sep="\n")
     tmp <- unlist(lapply(strsplit(tmp[substr(tmp,1,1)!="#"]," +"),
       function(x) x[x!=""][1]))
 
-    as.numeric(tmp[length(tmp)-1:2])
-} # }}}
-
-# readBinary {{{
+    as.numeric(tmp[length(tmp)-1:2])}
+ 
 readBinary <- function(x,dmns=list(),size=4) {
   # Specify dims
   if ( "iter" %in% names(dmns))
@@ -211,5 +186,4 @@ readBinary <- function(x,dmns=list(),size=4) {
   res <- array(res,lapply(dmns,length),dmns)
   res <- FLQuant(aperm(res,c(2,1,3,4,5,6)))
 
-  return(res)
-} # }}}
+  return(res)} 

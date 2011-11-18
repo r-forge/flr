@@ -1,3 +1,6 @@
+#file<-"/home/lkell/Dropbox/jrciccat/inputs/VPA2Box/BFT/bfte2010.d1"  
+
+
 readVPA2BoxDiags<-function(x){
 
     tab5<-scan(x,what="",sep="\n")
@@ -60,8 +63,6 @@ readVPA2BoxDiags<-function(x){
 
     return(uDiag)}
   
-file<-"/home/lkell/Dropbox/jrciccat/inputs/VPA2Box/BFT/bfte2010.d1"  
-
 getPos<-function(file){
     lns   <-scan(file,what="",sep="\n")
 
