@@ -50,7 +50,6 @@ setMethod("FLAdapts", signature(object="list"),
 
     return(do.call('new', args))}) 
 
-
 is.FLAdapts = function(x)
 	return(inherits(x, "FLAdapts"))
 

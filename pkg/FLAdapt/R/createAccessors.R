@@ -53,10 +53,9 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 		defined[[x]] <- c(x, xr, paste('alias{',x,',', class,'-method}', sep=''),
 			paste('\alias{',xr,',', class,',',unname(slots[x]), '-method}', sep=''),
 			paste('\alias{',x,'-methods}', sep=''),
-			paste('\alias{"',xr, '"-methods}', sep='')
-		)
-	}
-	return(defined)
-}	# }}}
+			paste('\alias{"',xr, '"-methods}', sep=''))}
+  
+	return(defined)}
 
 invisible(createFLAccesors("FLAdapt", exclude=c("range","name","desc","call")))
+invisible(createFLAccesors("FLAdaptControl", exclude=c("sel")))

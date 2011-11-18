@@ -2,15 +2,12 @@ Package: FLAdapt
 Type: Package
 Title: What the package does (short line)
 Version: 1.0
-Date: 2011-11-14
+Date: 2011-11-18
 Author: Who wrote it
-Collate:   generics.R class-FLAdaptControl.R class-FLAdapt.R class-FLAdapts.R class-FLAdaptControls.R constructors-FLAdapt.R  constructors-FLAdaptControl.R io.funcs.R io.Pro2Box.R io.Diags.R io.VPA2Box.R io.FLAdaptControl.R io.FLIndices.R io.Retros.R methods-FLAdapt.R writeFuncs.R createAccessors.R merge.R
-Maintainer: <lauriekell@gmail.com>
-Description: Implementation of VPA2box (adapt-vpa) as an R package
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
 License: What Licence is it under ?
+Collate: generics.R class-FLAdaptControl.R class-FLAdaptControls.R  class-FLAdapt.R  class-FLAdapts.R constructors-FLAdapt.R constructors-FLAdaptControl.R createAccessors.R io.funcs.R writeFuncs.R plot.R methods-FLAdapt.R io.Pro2Box.R io.VPA2Box.R io.Retros.R io.FLIndices.R io.Diags.R rcpp_hello_world.R
 LazyLoad: yes
 Depends: Rcpp (>= 0.9.7), FLCore
 LinkingTo: Rcpp
-
-
-

@@ -64,6 +64,3 @@ setMethod('FLAdapt', signature(object='missing'),
       slot(res, i) = args[[i]]
  
     return(object)})
-
-is.FLAdapt = function(x)
-	return(inherits(x, "FLAdapt"))

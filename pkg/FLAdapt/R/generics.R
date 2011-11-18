@@ -14,6 +14,5 @@ setGeneric('pro2box',function(object, ctrl,...)    standardGeneric('pro2box'))
  
 setGeneric('FLAdapt',        function(object, ...)         standardGeneric('FLAdapt'))
 setGeneric('FLAdaptControl', function(object, ...)         standardGeneric('FLAdaptControl'))
-#setGeneric('FLAdaptControl<-', function(object,...,value)  standardGeneric('FLAdaptControl<-'))
 
 

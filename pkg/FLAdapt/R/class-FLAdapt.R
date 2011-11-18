@@ -18,13 +18,13 @@ validFLAdapt <- function(object){
 
 setClass("FLAdapt",
 	representation(
-               "FLComp",
+   "FLComp",
 		call     ="character",
 		control  ="FLAdaptControl",
 		stock.n  ="FLQuant",
 		harvest  ="FLQuant",
-                diags    ="data.frame",
-                refpts   ="FLPar"),
+    diags    ="data.frame",
+    refpts   ="FLPar"),
 	prototype=prototype(
 		call     ="new(\"FLAdapt\")",
 		control  =new("FLAdaptControl"),

@@ -49,6 +49,3 @@ setMethod('FLAdaptControl', signature(object='missing'),
 
    
     return(FLAdaptControl(object, ...))})
-
-is.FLAdaptControl = function(x)
-	return(inherits(x, "FLAdaptControl"))
