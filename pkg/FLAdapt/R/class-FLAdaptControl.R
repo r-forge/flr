@@ -1,5 +1,3 @@
-
-
 ##########################################################################
 ### FLAdapt
 ### This file contains code just for the class FLAdapt
@@ -14,88 +12,97 @@ validFLAdaptControl<-function(object){
 	# Everything is fine
 	return(TRUE)}
 
+defaults=function(type,x="missing"){
+    if (x=="simplex"){
+				##Simplex options
+				res=unlist(list(seed =-991,   
+				                maxit= 100,   
+				                check=   3,   
+		                    pdev = 0.4))  
+            return(res)}
+            				
+    if (x=="q"){
+				##Index options
+				res=unlist(list(scale =1, 
+				                cv    =1.0,    
+			                  add   =0))    
+            return(res)}
+				
+    if (x=="sel"){
+				##Selectivity options
+				res=unlist(list(penalty=3,  
+				                sigma  =0.5,   
+				                minage =NA, 
+				                maxage =NA)) 
+            return(res)}
+				
+    if (x=="sr"){
+				##Stock recruit options
+				res=unlist(list(pdf    =0,   
+				                minyear=NA,   
+				                maxyear=NA))
+            return(res)}
+				
+    if (x=="rec"){
+				##Recruitment options
+				res=unlist(list(penalty=0,
+                				 sigma  =0.5))
+            return(res)}
+				
+    if (x=="catch"){
+				##Catch options
+				res=unlist(list(penalty=0,
+				                sigma  =0.5,
+				                pdf    =0))
+            return(res)}
+				
+    if (x=="params"){
+				##Parameter options as in the VPA2Box *.p file
+				termage=data.frame()  #terminal ages
+				fratio =data.frame()  #f ratio for oldest age or plusgroup
+ 			  sr     =data.frame()  #stock recruit parameters
+				var    =data.frame()  #variance scaling parameters
+				q      =data.frame()  #catchability parameters
+        res=   rbind(termage,fratio,sr,var,q)
+            
+        return()}
+				}
+
+      
 setClass("FLAdaptControl",
 		representation(
-				##Simplex options
-				seed         ="integer",   #Random number seed
-				maxit        ="integer",   #Maximum number of amoeba simplex search restarts
-				check        ="logical",   #check flag, convergence is declared when CHECKFLAG number of consecutive restarts result in parameter estimates that vary by less than 1% 
-				pdev         ="numeric",   #standard deviation controlling the random specification of vertices for the initial simplex of each restart
-
-				##General options
-				season		   ="numeric",   #Spawning season as fraction of a year
+				
+        ##General options
+				season		 ="numeric",   #Spawning season as fraction of a year
 				optionF      ="logical",   #Option to use F's as terminal year parameters default is true, if false then use N's
-				
-				##Index options
-				qEst        ="logical",   #Estimate q in search if true, default is false use concentrated MLE's
-				qScale      ="logical",   #Scale indices (i.e. divide index values by their mean, default is true
-				qCv         ="numeric",   #Index weighting option default is "sd", alternative options are "input" or "mlm", so-called maximum likelihood method
-				qAdd        ="logical",   #Variance scaling factor default is false (i.e. multipicative)
-				
+			  ##Simplex options
+				simplex      ="numeric",         
+  			##Index options
+				q            ="numeric",
 				##Selectivity options
-				selPenalty   ="logical",   #Links selectivities in the last n years, default is false
-				selSigma     ="numeric",   #sigma (i.e. penalty)
-				selNyr       ="integer",  #number of years
-				selMinage    ="integer",  #first age
-				selMaxage    ="integer",  #last age
-				
+				sel          ="numeric",  
 				##Stock recruit options
-				srPenalty   ="logical",   #Imposes stock recruitment relationship (penalises departures from Beverton and Holt model)   
-				srSigma     ="numeric",   #sigma (i.e. penalty)
-				srNyr       ="integer",   #number of years
-				srPdf       ="character", #Error model
-				
+				sr          ="numeric",
 				##Recruitment options
-				recPenalty  ="logical",   #Links rectuitments in th elast n years
-				recSigma    ="numeric",   #sigma (i.e. penalty)
-				recMinyr    ="numeric",   #first year to which penalty applies
-				recMaxyr    ="numeric",   #last year to which penalty applies
-				
+				rec         ="numeric",
 				##Catch options
-				catchPenalty="logical",    #
-				catchSigma  ="numeric",    #sigma (i.e. penalty)
-				catchPdf    ="character",  #PDF of catch
-				
+				catch       ="logical",   
 				##Parameter options as in the VPA2Box *.p file
-				paramTermage="data.frame", #terminal ages
-				paramFratio ="data.frame", #f ratio for oldest age or plusgroup
- 			 paramSrr   ="data.frame", #stock recruit parameters
-				paramVar    ="data.frame", #variance scaling parameters
-				paramQ      ="data.frame"  #catchability parameters
-				),
+				params      ="data.frame"),
 		prototype=prototype(
-				seed         =as.integer(-911),
-				maxit        =as.integer(20), 
-				check        =as.logical(TRUE),   
-				pdev         =as.numeric(1.0),   
-				season       =as.numeric(0.0),         
-				optionF     =as.logical(TRUE),  
-				qEst        =as.logical(FALSE),
-				qScale      =as.logical(TRUE),              
-				qCv         =as.numeric(1.0),         
-				qAdd        =as.logical(FALSE),     
-				selPenalty  =as.logical(FALSE),
-				selSigma    =as.numeric(1.0),         
-				selNyr      =as.integer(NA),
-				selMinage   =as.integer(NA),
-				selMaxage   =as.integer(NA),
-				srPenalty   =as.logical(TRUE),
-				srSigma     =as.numeric(1.0),         
-				srNyr       =as.integer(NA),
-				srPdf       =as.character("log"),
-				recPenalty  =as.logical(TRUE),
-				recSigma    =as.numeric(1.0),         
-				recMinyr    =as.integer(NA),
-				recMaxyr    =as.integer(NA),
-				catchPenalty=as.logical(FALSE),         
-				catchSigma  =as.numeric(1.0),         
-				catchPdf    =as.character("log")
-				),
+				season     =as.numeric(0.0),         
+				optionF    =as.logical(TRUE),
+				simplex    =defaults("simplex"),
+				q          =defaults("q"),
+				sel        =defaults("sel"),
+				sr         =defaults("sr"),
+				rec        =defaults("rec"),
+				catch      =defaults("catch"),
+				params     =defaults("params")),
 		validity=validFLAdaptControl)
 
 setValidity("FLAdaptControl", validFLAdaptControl)
 remove(validFLAdaptControl)	# We do not need this function any more
-
 
 is.FLAdaptControl = function(x)
 	return(inherits(x, "FLAdaptControl"))
