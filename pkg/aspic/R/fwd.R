@@ -4,6 +4,16 @@
 # Copyright 2003-2007 FLR Team. Distributed under the GPL 2 or later
 # $Id:  $
 
+
+setGeneric("spFn", function(biomass,params,...){
+    value  <-  standardGeneric("spFn")
+  	return(value)})
+
+
+setGeneric('fwd', function(object,ctrl,...)
+  standardGeneric('fwd'))
+
+
 setMethod('spFn', signature(biomass="FLQuant",params="FLPar"),
  function(biomass,params,model="pellat") {
     foxFn <-function(biomass, params)

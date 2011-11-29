@@ -5,20 +5,12 @@ importFrom("ggplotFL")
 import("FLCore")
 
 exportClasses(    "aspic",
-	                "aspics",
+	          "aspics",
                   "aspicControl",
                   "aspicpControl",
                   "cpue",
                   "cpues")
-exportMethods(    "aspic",
-                  "aspicControl",
-                  "aspicp",
-                  "fit",
-                  "boot",
-                  "diags",
-                  "aspicpControl",
-                  "aspicCpues",
-                  "fwd",
+exportMethods(    "fwd",
                   "spFn")
 export(           "is.aspic",
                   "is.aspicControl")
