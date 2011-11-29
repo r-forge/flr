@@ -24,9 +24,9 @@ aspicCpues=function(object){
   CC =grep("CC",substr(inp,1,2))
   nms=inp[CC-1]
         
-  cpue =mlply(data.frame(from=CC+1,to=c(CC[-1]-2,length(inp))),seq)
+  u =mlply(data.frame(from=CC+1,to=c(CC[-1]-2,length(inp))),seq)
         
-  u=cpues(llply(cpue,getU, inp=inp))
+  u=cpues(llply(u,getU, inp=inp))
   names(u)=nms
       
   return(u)}

@@ -20,34 +20,39 @@ setMethod("aspics", signature(object="missing"),
       args <- list(...)
       object <- args[!names(args)%in%c('names', 'desc', 'lock')]
       args <- args[!names(args)%in%names(object)]
-      
       do.call('aspics',  c(list(object=object), args))}})
 
 setMethod("aspics", signature(object="list"),
   function(object, ...) {
     
-    args=list(...)
+    args <- list(...)
     
     # names in args, ... 
-    if("names" %in% names(args)){
-       names=args[['names']]
-    }else{
+    if("names" %in% names(args)) {
+      names <- args[['names']]
+    } else {
     # ... or in object,
-       if(!is.null(names(object))) {
-         names <- names(object)
+      if(!is.null(names(object))) {
+        names <- names(object)
     # ... or in elements, ...
-    }else{
-       names=unlist(lapply(object, name))
-       # ... or 1:n
-       idx=names == "NA" | names == ""
-       if(any(idx))
-          names[idx]=as.character(length(names))[idx]
-    }}
+      } else {
+        names <- unlist(lapply(object, name))
+        # ... or 1:n
+        idx <- names == "NA" | names == ""
+        if(any(idx))
+          names[idx] <- as.character(length(names))[idx]
+      }
+    }
 
     # desc & lock
-    args=c(list(Class="aspics", .Data=object, names=names), args[!names(args)%in%'names'])
+    args <- c(list(Class="aspics", .Data=object, names=names),
+      args[!names(args)%in%'names'])
 
-    return(do.call('new', args))})
+    return(do.call('new', args))}) 
+
+is.aspics = function(x)
+	return(inherits(x, "aspics"))
+
 
 
 
