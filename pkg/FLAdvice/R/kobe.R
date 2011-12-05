@@ -52,6 +52,19 @@ kobeP<-function(biomass,harvest) {
 
             data.frame(f=f,b=b,p=p,collapsed=(1-b)*(1-f))}
 
+
+setGeneric('k2sm', function(object,brp,...)
+    standardGeneric('k2sm'))
+setMethod('k2sm', signature(object="FLStock",brp="FLBRP"),
+ function(object,brp,rp="msy"){
+   res=model.frame(SSB    =ssb(    object),refpts(brp)[rp,"ssb"],
+                   harvest=harvest(object),refpts(brp)[rp,"harvest"],drop=TRUE)
+   
+   res=cbind(res,kobeP(res[,"SSB"],res[,"harvest"]))
+   
+   return(res)})
+
+
   
 ### Kobe Matrix ##################################################################################################
 kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),

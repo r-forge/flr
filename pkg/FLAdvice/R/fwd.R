@@ -2,8 +2,9 @@
 setMethod("fwd", signature(object="FLBRP", ctrl="missing"),
     function(object,ctrl,
                sr=object, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
-               availability=NULL,maxF=2.0)
+               availability=NULL,maxF=2.0,fbar="missing")
     {                          
+    if (!missing(fbar)) fbar(object)=fbar  
     ctrl=fbar(object)[,-1]  
     stk=as(object,"FLStock") 
     res=fwd(stk,f=ctrl,
