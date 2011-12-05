@@ -172,13 +172,38 @@ setMethod("fwd", signature(object="FLStock", ctrl="FLQuants"),
                availability=NULL,maxF=2.0){    
       
     res=FLStocks(mlply(seq(length(ctrl)),
-                   function(x,object,ctrl,sr,sr.residuals,sr.residuals.mult,availability,maxF) {
-                      fwd(object,ctrl=ctrl[[x]],quantity=names(ctrl)[x],
-                          sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,availability=availability,maxF=maxF)
-                      
-          },
-          object=object,ctrl=ctrl,sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,availability=availability,maxF=maxF))                          
-                                
+          function(x,object,ctrl,sr,sr.residuals,sr.residuals.mult,availability,maxF) {
+            fwd(object,ctrl=ctrl[[x]],quantity=names(ctrl)[x],
+                sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,
+                availability=availability,maxF=maxF)},
+                    object=object,ctrl=ctrl,
+                    sr=sr,sr.residuals=sr.residuals,sr.residuals.mult=sr.residuals.mult,
+                    availability=availability,maxF=maxF))                          
+                                          
+    return(res)})
+
+setMethod("fwd", signature(object="FLStock", ctrl="FLQuant"),
+    function(object, ctrl,quantity,
+               sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
+               availability=NULL,maxF=2.0,...)
+    {    
+    ctrl.=apply(ctrl,1:5,mean,na.rm=TRUE)
+   
+    ctrl.=cbind(quantity=quantity,as.data.frame(ctrl.,drop=T))
+    names(ctrl.)[seq(dim(ctrl.)[2])[names(ctrl.)=="data"]]="val"
+    
+    ctrl.=fwdControl(ctrl.)
+    dmns=dimnames(ctrl.@trgtArray)
+    dm  =dim(ctrl.@trgtArray)
+    dmns$iter=dimnames(ctrl)$iter
+    dm[3]    =dim(ctrl)[3]
+ 
+    ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
+   
+    res=fwd(object,ctrl=ctrl.,
+            sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
+               availability=availability,maxF=maxF)  
+    
     return(res)})
 
 
