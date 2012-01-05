@@ -24,8 +24,9 @@ for (i in res$iter)
 }
 
 # png(file='sqlspeed_with_index.png')
-plot(res$iter, res$save, type='b', col='red')
+plot(res$iter, res$save, type='b', col='red', xlab="No. of iters", ylab="time (s)")
 lines(res$iter, res$slot, type='b', col='blue')
+legend(0.5, 1.4, c('storing', 'accesing'), col=c('red', 'blue'), lwd=1)
 # dev.off()
 # -----
 unlink(db)
