@@ -156,8 +156,7 @@ setMethod("fwd", signature(object="FLStock", ctrl="missing"),
     dmns=dimnames(ctrl.@trgtArray)
     dm  =dim(ctrl.@trgtArray)
     dmns$iter=dimnames(ctrl)$iter
-    dm[3]    =dim(ctrl)[3]
- 
+    dm[3]    =dim(ctrl)[6]
     ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
    
     res=fwd(object,ctrl=ctrl.,
