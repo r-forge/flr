@@ -248,7 +248,7 @@ iniLog<-function(data,a50,ato95,asym){
 
    return(c(a50=a50,ato95=ato95,asym=asym))}
 
-logisticFn<-function(x,a50,ato95,asym=1.0){
+logisticFn<-function(x,a50,ato95,asym=1.0){  
   pow<-function(a,b) a^b
   res<-x
 
@@ -257,7 +257,9 @@ logisticFn<-function(x,a50,ato95,asym=1.0){
 
   res[gt]<-0
   res[lt]<-asym
-  res[!gt & !lt]<-asym/(1.0+pow(19.0,(a50-x[!gt & !lt])/ato95))
+
+  if (length(x[!gt & !lt])>0)
+     res[!gt & !lt]<-asym/(1.0+pow(19.0,(a50-x[!gt & !lt])/ato95))
 
   return(res)}
 

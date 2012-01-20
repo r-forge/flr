@@ -1,71 +1,65 @@
-#### To Do ######################################################################
-# 1) par operators return matrix, correct so return FLPar
-# 2) shift dnormal & logistic to ogive.R and add to FLBRP
-# 3) Document M & mat50 and add to FLBRP
+gislasim=function(par){
+   
+  names(dimnames(par))=tolower(names(dimnames(par)))
 
-### coercion to parameters
-mmm<-function(x){
-    switch(class(x),
-           list   =FLPar(unlist(x)),
-           numeric=FLPar(x),
-           x)}
+  ## growth parameters
+  if (!("t0" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=0))
+  if (!("a"  %in% dimnames(par)$params)) par=rbind(par,FLPar("a" =0.001))
+  if (!("b"  %in% dimnames(par)$params)) par=rbind(par,FLPar("b" =3))
+  
+  
+  if (!("k"  %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=c(par["linf"])*0.002752))
+ 
+  ### why does rbind(FLPar,numeric) not return an FLPar
+  par=rbind(par,FLPar("sinf"=par["a"]*par["linf"]^par["b"]))
+
+  ## maturity parameters
+  par=FLPar(rbind(par,FLPar(c("a50"=0.8776*par["linf",]-0.038,"ato95"=0,"asym"=1.0))))
+  par["a50"]=invVonB(par,c(par["a50"]))
+  
+  ## selectivity
+  par=rbind(par,FLPar(a1=par["a50"],sl=5,sr=5000))
+  
+  return(par)}
 
 #### Life History Generator ####################################################
-setGeneric('gislaSim', function(grw,...)
-   standardGeneric('gislaSim'))
-setMethod('gislaSim', signature(grw="FLPar"),
-   function(grw,
-            m  =function(L,linf,k) exp(0.55 - 1.61*log(L) + 1.44*log(linf) + log(k)),
-            mat=function(linf,ato50=3) FLPar(a50=0.8776*linf-0.038-ato50,ato95=ato50),
-            sel=FLPar(a=1,sl=1,sr=1e6),
-            sr =list(model="bevholt",steepness=0.9,vbiomass=1e3),
-            age=1:40,ageOffset=0.5,...){
+lh=function(par,
+            relationships=gislasim,
+            mass         =vonB,
+#           m            =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
+#                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
+            m            =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
+            mat          =logistic,
+            sel          =doubleNormal,
+            sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
+            age=1:40+0.5,T=290,...){
 
-            if (!("k"  %in% dimnames(grw)$params)) grw=addPar(grw,"k",0.5)
-            if (!("t0" %in% dimnames(grw)$params)) grw=addPar(grw,"t0",0)
-            if (!("a"  %in% dimnames(grw)$params)) grw=addPar(grw,"a", 0.001)
-            if (!("b"  %in% dimnames(grw)$params)) grw=addPar(grw,"b", 3)
-           
-       return(gislaSim.(grw,mmm(mat),mmm(sel),m,sr,FLQuant(age+ageOffset,dimnames=list(age=age)),...))})
-
-gislaSim.=function(grw,mat,sel,m,sr,age,...){
-   ## Biological processes
-   grw.=addPar(grw[!(dimnames(grw)$params=="linf")],"sinf",grw["a"]*grw["linf"]^grw["b"])
-   wts =vonB(grw.,age)
-
-   ## m
-   if (is.function(m)){
-      l=wt2len(grw[c("a","b")],wts)
-      m=m(l,grw["linf"],grw["k"])}
+   age=FLQuant(age,dimnames=list(age=floor(age)))
+   par  =relationships(par)
+   len  =mass(par,age)
+   wts  =par["a"]*len^par["b"]
    
-   if (is.function(mat)){
-      mat=addPar(mat(grw["linf"]),"asym",1)
-      mat["a50"]=invVonB(grw,c(mat["a50"]))
-      mat.=logistic(mat,age)}
+   m.   =m(par,len) #,T)
+   mat. =mat( par,age)
+   sel. =sel( par,age)
 
-   sel=FLPar(a1=(mat["a50"]+mat["ato95"])*sel["a"],
-             sl=(mat["a50"]+mat["ato95"])*sel["sl"],
-	     sr=(mat["a50"]+mat["ato95"])*sel["sr"])
-
-   selPattern =doubleNormal(sel,age)
-
-   dms=dimnames(m)
-   ## create a FLBRP object to	 calculate expected equilibrium values and ref pts
+   ## create a FLBRP object to   calculate expected equilibrium values and ref pts
+   dms=dimnames(m.)
    res=FLBRP(stock.wt       =wts,
              landings.wt    =wts,
              discards.wt    =wts,
              bycatch.wt     =wts,
-             m              =m,
+             m              =m.,
              mat            =mat.,
-             landings.sel   =FLQuant(selPattern,dimnames=dms),
-             discards.sel   =FLQuant(0,         dimnames=dms),
-             bycatch.harvest=FLQuant(0,         dimnames=dms),
-             harvest.spwn   =FLQuant(0,         dimnames=dms),
-             m.spwn         =FLQuant(0,         dimnames=dms),
-             availability   =FLQuant(1,         dimnames=dms))
+             landings.sel   =FLQuant(sel., dimnames=dimnames(m.)),
+             discards.sel   =FLQuant(0,    dimnames=dimnames(m.)),
+             bycatch.harvest=FLQuant(0,    dimnames=dimnames(m.)),
+             harvest.spwn   =FLQuant(0,    dimnames=dimnames(m.)),
+             m.spwn         =FLQuant(0,    dimnames=dimnames(m.)),
+             availability   =FLQuant(1,    dimnames=dimnames(m.)))
 
-   ## i.e. FApex
-   range(res,c("minfbar","maxfbar"))[]<-as.integer(sel["a1"])
+   ## FApex
+   range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(catch.sel(res)[catch.sel(res)==max(catch.sel(res))][1])$age)
 
    ## replace any slot passed in as an arg
    args<-list(...)
@@ -81,3 +75,5 @@ gislaSim.=function(grw,mat,sel,m,sr,age,...){
 
    return(brp(res))}
 ################################################################################
+ex=lh(FLPar(linf=100,k=.5))
+             

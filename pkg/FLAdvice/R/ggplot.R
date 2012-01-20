@@ -26,19 +26,23 @@ getBrpRefpts<-function(x,y,pnl,obj) {
     res}
 
 setMethod("plot", signature(x="FLBRP", y="missing"),
-               function(x,y,obs=FALSE,refpts=TRUE,...){
- 
+               function(x,y,obs=FALSE,refpts=TRUE,
+                        panel=c("SSB v. F",     "Recruitment v. SSB", "Yield v. F", 
+                                "Yield v. SSB", "Profit v. F",        "Profit v. SSB"),...){
   hat.    =mdply(varBrp(),getBrpHat,     obj=x)
   hat.$pnl=factor(paste("Equilibrium",hat.$pnl),levels=paste("Equilibrium",panelBrp()))
-
+  hat.=subset(hat., pnl %in% paste("Equilibrium",panel))
+ 
   obs.=mdply(varBrp(),getBrpObs,     obj=x)
   obs.$pnl=factor(paste("Equilibrium",obs.$pnl),levels=paste("Equilibrium",panelBrp()))
-
+  obs.=subset(obs., pnl %in% paste("Equilibrium",panel))
+ 
   ref.=mdply(varBrp(),getBrpRefpts,  obj=x)
 
   ref.$pnl=factor(paste("Equilibrium",ref.$pnl),levels=paste("Equilibrium",panelBrp()))
+  ref.=subset(ref., pnl %in% paste("Equilibrium",panel))
 
-  p<-ggplot(subset(hat.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))+geom_line(aes(x,y,group=iter)) +facet_wrap(~pnl,ncol=2,scale="free")
+  p<-ggplot(subset(hat.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))+geom_line(aes(x,y,group=iter)) +facet_wrap(~pnl,ncol=min(length(unique(ref.$pnl)),2),scale="free")
   if (obs)
     p<-p+geom_point(aes(x,y,group=iter),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y))) 
 
@@ -55,7 +59,9 @@ setMethod("plot", signature(x="FLBRP", y="missing"),
 #      geom_line(aes(age,data))+facet_wrap(~qname,scale="free_y")
 
 setMethod("plot", signature(x="FLBRPs", y="missing"),
-               function(x,y,obs=FALSE,refpts=TRUE,...){
+               function(x,y,obs=FALSE,refpts=TRUE,
+                        panel=c("SSB v. F",     "Recruitment v. SSB", "Yield v. F", 
+                                "Yield v. SSB", "Profit v. F",        "Profit v. SSB"),...){
 
      if ("split_labels" %in% names(attributes(x)))
        attributes(x)[["split_labels"]]<-NULL
@@ -67,13 +73,15 @@ setMethod("plot", signature(x="FLBRPs", y="missing"),
 
      if (refpts){
       ref.=ldply(x, function(x) mdply(varBrp(),getBrpRefpts,   obj=x))
-      ref.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
+      ref.=transform(ref.,pnl=factor(paste("Equilibrium",panel),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
+      ref.=subset(ref., pnl %in% paste("Equilibrium",panel))
       if (!all(is.na(ref.$x) & is.na(ref.$y)))
         p=p+geom_point(aes(x,y,group=iter:.id,colour=.id,shape=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))}
 
      if (obs){
       obs.=ldply(x, function(x) mdply(varBrp(),getBrpObs,     obj=x))
-      obs.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
+      obs.=transform(ref.,pnl=factor(paste("Equilibrium",panel),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
+      obs.=subset(obs., pnl %in% paste("Equilibrium",panel))
       p<-p+geom_point(aes(x,y,group=iter:.id,col=.id),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))} 
 
      print(p)
