@@ -11,7 +11,7 @@ pauly1=function(winf,k,t=10)
    exp(-0.2107-0.0824*log(winf)+0.6757*log(k)+0,4627*log(t))
 
 pauly2=function(linf,k,t=10)
-   exp(-0,0066-0,279*log(linf)+0,6543*log(k)+0,4634*log(t)
+   exp(-0,0066-0,279*log(linf)+0,6543*log(k)+0,4634*log(t))
 
 hoenig=function(amax)
    4.22*amax
