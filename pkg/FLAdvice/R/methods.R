@@ -94,10 +94,6 @@ setMethod('catch.wt', signature(object='FLBRP'),
 
     return(res)})
 
-setMethod('catch.sel', signature(object='FLBRP'),
-  function(object)
-    return(landings.sel(object) + discards.sel(object)))
-
 setGeneric('catch.obs', function(object, ...)
   	standardGeneric('catch.obs'))
 setMethod('catch.obs', signature(object='FLBRP'),
@@ -295,6 +291,9 @@ setMethod('catch', signature(object='FLBRP'),
       warning("units of discards and landings do not match")
 
     return(res)})
+
+#setMethod('catch.sel', signature(object='FLBRP'),
+#  function(object) return(landings.sel(object)+discards.sel(object)))
 
 setMethod('catch.hat', signature(object='FLBRP'),
   function(object) return(catch(object)))
