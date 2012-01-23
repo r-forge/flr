@@ -675,13 +675,13 @@ lh=function(par,
 #################################################################################
 #ex=lh(FLPar(linf=100,k=.5))
 
-ex1=FLBRPs("Big"     =lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5),
-           "Small"   =lh(FLPar(linf= 50,t0=-0.75),age=2:40+0.5),
-           "Tropical"=lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5,T=310))
+#ex1=FLBRPs("Big"     =lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5),
+#           "Small"   =lh(FLPar(linf= 50,t0=-0.75),age=2:40+0.5),
+#           "Tropical"=lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5,T=310))
 
-ggplot(ldply(ex1, function(x) as.data.frame(x[["m"]]))) + 
-  geom_line(aes(age,data,group=.id,colour=.id))         +
-  scale_y_continuous(limits=c(0,1))
+#ggplot(ldply(ex1, function(x) as.data.frame(x[["m"]]))) + 
+#  geom_line(aes(age,data,group=.id,colour=.id))         +
+#  scale_y_continuous(limits=c(0,1))
  
 
              
