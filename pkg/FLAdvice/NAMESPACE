@@ -25,7 +25,8 @@ export(
   "vpaMP",
   "hcr",
   "runMSE",
-  "plotCatches")
+  "plotCatches",
+  "invVonB")
 exportMethods(
         "simAR",
         "Arith",
