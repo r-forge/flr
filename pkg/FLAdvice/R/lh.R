@@ -54,7 +54,6 @@ ChenWatanabe=function(age,k,t0=-0.1){
 ################################################################################
 
 #### Growth functions ##########################################################
-# 1)  Add parameters                                                           #
 # 2)  FLQuant to ages                                                          #
 # 3)  length to weight                                                         #
 # 4)  Weight to length                                                         #
@@ -599,7 +598,7 @@ SS3SelParam<-function(param){
 
     return(beta)}
 
-gislasim=function(par){
+gislasim=function(par,sl=5,sr=5000){
    
   names(dimnames(par))=tolower(names(dimnames(par)))
 
@@ -607,9 +606,8 @@ gislasim=function(par){
   if (!("t0" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=0))
   if (!("a"  %in% dimnames(par)$params)) par=rbind(par,FLPar("a" =0.001))
   if (!("b"  %in% dimnames(par)$params)) par=rbind(par,FLPar("b" =3))
-  
-  
-  if (!("k"  %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=c(par["linf"])*0.002752))
+    
+  if (!("k"  %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=exp(0.5236+c(log(par["linf"]))*-0.4540)))
  
   ### why does rbind(FLPar,numeric) not return an FLPar
   par=rbind(par,FLPar("sinf"=par["a"]*par["linf"]^par["b"]))
@@ -619,7 +617,7 @@ gislasim=function(par){
   par["a50"]=invVonB(par,c(par["a50"]))
   
   ## selectivity
-  par=rbind(par,FLPar(a1=par["a50"],sl=5,sr=5000))
+  par=rbind(par,FLPar(a1=par["a50"],sl=sl,sr=sr))
   
   return(par)}
 
@@ -627,22 +625,21 @@ gislasim=function(par){
 lh=function(par,
             relationships=gislasim,
             mass         =vonB,
-#           m            =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
-#                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
-            m            =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
-            mat          =logistic,
-            sel          =doubleNormal,
+            mFn            =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
+                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
+#            mFn          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
+            matFn        =logistic,
+            selFn        =doubleNormal,
             sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40+0.5,T=290,...){
-
    age=FLQuant(age,dimnames=list(age=floor(age)))
    par  =relationships(par)
    len  =mass(par,age)
    wts  =par["a"]*len^par["b"]
    
-   m.   =m(par,len) #,T)
-   mat. =mat( par,age)
-   sel. =sel( par,age)
+   m.   =mFn(  par=par,len=len,T=T)
+   mat. =matFn(par,age)
+   sel. =selFn(par,age)
 
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts
    dms=dimnames(m.)
@@ -677,4 +674,14 @@ lh=function(par,
    return(brp(res))}
 #################################################################################
 #ex=lh(FLPar(linf=100,k=.5))
+
+ex1=FLBRPs("Big"     =lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5),
+           "Small"   =lh(FLPar(linf= 50,t0=-0.75),age=2:40+0.5),
+           "Tropical"=lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5,T=310))
+
+ggplot(ldply(ex1, function(x) as.data.frame(x[["m"]]))) + 
+  geom_line(aes(age,data,group=.id,colour=.id))         +
+  scale_y_continuous(limits=c(0,1))
+ 
+
              
