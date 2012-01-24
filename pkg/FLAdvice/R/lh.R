@@ -68,18 +68,6 @@ ChenWatanabe=function(age,k,t0=-0.1){
 # 13) Schnute                                                                  #
 # 14) Density Dependence                                                       #
 ################################################################################
-
-# 1) ###########################################################################
-addPar<-function(par1,nm,val){
-    dmns       <-dimnames(par1)
-    dmns$params<-c(dmns$params,nm)
-    par2       <-FLPar(array(NA,unlist(lapply(dmns,length)),dimnames=dmns))
-
-    par2[dimnames(par1)$params]<-par1
-    par2[nm]                   <-val
-
-    return(par2)}
-
     
 ################################################################################
 
@@ -90,6 +78,15 @@ setGeneric('ages', function(data, ...)
 setMethod("ages", signature(data="FLQuant"),
    function(data,timing=NULL){
       res<-FLQuant(dimnames(data)$age,dimnames=dimnames(data))
+
+      if (is.null(timing))
+         res<-sweep(res,4,(1:dim(res)[4]-1)/dim(res)[4],"+") else
+         res<-sweep(res,4,timing,"+")
+
+      return(res)})
+setMethod("ages", signature(data="FLCohort"),
+   function(data,timing=NULL){
+      res<-FLCohort(dimnames(data)$age,dimnames=dimnames(data))
 
       if (is.null(timing))
          res<-sweep(res,4,(1:dim(res)[4]-1)/dim(res)[4],"+") else
@@ -291,7 +288,6 @@ setMethod("gompertz", signature(params="missing", data="numeric"),
    function(data,asym=NA,b2=NA,b3=NA) gompertz(FLPar(asym=asym,b2=b2,b3=b3),data))
 
 ################################################################################
-
 
 
 iniLog<-function(data,a50,ato95,asym){
@@ -623,17 +619,16 @@ gislasim=function(par,sl=5,sr=5000){
 
 #### Life History Generator ####################################################
 lh=function(par,
-            relationships=gislasim,
             mass         =vonB,
-            mFn            =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
+            mFn          =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
 #            mFn          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
             matFn        =logistic,
             selFn        =doubleNormal,
             sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40+0.5,T=290,...){
+  
    age=FLQuant(age,dimnames=list(age=floor(age)))
-   par  =relationships(par)
    len  =mass(par,age)
    wts  =par["a"]*len^par["b"]
    
@@ -668,20 +663,20 @@ lh=function(par,
    model(res) =do.call(sr$model,list())$model
    params(res)=FLPar(abPars(sr$model,spr0=spr0(res),s=sr$steepness,v=sr$vbiomass))
 
-   if ("fbar" %in% names(args)) fbar(res)<-args[["fbar"]]
-   refpts(res)<-refpts(res)[c(1,4)]
+   dimnames(refpts(res))$refpt[5]="crash"
 
+   res=brp(res)
+   
+   if ("fbar" %in% names(args)) 
+       fbar(res)<-args[["fbar"]]
+   else
+       fbar(res)<-FLQuant(seq(0,1,length.out=101))*refpts(res)["crash","harvest"]
+  
    return(brp(res))}
-#################################################################################
-#ex=lh(FLPar(linf=100,k=.5))
 
-#ex1=FLBRPs("Big"     =lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5),
-#           "Small"   =lh(FLPar(linf= 50,t0=-0.75),age=2:40+0.5),
-#           "Tropical"=lh(FLPar(linf=100,t0=-0.75),age=2:40+0.5,T=310))
 
-#ggplot(ldply(ex1, function(x) as.data.frame(x[["m"]]))) + 
-#  geom_line(aes(age,data,group=.id,colour=.id))         +
-#  scale_y_continuous(limits=c(0,1))
- 
+
+
+
 
              
