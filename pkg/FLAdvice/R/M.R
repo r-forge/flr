@@ -74,12 +74,22 @@ setGeneric('mFn', function(model,params,data, ...)
 setMethod("mFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
      if (!missing(data))  
-       if (is.FLQuant(data))
+       if (is.FLQuant(data) || is.FLCohort(data))
           data=ages(data)
          
       mlst[[model]](params,data,...)})
 
-mFn("hoenig",FLPar(amax=40))
+# par=FLPar(linf=100,k=0.2,t0=0,amax=40,gsi=0.2)
+# mFn("hoenig",   par)
+# mFn("gunderson",par)
+# mFn("pauly",    par)
+# mFn("jensen",   par)
+# mFn("richter",  par)
+# mFn("peterson", par)
+# mFn("lorenzen", par)
+# mFn("mcgurk",   par)
+# mFn("gislason", par)
+# mFn("chen",     par)
 
   
 
