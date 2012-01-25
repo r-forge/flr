@@ -36,20 +36,4 @@ test_that("FLQuant() returns the right FLQuant", {
 
 # }}}
 
-# %% operators {{{
-context("%% operators")
 
-test_that("%*% operator returns the right object", {
-  # one dim different
-  a <- FLQuant(2, dim=c(3,3,3,1,1,1))
-  b <- FLQuant(3, dim=c(3,3,1,1,1,1))
-  # a%*%b
-  # returns FLQuant
-  expect_that(a%*%b, is_a("FLQuant"))
-  # dims of a
-  expect_that(dim(a%*%b), equals(dim(a)))
-  # value
-  expect_that(c(all(a%*%b == 6)), is_true())
-})
-
-# }}}
