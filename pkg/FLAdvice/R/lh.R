@@ -598,7 +598,7 @@ gislasim=function(par,sl=5,sr=5000){
 
   ## growth parameters
   if (!("t0" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=0))
-  if (!("a"  %in% dimnames(par)$params)) par=rbind(par,FLPar("a" =0.001))
+  if (!("a"  %in% dimnames(par)$params)) par=rbind(par,FLPar("a" =0.01))
   if (!("b"  %in% dimnames(par)$params)) par=rbind(par,FLPar("b" =3))
     
   if (!("k"  %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=exp(0.5236+c(log(par["linf"]))*-0.4540)))
