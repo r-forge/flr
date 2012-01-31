@@ -43,14 +43,13 @@ chenWatanabe=function(params,data) { #(age,k,t0=-0.1){
    m =params["k"]/(1-exp(-params["k"]*(data-params["t0"])))
 
    tm =-(1/params["k"])*log(1-exp(params["k"]*params["t0"]))+params["t0"]
-   print(tm)
    bit=exp(-params["k"]*(tm-params["t0"]))
    
    a0=1-bit
    a1=params["k"]*bit
    a2=-0.5*params["k"]^2*bit
-   age.=age>tm
-   m[age.] =params["k"]/(a0+a1*(age[age.]-tm)+a2*(age[age.]-tm)^2)
+   age.=data>c(tm)
+   m[age.] =params["k"]/(a0+a1*(data[age.]-tm)+a2*(data[age.]-tm)^2)
   
    return(m)}   
 
@@ -67,14 +66,14 @@ mlst=list("gunderson"         =gundersonDygert,
           "gislason"          =gislason,
           "chen"              =chenWatanabe)
 
-rm(gundersonDygert,pauly,hoenig,jensen,richterEfanov,petersonWroblewski,lorenzen,mcgurk,gislason,chenWatanabe)
+rm(list=names(mlst))
 
 setGeneric('mFn', function(model,params,data, ...)
    standardGeneric('mFn'))
 setMethod("mFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
      if (!missing(data))  
-       if (is.FLQuant(data) || is.FLCohort(data))
+       if (is(data) %in% c("FLQuant","FLCohort"))
           data=ages(data)
          
       mlst[[model]](params,data,...)})
