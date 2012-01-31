@@ -25,8 +25,7 @@ export(
   "vpaMP",
   "hcr",
   "runMSE",
-  "plotCatches",
-  "invVonB")
+  "plotCatches")
 exportMethods(
         "simAR",
         "Arith",
@@ -47,7 +46,7 @@ exportMethods(
 	"landings.obs<-",
 	"discards.obs",
 	"discards.obs<-",
-        "refpts",
+  "refpts",
 	"rec.obs",
 	"rec.obs<-",
 	"recycle6d<-",
@@ -99,14 +98,6 @@ exportMethods(
   "ages",
   "len2wt",
   "wt2len",
-  "vonB",
-  "invVonB",
-  "gompertz",
-  "logistic",
-  "richards",
-  "doubleNormal",
-  "schnute",
-  "schnuteMass",
   "mnSwt",
   "mnCwt",
   "mnLwt",

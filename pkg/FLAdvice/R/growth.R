@@ -49,15 +49,14 @@ setMethod("wt2len", signature(params="FLPar", data="numeric"),
    function(params,data) (data/params["a"])^(1/params["b"]))
 ################################################################################
 
-vonb=function(params,data)
+vonB=function(params,data)
  params["linf"]*(1.0-exp(-params["k"]*(data-params["t0"])))
 
-invVonb=function(params,data)
-    -log(1.0-(data/params["sinf"]))/params["k"]+params["t0"]
- 
+invVonB=function(params,data)
+    -log(1.0-(data/params["linf"]))/params["k"]+params["t0"]
+
 gompertz=function(params, data) 
    params["linf"]*exp(-params["a"]*params["b"]^data)
-
 
 dnormal <- function(params,data){
    pow <-function(a,b) a^b
@@ -94,7 +93,7 @@ dnormalColeraine <- function(x, a, b, c) {
   else
       return((-(x-a)^2/c^2))}
 
-logistic <- function() { #x, a50, ato95){
+logistic <- function(params,data) { #x, a50, ato95){
   func <- function(x,a50,ato95){
     if ((a50-x)/ato95 > 5)
       return(0)
@@ -102,9 +101,9 @@ logistic <- function() { #x, a50, ato95){
       return(1)
     return(1.0/(1.0+pow(19.0,(a50-x)/ato95)))}
   
-  sapply(x,func,a50,ato95)} 
+  sapply(data,func,params["a50"],params["ato95"])} 
     
-logisticFn<-function( { #x,a50,ato95,asym=1.0){  
+logisticFn<-function(params,data) { #x,a50,ato95,asym=1.0){  
   pow<-function(a,b) a^b
   res<-x
 
@@ -120,7 +119,7 @@ logisticFn<-function( { #x,a50,ato95,asym=1.0){
   return(res)}
 
 
-logisticDouble <- function( { #x, a50, ato95, b50, bto95, amax=1.0){
+logisticDouble <- function(params,data) { #x, a50, ato95, b50, bto95, amax=1.0){
   
   func <- function(x,a50,ato95,b50,bto95,amax){
     if (ato95 < 0.02 && bto95 < 0.02)
@@ -144,7 +143,7 @@ logisticDouble <- function( { #x, a50, ato95, b50, bto95, amax=1.0){
   sapply(x,func,a50,ato95,b50,bto95,amax)} 
 
 
-logisticProduct <- function() { #x,a50,ato95,b50,bto95,amax=1.0){
+logisticProduct <- function(params,data) { #x,a50,ato95,b50,bto95,amax=1.0){
   func <- function(x,a50,ato95,b50,bto95,amax){
     if (ato95 < 0.02 && bto95 < 0.02)
     {
@@ -171,13 +170,13 @@ logisticProduct <- function() { #x,a50,ato95,b50,bto95,amax=1.0){
   }    
   sapply(x,func,a50,ato95,b50,bto95,amax)}
 
-richards <- function(() { #x, a50, ato95, sigma) {
+richards <- function(params,data) { #x, a50, ato95, sigma) {
   beta <- ato95*log(19)/(log(2^sigma-1)-log((20/19)^sigma-1))
   alpha <- a50+beta*log(2^sigma-1)/log(19)
 
   return((1/(1+19^(alpha-x)/beta))^1/sigma)} 
 
-richardsCapped <- function(() { #x, a50, ato95, sigma, amax) {
+richardsCapped <- function(params,data) { #x, a50, ato95, sigma, amax) {
   beta <- ato95*log(19)/(log(2^sigma-1)-log((20/19)^sigma-1))
   alpha <- a50+beta*log(2^sigma-1)/log(19)
 
@@ -194,7 +193,7 @@ schnute<-function(params,data){
   if (params["a"]==0 & params["b"]!=0) return(fn3(params,data))
   if (params["a"]==0 & params["b"]==0) return(fn4(params,data))}
 
-seldnc <- function(x,a,b,c) {
+seldnc <- function(params,data){ #x,a,b,c) {
   d <- rep(b,length(x))
   d[x>a] <- c
   return(exp(-(x-a)^2/d^2))}
@@ -205,7 +204,7 @@ glst=list("dnormal"           =dnormal,
           "dnormalCapped"     =dnormalCapped,
           "dnormalPlateau"    =dnormalPlateau,
           "dnormalColeraine"  =dnormalColeraine,
-          "vonb"              =vonb,
+          "vonB"              =vonB,
           "logistic"          =logistic,
           "logisticProduct"   =logisticProduct,
           "logisticDouble"    =logisticDouble,
@@ -214,12 +213,12 @@ glst=list("dnormal"           =dnormal,
           "richardsCapped"    =richardsCapped,
           "schnute"           =schnute,
           "seldnc"            =seldnc,
-          "invVonb"           =invVonb)
+          "invVonB"           =invVonB)
 
 rm(list=names(glst))
 
 setGeneric('gFn', function(model,params,data, ...)
-   standardGeneric('mFn'))
+   standardGeneric('GFn'))
 setMethod("gFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
      if (!missing(data))  

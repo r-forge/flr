@@ -10,7 +10,7 @@ gislasim=function(par,sl=5,sr=5000){
   if (!("k"  %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=exp(0.5236+c(log(par["linf"]))*-0.4540)))
  
   ### why does rbind(FLPar,numeric) not return an FLPar
-  par=rbind(par,FLPar("sinf"=par["a"]*par["linf"]^par["b"]))
+  #par=rbind(par,FLPar("sinf"=par["a"]*par["linf"]^par["b"]))
 
   ## maturity parameters
   par=FLPar(rbind(par,FLPar(c("a50"=0.8776*par["linf",]-0.038,"ato95"=0,"asym"=1.0))))
@@ -30,7 +30,7 @@ lh=function(par,
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
 #            mFn          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
             matFn        =logistic,
-            selFn        =doubleNormal,
+            selFn        =dnormal,
             sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40+0.5,T=290,...){
   
@@ -49,7 +49,7 @@ lh=function(par,
              discards.wt    =wts,
              bycatch.wt     =wts,
              m              =m.,
-             mat            =mat.,
+             mat            =FLQuant(mat., dimnames=dimnames(m.)),
              landings.sel   =FLQuant(sel., dimnames=dimnames(m.)),
              discards.sel   =FLQuant(0,    dimnames=dimnames(m.)),
              bycatch.harvest=FLQuant(0,    dimnames=dimnames(m.)),
@@ -79,3 +79,7 @@ lh=function(par,
        fbar(res)<-FLQuant(seq(0,1,length.out=101))*refpts(res)["crash","harvest"]
   
    return(brp(res))}
+
+#stk=lh(gislasim(FLPar(linf=100)))
+#ggplot(stk[[c("m","stock.wt","mat","landings.sel")]])+geom_line(aes(age,data))+facet_wrap(~qname,scale="free")
+#plot(stk)
