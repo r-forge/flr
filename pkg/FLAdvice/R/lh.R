@@ -26,10 +26,10 @@ gislasim=function(par,sl=5,sr=5000){
 # TODO Add support for FLSR
 lh=function(par,
             growth       =vonB,
-            mFn          =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
+            fnM          =function(par,len,T=290,a=FLPar(c(-2.1104327,-1.7023068,1.5067827,0.9664798,763.5074169)))
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
 #            mFn          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
-            matFn        =logistic,
+            fnMat        =logistic,
             selFn        =dnormal,
             sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
             age=1:40+0.5,T=290,...){
@@ -38,8 +38,8 @@ lh=function(par,
    len=growth(par[c("linf","t0","k")],age)
    wts=par["a"]*len^par["b"]
    
-   m.   =mFn(  par=par,len=len,T=T)
-   mat. =matFn(par,age)
+   m.   =fnM(  par=par,len=len,T=T)
+   mat. =fnMat(par,age)
    sel. =selFn(par,age)
 
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts
@@ -80,6 +80,6 @@ lh=function(par,
   
    return(brp(res))}
 
-#stk=lh(gislasim(FLPar(linf=100)))
-#ggplot(stk[[c("m","stock.wt","mat","landings.sel")]])+geom_line(aes(age,data))+facet_wrap(~qname,scale="free")
-#plot(stk)
+#ex=lh(gislasim(FLPar(linf=70)))
+#ggplot(ex[[c("m","stock.wt","mat","landings.sel")]])+geom_line(aes(age,data))+facet_wrap(~qname,scale="free")
+#plot(ex)

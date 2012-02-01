@@ -72,8 +72,7 @@ setGeneric('mFn', function(model,params,data, ...)
    standardGeneric('mFn'))
 setMethod("mFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       mlst[[model]](params,data,...)})

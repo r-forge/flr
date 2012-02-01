@@ -210,19 +210,20 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 # FLBRP(object=data.frame, sr=missing)  {{{
 setMethod('FLBRP', signature(object='data.frame', sr='missing'),
   function(object, quant="age", ...){
+    
+      flqs=names(getSlots("FLBRP")[getSlots("FLBRP")=="FLQuant"])
 
-    # dimnames names
+      object=object[,names(object) %in% c(quant,flqs,"catch.sel","catch.wt")]
+      
       object$landings.sel=object$catch.sel-object$discards.sel
       object$landings.wt =(object$catch.sel*object$catch.wt-object$discards.sel*object$discards.wt)/(object$catch.sel+object$discards.sel)
  
-      dnames <- names(object)[!(names(object) %in% slotNames('FLBRP') | names(object) %in% c("catch.sel","catch.wt"))]
-
-      slots <- names(object)[names(object) %in%  names(getSlots("FLBRP")[getSlots("FLBRP")=="FLQuant"])]
+      slots=names(object)[names(object) %in% flqs]
       res <- vector("list", length(slots))
       names(res) <- slots
 
       for(i in slots){
-        data <- object[,c(dnames, i)]
+        data <- object[,c(quant, i)]
         
         names(data)[2] <- 'data'
         res[[i]] <- as.FLQuant(data)}
@@ -248,6 +249,8 @@ setMethod('FLBRP', signature(object='FLStock', sr='list'),
 
     FLBRP(object=object, model=sr[["model"]], params=sr[["params"]], ...)})
 # }}}
+
+#brps=FLBRPs(dlply(dbICES$ypr, .(wg,stock), FLBRP))
 
 # FLBRP(object="FLBRP", sr="mssing") {{{
 setMethod('FLBRP', signature(object='FLBRP', sr='missing'),

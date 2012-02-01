@@ -50,7 +50,7 @@ setMethod("wt2len", signature(params="FLPar", data="numeric"),
 ################################################################################
 
 vonB=function(params,data)
- params["linf"]*(1.0-exp(-params["k"]*(data-params["t0"])))
+  params["linf"]*(1.0-exp(-params["k"]*(data-params["t0"])))
 
 invVonB=function(params,data)
     -log(1.0-(data/params["linf"]))/params["k"]+params["t0"]
@@ -215,14 +215,13 @@ glst=list("dnormal"           =dnormal,
           "seldnc"            =seldnc,
           "invVonB"           =invVonB)
 
-#rm(list=names(glst))
+rm(list=names(glst))
 
 setGeneric('gFn', function(model,params,data, ...)
    standardGeneric('GFn'))
 setMethod("gFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       mlst[[model]](params,data,...)})
@@ -231,8 +230,7 @@ setGeneric('vonB', function(params,data, ...)
    standardGeneric('vonB'))
 setMethod("vonB", signature(params="FLPar",data="ANY"),
    function(params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       glst[["vonB"]](params,data,...)})
@@ -241,8 +239,7 @@ setGeneric('invVonB', function(params,data, ...)
    standardGeneric('invVonB'))
 setMethod("invVonB", signature(params="FLPar",data="ANY"),
    function(params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       glst[["invVonB"]](params,data,...)})
@@ -251,8 +248,7 @@ setGeneric('logistic', function(params,data, ...)
    standardGeneric('logistic'))
 setMethod("logistic", signature(params="FLPar",data="ANY"),
    function(params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       glst[["logistic"]](params,data,...)})
@@ -261,8 +257,7 @@ setGeneric('dnormal', function(params,data, ...)
    standardGeneric('dnormal'))
 setMethod("dnormal", signature(params="FLPar",data="ANY"),
    function(params,data="missing",...) {
-     if (!missing(data))  
-       if (is(data) %in% c("FLQuant","FLCohort"))
+     if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
           data=ages(data)
          
       glst[["dnormal"]](params,data,...)})
