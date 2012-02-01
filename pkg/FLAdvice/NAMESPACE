@@ -25,7 +25,9 @@ export(
   "vpaMP",
   "hcr",
   "runMSE",
-  "plotCatches")
+  "plotCatches",
+  "lh",
+  "gislasim")
 exportMethods(
         "simAR",
         "Arith",
@@ -148,5 +150,7 @@ exportMethods(
   "sp",
   "fwdWindow",
   "recycle6d<-",
-  "window"
+  "window",
+  "dnormal",
+  "mFn"
   )
