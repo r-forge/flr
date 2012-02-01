@@ -1,6 +1,9 @@
 
+
+
 # fwdStock<-function(obj,fbar,sr,sr.residuals=NULL,distribution=NULL){
-#    if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
+#    if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(mode
+l(sr)))
 #  
 #    if (is.null(sr.residuals))
 #       sr.residuals<-FLQuant(1,dimnames=dimnames(fbar))
