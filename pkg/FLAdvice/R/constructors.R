@@ -291,3 +291,37 @@ setMethod('FLBRP', signature(object='FLBRP', sr='list'),
        slot(newObj, slt)<-args[[slt]]
 
    return(newObj)})
+
+setRPs=function(x,df) {
+  
+  dmns=dimnames(refpts(x))
+  
+  dmns$refpt=c(dmns$refpt,"blim","bpa","flim","fpa")
+  
+  refpts(x)=FLPar(NA,dimnames=dmns)
+  
+  names(df)=tolower(names(df))
+  refpts(x)["fpa", "harvest"]=df$fpa
+  refpts(x)["fpa", "harvest"]=df$flim
+  refpts(x)["bpa", "ssb"]    =df$bpa
+  refpts(x)["blim","ssb"]    =df$blim
+ 
+  x}
+
+setObs=function(x,df) {
+  
+  flq              =FLQuant(NA,dimnames=list(year=df$year))
+  
+  fbar.obs(x)      =FLQuant(df$fbar.obs,     dimnames=dimnames(flq))
+  landings.obs(x)  =FLQuant(df$landings.obs, dimnames=dimnames(flq)) 
+  discards.obs(x)  =flq 
+  rec.obs(x)       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
+  ssb.obs(x)       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
+  stock.obs(x)     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
+  profit.obs(x)    =flq 
+  revenue.obs(x)   =flq 
+  
+  x}
+
+#setRPs(brps[[1]],dbICES$pa[1,])
+
