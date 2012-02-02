@@ -324,12 +324,12 @@ setObs=function(x,df) {
   
   flq              =FLQuant(NA,dimnames=list(year=df$year))
   
-  fbar.obs(x)      =FLQuant(df$fbar.obs,     dimnames=dimnames(flq))
-  landings.obs(x)  =FLQuant(df$landings.obs, dimnames=dimnames(flq)) 
-  discards.obs(x)  =flq 
-  rec.obs(x)       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
-  ssb.obs(x)       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
-  stock.obs(x)     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
+  x@fbar.obs     =FLQuant(df$fbar.obs,     dimnames=dimnames(flq))
+  x@landings.obs  =FLQuant(df$landings.obs, dimnames=dimnames(flq)) 
+  x@discards.obs  =flq 
+  x@rec.obs       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
+  x@ssb.obs       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
+  x@stock.obs     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
   #x@profit.obs     =flq 
   #x@revenue.obs    =flq 
   
