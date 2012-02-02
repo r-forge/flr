@@ -58,5 +58,3 @@ setMethod('truncVPA', signature(object='FLStock'),
     sel        = sweep(F,6,fbar,"/")
 
     return(list(n=n,harvest=f,nits=j))})
-
-truncVPA(object,nits=10)
