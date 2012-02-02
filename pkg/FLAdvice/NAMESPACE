@@ -152,5 +152,6 @@ exportMethods(
   "recycle6d<-",
   "window",
   "dnormal",
-  "mFn"
-  )
+  "mFn",
+  "pa<-",
+  "obs<-")
