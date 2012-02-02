@@ -64,6 +64,6 @@ setMethod('pseudoCohort', signature(object='FLStock'),
 
     return(list(n=n,harvest=f,fdif=fdif,nIters=j))})
 
-pseuco(ple4[,1:10])
+#pseuco(ple4[,1:10])
  
 
