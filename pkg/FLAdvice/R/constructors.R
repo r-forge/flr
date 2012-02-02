@@ -292,7 +292,7 @@ setMethod('FLBRP', signature(object='FLBRP', sr='list'),
 
    return(newObj)})
 
-setRPs=function(x,df) {
+setPA=function(x,df) {
   
   dmns=dimnames(refpts(x))
   
@@ -308,6 +308,18 @@ setRPs=function(x,df) {
  
   x}
 
+setGeneric('pa<-', function(object,value)
+  standardGeneric('pa<-'))
+ 
+setGeneric('obs<-', function(object,value)
+  standardGeneric('obs<-'))
+
+setGeneric('stock.obs<-', function(object,value)
+  standardGeneric('stock.obs<-'))
+ 
+setMethod("stock.obs<-", signature(object="FLBRP", value="FLQuant"),
+  function(object, value) object@stock.obs=value)
+  
 setObs=function(x,df) {
   
   flq              =FLQuant(NA,dimnames=list(year=df$year))
@@ -318,10 +330,16 @@ setObs=function(x,df) {
   rec.obs(x)       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
   ssb.obs(x)       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
   stock.obs(x)     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
-  profit.obs(x)    =flq 
-  revenue.obs(x)   =flq 
+  #x@profit.obs     =flq 
+  #x@revenue.obs    =flq 
   
   x}
 
+setMethod("pa<-", signature(object="FLBRP", value="data.frame"),
+  function(object, value) setPA(object,value))
+ 
+setMethod("obs<-", signature(object="FLBRP", value="data.frame"),
+  function(object, value) setObs(object,value))
+ 
 #setRPs(brps[[1]],dbICES$pa[1,])
 

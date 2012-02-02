@@ -292,8 +292,8 @@ setMethod('catch', signature(object='FLBRP'),
 
     return(res)})
 
-#setMethod('catch.sel', signature(object='FLBRP'),
-#  function(object) return(landings.sel(object)+discards.sel(object)))
+setMethod('catch.sel', signature(object='FLBRP'),
+  function(object) return(landings.sel(object)+discards.sel(object)))
 
 setMethod('catch.hat', signature(object='FLBRP'),
   function(object) return(catch(object)))
