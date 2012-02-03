@@ -13,7 +13,7 @@ gislasim=function(par,sl=5,sr=5000){
   #par=rbind(par,FLPar("sinf"=par["a"]*par["linf"]^par["b"]))
 
   ## maturity parameters
-  par=FLPar(rbind(par,FLPar(c("a50"=0.8776*par["linf",]-0.038,"ato95"=0,"asym"=1.0))))
+  par=FLPar(rbind(par,FLPar(c("a50"=exp(0.8776*log(par["linf",])-0.038),"ato95"=0,"asym"=1.0))))
   par["a50"]=invVonB(par,c(par["a50"]))
   
   ## selectivity

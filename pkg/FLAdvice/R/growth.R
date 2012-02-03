@@ -103,6 +103,7 @@ logistic <- function(params,data) { #x, a50, ato95){
   
   sapply(data,func,params["a50"],params["ato95"])} 
     
+pow<-function(a,b) a^b
 logisticFn<-function(params,data) { #x,a50,ato95,asym=1.0){  
   pow<-function(a,b) a^b
   res<-x
@@ -215,7 +216,7 @@ glst=list("dnormal"           =dnormal,
           "seldnc"            =seldnc,
           "invVonB"           =invVonB)
 
-rm(list=names(glst))
+#rm(list=names(glst))
 
 setGeneric('gFn', function(model,params,data, ...)
    standardGeneric('GFn'))

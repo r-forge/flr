@@ -330,8 +330,8 @@ setObs=function(x,df) {
   x@rec.obs       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
   x@ssb.obs       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
   x@stock.obs     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
-  #x@profit.obs     =flq 
-  #x@revenue.obs    =flq 
+  x@profit.obs     =flq 
+  x@revenue.obs    =flq 
   
   x}
 
