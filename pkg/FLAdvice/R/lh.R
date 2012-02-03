@@ -36,8 +36,8 @@ lh=function(par,
   
    age=FLQuant(age,dimnames=list(age=floor(age)))
    len=growth(par[c("linf","t0","k")],age)
-   wts=par["a"]*len^par["b"]
-   
+   wts=par["a"]*len^par["b"]       / 1000
+
    m.   =fnM(  par=par,len=len,T=T)
    mat. =fnMat(par,age)
    sel. =selFn(par,age)
@@ -56,6 +56,12 @@ lh=function(par,
              harvest.spwn   =FLQuant(0,    dimnames=dimnames(m.)),
              m.spwn         =FLQuant(0,    dimnames=dimnames(m.)),
              availability   =FLQuant(1,    dimnames=dimnames(m.)))
+
+  # Set wt units
+  wtSlots <- c("stock.wt", "landings.wt", "discards.wt", "bycatch.wt")
+  for (wtSlot in wtSlots)
+    units(slot(res,wtSlot)) <- "kg"
+
 
    ## FApex
    range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
