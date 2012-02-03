@@ -219,7 +219,7 @@ glst=list("dnormal"           =dnormal,
 #rm(list=names(glst))
 
 setGeneric('gFn', function(model,params,data, ...)
-   standardGeneric('GFn'))
+   standardGeneric('gFn'))
 setMethod("gFn", signature(model="character",params="FLPar",data="ANY"),
    function(model,params,data="missing",...) {
      if (!missing(data) & "FLQuant" %in% is(data) ||  "FLCohort" %in% is(data))
