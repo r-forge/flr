@@ -1,11 +1,11 @@
 useDynLib("FLAdvice")
-
 import("FLCore")
-
 exportClasses(
   "FLBRP",
   "FLBRPs")
 export(
+  "lh",
+  "gislasim",
   "aav",
   "antiCurve",
   "beer",
@@ -25,12 +25,10 @@ export(
   "vpaMP",
   "hcr",
   "runMSE",
-  "plotCatches",
-  "lh",
-  "gislasim")
+  "plotCatches")
 exportMethods(
-        "simAR",
-        "Arith",
+  "simAR",
+  "Arith",
   "fwd",
   "fwdWindow",
   "window",
@@ -109,7 +107,6 @@ exportMethods(
   "plot",
   "recycle6d<-",
   "coerce",
-  "gislaSim",
   "landings.n",
   "discards.n",
   "stock.n",
