@@ -143,6 +143,28 @@ logisticDouble <- function(params,data) { #x, a50, ato95, b50, bto95, amax=1.0){
 
   sapply(x,func,a50,ato95,b50,bto95,amax)} 
 
+dnormalFn<-function(params,data) { #x,a50,ato95,asym=1.0){  
+  data=propagate(data, dims(params)$iter)
+ 
+  right=qmin(qmax(data-params["a1"],0),1)
+  rFlag=right> 0
+  lFlag=right<=0
+ 
+  res<-data*0
+ 
+  if (length(res[rFlag])>0){
+    a1=-(data-params["a1"])
+    a2=1/params["sr"]
+    res[rFlag]<-pow(2,-pow(a1%*%a2,2))[rFlag]
+    }
+  
+  if (length(res[lFlag])>0){
+    a1=-(data-params["a1"])
+    a2=1/params["sl"]
+    res[lFlag]<-pow(2,-pow(a1%*%a2,2))[lFlag]
+    }
+  
+  return(FLQuant(res,dimnames=dimnames(data)))}
 
 logisticProduct <- function(params,data) { #x,a50,ato95,b50,bto95,amax=1.0){
   func <- function(x,a50,ato95,b50,bto95,amax){
