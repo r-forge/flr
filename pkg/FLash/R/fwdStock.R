@@ -1,6 +1,3 @@
-
-
-
 # fwdStock<-function(obj,fbar,sr,sr.residuals=NULL,distribution=NULL){
 #    if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
 #  
