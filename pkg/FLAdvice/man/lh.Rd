@@ -8,14 +8,21 @@
 \description{Generates an FLBRP object based on the input life history parameters and generic functions, e.g. those from Gislason et al 2008.}
 
 \usage{
-lh(par,
+lh(
+            par,
             growth       =vonB,
             fnM          =function(par,len,T=290,a=FLPar(c(a=-2.1104327,b=-1.7023068,c=1.5067827,d=0.9664798,e=763.5074169),iter=dims(par)$iter))
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
             fnMat        =logistic,
-            selFn        =dnormalFn,
+            fnSel        =dnormalFn,
             sr           =list(model="bevholt",s=0.9,v=1e3),
-            age=1:40+0.5,T=290,...)
+            age=seq(from=1, to = 40, by = 1),
+            m.spwn = 0,
+            h.spwn = m.spwn,
+            f.year.prop = 0.5,
+            m.year.prop = 0.5,
+            T=290,
+            ...)
 }
 
 \arguments{
@@ -26,6 +33,10 @@ lh(par,
 \item{selFn}{Function to describe the selectivity ogive.}
 \item{sr}{The stock recruitment relationship described as a \code{list} of the model name and the parameters.}
 \item{age}{The ages of the \code{FLBRP} object.}
+\item{m.spwn}{The proportion of the natural mortality before spawning.}
+\item{h.spwn}{The proportion of the fishing mortality before spawning.}
+\item{f.year.prop = 0.5}{The fraction of the year at which fishing occurs.}
+\item{m.year.prop = 0.5}{The fraction of the year at which natural mortality occurs.}
 \item{T}{Temperature.}
 \item{...}{Other arguments.}
 }

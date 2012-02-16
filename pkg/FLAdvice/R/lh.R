@@ -39,24 +39,35 @@ lh=function(par,
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
 #            fnM          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
             fnMat        =logistic,
-            selFn        =dnormalFn,
+            fnSel        =dnormalFn,
             sr           =list(model="bevholt",s=0.9,v=1e3),
-            age=1:40+0.5,T=290,...){
+            age=seq(from=1, to = 40, by = 1),
+            m.spwn = 0,
+            h.spwn = m.spwn,
+            f.year.prop = 0.5,
+            m.year.prop = 0.5,
+            T=290,...){
+            
+  # Check that m.spwn and h.spwn are 0 - 1
+  if (m.spwn > 1 | m.spwn < 0 | h.spwn > 1 | h.spwn < 0 | f.year.prop > 1 | f.year.prop < 0 | m.year.prop > 1 | m.year.prop < 0)
+    stop("m.spwn, h.spwn, m.year.prop and f.year.prop must be in the range 0 to 1\n")
   
    age=FLQuant(age,dimnames=list(age=floor(age)))
-   len=growth(par[c("linf","t0","k")],age)
-   cwt=par["a"]*len^par["b"]
-   swt=par["a"]*len^par["b"]
+   # Get the stock and catch lengths, based on when the natural mortality and when they are harvested
+   stocklen=growth(par[c("linf","t0","k")],age+m.year.prop)
+   catchlen=growth(par[c("linf","t0","k")],age+f.year.prop)
+   swt=par["a"]*stocklen^par["b"]
+   cwt=par["a"]*catchlen^par["b"]
    if ("bg" %in% dimnames(par)$param)  
-      swt=par["a"]*len^par["bg"]
+      swt=par["a"]*stocklen^par["bg"]
 
-  # Convert weights from g to kg
-  cwt <- cwt / 1000
-  swt <- swt / 1000
+   # Convert weights from g to kg
+   cwt <- cwt / 1000
+   swt <- swt / 1000
 
-   m.   =fnM(  par=par,len=len,T=T)
-   mat. =fnMat(par,age)
-   sel. =selFn(par,age)
+   m.   =fnM(  par=par,len=stocklen,T=T)
+   mat. =fnMat(par,age + m.year.prop) # maturity is biological therefore + m.year.prop
+   sel. =fnSel(par,age + f.year.prop) # selectivty is fishery  based therefore + f.year.prop
 
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts
    dms=dimnames(m.)
@@ -69,8 +80,8 @@ lh=function(par,
              landings.sel   =FLQuant(sel., dimnames=dimnames(m.)),
              discards.sel   =FLQuant(0,    dimnames=dimnames(m.)),
              bycatch.harvest=FLQuant(0,    dimnames=dimnames(m.)),
-             harvest.spwn   =FLQuant(0,    dimnames=dimnames(m.)),
-             m.spwn         =FLQuant(0,    dimnames=dimnames(m.)),
+             harvest.spwn   =FLQuant(h.spwn,    dimnames=dimnames(m.)),
+             m.spwn         =FLQuant(m.spwn,    dimnames=dimnames(m.)),
              availability   =FLQuant(1,    dimnames=dimnames(m.)))
 
   # units of weight slots
