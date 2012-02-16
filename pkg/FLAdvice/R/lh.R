@@ -1,4 +1,4 @@
-gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=3,ato95=1,sl=2,sr=5000,a1=2){
+gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
    
   names(dimnames(par))=tolower(names(dimnames(par)))
 
@@ -40,13 +40,15 @@ lh=function(par,
 #            fnM          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
             fnMat        =logistic,
             selFn        =dnormalFn,
-            sr           =list(model="bevholt",steepness=0.9,vbiomass=1e3),
+            sr           =list(model="bevholt",s=0.9,v=1e3),
             age=1:40+0.5,T=290,...){
   
    age=FLQuant(age,dimnames=list(age=floor(age)))
    len=growth(par[c("linf","t0","k")],age)
    cwt=par["a"]*len^par["b"]
-   swt=par["a"]*len^par["bg"]
+   swt=par["a"]*len^par["b"]
+   if ("bg" %in% dimnames(par)$param)  
+      swt=par["a"]*len^par["bg"]
  
    m.   =fnM(  par=par,len=len,T=T)
    mat. =fnMat(par,age)
@@ -81,11 +83,14 @@ lh=function(par,
    model(res) =do.call(sr$model,list())$model
    
    if ("alpha" %in% names(sr)){
-      params(res)=FLPar(a=sr$alpha,b=sr$beta,iters=dims(res)$iter)
+      params(res)=do.call(FLPar,sr[-seq(length(sr))[names(sr)=="model"]])
    }else{   
-       params(res)=FLPar(abPars(sr$model,spr0=spr0(iter(res,1)),s=sr$steepness,v=sr$vbiomass))
-       for (i in seq(dims(res)$iter))
-         iter(params(res),i)=FLPar(abPars(sr$model,spr0=spr0(iter(res,i)),s=sr$steepness,v=sr$vbiomass))
+      set=function(model,spr0,s,v,d=NULL) FLPar(abPars(model,spr0,s,v,d))
+      for (i in seq(dims(res)$iter)){
+          sr$spr0=spr0(iter(res,i))
+ 
+         iter(params(res),i)= params(res)=do.call(set,sr)
+         }
        }
       
    
