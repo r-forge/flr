@@ -49,7 +49,11 @@ lh=function(par,
    swt=par["a"]*len^par["b"]
    if ("bg" %in% dimnames(par)$param)  
       swt=par["a"]*len^par["bg"]
- 
+
+  # Convert weights from g to kg
+  cwt <- cwt / 1000
+  swt <- swt / 1000
+
    m.   =fnM(  par=par,len=len,T=T)
    mat. =fnMat(par,age)
    sel. =selFn(par,age)
@@ -68,6 +72,12 @@ lh=function(par,
              harvest.spwn   =FLQuant(0,    dimnames=dimnames(m.)),
              m.spwn         =FLQuant(0,    dimnames=dimnames(m.)),
              availability   =FLQuant(1,    dimnames=dimnames(m.)))
+
+  # units of weight slots
+  units(stock.wt) <- "kg"
+  units(landings.wt) <- "kg"
+  units(discards.wt) <- "kg"
+  units(bycatch.wt) <- "kg"
 
    ## FApex
    range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
