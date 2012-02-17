@@ -44,29 +44,31 @@ lh=function(par,
             age=seq(from=1, to = 40, by = 1),
             m.spwn = 0,
             h.spwn = m.spwn,
-            f.year.prop = 0.5,
-            m.year.prop = 0.5,
-            T=290,...){
+            f.year.prop = 0.5, # proportion of year when fishing happens
+            T=290,
+            ...){
             
   # Check that m.spwn and h.spwn are 0 - 1
-  if (m.spwn > 1 | m.spwn < 0 | h.spwn > 1 | h.spwn < 0 | f.year.prop > 1 | f.year.prop < 0 | m.year.prop > 1 | m.year.prop < 0)
-    stop("m.spwn, h.spwn, m.year.prop and f.year.prop must be in the range 0 to 1\n")
+  if (m.spwn > 1 | m.spwn < 0 | h.spwn > 1 | h.spwn < 0 | f.year.prop > 1 | f.year.prop < 0)
+    stop("m.spwn, h.spwn and f.year.prop must be in the range 0 to 1\n")
   
    age=FLQuant(age,dimnames=list(age=floor(age)))
-   # Get the stock and catch lengths, based on when the natural mortality and when they are harvested
-   stocklen=growth(par[c("linf","t0","k")],age+m.year.prop)
-   catchlen=growth(par[c("linf","t0","k")],age+f.year.prop)
+
+   # Get the lengths through different times of the year
+   stocklen <- growth(par[c("linf","t0","k")],age+m.spwn)    # stocklen is length at spawning time
+   catchlen <- growth(par[c("linf","t0","k")],age+f.year.prop) # catchlen is length when fishing happens
+   midyearlen <- growth(par[c("linf","t0","k")],age+0.5) # midyear length used for natural mortality
+    # Corresponding weights
    swt=par["a"]*stocklen^par["b"]
    cwt=par["a"]*catchlen^par["b"]
    if ("bg" %in% dimnames(par)$param)  
       swt=par["a"]*stocklen^par["bg"]
-
    # Convert weights from g to kg
    cwt <- cwt / 1000
    swt <- swt / 1000
 
-   m.   =fnM(  par=par,len=stocklen,T=T)
-   mat. =fnMat(par,age + m.year.prop) # maturity is biological therefore + m.year.prop
+   m.   =fnM(  par=par,len=midyearlen,T=T) # natural mortality is always based on mid year length
+   mat. =fnMat(par,age + m.spwn) # maturity is biological therefore + m.spwn
    sel. =fnSel(par,age + f.year.prop) # selectivty is fishery  based therefore + f.year.prop
 
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts

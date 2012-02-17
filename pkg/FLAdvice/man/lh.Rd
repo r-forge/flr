@@ -36,13 +36,21 @@ lh(
 \item{m.spwn}{The proportion of the natural mortality before spawning.}
 \item{h.spwn}{The proportion of the fishing mortality before spawning.}
 \item{f.year.prop = 0.5}{The fraction of the year at which fishing occurs.}
-\item{m.year.prop = 0.5}{The fraction of the year at which natural mortality occurs.}
 \item{T}{Temperature.}
 \item{...}{Other arguments.}
 }
 
 \details{
-The \emph{a} and \emph{b} parameter values in the \code{par} object should convert g to cm.
+The \emph{a} and \emph{b} parameter values in the \code{par} object should be scaled so that they convert g to cm.
+
+Natural mortality is assumed to occur continually throughout the year.
+However, as natural mortality is a function of length it is necessary to select a length on which it is calculated.
+Here we use the midyear length.
+
+The stock mass-at-age and the maturity-at-age is based on the length at the time of spawning (given by the
+\code{m.spwn} argument).
+The catch, discard and bycatch mass-at-ages and selectivity are based on the length at the time fishing occurs (given by the \code{f.year.prop} argument).
+
 }
 
 \value{
