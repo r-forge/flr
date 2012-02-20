@@ -29,47 +29,86 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
  
   par=rbind(par,selPar)
  
+  attributes(par)$units=c("cm","kg","1000s")
+  
   return(par)}
 
+
+setUnits=function(res){
+    units=attributes(res)
+    
+    allUnits=list("params"=         "",          
+               "refpts"=         "",            
+               "fbar"=           "",        
+               "fbar.obs"=       "",    
+               "landings.obs"=   cat(c(units[2],units[3])),    
+               "discards.obs"=   cat(c(units[2],units[3])), 
+               "rec.obs"=        units[3],         
+               "ssb.obs"=        cat(c(units[2],units[3])),       
+               "stock.obs"=      cat(c(units[2],units[3])),      
+               "profit.obs"=     NA,     
+               "revenue.obs"=    NA,    
+               "landings.sel"=   "",    
+               "discards.sel"=   "", 
+               "bycatch.harvest"="",        
+               "stock.wt"=       units[2],     
+               "landings.wt"=    units[2],     
+               "discards.wt"=    units[2],      
+               "bycatch.wt"=     units[2],               
+               "m"=              "",             
+               "mat"=            "proportion", 
+               "harvest.spwn"=   "proportion",          
+               "m.spwn"=         "proportion",    
+               "availability"=   "proportion",           
+               "price"=          NA,           
+               "vcost"=          NA,           
+               "fcost"=          NA)            
+
+    
+    units(res)[names(allUnits)]=allUnits
+    
+    return(res)}
+
 #### Life History Generator ####################################################
-# TODO Add support for FLSR
 lh=function(par,
             growth       =vonB,
             fnM          =function(par,len,T=290,a=FLPar(c(a=-2.1104327,b=-1.7023068,c=1.5067827,d=0.9664798,e=763.5074169),iter=dims(par)$iter))
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
-#            fnM          =function(par,len) exp(0.55 - 1.61*log(len) + 1.44*log(par["linf"]) + log(par["k"])),
             fnMat        =logistic,
             fnSel        =dnormalFn,
             sr           =list(model="bevholt",s=0.9,v=1e3),
-            age=seq(from=1, to = 40, by = 1),
-            m.spwn = 0,
-            h.spwn = m.spwn,
+            range  =c(min=1,max=40,minfbar=1,maxfbar=40,plusgroup=40),
+            m.spwn       = 0,
+            harvest.spwn = m.spwn,
             f.year.prop = 0.5, # proportion of year when fishing happens
             T=290,
+            units=if("units" %in% names(attributes(par))) attributes(par)$units else NULL,
             ...){
-            
-  # Check that m.spwn and h.spwn are 0 - 1
-  if (m.spwn > 1 | m.spwn < 0 | h.spwn > 1 | h.spwn < 0 | f.year.prop > 1 | f.year.prop < 0)
-    stop("m.spwn, h.spwn and f.year.prop must be in the range 0 to 1\n")
-  
-   age=FLQuant(age,dimnames=list(age=floor(age)))
 
+  # Check that m.spwn and harvest.spwn are 0 - 1
+  if (m.spwn > 1 | m.spwn < 0 | harvest.spwn > 1 | harvest.spwn < 0 | f.year.prop > 1 | f.year.prop < 0)
+    stop("m.spwn, harvest.spwn and f.year.prop must be in the range 0 to 1\n")
+ 
+   age=FLQuant(range["min"]:range["max"],dimnames=list(age=range["min"]:range["max"]))
+   
    # Get the lengths through different times of the year
-   stocklen <- growth(par[c("linf","t0","k")],age+m.spwn)    # stocklen is length at spawning time
-   catchlen <- growth(par[c("linf","t0","k")],age+f.year.prop) # catchlen is length when fishing happens
+   stocklen   <- growth(par[c("linf","t0","k")],age+m.spwn)    # stocklen is length at spawning time
+   catchlen   <- growth(par[c("linf","t0","k")],age+f.year.prop) # catchlen is length when fishing happens
    midyearlen <- growth(par[c("linf","t0","k")],age+0.5) # midyear length used for natural mortality
-    # Corresponding weights
+
+   # Corresponding weights
    swt=par["a"]*stocklen^par["b"]
    cwt=par["a"]*catchlen^par["b"]
    if ("bg" %in% dimnames(par)$param)  
       swt=par["a"]*stocklen^par["bg"]
-   # Convert weights from g to kg
-   cwt <- cwt / 1000
-   swt <- swt / 1000
+  
+   m.spwn.      =FLQuant(m.spwn,      dimnames=list(age=range["min"]:range["max"]))
+   harvest.spwn.=FLQuant(harvest.spwn,dimnames=list(age=range["min"]:range["max"]))
 
    m.   =fnM(  par=par,len=midyearlen,T=T) # natural mortality is always based on mid year length
    mat. =fnMat(par,age + m.spwn) # maturity is biological therefore + m.spwn
    sel. =fnSel(par,age + f.year.prop) # selectivty is fishery  based therefore + f.year.prop
+ 
 
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts
    dms=dimnames(m.)
@@ -82,15 +121,11 @@ lh=function(par,
              landings.sel   =FLQuant(sel., dimnames=dimnames(m.)),
              discards.sel   =FLQuant(0,    dimnames=dimnames(m.)),
              bycatch.harvest=FLQuant(0,    dimnames=dimnames(m.)),
-             harvest.spwn   =FLQuant(h.spwn,    dimnames=dimnames(m.)),
+             harvest.spwn   =FLQuant(harvest.spwn,    dimnames=dimnames(m.)),
              m.spwn         =FLQuant(m.spwn,    dimnames=dimnames(m.)),
              availability   =FLQuant(1,    dimnames=dimnames(m.)))
 
-  # units of weight slots
-  units(stock.wt) <- "kg"
-  units(landings.wt) <- "kg"
-  units(discards.wt) <- "kg"
-  units(bycatch.wt) <- "kg"
+  # units
 
    ## FApex
    range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
@@ -126,4 +161,8 @@ lh=function(par,
    else if (!is.nan(refpts(res)["crash","harvest"])) 
          fbar(res)<-FLQuant(seq(0,1,length.out=101))*refpts(res)["crash","harvest"]
   
-   return(brp(res))}
+   res=brp(res)
+
+   if (!("units" %in% names(attributes(res))))  return(res)
+  
+  return(setUnits(res))}

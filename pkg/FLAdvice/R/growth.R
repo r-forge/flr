@@ -94,14 +94,14 @@ dnormalColeraine <- function(x, a, b, c) {
       return((-(x-a)^2/c^2))}
 
 logistic <- function(params,data) { #x, a50, ato95){
-  func <- function(x,a50,ato95){
+  func <- function(x,a50,ato95,asym){
     if ((a50-x)/ato95 > 5)
       return(0)
     if ((a50-x)/ato95 < -5)
-      return(1)
-    return(1.0/(1.0+pow(19.0,(a50-x)/ato95)))}
+      return(asym)
+    return(asym/(1.0+pow(19.0,(a50-x)/ato95)))}
   
-  sapply(data,func,params["a50"],params["ato95"])} 
+  sapply(data,func,params["a50"],params["ato95"],params["asym"])} 
     
 pow<-function(a,b) a^b
 logisticFn<-function(params,data) { #x,a50,ato95,asym=1.0){  

@@ -1,10 +1,10 @@
 #http://icesjms.oxfordjournals.org/content/66/9/1978.full
 #http://onlinelibrary.wiley.com/doi/10.1111/j.1467-2979.2009.00350.x/full
 
+## Constant values
 gundersonDygert=function(params)
   0.03 + 1.68*params["gsi"]
 
-## Constant values
 pauly=function(params,t=10) { #winf,linf="missing",k="misssing",t=10) {
     pauly1=function(params,t)
        exp(-0.2107-0.0824*log(params["winf"])+0.6757*log(params["k"])+0.4627*log(t))
