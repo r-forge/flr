@@ -199,7 +199,23 @@ SEXP insertFLQ(SEXP Rname, SEXP Rflq, SEXP Rdbname)
 	return (Rval);
 } /* }}} */
 
-/* Function SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames) {{{ */
+/* Function SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP RSring) {{{ */
+/**
+ * @name    insertFLComp
+ * @brief   inserts a new FLComp into Rdbname
+ * @ingroup insert
+ *
+ * This function inserts a new FLComp into the database. Tables with the
+ * same name are deleted if exist
+ *
+ * @param [in] Rdbname  Path and filename of the database.
+ *
+ * @retval sqliteFLComp  Pointer to object in DB
+ *
+ * Example Usage:
+ * @code
+ * @endcode
+ */
 SEXP insertFLComp(SEXP Rdbname, SEXP Rname, SEXP Rflc, SEXP Rsnames, SEXP Rstring)
   {
   SEXP Rval = R_NilValue;

@@ -5,20 +5,9 @@
 # Maintainer: Iago Mosqueira, Cefas
 # $Id$
 
-# sql {{{
-setGeneric('sql', function(object, ...)
-  standardGeneric('sql'))
-# }}}
-
 # unsql {{{
 setGeneric('unsql', function(object, ...)
   standardGeneric('unsql'))
-
-setMethod('unsql', signature(object='sqliteFLComp'),
-  function(object) {
-    .Call('selectFLComp', object@db, object@name, PACKAGE='SQLiteFL')
-  }
-)
 # }}}
 
 # summary {{{
@@ -95,6 +84,7 @@ updateFLComp <- function(object, slot, value, ...)
   table <- paste(object@name, 'data', sep='_')
   stmt <- paste('UPDATE', paste('\"', table, '\"', sep=''), 'SET data = ? WHERE slot = ',
     paste('\"', slot, '\"',sep=''))
+
   # add AND statements if needed
   if(length(args) > 0)
     stmt <- paste(stmt, paste('AND', names(update[idx]), '= ?', collapse=' '), ';')
