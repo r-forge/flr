@@ -228,7 +228,7 @@ We can now take a look at the reference points for the stock (ignoring the econo
 \begin{minipage}[H]{0.95\textwidth}%
 \begin{shaded}
 <<echo=TRUE,keep.source=TRUE>>=
-refpts(res_flat_100)[1:4,1:5]
+refpts(res_flat_100)
 @
 \end{shaded}
 \end{minipage}
@@ -269,7 +269,7 @@ sL <- 5
 sR <- 10
 res_dome_100 <- genBRP(age=age, Linf=Linf, k=k,
   a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
-refpts(res_dome_100)[1:4,1:5]
+refpts(res_dome_100)
 plot(res_dome_100)
 @
 \end{shaded}
@@ -303,7 +303,7 @@ sR <- 250
 mat95 <- 6
 res_flat_200 <- genBRP(age=age, Linf=Linf, k=k,
   a1=a1, sL=sL, sR=sR, mat95=mat95, s=s, v=v)
-refpts(res_flat_200)[1:4,1:5]
+refpts(res_flat_200)
 @
 \end{shaded}
 \end{minipage}

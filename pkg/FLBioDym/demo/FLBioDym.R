@@ -10,14 +10,16 @@ library(FLBioDym)
 # load up example data set from
 # Polacheck,T., Hilborn,R., and Punt.A.E, Fitting Surplus Production Models: Comparing Methods and Measuring Uncertainty.
 # Can. J. Fish. Aquat. Sci. 50(12): 2597–2607 (1993)
-data(albSP)
+data(albBD)
 
 # Summarise and inspect the object
-summary(albSP)
+summary(albBD)
 
 # fit
-albSP<-fit(albSP,start=c(r=0.3,K=mean(catch(albSP))*10))
-plot(   albSP)
+params <- FLPar(r=0.3, K=mean(catch(albBD))*10, p=1, b0=1, q=1, sigma=0.3)
+params(albBD) <- params
+albBD <- admbBD(albBD)
+plot(albBD)
 
 # look at goodness of fit
 plot(albSP,type="diag")

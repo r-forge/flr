@@ -1,9 +1,6 @@
 useDynLib(aspic)
-
-importFrom("ggplotFL")
-#importFrom("foreach", "foreach")
+import("ggplotFL")
 import("FLCore")
-
 exportClasses(    "aspic",
 	          "aspics",
                   "aspicControl",

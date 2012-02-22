@@ -207,7 +207,7 @@ function(object)
     if ("virgin" %in% dimnames(refpts)$refpt){
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
       refpts@.Data["virgin","harvest",] <- 0}
-
+browser()
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLAdvice")

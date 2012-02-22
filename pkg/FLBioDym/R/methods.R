@@ -135,7 +135,7 @@ runADMBBioDym <- function(object, path, admbNm, cmdOps) {
   # params
   t2 <- unlist(c(read.table(paste(path,admbNm,".rep",sep=""),nrows=8)))
   object@params[c("r","K","b0","p","q","sigma")] <- t2[1:6]
-      
+  
   # fitted
   object@fitted[] <- unlist(c(t1[,"IndexFit"])) 
 
