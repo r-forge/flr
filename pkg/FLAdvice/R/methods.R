@@ -207,7 +207,7 @@ function(object)
     if ("virgin" %in% dimnames(refpts)$refpt){
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
       refpts@.Data["virgin","harvest",] <- 0}
-browser()
+#browser()
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLAdvice")
@@ -273,14 +273,13 @@ setMethod('propagate', signature(object='FLBRP'),
   
     return(object)})
 
-setMethod('iter', signature(object='FLBRP'),
-  function(object, iter, ...){
-    object <- callNextMethod(object, iter, ...)
-    params(object) <- iter(params(object), iter)
-    if(dim(refpts(object))[3] > 1)
-      refpts(object) <- refpts(object)[,,iter]
-
-    return(object)})
+setMethod('iter', signature(obj='FLBRP'),
+  function(obj, iter, ...){
+    object <- callNextMethod(obj, iter, ...)
+    params(object) <- iter(params(obj), iter)
+    if(dim(refpts(obj))[3] > 1)
+      refpts(obj) <- refpts(obj)[,,iter]
+    return(obj)})
 
 setMethod('catch', signature(object='FLBRP'),
   function(object) {
