@@ -7,7 +7,7 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a))
   if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b))
   if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg))
-  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15+par["linf"]^20.64))
+  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64))) # From Gislason et al 2008, all species combined
  
   if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95))
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl))
