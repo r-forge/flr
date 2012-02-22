@@ -7,7 +7,7 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a))
   if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b))
   if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg))
-  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=exp(0.5236+c(log(par["linf"]))*-0.4540)))
+  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15.+par["linf"]^20.64))
  
   if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95))
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl))
@@ -15,9 +15,7 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
  
   ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
   if (!("fec" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=1.0))
-  a50=FLPar(exp(0.8776*log(par["linf",])-0.038))
-  dimnames(a50)$params="a50"
-  par=rbind(par,a50)
+  par=rbind(par,FLPar(a50=0.72+par["linf"]^0.93))
   par=rbind(par,FLPar(c("asym"=1.0),iter=dims(par)$iter))
   
   par["a50"]=invVonB(par,c(par["a50"]))
@@ -37,7 +35,7 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
 setUnits=function(res){
     units=attributes(res)
     
-    allUnits=list("params"=         "",          
+    allUnits=list("params"=      "",          
                "refpts"=         "",            
                "fbar"=           "",        
                "fbar.obs"=       "",    
@@ -76,7 +74,7 @@ lh=function(par,
                                     exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
             fnMat        =logistic,
             fnSel        =dnormalFn,
-            sr           =list(model="bevholt",s=0.9,v=1e3),
+            sr           =list(model="bevholt",s=0.75,v=1e3),
             range  =c(min=1,max=40,minfbar=1,maxfbar=40,plusgroup=40),
             m.spwn       = 0,
             harvest.spwn = m.spwn,
