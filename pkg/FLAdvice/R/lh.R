@@ -1,6 +1,6 @@
-gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
-   
-  names(dimnames(par))=tolower(names(dimnames(par)))
+gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
+#browser()
+  names(dimnames(par)) <- tolower(names(dimnames(par)))
 
   ## growth parameters
   if (!("t0"    %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"    =t0))
@@ -32,18 +32,19 @@ gislasim=function(par,t0=-0.1,a=0.01,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   return(par)}
 
 
-setUnits=function(res){
-    units=attributes(res)
-    
+setUnits=function(res, par){
+
+    units=attributes(par)$units
+    #browser()
     allUnits=list("params"=      "",          
                "refpts"=         "",            
                "fbar"=           "",        
                "fbar.obs"=       "",    
-               "landings.obs"=   cat(c(units[2],units[3])),    
-               "discards.obs"=   cat(c(units[2],units[3])), 
+               "landings.obs"=   paste(units[2],units[3]),
+               "discards.obs"=   paste(units[2],units[3]),
                "rec.obs"=        units[3],         
-               "ssb.obs"=        cat(c(units[2],units[3])),       
-               "stock.obs"=      cat(c(units[2],units[3])),      
+               "ssb.obs"=        paste(units[2],units[3]),
+               "stock.obs"=      paste(units[2],units[3]),
                "profit.obs"=     NA,     
                "revenue.obs"=    NA,    
                "landings.sel"=   "",    
@@ -161,6 +162,9 @@ lh=function(par,
   
    res=brp(res)
 
-   if (!("units" %in% names(attributes(res))))  return(res)
-  
-  return(setUnits(res))}
+   if (!("units" %in% names(attributes(par))))  return(res)
+
+    res <- setUnits(res, par)
+
+  return(res)
+  }

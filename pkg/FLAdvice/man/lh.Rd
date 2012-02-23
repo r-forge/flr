@@ -41,7 +41,8 @@ lh(
 }
 
 \details{
-The \emph{a} and \emph{b} parameter values in the \code{par} object should be scaled so that they convert g to cm.
+It is up to the user to decide how the \emph{a} and \emph{b} parameter values in the \code{par} object should be scaled.
+The default values from teh \code{\link{gislasim}} function are set so that they convert cm to kg.
 
 Natural mortality is assumed to occur continually throughout the year.
 However, as natural mortality is a function of length it is necessary to select a length on which it is calculated.
