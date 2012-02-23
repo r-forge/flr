@@ -15,7 +15,7 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
  
   ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
   if (!("fec" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=1.0))
-  par=rbind(par,FLPar(a50=0.72+par["linf"]^0.93))
+  par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93))
   par=rbind(par,FLPar(c("asym"=1.0),iter=dims(par)$iter))
   
   par["a50"]=invVonB(par,c(par["a50"]))
