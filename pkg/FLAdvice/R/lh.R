@@ -1,5 +1,5 @@
 gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
-#browser()
+  
   names(dimnames(par)) <- tolower(names(dimnames(par)))
 
   ## growth parameters
@@ -8,7 +8,10 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b))
   if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg))
   if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64))) # From Gislason et al 2008, all species combined
- 
+
+  #table 1 Gislason 2010
+  par=rbind(par,FLPar(c(M1=0.55+1.44*log(par["linf"])+log(par["k"]),M2=-1.61)))
+
   if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95))
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl))
   if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr))
@@ -26,11 +29,12 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   dimnames(selPar)$params[1]="a1"
  
   par=rbind(par,selPar)
+  
+  par=rbind(par,FLPar(s=0.75,v=1000))
  
   attributes(par)$units=c("cm","kg","1000s")
   
   return(par)}
-
 
 setUnits=function(res, par){
 
@@ -68,19 +72,20 @@ setUnits=function(res, par){
     
     return(res)}
 
+
 #### Life History Generator ####################################################
 lh=function(par,
             growth       =vonB,
-            fnM          =function(par,len,T=290,a=FLPar(c(a=-2.1104327,b=-1.7023068,c=1.5067827,d=0.9664798,e=763.5074169),iter=dims(par)$iter))
-                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
+            fnM          =function(par,len) exp(par["M1"]+par["M2"]*log(len)),
+#            fnM          =function(par,len,T=290,a=FLPar(c(a=-2.1104327,b=-1).7023068,c=1.5067827,d=0.9664798,e=763.5074169),iter=dims(par)$iter))
+#                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
             fnMat        =logistic,
             fnSel        =dnormalFn,
-            sr           =list(model="bevholt",s=0.75,v=1e3),
-            range  =c(min=1,max=40,minfbar=1,maxfbar=40,plusgroup=40),
+            model        ="bevholt",
+            range        =c(min=1,max=40,minfbar=1,maxfbar=40,plusgroup=40),
             m.spwn       = 0,
             harvest.spwn = m.spwn,
             f.year.prop = 0.5, # proportion of year when fishing happens
-            T=290,
             units=if("units" %in% names(attributes(par))) attributes(par)$units else NULL,
             ...){
 
@@ -104,11 +109,10 @@ lh=function(par,
    m.spwn.      =FLQuant(m.spwn,      dimnames=list(age=range["min"]:range["max"]))
    harvest.spwn.=FLQuant(harvest.spwn,dimnames=list(age=range["min"]:range["max"]))
 
-   m.   =fnM(  par=par,len=midyearlen,T=T) # natural mortality is always based on mid year length
+   m.   =fnM(  par=par,len=midyearlen) # natural mortality is always based on mid year length
    mat. =fnMat(par,age + m.spwn) # maturity is biological therefore + m.spwn
    sel. =fnSel(par,age + f.year.prop) # selectivty is fishery  based therefore + f.year.prop
  
-
    ## create a FLBRP object to   calculate expected equilibrium values and ref pts
    dms=dimnames(m.)
    res=FLBRP(stock.wt       =swt,
@@ -137,19 +141,11 @@ lh=function(par,
    params(res)=propagate(params(res),dims(res)$iter)
 
    ## Stock recruitment relationship
-   model(res) =do.call(sr$model,list())$model
+   model(res) =do.call(model,list())$model
    
-   if ("alpha" %in% names(sr)){
-      params(res)=do.call(FLPar,sr[-seq(length(sr))[names(sr)=="model"]])
-   }else{   
-      set=function(model,spr0,s,v,d=NULL) FLPar(abPars(model,spr0,s,v,d))
-      for (i in seq(dims(res)$iter)){
-          sr$spr0=spr0(iter(res,i))
- 
-         iter(params(res),i)= params(res)=do.call(set,sr)
-         }
-       }
-      
+   if (model!="shepherd") par=rbind(par,FLPar(d=1))
+   set=function(model,spr0,par) FLPar(abPars(model,spr0,par["s"],par["v"],par["d"]))
+   params(res)=set(model,spr0(res),par)   
    
    dimnames(refpts(res))$refpt[5]="crash"
 
@@ -166,5 +162,4 @@ lh=function(par,
 
     res <- setUnits(res, par)
 
-  return(res)
-  }
+  return(res)}
