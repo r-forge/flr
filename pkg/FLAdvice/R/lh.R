@@ -9,32 +9,30 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg))
   if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64))) # From Gislason et al 2008, all species combined
 
-  #table 1 Gislason 2010
+  # Natural mortality parameters from Model 2, Table 1 Gislason 2010
   par=rbind(par,FLPar(c(M1=0.55+1.44*log(par["linf"])+log(par["k"]),M2=-1.61)))
 
   if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95))
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl))
   if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr))
  
-  ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
+  # Maturity parameters from Table 1, Gislason et al 2008
   if (!("fec" %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"=1.0))
   par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93))
   par=rbind(par,FLPar(c("asym"=1.0),iter=dims(par)$iter))
-  
+  # The above calculates a50 as a function of length, convert that to age using invVonB
   par["a50"]=invVonB(par,c(par["a50"]))
   
   ## selectivity guestimate
   selPar=par["a50"]+a1
-  
   dimnames(selPar)$params[1]="a1"
- 
   par=rbind(par,selPar)
-  
   par=rbind(par,FLPar(s=0.75,v=1000))
  
   attributes(par)$units=c("cm","kg","1000s")
   
-  return(par)}
+  return(par)
+}
 
 setUnits=function(res, par){
 
