@@ -105,17 +105,23 @@ logistic <- function(params,data) { #x, a50, ato95){
     
 pow<-function(a,b) a^b
 logisticFn<-function(params,data) { #x,a50,ato95,asym=1.0){  
-  pow<-function(a,b) a^b
-  res<-x
+  res<-data
 
-  gt=(a50-x)/ato95 > 5
-  lt=(a50-x)/ato95 < -5
+  a50  =params["a50"]
+  ato95=params["ato95"]
+  asym =params["asym"]
+ 
+  gt=(a50-data)%/%ato95 > 5
+  lt=(a50-data)/ato95 < -5
 
   res[gt]<-0
-  res[lt]<-asym
+  
+  for (i in dimnames(asym)$iter)
+     res[lt,,,,,i]=asym[,i]
 
-  if (length(x[!gt & !lt])>0)
-     res[!gt & !lt]<-asym/(1.0+pow(19.0,(a50-x[!gt & !lt])/ato95))
+  if (length(data[!gt & !lt])>0)
+     for (i in dimnames(asym)$iter)
+        res[!gt[,,,,,i] & !lt[,,,,,i]]<-asym[,i]/(1.0+pow(19.0,(a50[,i]-data[!gt[,,,,,i] & !lt[,,,,,i]])/ato95[,i]))
 
   return(res)}
 
@@ -228,7 +234,7 @@ glst=list("dnormal"           =dnormal,
           "dnormalPlateau"    =dnormalPlateau,
           "dnormalColeraine"  =dnormalColeraine,
           "vonB"              =vonB,
-          "logistic"          =logistic,
+          "logistic"          =logisticFn,
           "logisticProduct"   =logisticProduct,
           "logisticDouble"    =logisticDouble,
           "gompertz"          =gompertz,
