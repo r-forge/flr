@@ -17,23 +17,24 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2,s=0.7
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl,    iter=dims(par)$iter))
   if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr,    iter=dims(par)$iter))
  
-  # Maturity parameters from Table 1, Gislason et al 2008
-  if (!("fec" %in% dimnames(par)$params)) par=rbind(par,FLPar("fec"=1.0))
-  par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93))
-  par=rbind(par,FLPar(c("asym"=1.0),iter=dims(par)$iter))
-  # The above calculates a50 as a function of length, convert that to age using invVonB
+  ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
+  par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93, iter=dims(par)$iter))
+  par=rbind(par,FLPar(c("asym"=1.0),             iter=dims(par)$iter))
+  
   par["a50"]=invVonB(par,c(par["a50"]))
   
   ## selectivity guestimate
   selPar=par["a50"]+a1
+  
   dimnames(selPar)$params[1]="a1"
+ 
   par=rbind(par,selPar)
+  
   par=rbind(par,FLPar(s=s,v=v,    iter=dims(par)$iter))
  
   attributes(par)$units=c("cm","kg","1000s")
   
-  return(par)
-}
+  return(par)}
 
 setUnits=function(res, par){
 
