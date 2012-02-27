@@ -1,20 +1,21 @@
-gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
+gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2,s=0.75,v=1000){
   
   names(dimnames(par)) <- tolower(names(dimnames(par)))
-
+  
   ## growth parameters
-  if (!("t0"    %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"    =t0))
-  if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a))
-  if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b))
-  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg))
-  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64))) # From Gislason et al 2008, all species combined
+  if (!("t0"    %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"    =t0, iter=dims(par)$iter))
+  if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a,  iter=dims(par)$iter))
+  if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b,  iter=dims(par)$iter))
+  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg, iter=dims(par)$iter))
+  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64), iter=dims(par)$iter)) # From Gislason et al 2008, all species combined
 
   # Natural mortality parameters from Model 2, Table 1 Gislason 2010
-  par=rbind(par,FLPar(c(M1=0.55+1.44*log(par["linf"])+log(par["k"]),M2=-1.61)))
+  par=rbind(par,FLPar(M1=0.55+1.44*log(par["linf"])+log(par["k"]), iter=dims(par)$iter),
+                FLPar(M2=-1.61                                   , iter=dims(par)$iter))
 
-  if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95))
-  if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl))
-  if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr))
+  if (!("ato95" %in% dimnames(par)$params)) par=rbind(par,FLPar("ato95" =ato95, iter=dims(par)$iter))
+  if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl,    iter=dims(par)$iter))
+  if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr,    iter=dims(par)$iter))
  
   # Maturity parameters from Table 1, Gislason et al 2008
   if (!("fec" %in% dimnames(par)$params)) par=rbind(par,FLPar("fec"=1.0))
@@ -27,7 +28,7 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2){
   selPar=par["a50"]+a1
   dimnames(selPar)$params[1]="a1"
   par=rbind(par,selPar)
-  par=rbind(par,FLPar(s=0.75,v=1000))
+  par=rbind(par,FLPar(s=s,v=v,    iter=dims(par)$iter))
  
   attributes(par)$units=c("cm","kg","1000s")
   
@@ -47,8 +48,8 @@ setUnits=function(res, par){
                "rec.obs"=        units[3],         
                "ssb.obs"=        paste(units[2],units[3]),
                "stock.obs"=      paste(units[2],units[3]),
-               "profit.obs"=     NA,     
-               "revenue.obs"=    NA,    
+               "profit.obs"=     "",     
+               "revenue.obs"=    "",    
                "landings.sel"=   "",    
                "discards.sel"=   "", 
                "bycatch.harvest"="",        
@@ -61,9 +62,9 @@ setUnits=function(res, par){
                "harvest.spwn"=   "proportion",          
                "m.spwn"=         "proportion",    
                "availability"=   "proportion",           
-               "price"=          NA,           
-               "vcost"=          NA,           
-               "fcost"=          NA)            
+               "price"=          "",           
+               "vcost"=          "",           
+               "fcost"=          "")            
 
     
     units(res)[names(allUnits)]=allUnits
@@ -91,7 +92,7 @@ lh=function(par,
   if (m.spwn > 1 | m.spwn < 0 | harvest.spwn > 1 | harvest.spwn < 0 | f.year.prop > 1 | f.year.prop < 0)
     stop("m.spwn, harvest.spwn and f.year.prop must be in the range 0 to 1\n")
  
-   age=FLQuant(range["min"]:range["max"],dimnames=list(age=range["min"]:range["max"]))
+   age=propagate(FLQuant(range["min"]:range["max"],dimnames=list(age=range["min"]:range["max"])),length(dimnames(par)$iter))
    
    # Get the lengths through different times of the year
    stocklen   <- growth(par[c("linf","t0","k")],age+m.spwn)    # stocklen is length at spawning time
@@ -126,8 +127,6 @@ lh=function(par,
              m.spwn         =FLQuant(m.spwn,    dimnames=dimnames(m.)),
              availability   =FLQuant(1,    dimnames=dimnames(m.)))
 
-  # units
-
    ## FApex
    range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
 
@@ -135,23 +134,19 @@ lh=function(par,
    args<-list(...)
    for (slt in names(args)[names(args) %in% names(getSlots("FLBRP"))[names(getSlots("FLBRP"))!="fbar"]])
      slot(res, slt)<-args[[slt]]
-
    params(res)=propagate(params(res),dims(res)$iter)
-
    ## Stock recruitment relationship
    model(res) =do.call(model,list())$model
-   
-   if (model!="shepherd") par=rbind(par,FLPar(d=1))
-   set=function(model,spr0,par) FLPar(abPars(model,spr0,par["s"],par["v"],par["d"]))
-   params(res)=set(model,spr0(res),par)   
+   params(res)=ab(par[c("s","v")],model,spr0=spr0(res))[c("a","b")]
+
    
    dimnames(refpts(res))$refpt[5]="crash"
 
    res=brp(res)
    
    if ("fbar" %in% names(args)) 
-       fbar(res)<-args[["fbar"]]
-   else if (!is.nan(refpts(res)["crash","harvest"])) 
+       fbar(res)<-args[["fbar"]] else 
+   if (any((!is.nan(refpts(res)["crash","harvest"])))) 
          fbar(res)<-FLQuant(seq(0,1,length.out=101))*refpts(res)["crash","harvest"]
   
    res=brp(res)
