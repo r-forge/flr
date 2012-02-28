@@ -80,7 +80,7 @@ lh=function(par,
 #            fnM          =function(par,len,T=290,a=FLPar(c(a=-2.1104327,b=-1).7023068,c=1.5067827,d=0.9664798,e=763.5074169),iter=dims(par)$iter))
 #                                    exp(a[1]+a[2]*log(len) + a[3]*log(par["linf"]) + a[4]*log(par["k"]) + a[5]/T),
             fnMat        =logistic,
-            fnSel        =dnormalFn,
+            fnSel        =dnormal,
             model        ="bevholt",
             range        =c(min=1,max=40,minfbar=1,maxfbar=40,plusgroup=40),
             m.spwn       = 0,
@@ -94,12 +94,13 @@ lh=function(par,
     stop("m.spwn, harvest.spwn and f.year.prop must be in the range 0 to 1\n")
  
    age=propagate(FLQuant(range["min"]:range["max"],dimnames=list(age=range["min"]:range["max"])),length(dimnames(par)$iter))
-   
+
    # Get the lengths through different times of the year
    stocklen   <- growth(par[c("linf","t0","k")],age+m.spwn)    # stocklen is length at spawning time
    catchlen   <- growth(par[c("linf","t0","k")],age+f.year.prop) # catchlen is length when fishing happens
    midyearlen <- growth(par[c("linf","t0","k")],age+0.5) # midyear length used for natural mortality
 
+  
    # Corresponding weights
    swt=par["a"]*stocklen^par["b"]
    cwt=par["a"]*catchlen^par["b"]
