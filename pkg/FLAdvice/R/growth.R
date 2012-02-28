@@ -49,8 +49,10 @@ setMethod("wt2len", signature(params="FLPar", data="numeric"),
    function(params,data) (data/params["a"])^(1/params["b"]))
 ################################################################################
 
-vonB=function(params,data)
-  params["linf"]*(1.0-exp(-params["k"]*(data-params["t0"])))
+vonB=function(params,data){
+  res=params["linf"]%*%(1.0-exp(-params["k"]%*%(data-params["t0"])))
+  dimnames(res)=dimnames(data)
+  res}
 
 invVonB=function(params,data)
     -log(1.0-(data/params["linf"]))/params["k"]+params["t0"]
@@ -62,12 +64,26 @@ dnormal <- function(params,data){
    pow <-function(a,b) a^b
    func<- function(data,a1,sl,sr){
       if (data < a1)
-    return(pow(2.0,-((data-a1)/sl*(data-a1)/sl)))
+        return(pow(2.0,-((data-a1)/sl*(data-a1)/sl)))
       else
-	  return(pow(2.0,-((data-a1)/sr*(data-a1)/sr)))}
+	      return(pow(2.0,-((data-a1)/sr*(data-a1)/sr)))}
 
     sapply(data,func,params["a1"],params["sl"],params["sr"])}
 
+
+dnormal <- function(params,data){
+    
+    a1=FLQuant(1,dimnames=dimnames(data))%*%params["a1"]
+    s =FLQuant(1,dimnames=dimnames(data))%*%params["sl"]
+    sr=FLQuant(1,dimnames=dimnames(data))%*%params["sr"]
+    
+    if (dims(data)$iter==1 &  dims(a1)$iter>1)
+      data=propagate(data,dims(a1)$iter)
+    
+    s[data>=a1]=sr[data>=a1]
+    
+    res=pow(2.0,-((data-a1)/s*(data-a1)/s))
+    }
 
 dnormalCapped <- function(params,data){ #x,a,sL,sR,amax=1.0) {
   func<-function(x,a,sL,sR,amax) {
@@ -105,26 +121,17 @@ logistic <- function(params,data) { #x, a50, ato95){
     
 pow<-function(a,b) a^b
 logisticFn<-function(params,data) { #x,a50,ato95,asym=1.0){  
-  res<-data
-
-  a50  =params["a50"]
-  ato95=params["ato95"]
-  asym =params["asym"]
  
-  gt=(a50-data)%/%ato95 > 5
-  lt=(a50-data)/ato95 < -5
-
-  res[gt]<-0
+  res<-params["asym"]%/%(1.0+pow(19.0,(params["a50"]%-%data)%/%params["ato95"]))
+  asym=FLQuant(1,dimnames=dimnames(data))%*%params["asym"]
+  res[(params["a50"]%-%data)%/%params["ato95"] >  5]<-0
+  res[(params["a50"]%-%data)%/%params["ato95"] < -5]<-asym[(params["a50"]%-%data)%/%params["ato95"] < -5]
   
-  for (i in dimnames(asym)$iter)
-     res[lt,,,,,i]=asym[,i]
-
-  if (length(data[!gt & !lt])>0)
-     for (i in dimnames(asym)$iter)
-        res[!gt[,,,,,i] & !lt[,,,,,i]]<-asym[,i]/(1.0+pow(19.0,(a50[,i]-data[!gt[,,,,,i] & !lt[,,,,,i]])/ato95[,i]))
-
+  dmns=dimnames(res)
+  names(dmns)[1]="age"
+  dimnames(res)=dmns
+  
   return(res)}
-
 
 logisticDouble <- function(params,data) { #x, a50, ato95, b50, bto95, amax=1.0){
   
