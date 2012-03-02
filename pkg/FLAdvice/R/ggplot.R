@@ -30,24 +30,29 @@ setMethod("plot", signature(x="FLBRP", y="missing"),
                         panel=c("SSB v. F",     "Recruitment v. SSB", "Yield v. F", 
                                 "Yield v. SSB", "Profit v. F",        "Profit v. SSB"),...){
   hat.    =mdply(varBrp(),getBrpHat,     obj=x)
-  hat.$pnl=factor(paste("Equilibrium",hat.$pnl),levels=paste("Equilibrium",panelBrp()))
+  hat.$pnl=factor(paste("Equilibrium",hat.$pnl),levels=paste("Equilibrium",panel))
   hat.=subset(hat., pnl %in% paste("Equilibrium",panel))
  
   obs.=mdply(varBrp(),getBrpObs,     obj=x)
-  obs.$pnl=factor(paste("Equilibrium",obs.$pnl),levels=paste("Equilibrium",panelBrp()))
+  obs.$pnl=factor(paste("Equilibrium",obs.$pnl),levels=paste("Equilibrium",panel))
   obs.=subset(obs., pnl %in% paste("Equilibrium",panel))
  
   ref.=mdply(varBrp(),getBrpRefpts,  obj=x)
 
-  ref.$pnl=factor(paste("Equilibrium",ref.$pnl),levels=paste("Equilibrium",panelBrp()))
+  ref.$pnl=factor(paste("Equilibrium",ref.$pnl),levels=paste("Equilibrium",panel))
   ref.=subset(ref., pnl %in% paste("Equilibrium",panel))
 
-  p<-ggplot(subset(hat.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))+geom_line(aes(x,y,group=iter)) +facet_wrap(~pnl,ncol=min(length(unique(ref.$pnl)),2),scale="free")
+  chk=table(subset(ref., !is.na(y))$pnl)
+  ref.=subset(ref., pnl %in% names(chk[chk>0]))
+    
+  p<-ggplot(subset(hat.,x>=0 & y>=0 & !is.na(x) & !is.na(y))) + 
+     geom_line(aes(x,y,group=iter)) +
+     facet_wrap(~pnl,ncol=min(length(unique(ref.$pnl)),2),scale="free")
   if (obs)
     p<-p+geom_point(aes(x,y,group=iter),data=subset(obs.,x>=0 & y>=0 & !is.na(x) & !is.na(y))) 
 
   if (refpts & !all(is.na(refpts(x))))
-    p<-p+geom_point(aes(x,y,group=iter,colour=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))
+    p<-p+geom_point(aes(x,y,colour=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))
 
   print(p)
 

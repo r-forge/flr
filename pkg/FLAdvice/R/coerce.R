@@ -79,7 +79,6 @@ setAs('FLBRP', 'FLStock',
         dimnames(slot(from,i))$year<-dimnames(fbar(from))$year[1]
         slot(res,i)                <- FLCore::expand(slot(from,i), year=years)
         recycle6d(slot(res,i))     <- slot(from,i)}
- 
     recycle6d(   catch.wt(res))<-catch.wt(from)
     recycle6d(discards.wt(res))<-discards.wt(from)
     recycle6d(landings.wt(res))<-landings.wt(from)

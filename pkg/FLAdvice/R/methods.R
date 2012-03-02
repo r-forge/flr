@@ -87,8 +87,9 @@ setMethod('catch.wt', signature(object='FLBRP'),
       res <- (landings.wt(object) * landings.sel(object) +
               discards.wt(object) * discards.sel(object)) / denom
 
-#(landings.sel(object) + discards.sel(object))
-
+    if(!is.na(units(discards.wt(object))) &
+       !is.na(units(discards.wt(object))))
+ 
     if (units(discards.wt(object)) == units(landings.wt(object)))
 				units(res) <- units(discards.wt(object))
 
@@ -336,7 +337,7 @@ setMethod('ssb', signature(object='FLBRP'),
      t1=stock.n(object) %*% exp(-f) %*% exp(-M)
      t2=stock.wt(object)*mat(object)
      
-     return(apply(t1 %*% t2,2,sum))})
+     return(apply(t1 %*% t2,c(2,6),sum))})
 
 setMethod('ssb.hat', signature(object='FLBRP'),
   function(object) return(ssb(object)))
