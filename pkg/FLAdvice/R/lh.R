@@ -1,4 +1,4 @@
-gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2,s=0.75,v=1000){
+gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,asym=1.0,ato95=1,sl=2,sr=5000,a1=2,s=0.9,v=1000){
   
   names(dimnames(par)) <- tolower(names(dimnames(par)))
   
@@ -19,7 +19,7 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,ato95=1,sl=2,sr=5000,a1=2,s=0.7
  
   ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
   par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93, iter=dims(par)$iter))
-  par=rbind(par,FLPar(c("asym"=1.0),             iter=dims(par)$iter))
+  if (!("asym"    %in% dimnames(par)$params)) par=rbind(par,FLPar("asym"    =asym, iter=dims(par)$iter))
   
   par["a50"]=invVonB(par,c(par["a50"]))
   
@@ -127,13 +127,14 @@ lh=function(par,
              bycatch.harvest=FLQuant(0,    dimnames=dimnames(m.)),
              harvest.spwn   =FLQuant(harvest.spwn,    dimnames=dimnames(m.)),
              m.spwn         =FLQuant(m.spwn,    dimnames=dimnames(m.)),
-             availability   =FLQuant(1,    dimnames=dimnames(m.)))
+             availability   =FLQuant(1,    dimnames=dimnames(m.)),
+             range          =range)
 
+   args<-list(...)
    ## FApex
-   range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
+   #if (!("range" %in% names(args))) range(res,c("minfbar","maxfbar"))[]<-as.numeric(dimnames(landings.sel(res)[landings.sel(res)==max(landings.sel(res))][1])$age)
 
    ## replace any slot passed in as an arg
-   args<-list(...)
    for (slt in names(args)[names(args) %in% names(getSlots("FLBRP"))[names(getSlots("FLBRP"))!="fbar"]])
      slot(res, slt)<-args[[slt]]
    params(res)=propagate(params(res),dims(res)$iter)
