@@ -242,14 +242,14 @@ setMethod('propagate', signature(object='FLBRP'),
   
     return(object)})
 
-setMethod('iter', signature(object='FLBRP'),
-  function(object, iter, ...){
-    object <- callNextMethod(object, iter, ...)
-    params(object) <- iter(params(object), iter)
-    if(dim(refpts(object))[3] > 1)
-      refpts(object) <- refpts(object)[,,iter]
+setMethod('iter', signature(obj='FLBRP'),
+  function(obj, iter, ...){
+    obj <- callNextMethod(obj, iter, ...)
+    params(obj) <- iter(params(obj), iter)
+    if(dim(refpts(obj))[3] > 1)
+      refpts(object) <- refpts(obj)[,,iter]
 
-    return(object)})
+    return(obj)})
 
 setMethod('catch', signature(object='FLBRP'),
   function(object) {
