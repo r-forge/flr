@@ -18,11 +18,13 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,asym=1.0,ato95=1,sl=2,sr=5000,a
   if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr,    iter=dims(par)$iter))
  
   ## maturity parameters from http://www.fishbase.org/manual/FishbaseThe_MATURITY_Table.htm
-  par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93, iter=dims(par)$iter))
   if (!("asym"    %in% dimnames(par)$params)) par=rbind(par,FLPar("asym"    =asym, iter=dims(par)$iter))
-  
-  par["a50"]=invVonB(par,c(par["a50"]))
-  
+
+  if (!("a50" %in% dimnames(par)$params)){
+    par=rbind(par,FLPar(a50=0.72*par["linf"]^0.93, iter=dims(par)$iter))
+    par["a50"]=invVonB(par,c(par["a50"]))
+    }
+
   ## selectivity guestimate
   selPar=par["a50"]+a1
   
