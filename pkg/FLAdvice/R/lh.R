@@ -1,4 +1,4 @@
-gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,asym=1.0,ato95=1,sl=2,sr=5000,a1=2,s=0.9,v=1000){
+gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,asym=1.0,ato95=1,sl=2,sr=5000,a1=0,s=0.9,v=1000){
   
   names(dimnames(par)) <- tolower(names(dimnames(par)))
   
