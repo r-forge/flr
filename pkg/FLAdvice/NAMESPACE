@@ -151,4 +151,5 @@ exportMethods(
   "dnormal",
   "mFn",
   "pa<-",
-  "obs<-")
+  "obs<-",
+  "vonB")
