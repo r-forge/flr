@@ -14,7 +14,7 @@ readVPA2BoxDiags<-function(x){
     tab5<-scan(x,what="",sep="\n")
     tab5<-tab5[grep("TABLE 5.",tab5): length(tab5)]
 
-    os  <-grep("Chi-sq. discrepancy=",tab5)
+    pos  <-grep("Chi-sq. discrepancy=",tab5)
     nms  <-substr(tab5[pos-7],10,30)
     str  <-pos+5
     end  <-grep("Selectivities",tab5)-2

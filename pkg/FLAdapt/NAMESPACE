@@ -1,6 +1,6 @@
 import(         "FLCore",
                 "ggplotFL")
-  exportClasses("FLAdapt",
+exportClasses(  "FLAdapt",
                 "FLAdaptControl",
                 "FLAdapts",
                 "FLAdaptControls")
@@ -10,7 +10,6 @@ import(         "FLCore",
                 "fit",
                 "pro2box",
                 "boot",
-                "readPro2Box",
                 "diags<-",
                 "refpts",
                 "refpts<-")
@@ -21,8 +20,8 @@ import(         "FLCore",
                 "write_c1VPA",
                 "write_d1VPA",
                 "write_p1VPA",
-  	            "write_quotas",
-  	            "write_disc",
-  	            "write_prjctlVPA",
-  	            "write_sel",
-  	            "write_recruit")
+  	        "write_quotas",
+  	        "write_disc",
+  	        "write_prjctlVPA",
+  	        "write_sel",
+  	        "write_recruit")
