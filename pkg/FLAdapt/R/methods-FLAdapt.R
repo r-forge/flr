@@ -32,3 +32,18 @@ setMethod("refpts<-", signature(object="FLAdapt", value="character"),
 #     slot(object, "FLAdaptControl") <- new("FLAdaptControl")
 # 		
 #   return(object)})
+
+setMethod('refpts', signature(object='character'),
+    function(object,data.frame=FALSE,file="BENCH-1.OUT",...) 
+        createRefpts(object,data.frame=data.frame,file=file,...))
+
+setMethod('readVpa2boxIndices', signature(x='character'),
+    function(x,...) 
+        readVpa2boxIndicesFn(x,...))
+
+setMethod('readVpa2boxDiags', signature(x='character'),
+    function(x,...) 
+        readVpa2boxDiagsFn(x,...))
+
+
+  

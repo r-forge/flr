@@ -80,7 +80,7 @@ getIdxData=function(x,na.strings="NA") {
 
 return(list(range=range,smry=smry,"cpue"=data.frame(series),vul=vul,wts=wts))}
 
-getIdx=function(i,smry){
+getIdx.=function(i,smry){
   flq2=FLQuant(NA, dimnames=list(age =smry$smry[i,"min"    ]:smry$smry[i,"max"],
                                  year=smry$smry[i,"minyear"]:smry$smry[i,"maxyear"]))
   flq1=FLQuant(NA, dimnames=list(age ="all",
@@ -140,10 +140,10 @@ read.FLIndices <- function(...){
 #idx=readVPA2BoxIndices("/home/lkell/Dropbox/adapt/inputs/Bootstraps/Inflated/run13/bfte2010.d1")
 #validFLIndex(idx[[2]])
 
-readVPA2BoxIndices=function(x){
+readVpa2boxIndicesFn=function(x){
   smry=getIdxData(x)
 
-  res=FLIndices(mlply(data.frame(i=seq(dim(smry$smry)[1])), getIdx, smry=smry))
+  res=FLIndices(mlply(data.frame(i=seq(dim(smry$smry)[1])), getIdx., smry=smry))
   names(res)=laply(res, function(x) name(x))
   
   return(res)}

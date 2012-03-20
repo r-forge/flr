@@ -32,8 +32,8 @@ getRetros<-function(vpa.dir,stk,nRet)
 
     for (iRetro in nRet) {
        ## Start reading file
+
        filename<-paste(vpa.dir,"minus",iRetro,".r",sep="")
-print(filename)
        
        ## get Retro estimates
        i<-0

@@ -15,7 +15,7 @@ readVPA2boxFn <- function(file,args=missing,m=NULL,...) {
   
   nS   <- getNBootRetro(file)
   nits <- max(1, nS[2])
-  nRet <- 0:max(1, nS[1])
+  nRet <- 0:max(0, nS[1])
 
   # "csv" file
   # data
@@ -135,7 +135,7 @@ readVPA2boxFn <- function(file,args=missing,m=NULL,...) {
   catch(stk)   <- computeCatch(stk,"all")
   landings(stk) <- computeLandings(stk)
   discards(stk) <- computeDiscards(stk)
-
+ 
   units(harvest(stk)) <- "f"
   if (length(nRet) > 1)
     stk <- getRetros(paste(dir,"/",sep=""),stk,nRet=nRet)
@@ -161,12 +161,13 @@ vpa2BoxFiles <- function(file) {
   return(res)}
 
 getNBootRetro <- function(file) {
+  tmp <- scan(file,what=character(),sep="\n")
+  
+  tmp <- unlist(lapply(strsplit(tmp[substr(tmp,1,1)!="#"]," +"),
 
-    tmp <- scan(file,what=character(),sep="\n")
-    tmp <- unlist(lapply(strsplit(tmp[substr(tmp,1,1)!="#"]," +"),
-      function(x) x[x!=""][1]))
-
-    as.numeric(tmp[length(tmp)-1:2])}
+    function(x) x[x!=""][1]))  
+  
+  as.numeric(tmp[length(tmp)-1:2])}
  
 readBinary <- function(x,dmns=list(),size=4) {
   # Specify dims

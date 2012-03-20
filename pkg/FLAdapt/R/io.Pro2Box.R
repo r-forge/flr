@@ -16,8 +16,8 @@ setMethod("readPro2box",   signature(x="character", type="character"),
             .readPro2Box(x,type,proxy,files,minyear,data.frame,rel=FALSE,...)})
 
 readPro2BoxKobe=function(x,proxy){
-    vpaOut=readPro2Box(x,type="out")
-    vpaRef=readPro2Box(x,type="ref")
+    vpaOut=readPro2box(x,type="out")
+    vpaRef=readPro2box(x,type="ref")
 
     res=transform(merge(       vpaOut[,c("year","iter","tac","ssb","fapex")], 
                         subset(vpaRef, refpt==proxy, select=c(iter,ssb,harvest)),by="iter"),

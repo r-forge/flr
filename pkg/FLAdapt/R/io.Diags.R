@@ -9,7 +9,7 @@ setMethod("diags<-", signature(object="FLAdapt", value="character"),
 		
   return(object)}) 
 
-readVPA2BoxDiags<-function(x){
+readVpa2boxDiagsFn<-function(x){
 
     tab5<-scan(x,what="",sep="\n")
     tab5<-tab5[grep("TABLE 5.",tab5): length(tab5)]
