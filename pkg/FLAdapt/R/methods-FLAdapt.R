@@ -16,7 +16,29 @@ readFn=function(object,exeNm="adapt") {
    return()}
 
 setMethod('readVpa2box', signature(x='character'),
-    function(x,m=NULL,nRet=0,...) readVPA2boxFn(x, args=list(...),m=m,nRet=nRet))
+    function(x,what="FLStock",data.frame=TRUE,drop=TRUE,m=NULL,nRet=0,...){ 
+      
+      res=switch(tolower(what),
+            "flstock"  =readVpa2boxFn(       x, args=list(...),m=m,nRet=nRet),
+            "flindices"=readVpa2boxIndicesFn(x),
+            "diags"    =readVpa2boxDiagsFn(  x))
+      
+      if (data.frame){
+        if (tolower(what)=="flindices"){
+           nms=names(res)
+           res=ldply(idx, function(x) model.frame(x,drop=drop))
+           res$Series=nms[res$i]}
+           
+        if (tolower(what)=="flstock"){
+           if ("FLStocks" %in% is(res)){
+             nms=names(res)
+             res=ldply(idx, function(x) model.frame(x,drop=drop))
+             res$Series=nms[res$i]}
+           if ("FLStock" %in% is(res)){
+             res= model.frame(x,drop=drop)
+             res$Series=nms[res$i]}}}
+ 
+      return(res)})
 
 
 setGeneric('refpts<-', function(object, ..., value) standardGeneric('refpts<-'))

@@ -5,7 +5,7 @@
 # Maintainer: Iago Mosqueira, JRC & Laurie Kell, ICCAT
 # $Id:  $
 
-readVPA2boxFn <- function(file,args=missing,m=NULL,...) {
+readVpa2boxFn <- function(file,args=missing,m=NULL,...) {
  if(!missing(args))
     args <- c(args, list(...))
 
