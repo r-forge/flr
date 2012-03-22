@@ -1,14 +1,20 @@
-gislasim=function(par,t0=-0.1,a=0.00001,b=3,bg=b,asym=1.0,ato95=1,sl=2,sr=5000,a1=0,s=0.9,v=1000){
+gislasim=function(par,t0=-0.1,a=0.00001,b=3,asym=1.0,ato95=1,sl=2,sr=5000,a1=0,s=0.9,v=1000){
   
   names(dimnames(par)) <- tolower(names(dimnames(par)))
   
-  ## growth parameters
   if (!("t0"    %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"    =t0, iter=dims(par)$iter))
   if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a,  iter=dims(par)$iter))
   if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b,  iter=dims(par)$iter))
-  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =bg, iter=dims(par)$iter))
-  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64), iter=dims(par)$iter)) # From Gislason et al 2008, all species combined
+  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =b,  iter=dims(par)$iter))
+  if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl, iter=dims(par)$iter))
+  if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr, iter=dims(par)$iter))
+  if (!("a1"    %in% dimnames(par)$params)) par=rbind(par,FLPar("a1"    =a1, iter=dims(par)$iter))
+  if (!("s"     %in% dimnames(par)$params)) par=rbind(par,FLPar("s"     =s,  iter=dims(par)$iter))
+  if (!("v"     %in% dimnames(par)$params)) par=rbind(par,FLPar("v"     =v,  iter=dims(par)$iter))
 
+  ## growth parameters
+  if (!("k"     %in% dimnames(par)$params)) par=rbind(par,FLPar("k"=3.15*par["linf"]^(-0.64), iter=dims(par)$iter)) # From Gislason et al 2008, all species combined
+  
   # Natural mortality parameters from Model 2, Table 1 Gislason 2010
   par=rbind(par,FLPar(M1=0.55+1.44*log(par["linf"])+log(par["k"]), iter=dims(par)$iter),
                 FLPar(M2=-1.61                                   , iter=dims(par)$iter))
