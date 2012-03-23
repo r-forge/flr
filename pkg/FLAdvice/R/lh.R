@@ -5,7 +5,7 @@ gislasim=function(par,t0=-0.1,a=0.00001,b=3,asym=1.0,ato95=1,sl=2,sr=5000,a1=0,s
   if (!("t0"    %in% dimnames(par)$params)) par=rbind(par,FLPar("t0"    =t0, iter=dims(par)$iter))
   if (!("a"     %in% dimnames(par)$params)) par=rbind(par,FLPar("a"     =a,  iter=dims(par)$iter))
   if (!("b"     %in% dimnames(par)$params)) par=rbind(par,FLPar("b"     =b,  iter=dims(par)$iter))
-  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =b,  iter=dims(par)$iter))
+  if (!("bg"    %in% dimnames(par)$params)) par=rbind(par,FLPar("bg"    =par["b"],  iter=dims(par)$iter))
   if (!("sl"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sl"    =sl, iter=dims(par)$iter))
   if (!("sr"    %in% dimnames(par)$params)) par=rbind(par,FLPar("sr"    =sr, iter=dims(par)$iter))
   if (!("a1"    %in% dimnames(par)$params)) par=rbind(par,FLPar("a1"    =a1, iter=dims(par)$iter))
