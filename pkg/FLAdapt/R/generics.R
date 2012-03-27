@@ -15,7 +15,7 @@ setGeneric('pro2box',function(object, ctrl,...)    standardGeneric('pro2box'))
 setGeneric('FLAdapt',        function(object, ...)         standardGeneric('FLAdapt'))
 setGeneric('FLAdaptControl', function(object, ...)         standardGeneric('FLAdaptControl'))
 
-setGeneric('refpts', function(object, ...)                 standardGeneric('refpts'))
+#setGeneric('refpts', function(object, ...)                 standardGeneric('refpts'))
 
 setGeneric("readVpa2boxIndices",  function(x,type,...)   standardGeneric("readVpa2boxIndices"))
 setGeneric("readVpa2boxDiags",  function(x,type,...)   standardGeneric("readVpa2boxDiags"))
