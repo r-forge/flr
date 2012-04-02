@@ -152,4 +152,5 @@ exportMethods(
   "mFn",
   "pa<-",
   "obs<-",
-  "vonB")
+  "vonB",
+  "leslie")
