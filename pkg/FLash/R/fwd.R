@@ -16,7 +16,6 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
                availability=NULL,maxF=2.0)
     {      
     if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
-
     ## make sure slots have correct iters 
     if (is(sr,"FLSR")) nDim=dims(params(sr))$iter  else nDim=1
     if (!is.null(sr.residuals)) nDim=max(nDim, dims(sr.residuals)$iter, na.rm=TRUE)  
@@ -51,6 +50,7 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
        endYr<-NULL     
  
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
+
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
     
     ## check iters in ctrl are '1 or n' and correct if necessary
@@ -187,18 +187,15 @@ setMethod("fwd", signature(object="FLStock", ctrl="FLQuant"),
                availability=NULL,maxF=2.0,...)
     {    
     ctrl.=apply(ctrl,1:5,mean,na.rm=TRUE)
-   
     ctrl.=cbind(quantity=quantity,as.data.frame(ctrl.,drop=T))
     names(ctrl.)[seq(dim(ctrl.)[2])[names(ctrl.)=="data"]]="val"
     
     ctrl.=fwdControl(ctrl.)
     dmns=dimnames(ctrl.@trgtArray)
-    dm  =dim(ctrl.@trgtArray)
     dmns$iter=dimnames(ctrl)$iter
-    dm[3]    =dim(ctrl)[3]
  
-    ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
-   
+    ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=unlist(lapply(dmns,length)),dimnames=dmns)
+    
     res=fwd(object,ctrl=ctrl.,
             sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
                availability=availability,maxF=maxF)  
