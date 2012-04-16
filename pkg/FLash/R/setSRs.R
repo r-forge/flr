@@ -33,6 +33,7 @@ setMethod('setSR', signature(sr='list'),
     if (!is(model,'formula') & !is(model,'character') & !is(model,'function'))  stop("model m ust be of type formula, character or function")
     if (!is(object,'FLStock') & !is(object,'FLBiol')) stop("object must be an FLStock or FLBiol")
     if (!is(yrs,'numeric') & !is(yrs,'character')) stop("yrs must be a numeric or character")
+     
 
 #****** Check yrs are in object year range *********
     if(is(yrs,'numeric')) yrs <- as(yrs,'character')
@@ -81,8 +82,9 @@ setMethod('setSR', signature(sr='list'),
     dmns.<-dmns
     dmns.[[2]]<-dmns[[2]][-length(dmns[[2]])]# dmns of original years
 
-    # Trim off extra params if coming from FLSR (e.g. Ricker has extra param sigma)
-    params <- params[dmns$params,]
+    # Trim off extra params if coming from FLSR (e.g. Ricker has extra param sigma)    
+    params <- params[dmns$params]
+    
     # Reorder if necessary
     if (length(length(dimnames(params)$params))>1)
       if (all(dimnames(sr)$params[1:2]==c("b","a")))
@@ -101,9 +103,7 @@ setMethod('setSR', signature(sr='list'),
         residuals=FLQuants(residuals),
         residuals.mult=list(sr.residuals.mult))
 
-    return(res)
-    }
-)
+    return(res)})
 
 SRchar2code<-function(strCode){
    res<-as.integer(switch(strCode, "mean"            = 1,

@@ -146,7 +146,7 @@ setMethod("fwd", signature(object="FLStock", ctrl="missing"),
     if (class(args[[1]])=="FLQuant"){
       ctrl=args[[1]]
       quantity=names(args)[[1]]}
-    
+  
     ctrl.=apply(ctrl,1:5,mean,na.rm=TRUE)
    
     ctrl.=cbind(quantity=quantity,as.data.frame(ctrl.,drop=T))
@@ -154,11 +154,19 @@ setMethod("fwd", signature(object="FLStock", ctrl="missing"),
     
     ctrl.=fwdControl(ctrl.)
     dmns=dimnames(ctrl.@trgtArray)
-    dm  =dim(ctrl.@trgtArray)
     dmns$iter=dimnames(ctrl)$iter
-    dm[3]    =dim(ctrl)[6]
-    ctrl.@trgtArray=array(c(ctrl.@trgtArray),dim=dm,dimnames=dmns)
-   
+ 
+    ctrl.@trgtArray=array(c(ctrl),dim=unlist(lapply(dmns,length)),dimnames=dmns)
+    ctrl.@trgtArray[,c("min","max"),][]=NA
+    
+    nits=max(length(dmns$iter),  length(dimnames(sr.residuals)$iter))   
+         
+    if (nits>1 & dims(object)$iter==1){
+       stock.n(object)=propagate(stock.n(object),nits)
+       if (length(dimnames(sr.residuals)$iter)==1)
+         sr.residuals=propagate(sr.residuals,nits)
+       }
+       
     res=fwd(object,ctrl=ctrl.,
             sr=sr,sr.residuals,sr.residuals.mult=sr.residuals.mult,
                availability=availability,maxF=maxF)  
