@@ -1,15 +1,19 @@
 hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.25),
                         msy   =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),
+                        refpt ="missing",
                         bndTAC=NULL, bndF=NULL,lag=1,...){
 
-      if (dims(params(bd))$iter==1 & dims(refpts(object))$iter>1)
+      if (dims(params)$iter==1 & dims(refpts(object))$iter>1)
          params=propagate(params,dims(refpts(object))$iter)
 
       ## Reference Points
-      if (msy["Btrig"]) params["Btrig"]=refpts(object)["bmsy"]*params["Btrig"]
-      if (msy["Blim"])  params["Blim"] =refpts(object)["bmsy"]*params["Blim"]
-      if (msy["Fmin"])  params["Fmin"] =refpts(object)["fmsy"]*params["Fmin"]
-      if (msy["Ftar"])  params["Ftar"] =refpts(object)["fmsy"]*params["Ftar"]
+      if (refpt=="missing")
+         refpt=refpts(object)
+      
+      if (msy["Btrig"]) params["Btrig"]=refpt["bmsy"]*params["Btrig"]
+      if (msy["Blim"])  params["Blim"] =refpt["bmsy"]*params["Blim"]
+      if (msy["Fmin"])  params["Fmin"] =refpt["fmsy"]*params["Fmin"]
+      if (msy["Ftar"])  params["Ftar"] =refpt["fmsy"]*params["Ftar"]
 
       ## HCR
       #if (Blim>=Btrig) stop("Btrig must be greater than Blim")
@@ -17,16 +21,25 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
       b= params["Ftar"]-a*params["Btrig"]
  
       ## Calc F
-      SSB =apply(stock(object)[,ac(as.numeric(dims(object)$year-lag))],6,sum)
-      val =sweep(sweep(SSB,6,a,"*"),6,b,"+")
-      val=sweep(val,6,params["Fmin"],max)
-      val=sweep(val,6,params["Ftar"],min)
-  
+      #SSB =apply(stock(object)[,ac(as.numeric(dims(object)$year-lag))],6,sum)
+      yrTAC=dims(catch(object))$maxyear+1
+      yrRef=ac(yrTAC-lag)
+      yrTAC=ac(yrTAC)
+ 
+      SSB =apply(stock(object)[,yrRef],6,sum)
+      val=sweep(sweep(SSB,6,a,"*"),6,b,"+")
+      for (i in seq(dim(val)[6])){
+         val[,,,,,i]=max(val[,,,,,i],params["Fmin",i])
+         val[,,,,,i]=min(val[,,,,,i],params["Ftar",i])}
+
+      dimnames(val)$year=yrTAC
+      
       return(val)}
 
 setMethod('hcr', signature(object='FLBioDym'),
            function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.25),
-                             msy  =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),...) hcr.(object,params,msy,...))
+                             msy  =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),...) 
+   hcr.(object,params,msy,...))
 
 setGeneric('hcrJK', function(object, ...) standardGeneric('hcrJK'))
 setMethod( 'hcrJK', signature(object='FLBioDym'),
@@ -71,7 +84,7 @@ setMethod( 'hcrJK', signature(object='FLBioDym'),
 setMethod( 'TAC', signature(object='FLBioDym'),
 function(object,harvest,...){
   ## gets TAC
-  yr    =dims(object)$maxyear
+  yr    =dims(harvest)$maxyear
   catch(object)=propagate(catch(object),dims(object)$iter)
   object=fwd(window(object,end=yr), harvest=harvest)
 

@@ -54,19 +54,19 @@ iavFn=function(val,bnd,lag=1){
 
 # fwd(FLBioDym) {{{
 setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
-  function(object, catch=NULL, harvest=NULL, stock=NULL, hcr=NULL, pe=NULL, peMult=TRUE,minF=0,maxF=2,lag=0,
+ function(object, catch=NULL, harvest=NULL, stock=NULL, hcr=NULL, pe=NULL, peMult=TRUE,minF=0,maxF=2,lag=0,
            bounds=list(catch=c(Inf,Inf)),end=NULL,...) {
 
-# object =simFLBioDym()
-# harvest=FLQuant(0.9,dimnames=list(year=50:80))
-# catch  =NULL
-# stock  =NULL
-# pe     =NULL
-# pwMult =TRUE
-# minF   =0
-# maxF   =2
-# lag    =1
-# bounds=list(catch=c(Inf,Inf))
+#  object =simFLBioDym()
+#  harvest=FLQuant(0.9,dimnames=list(year=50:80))
+#  catch  =NULL
+#  stock  =NULL
+#  pe     =NULL
+#  pwMult =TRUE
+#  minF   =0
+#  maxF   =2
+#  lag    =1
+#  bounds=list(catch=c(Inf,Inf))
 
   lag=max(lag,0)
 
@@ -78,7 +78,7 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
     
   if(!ctcTrgt & hvtTrgt & stkTrgt & hcrTrgt)
       stop("must supply catch, harvest or stock as a target or a HCR")
- 
+
   if (ctcTrgt) if (dims(stock(object))$maxyear < dims(  catch)$maxyear) object=window(object,end=dims(  catch)$maxyear)
   if (hvtTrgt) if (dims(stock(object))$maxyear < dims(harvest)$maxyear) object=window(object,end=dims(harvest)$maxyear)
   if (stkTrgt) if (dims(stock(object))$maxyear < dims(  stock)$maxyear) object=window(object,end=dims(  stock)$maxyear)
@@ -89,6 +89,7 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
   if (ctcTrgt | stkTrgt) {
     if (!(all(dimnames(catch)$year %in% dimnames(catch(object))$year)))
          object = window(object,end=dims(catch)$maxyear)
+      if (dims(catch(object))$iter==1 & dims(catch)$iter>1) catch(object)=propagate(catch(object), dims(catch)$iter)
       catch(object)[,dimnames(catch)$year] <- catch
       yrs <- dimnames(catch)$year
   } else if (hvtTrgt) {
@@ -101,17 +102,23 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
   }  
         
   ## B0 in year 1?
-  if (as.numeric(yrs[1]) == range(object,"minyear"))
-     stock(object)[,ac(range(object,"minyear"))] = params(object)["K"] * params(object)["b0"]
-
+  if (as.numeric(yrs[1]) == range(object,"minyear")){
+     if (!("year" %in% names(dimnames(params(object)["K"]))))  
+       stock(object)[,ac(range(object,"minyear"))] = params(object)["K"] * params(object)["b0"] else
+       stock(object)[,ac(range(object,"minyear"))] = params(object)["K",ac(range(object,"minyear"))] * params(object)["b0",ac(range(object,"minyear"))]          
+     }
+  
   ## maxyear
   if (max(as.numeric(yrs)) == range(object,"maxyear"))
      stock(object) <- window(stock(object),end=range(object,"maxyear")+1)
 
   ## niters
   nits=dims(object)$iter
+  if (hvtTrgt) nits=max(nits,dims(harvest)$iter)
+  if (ctcTrgt) nits=max(nits,dims(  catch)$iter)
+  if (stkTrgt) nits=max(nits,dims(  stock)$iter)
   if (!is.null(pe)) nits=max(nits,dims(pe)$iter)
-  
+
   if (hvtTrgt) nits=max(nits,dims(harvest)$iter) else
   if (ctcTrgt) nits=max(nits,dims(catch  )$iter) else
   if (stkTrgt) nits=max(nits,dims(stock  )$iter) 
@@ -123,12 +130,13 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
      if (dims(params(object))$iter==1) params(object)=propagate(params(object),nits)
      if (!is.null(pe))                 pe            =propagate(pe            ,nits)
      } 
-print(1)    
+
   ## projections
   if (!hvtTrgt) harvest=harvest(object)
   for(y in as.numeric(yrs)) {
      ## sp & process error
      if (!is.null(pe)) {
+      
         if (peMult) sp.=sp(object)[, ac(y)]*pe[, ac(y)] 
         else        sp.=sp(object)[, ac(y)]+pe[, ac(y)]
      }else sp.=sp(object)[, ac(y)]

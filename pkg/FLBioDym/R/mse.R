@@ -3,10 +3,17 @@ mseFLBioDym<-function(OM,start,
                       sr,srRsdl=FLQuant(1,dimnames=dimnames(window(rec(OM),start=start))),
                       CV   =0.3,
                       Ftar =0.75,    Btrig=0.75,
-                      Fmin =Ftar*0.1,Blim =Btrig*0.0,
+                      Fmin =Ftar*0.1,Blim =Btrig*0.0001,
                       Bpct =0.5,     Fpct =0.5,
                       jk    =FALSE,
                       bounds=NULL){
+  
+  #attach(list(CV   =0.3,
+  #                     Ftar =0.75,    Btrig=0.75,
+  #                     Fmin =Ftar*0.1,Blim =Btrig*0.0,
+  #                     Bpct =0.5,     Fpct =0.5,
+  #                    jk    =FALSE))
+  
     
   ## Get number of iterations in OM
   nits=c(OM=dims(OM)$iter, sr=dims(params(sr))$iter, rsdl=dims(srRsdl)$iter)
@@ -36,7 +43,7 @@ mseFLBioDym<-function(OM,start,
       hv =hcrJK(bd,Ftar,Btrig,Fmin,Blim,Fpct,Bpct) 
      }else{ 
        bd =admbBD(bd)
-       hv =hcr(bd,Ftar,Btrig,Fmin,Blim) 
+       hv =hcr(bd,FLPar(Ftar=Ftar,Btrig=Btrig,Fmin=Fmin,Blim=Blim)) 
        }
      
      TAC=TAC(bd,hv)
