@@ -160,7 +160,7 @@ REPORT_SECTION
         <<"# sigma"  <<endl<<sigma  <<endl
         <<"# RSS"    <<endl<<RSS    <<endl
         <<"# neglogL"<<endl<<neglogL<<endl<<endl;
-  report<<setprecision(4)
+  report<<setprecision(12)
         <<"# Model summary"<<endl
         <<" Year Biomass Catch Index IndexFit"<<endl
         <<summary<<endl;

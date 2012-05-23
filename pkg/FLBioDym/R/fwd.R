@@ -56,7 +56,6 @@ iavFn=function(val,bnd,lag=1){
 setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
  function(object, catch=NULL, harvest=NULL, stock=NULL, hcr=NULL, pe=NULL, peMult=TRUE,minF=0,maxF=2,lag=0,
            bounds=list(catch=c(Inf,Inf)),end=NULL,...) {
-
 #  object =simFLBioDym()
 #  harvest=FLQuant(0.9,dimnames=list(year=50:80))
 #  catch  =NULL
@@ -144,7 +143,6 @@ setMethod("fwd", signature(object="FLBioDym",ctrl="missing"),
      ## targets 
      if (hcrTrgt)
          harvest[,ac(y)]=hcr(window(object,end=y))
-  
      if (hvtTrgt | hcrTrgt)
          catch(object)[,ac(y)]=stock(object)[,ac(y)]*relFn(harvest(object),harvest[,ac(y)],lag)
      else if (ctcTrgt)
