@@ -1,0 +1,12 @@
+Package: FLIO
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2012-05-28
+Author: Laurence Kell
+Maintainer: Laurence Kell <laurieKell@gmail.com>
+Description: Provides methods for reading input from traditional stock assessment methods
+License: GPL-2
+LazyLoad: yes
+Depends: Rcpp (>= 0.9.10), FLCore(>= 2.3),
+LinkingTo: Rcpp
