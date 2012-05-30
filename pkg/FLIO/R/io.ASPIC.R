@@ -1,27 +1,27 @@
 
-setMethod("readAspic",     signature(x="character"),    function(x,...)       .readAspic(x,...))
+setMethod("readAspic",     signature(x="character"),                   function(x,...)            .readAspic(x,...))
 setMethod("aspicRuns",     signature(x="character",scen="vector"),     function(x,scen,...)       .aspicRuns(x,scen,...))
 setMethod("aspicRuns",     signature(x="character",scen="data.frame"), function(x,scen,...)       .aspicRuns(x,scen,...))
 setMethod("aspicProj",     signature(x="character",scen="vector"),     function(x,scen,stringsAsFactors=FALSE,...)       .aspicProj(x,scen,stringsAsFactors,...))
 setMethod("aspicProj",     signature(x="character",scen="data.frame"), function(x,scen,stringsAsFactors=FALSE,...)       .aspicProj(x,scen,stringsAsFactors,...))
 
 
-aspicFiles=data.frame(ext =c("inp","bio","prb","rdat","det"),
+aspicFiles=data.frame(ext =c("inp","bio","prb","rdat","det","prn"),
                       desc=c("Input file with data, starting guesses, and run settings",
                              "Estimated B and F trajectory for each bootstrap trial",
                              "As .bio but with projection results",
                              "Inputs and estimates specially formatted for R",
-                             "Estimates from each bootstrap trial"),stringAsFactor=FALSE)
+                             "Estimates from each bootstrap trial",
+                             "cpue fitted and observed"),stringAsFactor=FALSE)
 
 getExt <- function(file)
-  substr(file,max(gregexpr("\\.", file)[[1]])+1,nchar(file)) # }}}
+  tolower(substr(file,max(gregexpr("\\.", file)[[1]])+1,nchar(file)))
 
-checkExt=function(x) (getExt(x) %in% aspicFiles[,"ext"])
-
+checkExt=function(x) (tolower(getExt(x)) %in% aspicFiles[,"ext"])
 
 #### Aspic #####################################################################################
 .readAspic<-function(x){
-
+print(x)
   if (!checkExt(x)) stop(cat("File", x, "does not have a valid extension")) 
   type=getExt(x)
   return(switch(tolower(type),
@@ -30,7 +30,8 @@ checkExt=function(x) (getExt(x) %in% aspicFiles[,"ext"])
                 "prb" =aspicPrb(x),
                 "rdat"=aspicRdat(x),
                 "ctl" =aspicCtl(x),
-                "det" =aspicDet(x)))}
+                "det" =aspicDet(x),
+                "prn" =aspicPrn(x)))}
 
 ################################################################################
 aspicBio =function(file){
@@ -82,6 +83,24 @@ aspicDet =function(x){
     
 aspicInp =function(x){
     return("will return an aspic object")}
+
+aspicPrn =function(x){
+    #x="/home/lkell/Dropbox/MyStuff/WHM/analysis/Inputs/aspic/Base case runs/whmrun1bb.prn"
+    res=read.table(x,header=TRUE)
+   
+    res=res[,seq(dim(res)[2]-2)]
+    
+    obs=melt(res[,seq((dim(res)[2]-1)/2+1)],id.var="year")
+    est=melt(res[,c(1,((dim(res)[2]-1)/2+2):dim(res)[2])],id.var="year")
+    
+    res=data.frame(transform(obs,obs=value,cpue=gsub(".obs","",obs$variable))[,c("year","cpue","obs")],
+                   hat=est$value)
+    
+    res$residual=log(res$obs/res$hat)
+    
+    res=ddply(res,.(cpue),fnDiags)
+    
+    res}
 
 ### x is the dir & file name  
 .aspicRuns<-function(x,scen){

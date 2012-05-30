@@ -10,13 +10,13 @@ setGeneric("readAspic",    function(x,...)      standardGeneric("readAspic"))
 setGeneric("aspicRuns",    function(x,scen,...) standardGeneric("aspicRuns"))
 setGeneric("aspicProj",    function(x,scen,...) standardGeneric("aspicProj"))
 
-setGeneric("readPro2box",  function(x,type="missing",...) standardGeneric("readPro2box"))
-setGeneric("readVpa2box",  function(x,type="missing",...) standardGeneric("readVpa2box"))
+setGeneric("readPro2box",  function(x,...)      standardGeneric("readPro2box"))
+setGeneric("readVpa2box",  function(x,...)      standardGeneric("readVpa2box"))
 
 setGeneric("readAdmb",     function(file,...)   standardGeneric("readAdmb"))
 setGeneric("writeAdmb",    function(file,x,...) standardGeneric("writeAdmb"))
 
-setGeneric("diags",        function(x,...)   standardGeneric("diags"))
+setGeneric("diags",        function(x,...)      standardGeneric("diags"))
 
 #setGeneric('diags<-', function(object, ..., value) standardGeneric('diags<-'))
 

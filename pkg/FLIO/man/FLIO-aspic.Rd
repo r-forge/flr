@@ -16,10 +16,21 @@ ASPIC has proection and assessment modes, both of which have control, input, out
           .prb   \tab As .bio but with projection results.                      \cr
           .rdat  \tab Inputs and estimates specially formatted for R.           \cr
           .det   \tab Estimates from each bootstrap trial                       \cr
+          .prn   \tab summary                                                  \cr
           }
           
     Example text files can be found in the inst/inputs/aspic directory of the package
-           
+
+Providing a file to readAspic determines what is returned.
+
+\tabular{ll}{
+          .inp   \tab                                                           \cr
+          .bio   \tab                                                           \cr
+          .prb   \tab                                                           \cr
+          .rdat  \tab                                                           \cr
+          .det   \tab                                                           \cr
+          .prn   \tab                                                          \cr
+          }         
 
   }
 \usage{

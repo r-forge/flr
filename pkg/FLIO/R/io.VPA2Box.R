@@ -6,7 +6,7 @@
 # $Id:  $
 
 
-setMethod("readVpa2box",     signature(x="character",type="missing"),    function(x,type,...)   readVpa2boxFn(x,type,...))
+setMethod("readVpa2box",  signature(x="character"), function(x,...) readVpa2boxFn(file=x,args=type,...))
 
 
 skip.hash <- function(i,file) {
@@ -29,7 +29,7 @@ skip.until.minus.1<-function(i,x) {
             i<-i+1
         return(i)}
 
-readVpa2boxFn <- function(file,args=missing,m=NULL,minage=1,...) {
+readVpa2boxFn<-function(file,args="missing",m=NULL,minage=1,...) {
  if(!missing(args))
     args <- c(args, list(...))
 
