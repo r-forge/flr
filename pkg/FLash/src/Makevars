@@ -2,7 +2,10 @@
 # Looks same as *nix one
 PKG_CPPFLAGS = -I../inst/include
 PKG_CFLAGS = -I../inst/include
-PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/${R_ARCH}/R --slave -e 'cat(system.file("libs", package="FLCore"))')/${R_ARCH}/FLCore.so
+PKG_LIBS = $(SUBLIBS) $(shell $(R_HOME)/bin/${R_ARCH}/R --slave --no-site-file --no-init-file -e 'cat(system.file("libs", package="FLCore"))')/${R_ARCH}/FLCore.so
+
+
+
 
 #CFLAGS=$(PKG_CPPFLAGS) -O3
 #ALL_CPPFLAGS=$(PKG_CPPFLAGS)
