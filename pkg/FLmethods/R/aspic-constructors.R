@@ -40,6 +40,13 @@ setMethod('aspic', signature(object='character'),
     
     res =readAspic(object)
     what=getExt(object)
+
+    u=aspicCpue(object)
+    ctc=as.FLQuant(ddply(as.data.frame(FLQuants(llply(u,catch.n))),.(year),function(x) data.frame(data=sum(x$data,na.rm=T))))
+   
+    catch(res)=ctc
+    return(res)
+    
     
     args <- list(...)
 

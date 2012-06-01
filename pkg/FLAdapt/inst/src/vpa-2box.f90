@@ -1073,11 +1073,12 @@
       IX2=MOD(IA2*IX2+IC2,M2)
       IX3=MOD(IA3*IX3+IC3,M3)
       J=1+(97*IX3)/M3
-       IF(J.GT.97.OR.J.LT.1) then
-       write(*,*) ' ERROR ENCOUNTERED IN RANDOM NUMBER GENERATOR' 
-       write(12,*) ' ERROR ENCOUNTERED IN RANDOM NUMBER GENERATOR'
-       STOP
-       endif
+!       Modified by LK 22/3/2012
+!       IF(J.GT.97.OR.J.LT.1) then
+!       write(*,*) ' ERROR ENCOUNTERED IN RANDOM NUMBER GENERATOR' 
+!       write(12,*) ' ERROR ENCOUNTERED IN RANDOM NUMBER GENERATOR'
+!       STOP
+!       endif
       RAN1=R(J)
       R(J)=(DBLE(IX1)+DBLE(IX2)*RM2)*RM1
       RETURN ; END

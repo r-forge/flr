@@ -84,7 +84,7 @@
 # Number of bootstraps to run (negative value = do a parametric bootstrap)
 # |   Use Stine correction to inflate bootstrap residuals (0=NO)
 # |   |
-  500   1   1        BOOTSTRAP OPTION 
+  5   1   1        BOOTSTRAP OPTION 
 #############################################
 # RETROSPECTIVE ANALYSES (CANNOT DO RETROSPECTIVE ANALYSES AND BOOTSTRAPS AT SAME TIME)
 #############################################

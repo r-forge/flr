@@ -2,7 +2,7 @@
 setMethod("readPro2box",   signature(x="character"),
    function(x,type="kobe") readPro2box(file,type)) 
 
-setMethod("readPro2box",   signature(x="character"), 
+setMethod("readPro2box",   signature(x="character", type="character"), 
           function(x,type=c("ref","sta","out","kobe"),proxy="msy",     
                                                     files=c("BIO_f-1",  ## Biomass ? by iteration and year
                                                             "BIO_t-1",  ## Biomass ? by iteration and year

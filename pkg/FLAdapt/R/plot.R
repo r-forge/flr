@@ -1,7 +1,7 @@
 #### Plots ##########################################################################################
 setGeneric('diags', function(object,...)
    standardGeneric('diags'))
-setMethod("diags", signature(object="FLsz"),
+setMethod("diags", signature(object="FLAdapt"),
   function(object) {
   
            

@@ -25,7 +25,8 @@ export(
   "vpaMP",
   "hcr",
   "runMSE",
-  "plotCatches")
+  "plotCatches",
+  "doIt")
 exportMethods(
   "simAR",
   "Arith",
@@ -153,4 +154,8 @@ exportMethods(
   "pa<-",
   "obs<-",
   "vonB",
-  "leslie")
+  "logistic",
+  "invVonB",
+  "leslie",
+  "ep",
+  "myers")

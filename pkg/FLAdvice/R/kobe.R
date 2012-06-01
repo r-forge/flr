@@ -17,6 +17,24 @@ kobeFn=function(object,xlim,ylim){
     
 setGeneric('kobe', function(object, ...)
     standardGeneric('kobe'))
+setMethod('kobe', signature(object='ggplot'),
+  function(object,xlim=c(0,2),ylim=xlim){
+    
+      quads<- rbind(data.frame(x=c(-Inf,-Inf,Inf,Inf), y=c(-Inf,Inf,Inf,-Inf), fill=as.factor("yellow")),
+                     data.frame(x=c(   1,   1,Inf,Inf), y=c(-Inf,  1,  1,-Inf), fill=as.factor("green")),
+                     data.frame(x=c(-Inf,-Inf,  1,  1), y=c(   1,Inf,Inf,   1), fill=as.factor("red")))
+
+       p=object+geom_polygon(data=quads,aes(x,y,fill=fill)) 
+                         scale_fill_manual(values = c("yellow","green","red"), legend=FALSE) +
+                         ylab(expression(F/F[MSY]))        +
+                         xlab(expression(SSB/B[MSY]))      +
+                         scale_y_continuous(limits=ylim)   +
+                         scale_x_continuous(limits=xlim)
+     
+      invisible(p)})
+ 
+setGeneric('kobe', function(object, ...)
+    standardGeneric('kobe'))
 setMethod('kobe', signature(object='missing'),
   function(object,xlim=c(0,2),ylim=xlim){
     

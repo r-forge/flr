@@ -52,7 +52,7 @@ validAspic <- function(object) {
 setClass('aspic', representation(
     "FLComp",
     model         ="factor",
-    objFn         ="factor",
+    obj           ="factor",
     conditioning  ="factor",
     options       ="numeric",
     
@@ -60,14 +60,15 @@ setClass('aspic', representation(
     stock         ='FLQuant',
     
     params        ='FLPar',
+    bounds        ='array',
     vcov          ='FLPar',
     hessian       ='FLPar',
-    dof           ='numeric',
-    stopmess      ="character"),
+    stopmess      ="character",
+    rnd           ="numeric"),
   prototype(
     range         =unlist(list(minyear=as.numeric(NA),   maxyear=as.numeric(NA))),
     model         =factor("LOGISTIC",levels=model,       labels=model),
-    objFn         =factor("SSE",     levels=objFn,       labels=objFn),
+    obj           =factor("SSE",     levels=objFn,       labels=objFn),
     conditioning  =factor("YLD",     levels=conditioning,labels=conditioning),
     options       =c(search=1,trials=100000,simplex=1e-8,restarts=3e-8,nrestarts=6,effort=1e-4,nsteps=0,maxf=8.0),
    
@@ -75,6 +76,7 @@ setClass('aspic', representation(
     stock         =FLQuant(),
 
     params        =FLPar(NA,dimnames=list(param=c("msy","k","b0"),iter=1)),
+    bounds        =array(NA,c(length(c(c("b0","k","msy"),paste("q",seq(1),sep=""))),5),dimnames=list(params=c(c("b0","k","msy"),paste("q",seq(1),sep="")),c("fit","min","start","max","lambda"))),
     vcov          =FLPar(NA,dimnames=list(param=c("msy","k","b0"),param=c("msy","k","b0"),iter=1)),
     hessian       =FLPar(NA,dimnames=list(param=c("msy","k","b0"),param=c("msy","k","b0"),iter=1)),
     dof           =as.numeric(NA),

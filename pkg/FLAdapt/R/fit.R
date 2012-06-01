@@ -9,7 +9,7 @@ readAdapt=function(object){
   
   return(object)}
 
-setMethod('fit',    signature(object='FLAdapt',cpues="FLIndices"),
+setMethod('adapt',    signature(object='FLAdapt',cpues="FLIndices"),
   function(object, cpues,              
            package=attributes(class(object[[1]]))$package, exeNm="a", dir=tempdir(),...)
     

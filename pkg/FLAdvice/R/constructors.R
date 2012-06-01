@@ -221,7 +221,7 @@ setMethod('FLBRP', signature(object='data.frame', sr='missing'),
       slots=names(object)[names(object) %in% flqs]
       res <- vector("list", length(slots))
       names(res) <- slots
-
+      
       for(i in slots){
         data <- object[,c(quant, i)]
         
@@ -230,14 +230,26 @@ setMethod('FLBRP', signature(object='data.frame', sr='missing'),
 
       res <- do.call('FLBRP', c(res)) #, list(...)))
 
-    # set some defaults
-    defaults <- c(discards.sel=0, bycatch.harvest=0, discards.wt=0, bycatch.wt=1)
+     # set some defaults
+    defaults <- c(discards.sel=0, bycatch.harvest=0, discards.wt=0, bycatch.wt=1,availability=1)
     for (i in names(defaults))
       slot(res, i)[] <- defaults[i]
 
     return(res)
   }
 ) # }}}
+
+# FLBRP(object=data.frame, sr=missing)  {{{
+setMethod('FLBRP', signature(object='data.frame', sr='FLSR'),
+  function(object, sr=sr, quant="age", ...){
+
+    res        =FLBRP(object)
+    model(res) =model(sr)
+    params(res)=params(sr)
+ 
+  return(brp(res))}
+) # }}}
+
 
 # FLBRP(object="FLStock", sr="list") {{{
 setMethod('FLBRP', signature(object='FLStock', sr='list'),

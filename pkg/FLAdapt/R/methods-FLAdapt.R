@@ -1,4 +1,4 @@
-setMethod('fit', signature(object='FLAdapt'),
+setMethod('adapt', signature(object='FLAdapt'),
   function(object, package="adapt", exeNm="vpa-2box", dir=tempdir(),...) 
       runExe(object, package, exeNm, dir,...))
 setMethod('boot', signature(object='FLAdapt'),
@@ -16,13 +16,13 @@ readFn=function(object,exeNm="adapt") {
    return()}
 
 setMethod('readVpa2box', signature(x='character'),
-    function(x,what="FLStock",data.frame=TRUE,drop=TRUE,m=NULL,nRet=0,...){ 
-      
+    function(x,what="FLStock",data.frame=FALSE,drop=TRUE,m=NULL,nRet=0,minage=1,...){ 
+   
       res=switch(tolower(what),
-            "flstock"  =readVpa2boxFn(       x, args=list(...),m=m,nRet=nRet),
+            "flstock"  =readVpa2boxFn(       x, args=list(...),m=m,nRet=nRet,minage=minage),
             "flindices"=readVpa2boxIndicesFn(x),
             "diags"    =readVpa2boxDiagsFn(  x))
-      
+     
       if (data.frame){
         if (tolower(what)=="flindices"){
            nms=names(res)

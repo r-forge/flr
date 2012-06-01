@@ -87,4 +87,7 @@ setGeneric('profit.hat', function(object, ...)
 		standardGeneric('profit.hat'))
 
 setGeneric('FLBRPs', function(object, ...)
-		standardGeneric('FLBRPs'))
+  	standardGeneric('FLBRPs'))
+
+setGeneric('myers', function(object, ...)
+  	standardGeneric('myers'))

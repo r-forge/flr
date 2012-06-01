@@ -208,7 +208,7 @@ function(object)
     if ("virgin" %in% dimnames(refpts)$refpt){
       refpts@.Data["virgin",,         ] <- as.numeric(NA)
       refpts@.Data["virgin","harvest",] <- 0}
-#browser()
+
     res <- .Call("brp", object, refpts, SRNameCode(SRModelName(object@model)),
       FLQuant(c(params(object)),dimnames=dimnames(params(object))),
       PACKAGE = "FLAdvice")
@@ -364,6 +364,14 @@ setMethod('profit', signature(object='FLBRP'),
 setMethod('profit.hat', signature(object='FLBRP'),
   function(object) return(profit(object)))
 
+# setMethod('refpts', signature(object='FLBRP'),
+#   function(object) return(object@refpts))
+# 
+# setMethod('refpts<-', signature(object='FLBRP',y='FLPar'),
+#   function(object,y) {
+#      object@refpts=y
+#      return(object)})
+
 setMethod("r", signature(m="FLBRP", fec="missing"),
 	function(m, by = 'year', method = 'el',...)
     do.call('r', list(m=m(m), fec=mat(m), by=by, method=method)))
@@ -371,3 +379,30 @@ setMethod("r", signature(m="FLBRP", fec="missing"),
 setMethod('sp', signature(stock='FLBRP', catch='missing'),
 	function(stock, rel=TRUE)
     return(sp(ssb.obs(stock), catch.obs(stock), rel=rel)))
+
+
+setMethod('myers', signature(object='FLBRP'),
+function(object){
+  
+  slopeAt0=switch(SRModelName(model(object)),
+                  "bevholt"  =params(object)["a"]/params(object)["b"],
+                  "ricker"   =params(object)["a"],
+                  "segreg"   =params(object)["a"],
+                  "shepherd" =params(object)["a"])
+ 
+  
+  aHat  =slopeAt0*spr0(object)
+  surv  =exp(-sum(mat(object)*m(object))/sum(mat(object)))
+  aTilde=aHat*(1-surv)
+  steep =aTilde/(4+aTilde)
+ 
+  age=as.numeric(dimnames(mat(br))$age[mat(br)==1][1])
+
+  f <- function (r,age,aTilde,ps)   (exp(r)^age-ps*exp(r)^(age-1)-aTilde)^2
+  
+  r <- optimize(f, c(0.01, 2), tol = 0.0001, age=age,aTilde=aTilde,ps=surv)$minimum
+
+  #r    =1/slopeAt0*log(aTilde)
+  
+  FLPar(c(r=r,s=steep,a=aTilde,hat=aHat))}) 
+

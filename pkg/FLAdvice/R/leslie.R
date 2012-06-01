@@ -23,8 +23,7 @@ setMethod("leslie", signature(object="FLBRP"),
   mx[1,]= rec(object)[1]%*%tmp%/%tmp2%/%stock.n(object)[,1]
   
   if (!numbers){
-       diag(mx[-1,-length(ages)])
-       print(c(stock.wt(object)[-1,1])/c(stock.wt(object)[-length(ages),1]))
+       diag(mx[-1,-length(ages)])=c(stock.wt(object)[-1,1])/c(stock.wt(object)[-length(ages),1])
      mx[1,]=c(stock.wt(object)[,1])*mx[1,]
      }
   

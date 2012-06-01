@@ -1,2 +1,92 @@
  Initial value of the OBJECTIVE function =      95.7059
-  ERROR ENCOUNTERED IN RANDOM NUMBER GENERATOR
+ Amoeba restart #     1, Objective function =      78.0771
+ Amoeba restart #     2, Objective function =      74.5168
+ Amoeba restart #     3, Objective function =      69.8727
+ Amoeba restart #     4, Objective function =      66.4292
+ Amoeba restart #     5, Objective function =      64.7003
+ Amoeba restart #     6, Objective function =      63.6374
+ Amoeba restart #     7, Objective function =      63.6090
+ Amoeba restart #     8, Objective function =      63.5813
+ Amoeba restart #     9, Objective function =      63.5532
+ Amoeba restart #    10, Objective function =      63.5256
+ Amoeba restart #    11, Objective function =      62.6978
+ Amoeba restart #    12, Objective function =      62.6770
+ Amoeba restart #    13, Objective function =      62.6565
+ Amoeba restart #    14, Objective function =      62.6365
+ Amoeba restart #    15, Objective function =      62.6162
+ Amoeba restart #    16, Objective function =      62.0798
+ Amoeba restart #    17, Objective function =      62.0675
+ Amoeba restart #    18, Objective function =      62.0566
+ Amoeba restart #    19, Objective function =      62.0463
+ Amoeba restart #    20, Objective function =      62.0360
+ Amoeba restart #    21, Objective function =      61.8467
+ Amoeba restart #    22, Objective function =      61.8461
+ Amoeba restart #    23, Objective function =      61.8461
+
+
+ FIRST DERIVATIVE TEST
+==============================================      
+             -h       central        +h     
+         ----------  ----------  ---------- 
+    1 :  0.6211D+02  0.6170D+02  0.6129D+02
+    2 : -0.2000D+02 -0.1938D+02 -0.1878D+02
+    3 :  0.2547D+02  0.2551D+02  0.2557D+02
+    4 : -0.7651D+02 -0.7501D+02 -0.7356D+02
+    5 :  0.3716D+01  0.4047D+01  0.4342D+01
+    6 : -0.6855D+01 -0.6301D+01 -0.5756D+01
+    7 :  0.5969D+01  0.6007D+01  0.6045D+01
+    8 :  0.4348D+01  0.4572D+01  0.4780D+01
+    9 : -0.1232D+01  0.2110D+00  0.1531D+01
+   10 :  0.1884D+02  0.2253D+02  0.2608D+02
+
+
+ HESSIAN MATRIX
+=========================================================================================================================================      
+              1            2            3            4            5            6            7            8            9           10
+    1 :  -0.1412D+03
+    2 :  -0.2524D+02   0.5516D+02
+    3 :   0.1052D+02  -0.3179D+02   0.6452D+01
+    4 :   0.0000D+00  -0.2539D+01  -0.3552D+02   0.6832D+03
+    5 :   0.0000D+00  -0.3891D+01   0.1276D+01  -0.9042D+02   0.1442D+03
+    6 :   0.0000D+00  -0.4953D+00  -0.3143D+02   0.2671D+01  -0.3909D+02   0.1478D+03
+    7 :   0.0000D+00  -0.2041D+01   0.9717D+00   0.6580D-02  -0.1429D-01  -0.1222D+02   0.5452D+01
+    8 :   0.0000D+00  -0.2521D+01   0.1003D+01   0.2675D-01  -0.3046D-01   0.2098D+01  -0.1530D+02   0.5892D+02
+    9 :   0.0000D+00   0.2517D+02  -0.7968D+01  -0.6072D+00  -0.1571D+01  -0.1640D+02   0.3656D+01  -0.1240D+03   0.1179D+04
+   10 :   0.0000D+00   0.1744D-10   0.2976D-10   0.1359D+02  -0.1035D+02   0.2065D+01  -0.1861D+01   0.1058D+01  -0.9506D+02   0.3936D+03
+
+
+ CORRELATION MATRIX OF PARAMETERS
+==========================================================  
+          1    2    3    4    5    6    7    8    9   10
+    1 :  9.0
+    2 :  9.0  1.0
+    3 :  9.0  1.0  1.0
+    4 :  9.0  0.9  0.5  1.0
+    5 :  9.0  0.2  0.1  0.3  1.0
+    6 :  9.0  1.0  1.0  0.1  0.3  1.0
+    7 :  9.0  0.6  0.3  0.0  0.1  0.4  1.0
+    8 :  9.0  0.4  0.2  0.0  0.1  0.3  0.9  1.0
+    9 :  9.0  0.3  0.2  0.0  0.1  0.2  0.4  0.5  1.0
+   10 :  9.0  0.0  0.0 -0.0  0.1  0.0  0.1  0.1  0.1  1.0
+     Values of 9.0 indicate that there were negative variances
+     Values of 8.0 indicate that the covariance was nonzero but
+       one or both variances were zero
+
+
+ COVARIANCE MATRIX OF PARAMETERS
+=========================================================================================================================================      
+              1            2            3            4            5            6            7            8            9           10
+    1 :  -0.7081D-02
+    2 :  -0.3240D-02   0.1813D-01
+    3 :  -0.4416D-02   0.8932D-01   0.1550D+00
+    4 :  -0.2416D-03   0.4711D-02   0.8058D-02   0.1464D-02
+    5 :  -0.1999D-03   0.2653D-02   0.3682D-02   0.9179D-03   0.6935D-02
+    6 :  -0.9982D-03   0.1967D-01   0.3378D-01   0.2163D-03   0.1834D-02   0.6765D-02
+    7 :  -0.2664D-02   0.3496D-01   0.4810D-01   0.4855D-03   0.4129D-02   0.1517D-01   0.1834D+00
+    8 :  -0.7200D-03   0.7635D-02   0.8652D-02   0.1182D-03   0.1011D-02   0.3698D-02   0.4764D-01   0.1697D-01
+    9 :  -0.4238D-04   0.1190D-02   0.2287D-02   0.1591D-04   0.1282D-03   0.4359D-03   0.4440D-02   0.1784D-02   0.8481D-03
+   10 :  -0.1257D-04   0.2362D-03   0.3978D-03  -0.2172D-04   0.2206D-03   0.1315D-03   0.1812D-02   0.3854D-03   0.2048D-03   0.2541D-02
+
+
+ DETERMINISTIC RUN COMPLETED
+ BOOTSTRAP RUNS COMPLETED 

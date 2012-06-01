@@ -83,7 +83,7 @@ setMethod('plot', signature(x='FLsz',y="missing"),
     p.=ggplot(merge(getHat(x),as.data.frame(ln2z(x),drop=T)))+
                 geom_point( aes(year,data,group=iter))  +
                #expand_limits(y = 0) +
-                theme_flr(size=12.5)   +
+                theme_ms(size=12.5)   +
                 scale_y_continuous(name="Z") +
                 scale_x_continuous(name="Year") +
                 geom_line(aes(year,z,   group=bit+iter*10000),size=1.5) +
@@ -102,7 +102,7 @@ plotJK=  function(x,y,...){
     p.=ggplot(subset(dat,iter>1))+
               geom_point( aes(year,data,colour=factor(year)))  +
               #expand_limits(y = 0) +
-              theme_flr(size=12.5)   +
+              theme_ms(size=12.5)   +
               scale_y_continuous(name="Z") +
               scale_x_continuous(name="Year") +
               geom_line(aes(year,z,   group=iter+bit*100000,colour=factor(iter)),size=1.5) +

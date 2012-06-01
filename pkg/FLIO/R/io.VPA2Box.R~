@@ -5,10 +5,10 @@
 # Maintainer: Iago Mosqueira, JRC & Laurie Kell, ICCAT
 # $Id:  $
 
-readVpa2boxFn <- function(file,args=missing,m=NULL,minage=1,...) {
+readVpa2BoxFn <- function(file,args=missing,m=NULL,minage=1,...) {
  if(!missing(args))
     args <- c(args, list(...))
-print(1)
+
   # control file 
   dir  <- getDir(file)
   files <- paste(dir, .Platform$file.sep, vpa2BoxFiles(file), sep="")

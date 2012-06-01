@@ -6,7 +6,6 @@
 # $Id:  $
 
 setGeneric("assess", function(control, ...) standardGeneric("assess")) 
-
-setGeneric('aspic', function(object,...)   standardGeneric('aspic'))
+setGeneric('aspic',  function(object,...)   standardGeneric('aspic'))
 
 

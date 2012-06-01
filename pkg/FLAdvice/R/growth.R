@@ -234,6 +234,7 @@ seldnc <- function(params,data){ #x,a,b,c) {
   d[x>a] <- c
   return(exp(-(x-a)^2/d^2))}
 
+
 ##########################################################################################################
 ##########################################################################################################
 glst=list("dnormal"           =dnormal,
@@ -354,4 +355,15 @@ SS3SelParam<-function(param){
     beta[6]<-p6
 
     return(beta)}
+
+knife=function(param, data){
+   res=data
+   
+   res[data> c(param["break"])][]=param["M1"]
+   res[data<=c(param["break"])][]=param["M2"]
+
+   return(res)}
+
+
+
 

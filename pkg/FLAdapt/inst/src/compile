@@ -1,2 +1,6 @@
- gfortran -ffree-line-length-0 vpa-2box.f90
+cd /home/lkell/Desktop/Stuff/flr/pkg/FLAdapt/inst/src
+
+gfortran -ffree-line-length-0 vpa-2box.f90
+
+gfortran -ffree-line-length-0 pro-2box.f90
 

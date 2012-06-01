@@ -8,7 +8,7 @@
 setGeneric("readPro2box",  function(x,type,...)   standardGeneric("readPro2box"))
 setGeneric("readVpa2box",  function(x,type,...)   standardGeneric("readVpa2box"))
  
-setGeneric('fit',    function(object, ...)         standardGeneric('fit'))
+setGeneric('adapt',  function(object,cpues,...)    standardGeneric('adapt'))
 setGeneric('boot',   function(object, ...)         standardGeneric('boot'))
 setGeneric('pro2box',function(object, ctrl,...)    standardGeneric('pro2box'))
  
