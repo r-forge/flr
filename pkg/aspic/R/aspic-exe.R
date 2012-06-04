@@ -50,7 +50,7 @@ runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
         if (N>1){
           stock(object) =propagate(stock( object),N)
           params(object)=propagate(params(object),N)
-          object$ll     =rep(as.numeric(NA),N)
+          object@ll     =rep(as.numeric(NA),N)
           }
     
         stock(object)=propagate(FLQuant(NA,dimnames=dimnames(catch(object))),dims(object)$iter)
