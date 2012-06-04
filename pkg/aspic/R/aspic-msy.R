@@ -11,6 +11,7 @@ smry=function(x){
   maxyr = ac(dims(catch(x))$maxyear)
   r     = FLQuant(4*params(x)["msy"]/params(x)["k"])
   r.=r/r
+  k     = r.*FLQuant(params(x)["k"])
   msy   = r.*FLQuant(params(x)["msy"])
   bmsy  = r.*FLQuant(params(x)["k"]/2)
   fmsy  = r.*2*r
@@ -25,6 +26,7 @@ smry=function(x){
   
   ## bug
   #as.data.frame(FLQuants("r"=r,"msy"=msy,"bmsy"=bmsy,"fmsy"=fmsy,"b.bmsy"=b.bmsy,"f.fmsy"=f.fmsy),drop=T)
-  model.frame(FLQuants("r"=r,"msy"=msy,"bmsy"=bmsy,"fmsy"=fmsy,"b.bmsy"=b.bmsy,"f.fmsy"=f.fmsy,"sp"=sp,"sp.r"=sp.r),drop=T)
+  model.frame(FLQuants("r"=r,"k"=k,
+"msy"=msy,"bmsy"=bmsy,"fmsy"=fmsy,"b.bmsy"=b.bmsy,"f.fmsy"=f.fmsy,"sp"=sp,"sp.r"=sp.r),drop=T)
   }
 

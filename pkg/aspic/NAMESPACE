@@ -1,0 +1,15 @@
+useDynLib(aspic)
+importFrom("ggplotFL")
+#importFrom("foreach", "foreach")
+import("FLCore")
+exportClasses("aspic","aspics")
+exportMethods("aspic","aspics",
+              "readAspic",
+              "writeAspic",
+              "aspicProj",
+              "aspicRuns",
+              "aspicCpue",
+              "diags",
+              "fwd",
+              "writeAspic",
+              "fit")

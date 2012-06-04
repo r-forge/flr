@@ -74,6 +74,7 @@ setClass('aspic', representation(
     vcov          ='FLPar',
     hessian       ='FLPar',
     stopmess      ="character",
+    ll            ="numeric",
     rnd           ="numeric"),
   prototype(
     range         =unlist(list(minyear=as.numeric(NA),   maxyear=as.numeric(NA))),

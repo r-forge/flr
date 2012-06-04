@@ -50,6 +50,7 @@ runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
         if (N>1){
           stock(object) =propagate(stock( object),N)
           params(object)=propagate(params(object),N)
+          object$ll     =rep(as.numeric(NA),N)
           }
     
         stock(object)=propagate(FLQuant(NA,dimnames=dimnames(catch(object))),dims(object)$iter)
@@ -72,12 +73,14 @@ runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
      
         rdat=dget(paste(exeNm,"rdat",sep="."))
         
-        iter(stock(object),i)=as.FLQuant(transform(rdat$t.series[,c("year","B")],data=B)[,c("year","data")])
+        iter(stock(object),i)=as.FLQuant(transform(rdat$t.series[,c("year","B")],data=B)[c("year","data")])
         params(object)[c("msy","k","b0"),i]=rdat$estimates[c("MSY","K","B1.K")]
+        object@ll[i]=rdat$diagnostics$obj.fn.value
         }
 
-    if (dims(object)$iter==1)
-       object@diags=readAspic(paste(exeNm,"prn",sep="."))
+#     if (dims(object)$iter==1){
+#        rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
+#        if (is.data.frame(rtn)) object@diags=rtn}
   
     setwd(oldwd)
    

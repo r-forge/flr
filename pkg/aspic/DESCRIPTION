@@ -1,0 +1,13 @@
+Package: aspic
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2012-05-31
+Author: Laurence Kell
+Maintainer: Laurence Kell <laurieKell@gmail.com>
+Description: More about what it does (maybe more than one line)
+License: GPL-2
+LazyLoad: yes
+Depends: Rcpp (>= 0.9.10), FLCore, ggplotFL
+Collate: aspic-generics.R aspic-class.R aspic-accessors.R aspic-constructors.R aspic-io.R aspics.R aspic-plot.R aspic-fwd.R aspic-msy.R aspic-exe.R rcpp_hello_world.R 
+LinkingTo: Rcpp
