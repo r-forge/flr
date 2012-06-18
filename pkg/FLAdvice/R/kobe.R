@@ -17,7 +17,7 @@ kobeFn=function(object,xlim,ylim){
     
 setGeneric('kobe', function(object, ...)
     standardGeneric('kobe'))
-setMethod('kobe', signature(object='ggplot'),
+setMethod('kobe', signature(object='missing'),
   function(object,xlim=c(0,2),ylim=xlim){
     
       quads<- rbind(data.frame(x=c(-Inf,-Inf,Inf,Inf), y=c(-Inf,Inf,Inf,-Inf), fill=as.factor("yellow")),
@@ -85,6 +85,24 @@ setMethod('k2sm', signature(object="FLStock",brp="FLBRP"),
 
   
 ### Kobe Matrix ##################################################################################################
+#x=matrix(runif(20)*100,c(4,5))
+
+kobeShades=function(x,breaks=c(0,50,60,70,80,90,100),
+                      shade =c("\\{","\\grey50{","\\grey60{","\\grey70{","\\grey80{","\\grey90{")){
+    
+  #Kobe II strategy matrices to be prepared by the SCRS should highlight in a similar format as
+  #shown in Annex Table 2 a progression of probabilities over 50 % and in the range of 50-59 %, 60-
+  #69 %, 70-79 %, 80-89 % and ≥ 90 %.
+    
+  res=cut(x,breaks)
+  gry=data.frame(level=attributes(unique(res))$levels,shades)
+  res=merge(data.frame(x=as.integer(x),level=res),gry,all.x=TRUE)
+  
+  res=with(res,paste(shade,x,"}",sep=""))
+  
+  array(res,dim=dim(x),dimnames=dimnames(x))}
+  
+
 kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
                                 col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
                    contour=list(levels=c(.6,.7,1.0,.9),

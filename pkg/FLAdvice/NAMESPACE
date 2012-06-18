@@ -1,5 +1,5 @@
 useDynLib("FLAdvice")
-import("FLCore")
+import("FLCore","ggplotFL")
 exportClasses(
   "FLBRP",
   "FLBRPs")

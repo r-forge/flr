@@ -78,10 +78,11 @@ setMethod("plot", signature(x="FLBRPs", y="missing"),
 
      if (refpts){
       ref.=ldply(x, function(x) mdply(varBrp(),getBrpRefpts,   obj=x))
-      ref.=transform(ref.,pnl=factor(paste("Equilibrium",panel),levels=paste("Equilibrium",panelBrp())),.id=factor(.id))
-      ref.=subset(ref., pnl %in% paste("Equilibrium",panel))
+      ref.=transform(ref.,pnl=factor(paste("Equilibrium",pnl),levels=paste("Equilibrium",pnl)),.id=factor(.id))
+      #ref.=subset(ref., pnl %in% paste("Equilibrium",panel))
       if (!all(is.na(ref.$x) & is.na(ref.$y)))
-        p=p+geom_point(aes(x,y,group=iter:.id,colour=.id,shape=refpt),data=subset(ref.,x>=0 & y>=0 & !is.na(x) & !is.na(y)))}
+        p=p+geom_point(aes(x,y,group=iter:.id,colour=.id,shape=refpt),data=subset(ref.,(x>=0 & y>=0) & !(is.na(x) | is.na(y))))
+      }
 
      if (obs){
       obs.=ldply(x, function(x) mdply(varBrp(),getBrpObs,     obj=x))

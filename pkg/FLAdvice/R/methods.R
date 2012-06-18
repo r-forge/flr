@@ -396,7 +396,7 @@ function(object){
   aTilde=aHat*(1-surv)
   steep =aTilde/(4+aTilde)
  
-  age=as.numeric(dimnames(mat(br))$age[mat(br)==1][1])
+  age=as.numeric(dimnames(mat(object))$age[mat(object)==1][1])
 
   f <- function (r,age,aTilde,ps)   (exp(r)^age-ps*exp(r)^(age-1)-aTilde)^2
   

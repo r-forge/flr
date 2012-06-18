@@ -129,7 +129,7 @@ setClass("FLBRP",
   
 
 # FLBRPs {{{
-vFLBRPs <- setClass("FLBRPs", contains="FLComps",
+FLBRPs <- setClass("FLBRPs", contains="FLComps",
 	validity=function(object) {
     # All items are FLBRP
     if(!all(unlist(lapply(object, is, 'FLBRP'))))
@@ -138,6 +138,9 @@ vFLBRPs <- setClass("FLBRPs", contains="FLComps",
 	  return(TRUE)
   }
 )
+
+setGeneric('FLBRPs', function(object, ...)
+    standardGeneric('FLBRPs'))
 
 # constructor
 setMethod("FLBRPs", signature(object="FLBRP"), function(object, ...) {

@@ -47,11 +47,13 @@ noise. <- function(s,len=length(s),B=0,trun=NA){
 #blue <- noise(1000,B=-0.8)
 
 rnoise <- function(n, mean=0, sd=1, rho=0, what="rnorm"){
-    s    =do.call(what,list(n=n,mean=mean,sd=sd))
-    s[,1]=do.call(what,list(n=n,mean=mean[,1],sd=sd*(1-rho^2)))
+    #s    =FLQuant(do.call(what,list(n=n,mean=mean,sd=sd)))
+    #s[,1]=do.call(what,list(n=1,mean=mean,sd=sd*(1-rho^2)))
+    s    =do.call(what,list(n=n,mean=mean,sd=sd*(1-rho^2)))
+    s[1] =do.call(what,list(n=1,mean=mean,sd=sd))
     x=s 
     for(i in seq(dim(s)[2])[-1])
-      x[,i] <- rho * x[,i-1] + s[,i-1] * sqrt(1-rho^2)
+      x[i] <- rho * x[i-1] + s[i]
     
     return(x)}
     
