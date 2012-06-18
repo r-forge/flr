@@ -71,10 +71,8 @@ setClass('aspic', representation(
     
     params        ='FLPar',
     bounds        ='array',
-    vcov          ='FLPar',
-    hessian       ='FLPar',
     stopmess      ="character",
-    ll            ="numeric",
+    objFn         ="numeric",
     rnd           ="numeric"),
   prototype(
     range         =unlist(list(minyear=as.numeric(NA),   maxyear=as.numeric(NA))),
@@ -86,9 +84,9 @@ setClass('aspic', representation(
     catch         =FLQuant(),
     stock         =FLQuant(),
 
-    params        =FLPar(NA,dimnames=list(param=c("msy","k","b0"),iter=1)),
-    bounds        =array(NA,c(length(c(c("b0","k","msy"),paste("q",seq(1),sep=""))),5),dimnames=list(params=c(c("b0","k","msy"),paste("q",seq(1),sep="")),c("fit","min","start","max","lambda"))),
-    vcov          =FLPar(NA,dimnames=list(param=c("msy","k","b0"),param=c("msy","k","b0"),iter=1)),
-    hessian       =FLPar(NA,dimnames=list(param=c("msy","k","b0"),param=c("msy","k","b0"),iter=1)),
+    params        =FLPar(NA,dimnames=list(param=c("b0","msy","k"),iter=1)),
+    bounds        =array(NA,c(length(c(c("b0","msy","k"),paste("q",seq(1),sep=""))),5),dimnames=list(params=c(c("b0","msy","k"),paste("q",seq(1),sep="")),c("fit","min","start","max","lambda"))),
+    vcov          =FLPar(NA,dimnames=list(param=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),
+    hessian       =FLPar(NA,dimnames=list(param=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),
     stopmess      ="not ran"),
   validity=validAspic)

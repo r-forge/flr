@@ -15,6 +15,12 @@ setMethod('fit',    signature(object='aspic',cpue="FLIndices"),
 
 runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
        
+    if (is.na(catch(object))){
+      tmp=ddply(subset(ldply(cpue,function(x) as.data.frame(catch.n(x),drop=T)),!is.na(data)),.(year),function(x) sum(x$data))
+       object@catch=as.FLQuant(transform(tmp,data=V1)[,-2])
+       }
+
+     
     ##### set up temp dir with exe for data files
     # Linux
     if (R.version$os=="linux-gnu") {
@@ -47,10 +53,12 @@ runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
         
         N=max(c(aN,uN))
         
+        params(object)=FLPar(asp@bounds[,"start"])
+        
         if (N>1){
           stock(object) =propagate(stock( object),N)
           params(object)=propagate(params(object),N)
-          object@ll     =rep(as.numeric(NA),N)
+          object@objFn  =rep(as.numeric(NA),N)
           }
     
         stock(object)=propagate(FLQuant(NA,dimnames=dimnames(catch(object))),dims(object)$iter)
@@ -72,15 +80,18 @@ runExe=function(object, cpue, package="aspic", exeNm=package, dir=tempdir()){
         system(paste("./", exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
      
         rdat=dget(paste(exeNm,"rdat",sep="."))
-        
+        #rdat$estimates
+     
+        params(object)[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]
+        params(object)[4:dim(params(object))[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-12)]
+     
         iter(stock(object),i)=as.FLQuant(transform(rdat$t.series[,c("year","B")],data=B)[c("year","data")])
-        params(object)[c("msy","k","b0"),i]=rdat$estimates[c("MSY","K","B1.K")]
-        object@ll[i]=rdat$diagnostics$obj.fn.value
+        object@objFn[i]=rdat$diagnostics$obj.fn.value
         }
 
-#     if (dims(object)$iter==1){
-#        rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
-#        if (is.data.frame(rtn)) object@diags=rtn}
+     if (dims(object)$iter==1){
+        rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
+        if (is.data.frame(rtn)) object@diags=rtn}
   
     setwd(oldwd)
    

@@ -7,7 +7,7 @@ setMethod("aspicRuns",     signature(x="character",scen="data.frame"), function(
 setMethod("aspicProj",     signature(x="character",scen="vector"),     function(x,scen,stringsAsFactors=FALSE,...)       .aspicProj(x,scen,stringsAsFactors,...))
 setMethod("aspicProj",     signature(x="character",scen="data.frame"), function(x,scen,stringsAsFactors=FALSE,...)       .aspicProj(x,scen,stringsAsFactors,...))
 
-setMethod("aspicCpue",     signature(x="character"),                   function(x,...)            .readAspic(x,...))
+setMethod("aspicCpue",     signature(x="character"),                   function(x,...)            .aspicCpue(x,...))
 
 setMethod("writeAspic",    signature(x="aspic"),                       function(x,idx,what="FIT",niter=1,fl="aspic.inp",...)        .writeAspicInp(x,idx,what,niter,fl=fl,...))
 
@@ -139,8 +139,8 @@ aspicInp =function(x){
   #  [8] "7  ## Number of fisheries (data series)"                                                                                           
   n     =ctrl[[8]]  
   params=FLPar("b0"=NA,"k"=NA,"msy"=NA)
-  parNms=c(c("b0","k","msy"),paste("q",seq(n),sep=""))
-  res@bounds=array(NA,c(length(c(c("b0","k","msy"),paste("q",seq(n),sep=""))),5),dimnames=list(params=parNms,c("fit","min","start","max","lambda")))
+  parNms=c(c("b0","msy","k"),paste("q",seq(n),sep=""))
+  res@bounds=array(NA,c(length(c(c("b0","msy","k"),paste("q",seq(n),sep=""))),5),dimnames=list(params=parNms,c("fit","min","start","max","lambda")))
   
   # [10] "1.00000  ## B1/K (starting guess, usually 0 to 1)"                                                                                 
   res@bounds["b0", "start"]=ctrl[[10]][1]
@@ -244,7 +244,7 @@ aspicPrn =function(x){
     return(list(ts=prj,kobe=prjP))}
 
 
-aspicCpue=function(x){
+.aspicCpue=function(x){
                     
   uN=scan(x,sep="\n",what=character())[22]
   uN=substr(uN,1,regexpr("#",uN)[1]-1)  
@@ -371,35 +371,3 @@ aspicCpue=function(x){
 
         
     return()}
-
-
-writeAspicControl=function(aspic,cpues,ctrl,file="aspic.inp",boot=0){
-
-    cat(aspic@desc,comment[ 1],file=file,append=FALSE)
-    cat(aspic@name,comment[ 2],file=file,append=TRUE)
-    cat(model(object),conditioning(ctrl(object)),objFn(ctrl(object)),comment[ 3],file=file,append=TRUE)
-
-    cat(comment[ 4],                       file=file,append=TRUE)
-    cat(boot,                comment[ 5],  file=file,append=TRUE)
-    cat(search(ctrl(object)),comment[ 6],                     file=file,append=TRUE)
-    cat(ctrl@conv["simplex"],comment[ 7],         file=file,append=TRUE)
-    cat(ctrl@conv["restart"],ctrl@nRestart,comment[ 8],         file=file,append=TRUE)
-    cat(ctrl@conv["F"],      comment[ 9],         file=file,append=TRUE)
-    cat(ctrl(aspC)@wt,comment[10],         file=file,append=TRUE)
-    cat(1,comment[11],         file=file,append=TRUE)
-    cat(1,comment[12],         file=file,append=TRUE)
-    cat(1,comment[13],         file=file,append=TRUE)
-    cat(1,comment[14],         file=file,append=TRUE)
-    cat(1,comment[15],         file=file,append=TRUE)
-    cat(1,comment[16],         file=file,append=TRUE)
-    cat(1,comment[17],         file=file,append=TRUE)
-    
-    cat(ctrl@bounds[,"fit"],              comment[18],         file=file,append=TRUE)
-    cat(ctrl@bounds["msy",c("min","max")],comment[19],         file=file,append=TRUE)
-    cat(ctrl@bounds["msy",c("min","max")],comment[20],         file=file,append=TRUE)
-    cat(aspic@rnd,                        comment[21],         file=file,append=TRUE)
-    }
-
- 
-
-  

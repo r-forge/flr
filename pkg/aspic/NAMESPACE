@@ -12,4 +12,6 @@ exportMethods("aspic","aspics",
               "diags",
               "fwd",
               "writeAspic",
-              "fit")
+              "fit",
+              "loglAR1")
+export("smry")
