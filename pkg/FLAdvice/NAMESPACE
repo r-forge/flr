@@ -17,6 +17,7 @@ export(
   "kobeM",
   "kobeL",
   "kobeS",
+  "kobeShade",
   "OEMStock",
   "OEMSurvey",
   "OEMCpue",

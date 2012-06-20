@@ -88,22 +88,33 @@ setMethod('k2sm', signature(object="FLStock",brp="FLBRP"),
 ### Kobe Matrix ##################################################################################################
 #x=matrix(runif(20)*100,c(4,5))
 
-kobeShades=function(x,breaks=c(0,50,60,70,80,90,100),
-                      shade =c("\\{","\\grey50{","\\grey60{","\\grey70{","\\grey80{","\\grey90{")){
+
+setGeneric('kobeShade', function(object,...) standardGeneric('kobeShade'))
+setMethod('kobeShade', signature(object='numeric'),
+          function(object,breaks=c(0,50,60,70,80,90,100),
+                     shades=c("\\{","\\grey50{","\\gey60{","\\grey70{","\\grey80{","\\grey90{"),
+                     percent=100,...){
     
   #Kobe II strategy matrices to be prepared by the SCRS should highlight in a similar format as
   #shown in Annex Table 2 a progression of probabilities over 50 % and in the range of 50-59 %, 60-
   #69 %, 70-79 %, 80-89 % and ≥ 90 %.
-    
-  res=cut(x,breaks)
+  
+  object=object*100          
+  res=cut(object,breaks)
   gry=data.frame(level=attributes(unique(res))$levels,shades)
-  res=merge(data.frame(x=as.integer(x),level=res),gry,all.x=TRUE)
+  res=merge(data.frame(object=as.integer(object),level=res),gry,all.x=TRUE)
   
-  res=with(res,paste(shade,x,"}",sep=""))
+  res=with(res,paste(shades,object,"}",sep=""))
   
-  array(res,dim=dim(x),dimnames=dimnames(x))}
-  
+  return(res)})
 
+setMethod('kobeShade', signature(object='data.frame'),
+          function(object,breaks =c(0,50,60,70,80,90,100),
+                     shades =c("\\{","\\grey50{","\\gey60{","\\grey70{","\\grey80{","\\grey90{"),
+                     percent=100,...){
+
+     apply(object,2,kobeShade,breaks=breaks,shades=shades,percent=percent)})
+          
 kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
                                 col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
                    contour=list(levels=c(.6,.7,1.0,.9),
