@@ -53,8 +53,7 @@ setMethod('setSR', signature(sr='list'),
     resYrs<-yrs[yrs %in% dimnames(sr.residuals)$year]
 
     if(!is(sr.residuals,"NULL") & !any(dimnames(sr.residuals)$year %in% yrs[1:(length(yrs)-1)])) warning("Year range of residuals is not within yrs range")
-
-    residuals[,resYrs]<-sr.residuals[,resYrs,,,,dimnames(residuals)$iter]
+    residuals[,resYrs]<-iter(sr.residuals[,resYrs], dimnames(residuals)$iter)
 
 #****** Check and force iterations **********
     # Iters of stock numbers and residuals should be the same or one of them should be 1
