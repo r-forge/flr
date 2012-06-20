@@ -1,5 +1,5 @@
 
-setMethod('aspic', signature(object='FLQuant'),
+setMethod('aspic', signature(object='FLQuant',idx="missing"),
   function(object,...)
     {
     args <- list(...)
@@ -18,7 +18,7 @@ setMethod('aspic', signature(object='FLQuant'),
 
     return(res)})
 
-setMethod('aspic', signature(object='missing'),
+setMethod('aspic', signature(object='missing',idx="missing"),
   function(...)
     {
     args <- list(...)
@@ -34,7 +34,7 @@ setMethod('aspic', signature(object='missing'),
     return(aspic(object, ...))
     })
 
-setMethod('aspic', signature(object='character'),
+setMethod('aspic', signature(object='character',idx="missing"),
   function(object,...){
     
     if (!file.exists(object)) stop(paste("file", object, "does not exist"))
@@ -83,4 +83,40 @@ setMethod('aspic', signature(object='character'),
  			 slot(res, i) <- args[[i]]
 
     return(res)})
+
+setMethod('aspic', signature(object='FLQuant',idx="FLQuants"),
+  function(object,idx,r=0.25){
+  
+  res=aspic(catch=object)
+  nms=dimnames(res@params)
+  nms$param=c(nms$param,paste("q",seq(length(idx)),sep=""))
+  
+  res@params=FLPar(NA,dimnames=nms)
+  
+  nms=dimnames(res@bounds)
+  nms$params=dimnames(res@params)[[1]]
+  nms$params=nms$params
+  
+  res@bounds=as.matrix(array(as.numeric(NA),dim=laply(nms,length),dimnames=nms))
+  
+  res@bounds["b0", "start"]=1.0
+  res@bounds["msy","start"]=mean(catch,na.rm=T)
+  res@bounds["k",  "start"]=res@bounds["msy","start"]*4.0/r
+  
+  res@bounds[-(1:3),"start"]=laply(idx,function(x,catch) mean(x/catch*4/r,na.rm=T),catch=catch(res))
+
+  res@bounds[,"min"] = res@bounds[,"start"]*.01
+  res@bounds[,"max"] = res@bounds[,"start"]*100.0
+  res@bounds[,"fit"]    =1
+  res@bounds[,"lambda"] =1
+  
+  res@bounds["b0","fit"]   =0
+  res@bounds[1:3, "lambda"]=0
+  
+  res@rnd=2062012
+ 
+  return(res)})
+
+  
+
 

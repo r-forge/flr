@@ -5,7 +5,7 @@
 # Maintainer: Iago Mosqueira, JRC
 # $Id:  $
 
-setGeneric('aspic',        function(object,...) standardGeneric('aspic'))
+setGeneric('aspic',        function(object,idx,...) standardGeneric('aspic'))
 
 setGeneric("readAspic",    function(x,...)      standardGeneric("readAspic"))
 
