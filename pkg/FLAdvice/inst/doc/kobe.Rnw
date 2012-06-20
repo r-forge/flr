@@ -1,0 +1,44 @@
+% kobe.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+
+% $Id: $
+
+%\VignetteIndexEntry{kobe}
+% Meta information - fill between {} and do not remove %
+% \VignetteIndexEntry{An R Package for ...}
+% \VignetteDepends{foo, bar, ...}
+% \VignetteKeywords{kwd1, kwd2}
+% \VignettePackage{...}
+
+\documentclass[a4paper, 11pt, oldtoc]{artikel1}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+
+\begin{document}
+
+%------ Frontmatter ------
+\title{The FLBRP package for calculating  reference points.}
+\author{Laurie Kell\footnote{ICCAT}}
+\date{June 2012}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+\begin{itemize}
+\item nnn
+\end{itemize}
+
+\section{Example}
+
+This example session intends to demonstrate the main features of the \texttt{FLBRP} package, and the \texttt{FLBRP} class and its methods. First of all, the package needs to be loaded
+
+<<results=hide, echo=TRUE>>=
+library(FLAdvice)
+@
+
+\section*{References}
+
+\end{document}
