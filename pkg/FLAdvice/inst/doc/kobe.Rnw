@@ -54,6 +54,12 @@ First the package and example data set should be loaded
 library(FLAdvice)
 data(kobe.ts)
 head(kobe.ts)
+
+plot(1)
+@
+
+<<echo=TRUE>>=
+print(plot(1:20))
 @
 
 The data are plotted using the \texttt{ggplot2} package, e.g. box plots of time series SSB relative to BMSY by year for a TAC of 1000. 
@@ -176,10 +182,10 @@ print(kPlot, vp=vplayout(2:5,1:4))                     # the main x/y plot will 
 
 Fancy stuff three
 <<results=hide, echo=FALSE>>=
-library(ggplot2);
-library(grid);
+library(ggplot2)
+library(grid)
 
-library(emdbook)
+#library(emdbook)
 
 # First density plot
 k1=kobe()
@@ -189,12 +195,12 @@ df=subset(kobe.ts,year==2010 & TAC==0)
 k2=k1+geom_point(aes(x,y,alpha=freq/max(freq)),data=calcFreq(df$ssb,df$harvest,x.n=7),size=1.2)
 
 
-k3=k2 + stat_contour(aes(x = x, y = y, z = z),data=calcDensity(df$ssb,df$harvest,x.n=50), breaks=c(1,5),col="cyan")
+#k3=k2 + stat_contour(aes(x = x, y = y, z = z),data=calcDensity(df$ssb,df$harvest,x.n=50), breaks=c(1,5),col="cyan")
 
 
-k4=k2 + geom_path(aes(x,y,group=level),colour="blue",data=calcProb(df$ssb,df$harvest,prob=c(0.6,0.9))) + 
-     theme_complete_bw() + 
-     opts(legend.position = c(1.2,1.2))
+#k4=k2 + geom_path(aes(x,y,group=level),colour="blue",data=calcProb(df$ssb,df$harvest,prob=c(0.6,0.9))) + 
+#     theme_complete_bw() + 
+#     opts(legend.position = c(1.2,1.2))
 @
 
 \section*{Exes}
