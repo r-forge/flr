@@ -161,4 +161,5 @@ exportMethods(
   "leslie",
   "ep",
   "myers",
-  "readSS3")
+  "readSS3",
+  "kobeShade")
