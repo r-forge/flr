@@ -114,6 +114,12 @@ setMethod('kobeShade', signature(object='data.frame'),
                      percent=100,...){
 
      apply(object,2,kobeShade,breaks=breaks,shades=shades,percent=percent)})
+setMethod('kobeShade', signature(object='matrix'),
+          function(object,breaks =c(-0.1,50,60,70,80,90,100),
+                     shades =c("\\{","\\grey50{","\\gey60{","\\grey70{","\\grey80{","\\grey90{"),
+                     percent=100,...){
+
+     apply(object,2,kobeShade,breaks=breaks,shades=shades,percent=percent)})
           
 kobeM<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
                                 col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
