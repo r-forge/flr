@@ -91,7 +91,7 @@ setMethod('k2sm', signature(object="FLStock",brp="FLBRP"),
 
 setGeneric('kobeShade', function(object,...) standardGeneric('kobeShade'))
 setMethod('kobeShade', signature(object='numeric'),
-          function(object,breaks=c(0,50,60,70,80,90,100),
+          function(object,breaks=c(-0.1,50,60,70,80,90,100),
                      shades=c("\\{","\\grey50{","\\gey60{","\\grey70{","\\grey80{","\\grey90{"),
                      percent=100,...){
     
@@ -109,7 +109,7 @@ setMethod('kobeShade', signature(object='numeric'),
   return(res)})
 
 setMethod('kobeShade', signature(object='data.frame'),
-          function(object,breaks =c(0,50,60,70,80,90,100),
+          function(object,breaks =c(-0.1,50,60,70,80,90,100),
                      shades =c("\\{","\\grey50{","\\gey60{","\\grey70{","\\grey80{","\\grey90{"),
                      percent=100,...){
 

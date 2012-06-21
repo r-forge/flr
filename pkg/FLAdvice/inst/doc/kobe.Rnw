@@ -19,7 +19,7 @@
 \begin{document}
 
 %------ Frontmatter ------
-\title{The FLBRP package for calculating  reference points.}
+\title{Kobe plotting and processing.}
 \author{Laurie Kell\footnote{ICCAT}}
 \date{June 2012}
 \maketitle
@@ -27,17 +27,209 @@
 
 \section{Introduction}
 
-\begin{itemize}
-\item nnn
-\end{itemize}
+
+Management advice by the tuna Regional Fisheries Management Organisations (tRFMOs) is presented in the form of a decision table known as the Kobe Strategy Matrix or K2SM. This 
+shows the probabilities of achieving a management objective for different options (e.g. catch or effort levels) over various time frames. The main management objective of ICCAT is 
+to maintain the populations of tuna and tuna-like fishes at levels which 
+will permit the maximum sustainable catch. This is interpreted as using maximum sustainable yield 
+(MSY) as a target. Scientific advice within ICCAT is therefore based on MSY-based reference points generally derived either from a biomass dynamic 
+stock assessment model or a yield per recruit analysis combined with a stock recruitment relationship.
+
+
+Advice given by the Scientific Committe of ICCAT in the form of the K2SM, has up until now been for recovery plans, where the stock is currently overfished and overfishing is occurring,
+ and the objective is to recover the stock to a level that will support MSY in the long term. 
+Advice for stocks that are not currently over exploited has historically been to not allow fishing capacity to increase above the current level.
+
+
+
 
 \section{Example}
 
-This example session intends to demonstrate the main features of the \texttt{FLBRP} package, and the \texttt{FLBRP} class and its methods. First of all, the package needs to be loaded
+The \texttt{FLAdvice} package contains methods and functions for providing advice based upon the Kobe Scientific Advice Framework.
+There is an example data set \texttt{kobe.ts}, which contains time series of SSB relative to BMSY and F relative to FMSY for both 
+an historical time series and projections over a range of total allowable catches (TACs). 
 
-<<results=hide, echo=TRUE>>=
+First the package and example data set should be loaded
+<<echo=TRUE>>=
 library(FLAdvice)
+data(kobe.ts)
+head(kobe.ts)
 @
+
+The data are plotted using the \texttt{ggplot2} package, e.g. box plots of time series SSB relative to BMSY by year for a TAC of 1000. 
+<<echo=TRUE>>=
+ggplot(subset(kobe.ts,TAC==1000)) + 
+  geom_boxplot(aes(factor(Year),ssb))
+@
+
+
+Projections were made for a range of TACs and so plotting each projected time series by TAC allows a comparison to be made.
+<<results=hide, echo=TRUE>>=
+ggplot(subset(kobe.ts)) + 
+  geom_boxplot(aes(factor(Year),ssb)) +
+  facet_wrap(~TAC)
+@
+
+Plotting all the trajectories on a single plot allows comparisons to be made if the percentiles are calculated and Y=1 line is added, e.g.
+<<results=hide, echo=TRUE>>=
+## calculate the precentiles 
+ssb.ts=ddply(kobe.ts, .(TAC,Year), function(x) quantile(x$ssb))
+
+names(ssb.ts)[-(1:2)]=paste("P",seq(0,100,25),sep="")
+ggplot(ssb.ts)+geom_line(aes(Year,P50,colour=TAC,group=TAC))+
+  geom_hline(aes(yintercept=1))
+@
+
+The Kobe phase plot plots SSB or biomass relative to BMSY against F relative to FMSY. In this example we plot stock asessment estimates, i.e.
+the medians for all years and the replicates for the most recent year. The latter provide an estimate of uncertainty and may be derived from
+Monte Carlo simulation.  
+<<results=hide, echo=TRUE>>=
+phase.ts=ddply(kobe.ts, .(TAC,Year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
+head(phase.ts)
+
+kobe(subset(phase.ts,Year<=2010))+geom_path(aes(ssb,harvest,colour=TAC,group=TAC))+
+  geom_point(aes(ssb,harvest), data=subset(kobe.ts,Year==2010 & TAC==0))
+@
+
+The uncertainty in the most recent year can be summarised in a variety of ways e.g. as
+<<results=hide, echo=TRUE>>=
+kobe(subset(phase.ts,Year>=2010))+geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
+@
+
+The Kobe II Strategy Matrix (K2SM) is
+<<results=hide, echo=TRUE>>=
+kobe.ts=data.frame(kobe.ts, kobeP(kobe.ts$ssb,kobe.ts$harvest))
+head(kobe.ts)
+res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","p")])
+@
+
+It returns the actual matrix invisibly (i.e. you only see it if you save it to an object) for tabulation. It can also be
+converted to a latex table
+<<echo=TRUE>>=
+kobeShade(res)
+@
+
+Can be produced for F 
+<<results=hide, echo=TRUE>>=
+res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","b")])
+@
+
+and SSB or biomass
+<<results=hide, echo=TRUE>>=
+res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","f")])
+@
+
+Pie charts can also be produced
+<<results=hide, echo=FALSE>>=
+tmp=transform(subset(kb,year==2010),red=collapsed,green=p,yellow=1-p-collapsed)
+tmp=ddply(tmp,.(run),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
+tmp=melt(tmp)
+
+ggplot(data=tmp, 
+         aes(x=factor(1),
+         y    =value,
+         fill = factor(variable,
+         ))) + 
+ geom_bar(width = 1) + 
+ coord_polar(theta="y") +
+ labs(fill='Kobe Quadrant') +
+ xlab('') +
+ ylab('') +
+ scale_fill_manual(values=c("red","green","yellow"))+facet_wrap(~run)
+@
+
+
+Fancy stuff too
+<<results=hide, echo=FALSE>>=
+## kobe plot
+kPlot=kobe(kbln) + geom_point(aes(stock,harvest,alpha=freq),colour="blue",size=1,data=transform(kb2010,freq=0.5+0.5*(freq/max(freq)))) + 
+                   geom_path( aes(stock,harvest),colour="blue") + 
+                   scale_y_continuous(limits=c(0,4))         +
+                   opts(legend.position = "none")
+
+# First density plot
+p1<-ggplot(kb2010) + 
+    #scale_fill_manual(values=cbnbPalette) + 
+    geom_density(aes(x = stock, y =  ..count.., col  =run), fill="#CCCCCCCC", position = "stack") + 
+    geom_density(aes(x = stock, y = -..count.., fill =run, alpha=0.4)) + 
+    theme_invisible() +
+    opts(legend.position = "none") + 
+    scale_x_continuous(limits=c(0,2.1)) +
+    geom_vline(xintercept=1,col="red")
+
+# second density plot, oriented vertically (hence the 'coord_flip()' at the end
+p2<-ggplot(kb2010) + 
+    #scale_fill_manual(values=cbnbPalette) + 
+    geom_density(aes(x = harvest, y =  ..count.., col  =run), fill="#CCCCCCCC", position = "stack") + 
+    geom_density(aes(x = harvest, y = -..count.., fill = run),alpha=0.4) + 
+    theme_invisible() + 
+    opts(legend.position = "none") +coord_flip()+scale_x_continuous(limits=c(0,4.1))+
+    geom_vline(xintercept=1,col="red")
+
+vplayout <- function(x, y)
+viewport(layout.pos.row = x, layout.pos.col = y)
+p2=p2+opts(legend.position = c(0.4,1.25)) + opts(legend.text = theme_text(colour = "black")) 
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(5, 5)))  # 5 by 5 grid
+print(p1,    vp=vplayout(1,1:4))                       # the first density plot will occupy the top of the grid
+print(p2,    vp=vplayout(2:5,5))                       # with the second density plot occupying a narrow vertical strip at the right
+print(kPlot, vp=vplayout(2:5,1:4))                     # the main x/y plot will instead spread across most of the grid
+@
+
+
+
+<<results=hide, echo=FALSE>>=
+library(ggplot2);
+library(grid);
+
+library(FLAdvice)
+library(ggplot2)
+library(MASS)
+
+k1=kobe()
+
+
+# First density plot
+df=data.frame(z=factor(1),freq(yft$ssb,yft$harvest,x.n=7))[,c("x","y","z")]
+p1<-ggplot(df) + 
+   #scale_fill_manual(values=cbnbPalette)+ # using the colorblind-friendly palette
+   geom_density(aes(x = x, y =  ..count..), fill="#CCCCCCCC", position = "stack") + # overall density plot - plotted on the negative
+   geom_density(aes(x = x, y =-..count.., fill = z, alpha=0.4))+ # so as to be specular to the densities by zecies
+   theme_invisible() + # oh yeah, I don't want any other graphical element to crowd this plot - the x axys is the same as in the main plot
+   opts(legend.position = "none")
+
+
+# second density plot, oriented vertically (hence the 'coord_flip()' at the end
+p2<-ggplot(df) + 
+    #scale_fill_manual(values=cbnbPalette) + 
+    geom_density(aes(x = y, y =  ..count.., col=z), fill="#CCCCCCCC", position = "stack") + 
+    geom_density(aes(x = y, y = -..count.., fill = z, alpha=0.4)) + 
+    theme_invisible() + 
+    opts(legend.position = "none") +coord_flip()
+
+
+k2=k1+geom_point(aes(x,y,alpha=freq/max(freq)),data=freq(yft$ssb,yft$harvest,x.n=7),size=1.2)
+
+
+k3=k2 + stat_contour(aes(x = x, y = y, z = z),data=calcDensity(yft$ssb,yft$harvest,x.n=50), breaks=c(1,5),col="cyan")
+
+
+k4=k2 + geom_path(aes(x,y,group=level),colour="blue",data=prob(yft$ssb,yft$harvest,prob=c(0.6,0.9))) + 
+     theme_complete_bw() + 
+     opts(legend.position = c(1.2,1.2))
+@
+
+\section*{Exes}
+\subsection*{ASPIC}
+
+\subsection*{VPA2Box}
+
+\subsection*{SS3}
+
+\subsection*{Multifan-CL}
+
+\section*{FLR}
 
 \section*{References}
 
