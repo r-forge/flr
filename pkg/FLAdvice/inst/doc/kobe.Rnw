@@ -59,24 +59,24 @@ head(kobe.ts)
 The data are plotted using the \texttt{ggplot2} package, e.g. box plots of time series SSB relative to BMSY by year for a TAC of 1000. 
 <<echo=TRUE>>=
 ggplot(subset(kobe.ts,TAC==1000)) + 
-  geom_boxplot(aes(factor(Year),ssb))
+  geom_boxplot(aes(factor(year),ssb))
 @
 
 
 Projections were made for a range of TACs and so plotting each projected time series by TAC allows a comparison to be made.
 <<results=hide, echo=TRUE>>=
 ggplot(subset(kobe.ts)) + 
-  geom_boxplot(aes(factor(Year),ssb)) +
+  geom_boxplot(aes(factor(year),ssb)) +
   facet_wrap(~TAC)
 @
 
 Plotting all the trajectories on a single plot allows comparisons to be made if the percentiles are calculated and Y=1 line is added, e.g.
 <<results=hide, echo=TRUE>>=
 ## calculate the precentiles 
-ssb.ts=ddply(kobe.ts, .(TAC,Year), function(x) quantile(x$ssb))
+ssb.ts=ddply(kobe.ts, .(TAC,year), function(x) quantile(x$ssb))
 
 names(ssb.ts)[-(1:2)]=paste("P",seq(0,100,25),sep="")
-ggplot(ssb.ts)+geom_line(aes(Year,P50,colour=TAC,group=TAC))+
+ggplot(ssb.ts)+geom_line(aes(year,P50,colour=TAC,group=TAC))+
   geom_hline(aes(yintercept=1))
 @
 
@@ -84,23 +84,24 @@ The Kobe phase plot plots SSB or biomass relative to BMSY against F relative to 
 the medians for all years and the replicates for the most recent year. The latter provide an estimate of uncertainty and may be derived from
 Monte Carlo simulation.  
 <<results=hide, echo=TRUE>>=
-phase.ts=ddply(kobe.ts, .(TAC,Year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
-head(phase.ts)
+smry.ts=ddply(kobe.ts, .(TAC,year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
+head(smry.ts)
 
-kobe(subset(phase.ts,Year<=2010))+geom_path(aes(ssb,harvest,colour=TAC,group=TAC))+
-  geom_point(aes(ssb,harvest), data=subset(kobe.ts,Year==2010 & TAC==0))
+kobe(subset(smry.ts,year<=2010))+geom_path(aes(ssb,harvest,colour=TAC,group=TAC))+
+  geom_point(aes(ssb,harvest), data=subset(kobe.ts,year==2010 & TAC==0))
 @
 
 The uncertainty in the most recent year can be summarised in a variety of ways e.g. as
 <<results=hide, echo=TRUE>>=
-kobe(subset(phase.ts,Year>=2010))+geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
+kobe(subset(smry.ts,year>=2010))+geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
 @
 
 The Kobe II Strategy Matrix (K2SM) is
 <<results=hide, echo=TRUE>>=
 kobe.ts=data.frame(kobe.ts, kobeP(kobe.ts$ssb,kobe.ts$harvest))
+
 head(kobe.ts)
-res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","p")])
+res=kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","p")])
 @
 
 It returns the actual matrix invisibly (i.e. you only see it if you save it to an object) for tabulation. It can also be
@@ -111,59 +112,54 @@ kobeShade(res)
 
 Can be produced for F 
 <<results=hide, echo=TRUE>>=
-res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","b")])
+res=kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","b")])
 @
 
 and SSB or biomass
 <<results=hide, echo=TRUE>>=
-res=kobeM(subset(kobe.ts,Year>=2010)[,c("Year","TAC","f")])
+res=kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","f")])
 @
 
-Pie charts can also be produced
+Pie charts can also be produced, for example if a quota of 4000 is chosen then the proportion of time spent in
+the different quadrants can be shown.
 <<results=hide, echo=FALSE>>=
-tmp=transform(subset(kb,year==2010),red=collapsed,green=p,yellow=1-p-collapsed)
-tmp=ddply(tmp,.(run),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
-tmp=melt(tmp)
+dat=transform(subset(kobe.ts,year>2010),red=collapsed,green=p,yellow=1-p-collapsed)
+dat=ddply(dat,.(TAC,year),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
+dat=melt(dat,id.vars=c("year","TAC"))
 
-ggplot(data=tmp, 
-         aes(x=factor(1),
-         y    =value,
-         fill = factor(variable,
-         ))) + 
- geom_bar(width = 1) + 
- coord_polar(theta="y") +
- labs(fill='Kobe Quadrant') +
- xlab('') +
- ylab('') +
- scale_fill_manual(values=c("red","green","yellow"))+facet_wrap(~run)
+pie = ggplot(subset(dat,year>=2011 & year<=2020 & TAC==4000), aes(x ="", y=value, fill = factor(variable))) + 
+        geom_bar(width = 1) + 
+        coord_polar(theta = "y") +
+        labs(fill='Kobe Quadrant') + xlab('') + ylab('')       +
+        scale_fill_manual(values=c("red","green","yellow"))    + 
+        facet_grid(TAC~year) 
 @
 
 
 Fancy stuff too
 <<results=hide, echo=FALSE>>=
 ## kobe plot
-kPlot=kobe(kbln) + geom_point(aes(stock,harvest,alpha=freq),colour="blue",size=1,data=transform(kb2010,freq=0.5+0.5*(freq/max(freq)))) + 
-                   geom_path( aes(stock,harvest),colour="blue") + 
-                   scale_y_continuous(limits=c(0,4))         +
-                   opts(legend.position = "none")
-
+kPlot=kobe() + 
+         geom_point(aes(ssb,harvest),colour="blue",size=1,data=subset(kobe.ts,year==2010)) + 
+         geom_path( aes(ssb,harvest),colour="blue",data=subset(smry.ts,year<=2010))  
+        
 # First density plot
-p1<-ggplot(kb2010) + 
+p1<-ggplot(subset(kobe.ts,year==2010)) + 
     #scale_fill_manual(values=cbnbPalette) + 
-    geom_density(aes(x = stock, y =  ..count.., col  =run), fill="#CCCCCCCC", position = "stack") + 
-    geom_density(aes(x = stock, y = -..count.., fill =run, alpha=0.4)) + 
+    geom_density(aes(x = ssb, y =  ..count..), fill="#CCCCCCCC", position = "stack") + 
+    geom_density(aes(x = ssb, y = -..count.., alpha=0.4)) + 
     theme_invisible() +
     opts(legend.position = "none") + 
-    scale_x_continuous(limits=c(0,2.1)) +
+    scale_x_continuous(limits=c(0,2)) +
     geom_vline(xintercept=1,col="red")
 
 # second density plot, oriented vertically (hence the 'coord_flip()' at the end
-p2<-ggplot(kb2010) + 
+p2<-ggplot(subset(kobe.ts,year==2010)) + 
     #scale_fill_manual(values=cbnbPalette) + 
-    geom_density(aes(x = harvest, y =  ..count.., col  =run), fill="#CCCCCCCC", position = "stack") + 
-    geom_density(aes(x = harvest, y = -..count.., fill = run),alpha=0.4) + 
+    geom_density(aes(x = harvest, y =  ..count..), fill="#CCCCCCCC", position = "stack") + 
+    geom_density(aes(x = harvest, y = -..count..),alpha=0.4) + 
     theme_invisible() + 
-    opts(legend.position = "none") +coord_flip()+scale_x_continuous(limits=c(0,4.1))+
+    opts(legend.position = "none") +coord_flip()+scale_x_continuous(limits=c(0,2))+
     geom_vline(xintercept=1,col="red")
 
 vplayout <- function(x, y)
@@ -178,44 +174,25 @@ print(kPlot, vp=vplayout(2:5,1:4))                     # the main x/y plot will 
 @
 
 
-
+Fancy stuff three
 <<results=hide, echo=FALSE>>=
 library(ggplot2);
 library(grid);
 
-library(FLAdvice)
-library(ggplot2)
-library(MASS)
-
-k1=kobe()
-
+library(emdbook)
 
 # First density plot
-df=data.frame(z=factor(1),freq(yft$ssb,yft$harvest,x.n=7))[,c("x","y","z")]
-p1<-ggplot(df) + 
-   #scale_fill_manual(values=cbnbPalette)+ # using the colorblind-friendly palette
-   geom_density(aes(x = x, y =  ..count..), fill="#CCCCCCCC", position = "stack") + # overall density plot - plotted on the negative
-   geom_density(aes(x = x, y =-..count.., fill = z, alpha=0.4))+ # so as to be specular to the densities by zecies
-   theme_invisible() + # oh yeah, I don't want any other graphical element to crowd this plot - the x axys is the same as in the main plot
-   opts(legend.position = "none")
+k1=kobe()
+df=subset(kobe.ts,year==2010 & TAC==0)
 
 
-# second density plot, oriented vertically (hence the 'coord_flip()' at the end
-p2<-ggplot(df) + 
-    #scale_fill_manual(values=cbnbPalette) + 
-    geom_density(aes(x = y, y =  ..count.., col=z), fill="#CCCCCCCC", position = "stack") + 
-    geom_density(aes(x = y, y = -..count.., fill = z, alpha=0.4)) + 
-    theme_invisible() + 
-    opts(legend.position = "none") +coord_flip()
+k2=k1+geom_point(aes(x,y,alpha=freq/max(freq)),data=calcFreq(df$ssb,df$harvest,x.n=7),size=1.2)
 
 
-k2=k1+geom_point(aes(x,y,alpha=freq/max(freq)),data=freq(yft$ssb,yft$harvest,x.n=7),size=1.2)
+k3=k2 + stat_contour(aes(x = x, y = y, z = z),data=calcDensity(df$ssb,df$harvest,x.n=50), breaks=c(1,5),col="cyan")
 
 
-k3=k2 + stat_contour(aes(x = x, y = y, z = z),data=calcDensity(yft$ssb,yft$harvest,x.n=50), breaks=c(1,5),col="cyan")
-
-
-k4=k2 + geom_path(aes(x,y,group=level),colour="blue",data=prob(yft$ssb,yft$harvest,prob=c(0.6,0.9))) + 
+k4=k2 + geom_path(aes(x,y,group=level),colour="blue",data=calcProb(df$ssb,df$harvest,prob=c(0.6,0.9))) + 
      theme_complete_bw() + 
      opts(legend.position = c(1.2,1.2))
 @
