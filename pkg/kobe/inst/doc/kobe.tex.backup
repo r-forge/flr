@@ -1,0 +1,349 @@
+% kobe.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+%\VignetteIndexEntry{kobe}
+% Meta information - fill between {} and do not remove %
+% \VignetteIndexEntry{An R Package for ...}
+% \VignetteDepends{foo, bar, ...}
+% \VignetteKeywords{kwd1, kwd2}
+% \VignettePackage{...}
+
+\documentclass[a4paper, 11pt, oldtoc]{artikel1}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+\usepackage{enumerate}
+
+
+\begin{document}
+
+%------ Frontmatter ------
+\title{Kobe plotting and processing.}
+\author{Laurie Kell\footnote{ICCAT}}
+\date{June 2012}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+The Scientific Advice provided within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on the recommendations of Kobe II. 
+In this document we show how to provide stock assessment advice consistent with these recommendations.
+
+The advice requires three main items 
+
+\begin{itemize}
+ \item Kobe matrices
+ \item Kobe matrices
+ \item Kobe matrices
+\end{itemize}
+
+
+
+A Kobe plot chart showing:
+
+
+A pie chart summarizing the stock status showing the proportion of model outputs that are within the
+green quadrant of the Kobe plot chart (not overfished, no overfishing), the yellow quadrant (overfished
+or overfishing), and the red quadrant (overfished and overfishing), in accordance with the format set out
+in Annex Figure 2.
+
+
+
+\section{Coding}
+
+The data and code used in this document is in the package {\tt kobe} , which first need to be loaded e.g.
+
+Loading the libraries and data
+\begin{Schunk}
+\begin{Sinput}
+> library(FLAdvice)
+> data(kobe.ts)
+> head(kobe.ts)
+\end{Sinput}
+\begin{Soutput}
+   year TAC iter   harvest      ssb
+11 2001   0    1 0.8564326 2.619338
+12 2002   0    1 1.0132627 2.472721
+13 2003   0    1 0.9745105 2.221563
+14 2004   0    1 1.1328116 1.968105
+15 2005   0    1 0.9475996 1.743191
+16 2006   0    1 0.8563178 1.599180
+\end{Soutput}
+\end{Schunk}
+
+kobe.ts contains a time series of ssb relatuve to $B_{MSY}$ and F relative to $F_{MSY}$ for a historical time series and a projected time series for a range of TACs by iteration.
+There is a method kobe that produces the kobe phase, a function that generates the K2SM and a utility function kobeP.
+
+To summarise these data the medians of ssb and havest are calculated, since the data are by iteration
+
+\begin{Schunk}
+\begin{Sinput}
+> smry.ts=ddply(kobe.ts, .(TAC,year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
+> head(smry.ts)
+\end{Sinput}
+\begin{Soutput}
+  TAC year      ssb   harvest
+1   0 2001 2.413782 0.7669716
+2   0 2002 2.191820 0.8634968
+3   0 2003 1.968419 0.8868873
+4   0 2004 1.786212 0.9408810
+5   0 2005 1.627186 1.0037876
+6   0 2006 1.496721 1.0588488
+\end{Soutput}
+\end{Schunk}
+
+as seen by plotting the data
+\begin{Schunk}
+\begin{Sinput}
+> kb=ggplot(subset(kobe.ts)) + geom_boxplot(aes(factor(year),ssb)) +
++                              facet_wrap(~TAC)
+> kb
+\end{Sinput}
+\end{Schunk}
+
+\includegraphics{kobe-004}
+
+
+The trends in SSB and fishing mortality can also be plotted
+\begin{Schunk}
+\begin{Sinput}
+> ggplot(smry.ts)+geom_line(aes(year,ssb,    colour=factor(TAC),group=TAC))
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> ggplot(smry.ts)+geom_line(aes(year,harvest,colour=factor(TAC),group=TAC))
+\end{Sinput}
+\end{Schunk}
+
+\includegraphics{kobe-007}
+
+\includegraphics{kobe-008}
+
+\section*{Kobe Advice Framework}
+
+The Kobe Advice Framework is based on the Kobe Phase Plot and the Kobe II Strategy Matrix (K2SM). 
+The phase plot plots F relative to $F_{MSY}$ against SSB relative to $B_{MSY}$
+
+\begin{Schunk}
+\begin{Sinput}
+> kpp=kobe(subset(smry.ts,year<=2010)) + 
++     geom_path(aes(ssb,harvest,colour=year),size=2)+
++     geom_point(aes(ssb,harvest), data=subset(kobe.ts,year==2010 & TAC==0))
+\end{Sinput}
+\end{Schunk}
+
+The four quadrants correspond to
+
+The management objective is to recover the stock and reduce fishing mortality so that the stock is in the green quadrant. Therefore
+projections are performed to evaluate the consequences of different TACs e.g. by plotting the median trajectories
+\begin{Schunk}
+\begin{Sinput}
+> kobe(subset(smry.ts,year>=2010)) + 
++   geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
+\end{Sinput}
+\end{Schunk}
+
+This plot does not include the full uncertainty, i.e. the probability of being in the green quadrant for a given TAC in any year.
+The function kobeP caculates the various probabilities e.g. 
+\begin{Schunk}
+\begin{Sinput}
+> kobe.ts=data.frame(kobe.ts, kobeP(kobe.ts$ssb,kobe.ts$harvest))
+> head(kobe.ts)
+\end{Sinput}
+\begin{Soutput}
+   year TAC iter   harvest      ssb f b p collapsed
+11 2001   0    1 0.8564326 2.619338 1 1 1         0
+12 2002   0    1 1.0132627 2.472721 0 1 0         0
+13 2003   0    1 0.9745105 2.221563 1 1 1         0
+14 2004   0    1 1.1328116 1.968105 0 1 0         0
+15 2005   0    1 0.9475996 1.743191 1 1 1         0
+16 2006   0    1 0.8563178 1.599180 1 1 1         0
+\end{Soutput}
+\begin{Sinput}
+> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","p")])
+\end{Sinput}
+\end{Schunk}
+
+In addition 
+
+\begin{Schunk}
+\begin{Sinput}
+> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","b")])
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","f")])
+\end{Sinput}
+\end{Schunk}
+
+or a matrix
+
+\begin{Schunk}
+\begin{Sinput}
+> library(xtable)
+> res=kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","f")])
+> head(res)
+\end{Sinput}
+\begin{Soutput}
+      TAC
+year      0 1000 2000 3000 4000 5000
+  2010 0.09 0.09 0.09 0.09 0.09 0.09
+  2011 1.00 1.00 1.00 1.00 0.48 0.02
+  2012 1.00 1.00 1.00 1.00 0.49 0.03
+  2013 1.00 1.00 1.00 1.00 0.50 0.03
+  2014 1.00 1.00 1.00 1.00 0.50 0.04
+  2015 1.00 1.00 1.00 1.00 0.51 0.04
+\end{Soutput}
+\begin{Sinput}
+> head(kobeShade(res))
+\end{Sinput}
+\begin{Soutput}
+      TAC
+       0               1000            2000            3000           
+  [1,] "\\{9}"         "\\{9}"         "\\{9}"         "\\{9}"        
+  [2,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
+  [3,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
+  [4,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
+  [5,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
+  [6,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
+      TAC
+       4000           5000   
+  [1,] "\\{9}"        "\\{9}"
+  [2,] "\\{48}"       "\\{2}"
+  [3,] "\\{49}"       "\\{3}"
+  [4,] "\\{50}"       "\\{3}"
+  [5,] "\\{50}"       "\\{4}"
+  [6,] "\\grey50{51}" "\\{4}"
+\end{Soutput}
+\begin{Sinput}
+> t.=kobeShade(t(res))
+> xtable(kobeShade(t(res)))
+\end{Sinput}
+\begin{Soutput}
+% latex table generated in R 2.15.0 by xtable 1.7-0 package
+% Fri Jun 22 18:51:47 2012
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rllllllllllllllllllllllllll}
+  \hline
+ & 2010 & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 & 2017 & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 & 2025 & 2026 & 2027 & 2028 & 2029 & 2030 & 2031 & 2032 & 2033 & 2034 & 2035 \\ 
+  \hline
+1 & $\backslash$\{9\} & $\backslash$\{48\} & $\backslash$\{49\} & $\backslash$\{50\} & $\backslash$\{50\} & $\backslash$\{4\} & $\backslash$\{4\} & $\backslash$\{4\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} \\ 
+  2 & $\backslash$\{9\} & $\backslash$\{2\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{4\} & $\backslash$grey50\{51\} & $\backslash$grey50\{51\} & $\backslash$grey50\{51\} & $\backslash$grey50\{56\} & $\backslash$grey50\{59\} & $\backslash$gey60\{65\} & $\backslash$gey60\{64\} & $\backslash$gey60\{64\} & $\backslash$gey60\{64\} & $\backslash$gey60\{65\} & $\backslash$gey60\{69\} & $\backslash$gey60\{69\} & $\backslash$gey60\{69\} & $\backslash$gey60\{64\} & $\backslash$gey60\{65\} & $\backslash$gey60\{69\} & $\backslash$gey60\{68\} & $\backslash$gey60\{68\} & $\backslash$gey60\{66\} & $\backslash$gey60\{66\} & $\backslash$gey60\{68\} \\ 
+  3 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
+  4 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
+  5 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
+  6 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+\end{Soutput}
+\end{Schunk}
+
+
+The probabilities can also be plotted as pie charts e.g. if the Commission have a agreed a TAC of x then the expected probabilities over time are given by
+
+\begin{Schunk}
+\begin{Sinput}
+> dat=transform(subset(kobe.ts,year>2010),red=collapsed,green=p,yellow=1-p-collapsed)
+> dat=ddply(dat,.(TAC,year),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
+> dat=melt(dat,id.vars=c("year","TAC"))
+> pie = ggplot(subset(dat,year>=2011 & year<=2020 & TAC==4000), aes(x ="", y=value, fill = factor(variable))) + 
++         geom_bar(width = 1) + 
++         coord_polar(theta = "y") +
++         labs(fill='Kobe Quadrant') + xlab('') + ylab('')       +
++         scale_fill_manual(values=c("red","green","yellow"))    + 
++         facet_grid(TAC~year) 
+\end{Sinput}
+\end{Schunk}
+
+\includegraphics{kobe-017}
+
+\section*{Extended Examples}
+
+In this section show how the basic plots can be enhanced and further analyses conducted.
+
+\subsection*{Mariginal Densities}
+
+
+\subsection*{Contouring}
+
+\subsection*{Combined Plots}
+
+\subsection*{Alternative K2SMs}
+
+\section*{FLR}
+
+In this section we show the flexibility when assessment methods are implemented as R packages and provide examples of how to using existing assessment packages 
+to provide Kobe advice and 
+
+If an assessment model is implemented in R then the inputs and results can easily be processed by R packages, functions and scripts. However most stock assessment 
+software relies upon text files for data input therefore many packages now provide R packages to help read these text files into R. Once a data.frame is
+available then the examples in the previous section can be used. We then provide some examples of how the code can be extended. 
+
+\section*{Executables}
+
+\subsection*{ASPIC}
+
+ASPIC
+
+\subsection*{VPA2Box}
+\subsection*{SS3}
+\subsection*{Multifan-CL}
+
+\section*{Further Examples}
+
+
+\section*{References}
+
+\section[Appendix]{}
+
+  \begin{enumerate}
+    \item  In support of the SCRS scientific advice, the Executive Summaries within the SCRS annual report which present the results of the stock assessment results should include, when possible: 
+    \begin{enumerate}[i)]
+      \item A statement characterizing the robustness of methods applied to assess stock status and to develop the scientific advice. This statement should focus on modeling approaches and on assumptions.
+      \item Three Kobe matrices, in accordance with the format set out in Annex Table 2:
+      \begin{enumerate}[(a)]
+         \item A Kobe II strategy matrix indicating the probability of B>$B_{MSY}$ for different levels of catch across multiple years.
+         \item A Kobe II strategy matrix indicating the probability of F<$F_{MSY}$ for different levels of catch across multiple years.
+         \item A Kobe II strategy matrix indicating the probability of B>$B_{MSY}$ and F<$F_{MSY}$ for different levels of catch across multiple years.
+         \item Kobe II strategy matrices to be prepared by the SCRS should highlight in a similar format as shown in Annex Table 2 a progression 
+                 of probabilities over 50 \% and in the range of 50-59 \%, 60-69 \%, 70-79 \%, 80-89 \% and ??? 90 \%. 
+         \item When the Commission agrees on acceptable probability levels on a stock by stock basis and communicates them to the SCRS, 
+                 the SCRS should prepare and include, in the annual report, the  Kobe II strategy matrices using color coding corresponding to these thresholds.
+      \end{enumerate}
+
+      \item  A statement concerning the reliability of long term projections period.
+      \item   A Kobe plot chart showing
+      \begin{enumerate}[(a)]
+        \item management reference points expressed as FCURRENT on $F_{MSY}$ (or a proxy) and as BCURRENT on $B_{MSY}$ (or a proxy);
+        \item the estimated uncertainty around current stock status estimates;
+        \item the stock status trajectory. in accordance with the format set out in Annex Figure 1.
+      \end{enumerate}
+
+      \item  A pie chart summarizing the stock status showing the proportion of model outputs that are within the green quadrant of the Kobe plot chart (not overfished, no overfishing), the yellow quadrant (overfished or overfishing), and the red quadrant (overfished and overfishing), in accordance with the format set out in Annex Figure 2.
+      \item  An indication of the modeling approaches used by the SCRS to conduct the stock assessment shall be included in the caption and in the corresponding text accompanying the introduction of the matrices and the charts.
+      \item  Statements, where needed, reflecting the different opinions expressed regarding the SCRS scientific advice during the endorsement process.
+    \end{enumerate}
+
+    \item  The Kobe plot chart described in paragraph 1 should reflect the uncertainties on the estimates of the relative Biomass (BCURRENT on $B_{MSY}$??or its proxy) and of the relative fishing mortality (FCURRENT on $F_{MSY}$ or its proxy), provided that statistical methods to do so have been agreed upon by SCRS and that sufficient data exist to do so.
+    \item  The SCRS should review recommendations and templates for the Kobe II strategy matrices, plot and pie charts as laid down in this resolution and should advise the Commission on possible improvements.
+    \item  If the Commission adopts alternative reference points, such as limit reference points associated to the precautionary approach, the SCRS should also provide in its annual report versions of the elements described in paragraphs 1 and 2 calculated with respect to these alternative reference points and following the format specified in the same paragraphs.
+    \item   The SCRS should indicate in its annual report those cases where the modeling approaches used during the assessment and/or data limitation did not allow for the preparation of the elements mentioned above. 
+    \item   The Kobe II strategy matrices are intended to reflect the scientists understanding of the uncertainties associated with their model estimates. Therefore, where models and/or data are insufficient to quantify those uncertainties, the SCRS should consider alternative means of representing them in ways that are useful to the Commission.
+    \item   When, due to data limitations, the SCRS is unable to develop Kobe II strategy matrices and associated charts or other estimates of current status relative to benchmarks, the SCRS should develop its scientific advice on fisheries indicators in the context of Harvest Control Rules, if previously agreed upon by the Commission.
+    \item   The SCRS should also include in its annual report any other tables and/or graphics that it considers useful to provide advice to the Commission.
+    \item   The Commission encourages the SCRS to also include in the detailed reports, where possible, the following additional elements:
+
+    \begin{enumerate}[i)]
+      \item a scoring table addressing data completeness and quality with the format set out in Annex Table 1;
+      \item information on the by-catches of the different fleet segments and fisheries, as well as other ecosystems considerations.
+      \end{enumerate}
+  \end{enumerate}
+
+\end{document}
