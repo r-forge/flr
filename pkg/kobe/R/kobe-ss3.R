@@ -4,7 +4,7 @@
 ac=as.character
 
 ## Heavy lifting functions ##############################################################
-ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1){
+ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1,what=c("ts","pts","smry","wrms")){
 
     if (is.null(yrs)){
        nms=names(read.csv(x,sep=" ",nrows=1))
@@ -24,7 +24,7 @@ ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1
  options(warn=-1)
     res=data.frame(apply(read.csv(x,sep=" ",nrows=nrows)[,c("Iter",Bs,Fs,"Fstd_MSY")],2, function(x) as.numeric(ac(x))))
     res=res[seq(1,dim(res)[1],thin),]
-    res[,Fs]=sweep(res[,Fs],1,res[,"Fstd_MSY"],"*")
+    res[,Fs]=sweep(res[,Fs],1,res[,"Fstd_MSY"],"/")
     res=melt(res[,c("Iter",Bs,Fs)],id.vars="Iter")
     
     res$year=as.numeric(gsub("Bratio_","",ac(res$variable)))
@@ -36,34 +36,46 @@ ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1
     res    =data.frame(res, kobeP(res$ssb,res$harvest))
     res[is.na(res)]=0
    
-    ssb =ddply(res,.(year),function(x) quantile(x$ssb,    prob))
-    hvt =ddply(res,.(year),function(x) quantile(x$harvest,prob))
-    ts=data.frame(melt(ssb,id.vars="year"),harvest=melt(hvt,id.vars="year")[,3])
-    names(ts)[c(2,3)]=c("Percentile","ssb")
+    ts  =NULL
+    pts =NULL
+    wrms=NULL
+    smry=NULL
+    
+    if ("ts" %in% what){ 
+      ssb =ddply(res,.(year),function(x) quantile(x$ssb,    prob))
+      hvt =ddply(res,.(year),function(x) quantile(x$harvest,prob))
+      ts=data.frame(melt(ssb,id.vars="year"),harvest=melt(hvt,id.vars="year")[,3])
+      names(ts)[c(2,3)]=c("Percentile","ssb")}
 
-    pts.=subset(res,year %in% pts)[,c("iter","year","ssb","harvest")]
+    
+    if ("pts" %in% what)
+      pts.=subset(res,year %in% pts)[,c("iter","year","ssb","harvest")]
          
-    smry    =ddply(res,  .(year), function(x) data.frame(red        =mean(x$red,         na.rm=T),
-                                                         yellow     =mean(x$yellow,      na.rm=T),
-                                                         green      =mean(x$green,       na.rm=T),
-                                                         overFished =mean(x$overFished,  na.rm=T),
-                                                         overFishing=mean(x$overFishing, na.rm=T)))
+    
+    if ("smry" %in% what)
+      smry    =ddply(res,  .(year), function(x) data.frame(red        =mean(x$red,         na.rm=T),
+                                                           yellow     =mean(x$yellow,      na.rm=T),
+                                                           green      =mean(x$green,       na.rm=T),
+                                                           overFished =mean(x$overFished,  na.rm=T),
+                                                           overFishing=mean(x$overFishing, na.rm=T)))
 
-    wrms=subset(res,iter %in% sample(unique(res$iter),nworm))[,c("iter","year","ssb","harvest")]
+    
+    if ("wrms" %in% what)
+      wrms=subset(res,iter %in% sample(unique(res$iter),nworm))[,c("iter","year","ssb","harvest")]
                                                          
     return(list(ts=ts,pts=pts.,smry=smry,wrms=wrms))}
  
 setMethod('kobeSS3', signature(object='character'),
-  function(object,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1){
+  function(object,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1,what=c("ts","pts","smry","wrms")){
     if (any(grep("derived_posteriors.sso",object)<1)) stop("file not found")
 
     if (length(object)==1)
        res=ioFn(object,prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin)
     
     if (length(object) >1){
-       res=mlply(object, function(x,prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin)
-                                   ioFn(x,prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin),
-                      prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin)
+       res=mlply(object, function(x,prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin,what=what)
+                                   ioFn(x,prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin,what=what),
+                      prob=prob,yrs=yrs,pts=pts,nrows=nrows,nworm=nworm,thin=thin,what=what)
                  
       res=list(ts  =ldply(res, function(x) x$ts),
                pts =ldply(res, function(x) x$pts),
