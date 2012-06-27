@@ -97,7 +97,7 @@ aspicPrb =function(file){
         t.  <-scan(file,skip=4)
         ncol<-yrs[2]-yrs[1]+2
 
-        ## biomass
+        ## stock
         first<-rep((1:nits-1)*ncol*2,each=yrs[2]-yrs[1]+1)+(1:(ncol-1))+1
         b.   <-FLQuant(t.[first],dimnames=list(year=yrs[1]:yrs[2],iter=1:nits))
         first<-((1:nits-1)*ncol*2)+1
@@ -111,7 +111,7 @@ aspicPrb =function(file){
         fmsy <-FLQuant(t.[first],dimnames=list(iter=1:nits))
         f.   <-sweep(f.,6,fmsy,"/")
 
-        return(FLQuants(harvest=f.,biomass=b.))}
+        return(FLQuants(harvest=f.,stock=b.))}
                 
 aspicRdat=function(file){            
         return(dget(file))}
@@ -212,7 +212,7 @@ aspicPrn =function(x){
 ### x is the dir & file name  
 .aspicRuns<-function(x,scen){
    res   <-mdply(scen, function(x,dir) as.data.frame(readAspic(paste(dir,"/",x,".bio",sep=""))), dir=x)
-   ts    <-subset(res, qname %in% c("biomass","harvest"))
+   ts    <-subset(res, qname %in% c("stock","harvest"))
    refpts<-subset(res, qname %in% c("bmsy",   "fmsy"))
 
    ## Quantiles in data.frame
@@ -220,10 +220,10 @@ aspicPrn =function(x){
           scenario=factor(X1),quantity=factor(qname), quantile=variable)[,c("scenario","quantity","year","quantile","value")]
 
    ## Model frame with points
-   ts<-cast(subset(res, qname %in% c("biomass","harvest"),select=c("X1","year","iter","data","qname")), 
+   ts<-cast(subset(res, qname %in% c("stock","harvest"),select=c("X1","year","iter","data","qname")), 
  	 X1+year+iter~qname,value="data")
    
-   names(ts)<-c("scenario","year","iter","biomass","harvest")
+   names(ts)<-c("scenario","year","iter","stock","harvest")
 
    return(list(ts=ts,quantiles=qtls,refpts=refpts))}
 
@@ -234,9 +234,9 @@ aspicPrn =function(x){
     if (!stringsAsFactors) prj$scen=as.numeric(ac(prj$scen))
     
     prj       <-cast(prj,scen+year+iter~qname,value="data") 
-    names(prj)<-c("scen","year","iter","biomass","harvest")
+    names(prj)<-c("scen","year","iter","stock","harvest")
 
-    prjP      <-cbind(prj,kobeP(prj$biomass,prj$harvest))
+    prjP      <-cbind(prj,kobeP(prj$stock,prj$harvest))
 
     prjP      <-ddply(prjP,.(scen,year), function(x) with(x,  cbind(f=mean(f),b=mean(b),p=mean(p),
                                                                     collapsed  =mean(collapsed))))
@@ -293,7 +293,7 @@ aspicPrn =function(x){
         if (cpueCode[cd,"col2"]=="index")
           index(idx)[]=res[,2]
         
-        if (cpueCode[cd,"col2"]=="biomass")
+        if (cpueCode[cd,"col2"]=="stock")
           index(idx)[]=res[,2]
         
         if (cpueCode[cd,"col2"]=="effort")
