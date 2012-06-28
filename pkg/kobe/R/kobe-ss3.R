@@ -4,7 +4,7 @@
 ac=as.character
 
 ## Heavy lifting functions ##############################################################
-ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1,what=c("ts","pts","smry","wrms")){
+ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1,what=c("ts","smry","pts","wrms")){
 
     if (is.null(yrs)){
        nms=names(read.csv(x,sep=" ",nrows=1))
@@ -37,7 +37,7 @@ ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1
     res[is.na(res)]=0
    
     ts  =NULL
-    pts =NULL
+    pts.=NULL
     wrms=NULL
     smry=NULL
     
@@ -47,18 +47,16 @@ ioFn=function(x,nrows=-1,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nworm=10,thin=1
       ts=data.frame(melt(ssb,id.vars="year"),harvest=melt(hvt,id.vars="year")[,3])
       names(ts)[c(2,3)]=c("Percentile","ssb")}
 
-    
     if ("pts" %in% what)
       pts.=subset(res,year %in% pts)[,c("iter","year","ssb","harvest")]
-         
-    
-    if ("smry" %in% what)
-      smry    =ddply(res,  .(year), function(x) data.frame(red        =mean(x$red,         na.rm=T),
+           
+      smry    =ddply(res,  .(year), function(x) data.frame(ssb        =median(x$ssb,       ma.rm=T),
+                                                           harvest    =median(x$harvest,   ma.rm=T),
+                                                           red        =mean(x$red,         na.rm=T),
                                                            yellow     =mean(x$yellow,      na.rm=T),
                                                            green      =mean(x$green,       na.rm=T),
                                                            overFished =mean(x$overFished,  na.rm=T),
                                                            overFishing=mean(x$overFishing, na.rm=T)))
-
     
     if ("wrms" %in% what)
       wrms=subset(res,iter %in% sample(unique(res$iter),nworm))[,c("iter","year","ssb","harvest")]
