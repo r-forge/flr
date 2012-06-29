@@ -246,17 +246,28 @@ aspicPrn =function(x){
 
 .aspicCpue=function(x){
                     
-  uN=scan(x,sep="\n",what=character())[22]
+  uN=scan(x,sep="\n",what=character())[12]
   uN=substr(uN,1,regexpr("#",uN)[1]-1)  
-  uN=as.numeric(strsplit(uN," ")[[1]])
-  uN=uN[!is.na(uN)]
+  uN=as.numeric(strsplit(uN," ")[[1]])[1]
+ 
+  uYrs=scan(x,sep="\n",what=character())[22]
+  uYrs=substr(uYrs,1,regexpr("#",uYrs)[1]-1)  
+  uYrs=as.numeric(strsplit(uYrs," ")[[1]])[1]
+  uN=rep(uYrs,uN)
   
   #uN=gsub("(\\s+)", " ", uN, perl=TRUE)
   #uN=strsplit(uN," ")[[1]]
   #uN=as.numeric(uN)
   
-  us=scan(x,sep="\n",what=character())[-(1:22)]
+  us=str_trim(scan(x,sep="\n",what=character())[-(1:22)])
   
+  us=maply(us,function(x) gsub("\"","",x))
+  names(us)=NULL
+  
+  us=maply(us,function(x) gsub("d0","e+",x))
+  names(us)=NULL
+  us=maply(us,function(x) gsub("d-","e-",x))
+          
   pos=cumsum(c(rbind(1,1,uN)))
   
   nms=us[pos[seq(1,length(pos),3)]]
@@ -265,7 +276,6 @@ aspicPrn =function(x){
   
   pos=mlply(data.frame(from=pos[seq(2,length(pos),3)]+1,
                        to  =pos[seq(3,length(pos),3)]),seq)
-  
   
   cpue=llply(pos,function(x) us[x])
   

@@ -8,6 +8,6 @@ Maintainer: Laurence Kell <laurieKell@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: GPL-2
 LazyLoad: yes
-Depends: R(>= 2.15.0), Rcpp (>= 0.9.10), FLCore, ggplotFL
-Collate: aspic-generics.R aspic-class.R aspic-accessors.R aspic-constructors.R aspic-io.R aspics.R aspic-plot.R aspic-fwd.R aspic-msy.R aspic-exe.R rcpp_hello_world.R aspic-methods.R
+Depends: R(>= 2.15.0), FLCore, ggplotFL, stringr, reshape
+Collate: aspic-generics.R aspic-class.R aspic-accessors.R aspic-constructors.R aspic-io.R aspics.R aspic-plot.R aspic-fwd.R aspic-msy.R aspic-exe.R  aspic-methods.R
 LinkingTo: Rcpp
