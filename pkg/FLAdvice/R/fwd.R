@@ -1,6 +1,6 @@
 
 setMethod("fwd", signature(object="FLBRP", ctrl="missing"),
-    function(object,ctrl,
+    function(object,
                sr=object, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
                availability=NULL,maxF=2.0,fbar="missing")
     {                          

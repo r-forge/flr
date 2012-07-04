@@ -6,7 +6,8 @@
 #object=paste("/home/lkell/Dropbox/MyStuff/WHM/analysis/Inputs/SS3/mcmc_",TACs,"/derived_posteriors.sso",sep="")
 
 
-setMethod('kobe', signature(object='character'),
+setGeneric('kobeSS3', function(object, ...) standardGeneric('kobeSS3'))
+setMethod('kobeSS3', signature(object='character'),
   function(object,xlim=c(0,2),ylim=xlim,refyear=NULL,nrows=-1,plot=FALSE){
   
     if (any(grep("derived_posteriors.sso",object)<1)) stop("file not found")
@@ -37,7 +38,8 @@ setMethod('kobe', signature(object='character'),
         
     })
           
-setMethod('k2sm', signature(object='character',brp="missing"),
+setGeneric('k2smSS3', function(object, ...) standardGeneric('k2smSS3'))
+setMethod('k2smSS3', signature(object='character',brp="missing"),
   function(object,minyear=NULL,raw=FALSE,nrows=-1){
     if (any(grep("derived_posteriors.sso",object)<1)) stop("file not found")
 
