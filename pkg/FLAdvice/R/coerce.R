@@ -10,7 +10,7 @@
 setAs('FLBRP', 'FLSR',
   function(from) {
 
-	  rec.age  <-range(from,"min")
+	  rec.age  <-range(from, "min")
 	  recYrCls <-as.numeric(dimnames(rec.obs(from))$year)-rec.age
     ssbYrCls <-as.numeric(dimnames(ssb.obs(from))$year)
 

@@ -279,8 +279,8 @@ setMethod('iter', signature(obj='FLBRP'),
     object <- callNextMethod(obj, iter, ...)
     params(object) <- iter(params(obj), iter)
     if(dim(refpts(obj))[3] > 1)
-      refpts(obj) <- refpts(obj)[,,iter]
-    return(obj)})
+      refpts(object) <- refpts(obj)[,,iter]
+    return(object)})
 
 setMethod('catch', signature(object='FLBRP'),
   function(object) {
