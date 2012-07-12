@@ -8,6 +8,8 @@ setMethod("aspicProj",     signature(x="character",scen="vector"),     function(
 setMethod("aspicProj",     signature(x="character",scen="data.frame"), function(x,scen,stringsAsFactors=FALSE,...)       .aspicProj(x,scen,stringsAsFactors,...))
 
 setMethod("aspicCpue",     signature(x="character"),                   function(x,...)            .aspicCpue(x,...))
+setMethod("aspicUpdate",   signature(object="aspic",file="character"), function(object,file,...)  update.(object,file,...))
+setMethod("+",             signature(e1="aspic",e2="character"),       function(e1,e2)            update.(e1,e2))
 
 setMethod("writeAspic",    signature(x="aspic"),                       function(x,idx,what="FIT",niter=1,fl="aspic.inp",...)        .writeAspicInp(x,idx,what,niter,fl=fl,...))
 
@@ -207,6 +209,8 @@ aspicPrn =function(x){
     
     res=ddply(res,.(cpue),fnDiags)
     
+    names(res)[2]="index"
+    
     res}
 
 ### x is the dir & file name  
@@ -381,3 +385,19 @@ aspicPrn =function(x){
 
         
     return()}
+
+update.=function(object,file,...)   {
+  if (!checkExt(file)) stop(cat("File", file, "does not have a valid extension")) 
+ 
+  res=readAspic(file)
+  
+  res=switch(tolower(getExt(file)),
+              "bio" ={ dat=readAspic(file)
+                       stock(  object)=dat$stock
+                      #(object)        =dat$bmsy
+                      #(object)        =dat$fmsy
+ 
+                       object})
+  
+
+  }
