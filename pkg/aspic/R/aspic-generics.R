@@ -16,8 +16,6 @@ setGeneric("aspicCpue",    function(x,...)            standardGeneric("aspicCpue
 
 setGeneric("writeAspic",   function(x,...)            standardGeneric("writeAspic"))
 
-setGeneric("+",            function(e1,e2,...)        standardGeneric("+"))
-
 setGeneric("diags",        function(x,...)            standardGeneric("diags"))
 
 

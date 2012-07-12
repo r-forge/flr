@@ -13,5 +13,6 @@ exportMethods("aspic","aspics",
               "fwd",
               "writeAspic",
               "fit",
-              "loglAR1")
+              "loglAR1",
+              "+")
 export("smry")
