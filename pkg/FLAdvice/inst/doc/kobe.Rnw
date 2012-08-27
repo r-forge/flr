@@ -5,11 +5,6 @@
 % $Id: $
 
 %\VignetteIndexEntry{kobe}
-% Meta information - fill between {} and do not remove %
-% \VignetteIndexEntry{An R Package for ...}
-% \VignetteDepends{foo, bar, ...}
-% \VignetteKeywords{kwd1, kwd2}
-% \VignettePackage{...}
 
 \documentclass[a4paper, 11pt, oldtoc]{artikel1}
 \usepackage[onehalfspacing]{setspace}

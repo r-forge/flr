@@ -1,5 +1,7 @@
 useDynLib("FLAdvice")
 import("FLCore","ggplotFL")
+importFrom("FLAssess",
+  "stf")
 exportClasses(
   "FLBRP",
   "FLBRPs")
