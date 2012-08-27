@@ -1,4 +1,4 @@
-# class - ?Short one line description?
+library# class - ?Short one line description?
 # FLBRP/R/class.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
