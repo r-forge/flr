@@ -10,11 +10,6 @@ setClass("z",
 		agerng = "numeric")
 )
 
-setGeneric("z", function(object, ...){
-	standardGeneric("z")
-	}
-)
-
 setMethod("z", signature("FLQuant"), function(object, agerng="missing", ...){
 
 # important note: agerng is defined by the dimnames so it should be
