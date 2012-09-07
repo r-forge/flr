@@ -42,7 +42,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     # resize: ages
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
-      'availability', 'price')
+      'availability', 'price', 'revenue.obs')
     
     # find slots not provided as argument
     empty <- !slots %in% names(args)

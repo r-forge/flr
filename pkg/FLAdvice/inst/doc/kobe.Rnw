@@ -47,6 +47,7 @@ an historical time series and projections over a range of total allowable catche
 First the package and example data set should be loaded
 <<echo=TRUE>>=
 library(FLAdvice)
+library(plyr)
 data(kobe.ts)
 head(kobe.ts)
 
