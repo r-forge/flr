@@ -35,8 +35,8 @@ readVpa2boxDiagsFn<-function(x){
     if (nVar==9) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","obs2","hat2","chi2")
     if (nVar==7) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","chi2")
 
-    uDiag$residual2<-c(uDiag$residual[-1],NA)
-    uDiag[!duplicated(uDiag[,"cpue"]),"residual2"]<-NA
+    uDiag$residualLag<-c(uDiag$residual[-1],NA)
+    uDiag[!duplicated(uDiag[,"cpue"]),"residualLag"]<-NA
 
     fnQQ<-function(object){
        qq.          =qqnorm(c(object$residual),plot.it=FALSE)
@@ -67,7 +67,7 @@ readVpa2boxDiagsFn<-function(x){
            return(data.frame(y=x*res["a"]+res["b"]))}
 
     par<-qqLine(uDiag)
-    uDiag$qqYhat<-uDiag$qqx*par["a"]+par["b"]
+    uDiag$qqHat<-uDiag$qqx*par["a"]+par["b"]
 
     return(uDiag)}
   

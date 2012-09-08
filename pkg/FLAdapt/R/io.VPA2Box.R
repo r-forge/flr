@@ -8,7 +8,7 @@
 readVpa2boxFn <- function(file,args=missing,m=NULL,minage=1,...) {
  if(!missing(args))
     args <- c(args, list(...))
-print(1)
+
   # control file 
   dir  <- getDir(file)
   files <- paste(dir, .Platform$file.sep, vpa2BoxFiles(file), sep="")
@@ -42,17 +42,17 @@ print(1)
     
     return(FLQuant(c(aa[-1,]), dimnames=list(age=minage+(0:(dms[1]-2)),
       year=aa[1,])))
-  }
+    }
 
-  stk <- FLStock(stock.n=aaIn(dat[(ln[2]+1):(ln[3]-1)],minage=minage))
+  stk <- FLStock(harvest=aaIn(dat[(ln[1]+1):(ln[2]-1)],minage=minage))
 
-  harvest <- aaIn(dat[(ln[1]+1):(ln[2]-1)],minage=minage)
+  stock.n(stk)     <- setPlusGroup(aaIn(dat[(ln[2]+1):(ln[3]-1)],minage=minage), dims(harvest(stk))$max)
+
   landings.n <- aaIn(dat[(ln[3]+1):(ln[4]-1)],minage=minage)
-  stock.wt <- aaIn(dat[(ln[4]+1):(ln[5]-1)],minage=minage)
-
-  harvest(stk) <- harvest
-  landings.n(stk) <- landings.n
-  stock.wt(stk) <- stock.wt
+  stock.wt   <- aaIn(dat[(ln[4]+1):(ln[5]-1)],minage=minage)
+  
+  landings.n(stk)  <- landings.n
+  stock.wt(stk)    <- stock.wt
   landings.wt(stk) <- stock.wt
   discards.wt(stk) <- 0
 
@@ -120,8 +120,7 @@ print(1)
     catch.wt(   stk) <- stock.wt(stk)
     landings.wt(stk) <- stock.wt(stk)
     discards.wt(stk) <- stock.wt(stk)
-  }
-
+    }
   
   # replace any slots
   slt <- names(getSlots("FLStock"))[getSlots("FLStock")=="FLQuant"]
@@ -132,15 +131,14 @@ print(1)
         slot(stk, i) <- args[[i]]
   }
 
-  catch(stk)   <- computeCatch(stk,"all")
+  catch(stk)    <- computeCatch(stk,"all")
   landings(stk) <- computeLandings(stk)
   discards(stk) <- computeDiscards(stk)
  
-print(0)
   units(harvest(stk)) <- "f"
   if (length(nRet) > 1)
     stk <- getRetros(paste(dir,"/",sep=""),stk,nRet=nRet)
-print(1)
+
   return(stk)}
  
 getDir <- function(file) {

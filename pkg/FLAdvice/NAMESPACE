@@ -14,13 +14,6 @@ export(
   "biOrder",
   "calcR",
   "shepherdCovB",
-#  "readSS3",
-#  "kobe",
-#  "kobeP",
-#  "kobeM",
-#  "kobeL",
-#  "kobeS",
-#  "kobeShade",
   "OEMStock",
   "OEMSurvey",
   "OEMCpue",
@@ -162,4 +155,5 @@ exportMethods(
   "invVonB",
   "leslie",
   "ep",
-  "myers")
+  "myers",
+  "readSS3")

@@ -1,4 +1,6 @@
 import("FLCore")
+export("read.cas",
+       "read.caa")
 exportMethods("readAspic","aspicRuns","aspicProj",
               "readVpa2box",
               "readPro2box",

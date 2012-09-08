@@ -1,4 +1,4 @@
-#### Pro2Box ############################################################################
+#### Pro2box ############################################################################
 setMethod("readPro2box",   signature(x="character", type="missing"),
    function(x,type) readPro2box(x,type="kobe")) 
 
@@ -13,20 +13,9 @@ setMethod("readPro2box",   signature(x="character", type="character"),
                                                             "YIELD-1"), ## Yield by iteration and year
                    minyear=1,data.frame=TRUE,...){
             
-            .readPro2Box(x,type,proxy,files,minyear,data.frame,rel=FALSE,...)})
+            .readPro2box(x,type,proxy,files,minyear,data.frame,rel=FALSE,...)})
 
-readPro2BoxKobe=function(x,proxy){
-    vpaOut=readPro2box(x,type="out")
-    vpaRef=readPro2box(x,type="ref")
-
-    res=transform(merge(       vpaOut[,c("year","iter","tac","ssb","fapex")], 
-                        subset(vpaRef, refpt==proxy, select=c(iter,ssb,harvest)),by="iter"),
-                    ssb    =ssb.x/ssb.y, 
-                    harvest=fapex/harvest)[,c("year","iter","tac","ssb","harvest")]
-    
-    return(res)}
-
-.readPro2Box<-function(x,type=c("ref","sta","out","kobe"),proxy="msy",
+.readPro2box<-function(x,type=c("ref","sta","out","kobe"),proxy="msy",
                                                    files=c("BIO_f-1",  ## Biomass ? by iteration and year
                                                            "BIO_t-1",  ## Biomass ? by iteration and year
                                                            "Fapex-1",  ## F Apex by iteration and year
@@ -37,7 +26,7 @@ readPro2BoxKobe=function(x,proxy){
                       minyear=1,data.frame=TRUE,rel=FALSE){
 
   res<-switch(type[1],
-              "kobe"=readPro2BoxKobe(x,proxy=proxy),
+              "kobe"=readPro2boxKobe(x,proxy=proxy),
               "ref" =createRefpts(   x,              data.frame),
               "sta" =pro2Sta(        x,files,minyear,data.frame),
               "out" =pro2Out(        x,files,minyear,data.frame,rel))

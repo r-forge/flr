@@ -8,5 +8,4 @@ Maintainer: Laurence Kell <laurieKell@gmail.com>
 Description: Provides methods for reading input from traditional stock assessment methods
 License: GPL-2
 LazyLoad: yes
-Depends: Rcpp (>= 0.9.10), FLCore(>= 2.3),
-LinkingTo: Rcpp
+Depends:  ggplot2

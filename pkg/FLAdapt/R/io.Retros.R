@@ -26,14 +26,12 @@ getFLQ<-function(filename,pos1, pos2)
     return(flq)}
 
 ## create retro stocks
-getRetros<-function(vpa.dir,stk,nRet)
+getRetros<-function(vpa.dir,stk,nRet,stks=FLStocks(stk))
     {
-    stks<-FLStocks()
-
-    for (iRetro in nRet) {
+    for (iRetro in nRet[-1]) {
        ## Start reading file
 
-       filename<-paste(vpa.dir,"minus",iRetro,".r",sep="")
+       filename<-paste(vpa.dir,"MINUS",iRetro,".R",sep="")
        
        ## get Retro estimates
        i<-0
