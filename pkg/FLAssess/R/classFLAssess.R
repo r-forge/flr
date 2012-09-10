@@ -45,4 +45,3 @@ setClass("FLAssess",
 setValidity("FLAssess", validFLAssess)
 remove(validFLAssess)
 #invisible(createFLAccesors(new("FLAssess")))	# }}}
-

@@ -107,7 +107,7 @@ showArray<-function(object){
 		if(dim(object)[3] != 1)
 			cat("iters: ", dim(object)[3],"\n\n")}
 
-setMethod('show', signature(object='fwdControl'), 
+setMethod('show', signature(object='projectControl'), 
   function(object){
     
   cat("\nTarget\n")
