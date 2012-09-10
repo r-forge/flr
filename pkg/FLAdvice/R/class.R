@@ -1,5 +1,5 @@
 library# class - ?Short one line description?
-# FLBRP/R/class.R
+# flbrp/R/class.R
 
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
 # Maintainers: Laurence Kell, ICCAT & Santiago Cervi?o, IEO
@@ -70,7 +70,7 @@ setClass("FLBRP",
       ssb.obs        ="FLQuant",
       stock.obs      ="FLQuant",
       profit.obs     ="FLQuant",
-      revenue.obs    ="FLQuant",
+#      revenue.obs    ="FLQuant",
       landings.sel   ="FLQuant",
       discards.sel   ="FLQuant",
       bycatch.harvest="FLQuant",
@@ -125,8 +125,6 @@ setClass("FLBRP",
       fcost           =new("FLQuant"),
       validity        =validFLBRP
       ))  # }}}
-
-  
 
 # FLBRPs {{{
 FLBRPs <- setClass("FLBRPs", contains="FLComps",
