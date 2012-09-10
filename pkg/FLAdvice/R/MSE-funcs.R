@@ -80,12 +80,12 @@ vpaMP<-function(MP,harvest,fratio=1,CV=0.25,bias=NULL){
 
 ## PA HCR
 hcr<-function(SSB,refpt,Ftar=0.8,Btrig=0.75,Fmin=0.025,Blim=0.25){
+    if (Blim>=Btrig) stop("Btrig must be greater than Blim")
     Btrig=refpt[1,    "ssb"]*Btrig
     Blim =refpt[1,    "ssb"]*Blim
     Fmin =refpt[1,"harvest"]*Fmin
     Ftar =refpt[1,"harvest"]*Ftar
 
-    if (Blim>=Btrig) stop("Btrig must be greater than Blim")
     a= FLPar((Ftar-Fmin)/(Btrig-Blim))
     b= FLPar(Ftar-a*Btrig)
     
