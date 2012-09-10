@@ -172,6 +172,9 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
 
       # profit.obs
       profit.obs = FLQuant(dimnames=snames),
+      
+      # revenue.obs
+      revenue.obs = FLQuant(dimnames=snames),
 
       # vcost & fcost
       vcost=FLQuant(dimnames=cnames),
