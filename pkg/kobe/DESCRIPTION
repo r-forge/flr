@@ -8,5 +8,5 @@ Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Depends: methods
-Depends: methods, FLCore(>= 2.3), ggplotFL, LaF, reshape
+Depends: methods, FLCore(>= 2.3), ggplotFL, FLAdvice, LaF, reshape
 Collate: kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss3.R kobe-FLBRP.R kobe-FLBioDym.R

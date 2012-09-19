@@ -5,4 +5,5 @@ export("k2sm",
 exportMethods("kobe",
               "kobeSS3",
               "kobe2box",
-              "kobeAspic")
+              "kobeAspic",
+              "kobeShade")

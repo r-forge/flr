@@ -1,5 +1,6 @@
 setGeneric('kobe',  function(object, ...) standardGeneric('kobe'))
-setGeneric('kobeP', function(x,y,...)     standardGeneric('kobeP'))
+setGeneric('k2sm',  function(object, ...) standardGeneric('k2sm'))
+setGeneric('kobeP', function(b,f,    ...)     standardGeneric('kobeP'))
 
 setGeneric('kobeShade',   function(object,...) standardGeneric('kobeShade'))
 setGeneric('kobeSS3',     function(object,...) standardGeneric('kobeSS3'))

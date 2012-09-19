@@ -1,35 +1,54 @@
-k2sm<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
-                                col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
-                   contour=list(levels=c(.6,.7,1.0,.9),
-                                col   =c("black")),
-                   nIterp=501,xlab="Year",ylab="TAC"){
+## back drop on which to overlay data
+kobeFn=function(object,xlim,ylim){    
+  quads<- rbind(data.frame(x=c(-Inf,-Inf,Inf,Inf), y=c(-Inf,Inf,Inf,-Inf), fill=as.factor("yellow")),
+                data.frame(x=c(   1,   1,Inf,Inf), y=c(-Inf,  1,  1,-Inf), fill=as.factor("green")),
+                data.frame(x=c(-Inf,-Inf,  1,  1), y=c(   1,Inf,Inf,   1), fill=as.factor("red")))
+  
+  p=ggplot(object)+geom_polygon(data=quads,aes(x,y,fill=fill)) +
+    scale_fill_manual(values = c("yellow","green","red"), legend=FALSE) +
+    ylab(expression(F/F[MSY]))        +
+    xlab(expression(SSB/B[MSY]))      +
+    scale_y_continuous(limits=ylim)   +
+    scale_x_continuous(limits=xlim)
+  
+  invisible(p)}
 
-            x=subset(x, !is.na(x[,1]) & !is.na(x[,2]) & !is.na(x[,3]))
 
-            ##### plot Kobe matrix
-            t.<-akima::interp(x[,1],x[,2],x[,3],
-                       xo=seq(min(x[,1]),   max(x[,1]), length=nIterp),
-                       yo=seq(min(x[,2]),   max(x[,2]), length=nIterp),
-                       duplicate="mean")
+k2smFn<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
+                                 col    =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
+                 contour=list(levels=c(.6,.7,1.0,.9),
+                              col   =c("black")),
+                 nIterp=501,xlab="Year",ylab="TAC"){
+  
+  x=subset(x, !is.na(x[,1]) & !is.na(x[,2]) & !is.na(x[,3]))
+  
+  ##### plot Kobe matrix
+  t.<-akima::interp(x[,1],x[,2],x[,3],
+                    xo=seq(min(x[,1]),   max(x[,1]), length=nIterp),
+                    yo=seq(min(x[,2]),   max(x[,2]), length=nIterp),
+                    duplicate="mean")
+  
+  if (!is.null(image)){      
+    ## Check ##################################################
+    if (!(length(image$levels)-1 == length(image$col))) stop("image options differ")
+    image(t., breaks=image$levels,col=image$col,
+          xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
+          ylab  =ifelse(is.null(ylab),names(x)[2],ylab))}
+  
+  contour(t.,levels=contour$levels,
+          col   =contour$col,lwd=2,
+          method="edge",
+          labcex=1,
+          add   =!is.null(image$col),
+          xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
+          ylab  =ifelse(is.null(ylab),names(x)[2],ylab))
+  
+  grid()
+  
+  return(t(tapply(x[,3],x[,c(1,2)],mean)))}
 
-            if (!is.null(image)){      
-        ## Check ##################################################
-              if (!(length(image$levels)-1 == length(image$col))) stop("image options differ")
-              image(t., breaks=image$levels,col=image$col,
-			            xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
-			            ylab  =ifelse(is.null(ylab),names(x)[2],ylab))}
-	
-            contour(t.,levels=contour$levels,
-                       col   =contour$col,lwd=2,
-                       method="edge",
-                       labcex=2,
-                       add   =!is.null(image$col),
-  		            xlab  =ifelse(is.null(xlab),names(x)[1],xlab),
-			            ylab  =ifelse(is.null(ylab),names(x)[2],ylab))
-       
-            grid()
-       
-            invisible(t(tapply(x[,3],x[,c(1,2)],mean)))}
+
+
 
 ##### plot Kobe lines
 kobeL <- function(x,image=list(levels=seq(0.0,1.0,0.05),
@@ -64,20 +83,3 @@ kobeL <- function(x,image=list(levels=seq(0.0,1.0,0.05),
     col= cols , bty="n")
     
     invisible(tapply(x[,3],x[,2:1],mean))}
-
-kobeS<-function(x,cex=1.2,image  =list(levels=seq(0.0,1.0,0.05),
-                                       col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
-                          contour=list(levels=c(.6,.7,1.0,.9),
-                                       col   =c("black"))){
-    ops<-par(mfrow=c(2,2), mex=.5,mai=c( 0.5, 0.75 ,0.5, 0.1),cex=par()$cex)
-
-         kobeM(x[,c(1:2,4)],image=image,contour=contour);mtext(expression(plain(P) (SSB>=SSB[MSY])),                       line=0.5, cex=cex)
-         kobeM(x[,c(1:2,5)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY])),                           line=0.5, cex=cex)
-    res<-kobeM(x[,c(1:2,3)],image=image,contour=contour);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=0.5, cex=cex)
-         kobeL(x[,c(1:2,3)],image=image);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=SSB[MSY])),               line=0.5, cex=cex, side=3)
-    
-    #kobeM(xCont[,c("Year","P","TAC")]);mtext(expression(plain(P) (F<=F[MSY]) %*% plain(P)(SSB>=B[MSY])), line=.5, cex=.8)
-    
-    par(mfrow=ops$mfrow,mex=ops$mex,mai=ops$mai,cex=ops$cex)
-
-    invisible(res)}          
