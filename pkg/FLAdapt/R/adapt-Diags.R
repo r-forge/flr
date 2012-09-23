@@ -15,7 +15,7 @@ readVpa2boxDiagsFn<-function(x){
     tab5<-tab5[grep("TABLE 5.",tab5): length(tab5)]
 
     pos  <-grep("Chi-sq. discrepancy=",tab5)
-    nms  <-substr(tab5[pos-7],9,30)
+    nms  <-substr(tab5[pos-7],10,30)
     str  <-pos+5
     end  <-grep("Selectivities",tab5)-2
 
@@ -35,8 +35,8 @@ readVpa2boxDiagsFn<-function(x){
     if (nVar==9) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","obs2","hat2","chi2")
     if (nVar==7) names(uDiag)<-c("cpue","year","obs","hat","residual","sd","q","chi2")
 
-    uDiag$residualLag<-c(uDiag$residual[-1],NA)
-    uDiag[!duplicated(uDiag[,"cpue"]),"residualLag"]<-NA
+    uDiag$residual2<-c(uDiag$residual[-1],NA)
+    uDiag[!duplicated(uDiag[,"cpue"]),"residual2"]<-NA
 
     fnQQ<-function(object){
        qq.          =qqnorm(c(object$residual),plot.it=FALSE)
@@ -67,7 +67,7 @@ readVpa2boxDiagsFn<-function(x){
            return(data.frame(y=x*res["a"]+res["b"]))}
 
     par<-qqLine(uDiag)
-    uDiag$qqHat<-uDiag$qqx*par["a"]+par["b"]
+    uDiag$qqYhat<-uDiag$qqx*par["a"]+par["b"]
 
     return(uDiag)}
   

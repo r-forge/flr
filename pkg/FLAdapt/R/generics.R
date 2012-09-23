@@ -20,6 +20,8 @@ setGeneric('FLAdaptControl', function(object, ...)         standardGeneric('FLAd
 setGeneric("readVpa2boxIndices",  function(x,type,...)   standardGeneric("readVpa2boxIndices"))
 setGeneric("readVpa2boxDiags",  function(x,type,...)   standardGeneric("readVpa2boxDiags"))
 
+if (!isGeneric("FLBRP")) setGeneric('FLBRP', function(object, sr, ...) standardGeneric('FLBRP'))
+
                 
 
 

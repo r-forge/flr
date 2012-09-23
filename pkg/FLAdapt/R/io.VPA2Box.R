@@ -140,13 +140,6 @@ readVpa2boxFn <- function(file,args=missing,m=NULL,minage=1,...) {
     stk <- getRetros(paste(dir,"/",sep=""),stk,nRet=nRet)
 
   return(stk)}
- 
-getDir <- function(file) {
-  if (!grepl(.Platform$file.sep,file))
-    res <- getwd()
-  else
-    res <- substr(file,1,max(gregexpr(.Platform$file.sep,file)[[1]])-1)
-  return(res)} 
 
 vpa2BoxFiles <- function(file) {
   i <- skip.hash(0,file)
