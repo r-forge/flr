@@ -1,7 +1,8 @@
 import("FLCore","ggplotFL")
 export("k2sm",
        "kobeP",
-       "readPro2boxKobe")
+       "readPro2boxKobe",
+       "kobePfn")
 exportMethods("kobe",
               "kobeSS3",
               "kobe2box",
