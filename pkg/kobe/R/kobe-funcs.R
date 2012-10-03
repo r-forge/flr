@@ -44,7 +44,7 @@ k2smFn<-function(x, image  =list(levels=seq(0.0,1.0,0.05),
           ylab  =ifelse(is.null(ylab),names(x)[2],ylab))
   
   grid()
-  
+ 
   return(t(tapply(x[,3],x[,c(1,2)],mean)))}
 
 
