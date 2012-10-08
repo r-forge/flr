@@ -1,0 +1,26 @@
+writeFLQ=function(stk,dir,files){
+  
+  writeBin=function(flq,file,dir){
+    res=t(flq[,,drop=T])
+    
+    writeBin(res, con=paste(dir,file,sep="/"), what=double(), size=4)}
+  
+  writeTxt=function(flq,dir,file){
+    res=t(flq[,,drop=T])
+    
+    frstCols=switch(getFile(file), "naa.txt"=cbind(1,  as.numeric(dimnames(flq)$year)),
+                                   "faa.txt"=cbind(1,  as.numeric(dimnames(flq)$year)),
+                                   "caa.txt"=cbind(1,1,as.numeric(dimnames(flq)$year)),
+                                   "waa.txt"=cbind(1,0,as.numeric(dimnames(flq)$year)),
+                                   "maa.txt"=cbind(1))
+                    
+    write.table(cbind(frstCols,res),file=paste(dir,file,sep="/"))}
+
+  outFile=function(x,file,dir) if(tolower(getExt(file))=="txt") writeTxt(flq,dir,file) else writeBin(flq,dir,file)
+  
+  outFile(stock.n( stk),file[1],dir)
+  outFile(harvest( stk),file[2],dir)
+  outFile(catch.n( stk),file[3],dir)
+  outFile(catch.wt(stk),file[4],dir)
+  outFile(m(       stk),file[5],dir)
+  }

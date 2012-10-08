@@ -186,8 +186,8 @@
       REAL (KIND=8) :: DUMMY
       CHARACTER (LEN=1) :: CH,CH2,CH3
       COMPUTE_COVAR=1
-!      CALL GETCL(CONFILE)
-      CONFILE="adapt.c"
+      CALL GETCL(CONFILE)
+|      CONFILE="adapt.c"
 !      IF(CONFILE=='' .OR. CONFILE==' ') THEN
 !        WRITE(*,*) 'ENTER THE NAME OF THE CONTROL FILE: ' ; READ(*,*) CONFILE
 !      ENDIF

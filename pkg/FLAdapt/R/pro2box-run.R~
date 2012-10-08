@@ -85,66 +85,36 @@ p2bTxt=function(){}
   
   #  discards
   
-
-
-
-# from="/home/laurie/Desktop/Dropbox/ICCAT/SCRS/BFT/2012/VPA/projections/Run_2/Reported/2012/med"
-# to  ="/home/laurie/Desktop/flr/tests/FLAdapt/pro2box/test"
-# exe ="/home/laurie/Desktop/flr/pkg/FLAdapt/inst/bin/linux/pro-2box"
-# 
-# runs=expand.grid(Run        ="Run_2",
-#                  catch      =c("Reported","Inflated"),
-#                  recruitment=c("low","med","high"),stringsAsFactors=F)
-# 
-# setRun(options,from,to,exe)
-# 
-# 
-# from       ="/home/laurie/Desktop/Dropbox/ICCAT/SCRS/BFT/2012/VPA/projections/Run_2/Reported/2012/low"
-# 
-# vpa        =readVpa2box(paste(from,"bfte2012.c1",sep="/"))
-# range(vpa)[c("min","max","plusgroup","minyear","maxyear")]
-# 
-# 
-# ## create output dirs
-# pths=expand.grid(dir=dir,run=run,catch=catch,recruitment=recruitment,stringsAsFactors=F)
-# 
-# ## copy from VPA dirs to output dirs
-# ## i)   exe
-# 
-# ## ii)  VPA files
-# ## iii) projection options
-#           
-# #l_ply(comments,function(x) {cat(x);cat("\n")})
-
-getPro2boxCtrl=function(object){
-  require(stringr)
-  
-  ctrl=scan(object,what=as.character(),sep="\n")
-  ctrl=gsub("\t+", " ", str_trim(ctrl))
-  ctrl=str_trim(ctrl[substr(ctrl,1,1)!="#"])
-  
-  return(ctrl)}
-
-  
-  from="/home/laurie/Desktop/flr/tests/Pro2boxTest/from/proj.ctl"
-  to  ="/home/laurie/Desktop/flr/tests/Pro2boxTest/tmp"
-
-exePro2box=function(from,to){
-  
-  exe =system.file("bin", "linux", package="FLAdapt", "pro-2box", mustWork=TRUE)
-  
-  if (!file.exists(to)) dir.create(to)
- 
-  file.copy(from,to,overwrite=TRUE)
-  file.copy(exe, paste(to,"pro-2box",sep="/"),overwrite=TRUE)
-  
-  fl=getPro2boxCtrl(from)[21:30]
-  m_ply(paste(getDir(from), maply(fl, function(x) strsplit(x," +")[[1]][2]),sep="/"),file.copy,to)
-  
-  
-  setwd(to)
-  
-  system("./pro-2box")
   }
+
+
+from="/home/laurie/Desktop/Dropbox/ICCAT/SCRS/BFT/2012/VPA/projections/Run_2/Reported/2012/med"
+to  ="/home/laurie/Desktop/flr/tests/FLAdapt/pro2box/test"
+exe ="/home/laurie/Desktop/flr/pkg/FLAdapt/inst/bin/linux/pro-2box"
+
+runs=expand.grid(Run        ="Run_2",
+                 catch      =c("Reported","Inflated"),
+                 recruitment=c("low","med","high"),stringsAsFactors=F)
+
+setRun(options,from,to,exe)
+
+
+from       ="/home/laurie/Desktop/Dropbox/ICCAT/SCRS/BFT/2012/VPA/projections/Run_2/Reported/2012/low"
+
+vpa        =readVpa2box(paste(from,"bfte2012.c1",sep="/"))
+range(vpa)[c("min","max","plusgroup","minyear","maxyear")]
+
+
+## create output dirs
+pths=expand.grid(dir=dir,run=run,catch=catch,recruitment=recruitment,stringsAsFactors=F)
+
+## copy from VPA dirs to output dirs
+## i)   exe
+
+## ii)  VPA files
+## iii) projection options
+
+
+
            
-         
+#l_ply(comments,function(x) {cat(x);cat("\n")})

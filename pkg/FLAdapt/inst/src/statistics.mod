@@ -1,5 +1,5 @@
-GFORTRAN module version '6' created from pro-2box.f90 on Fri Mar 23 00:19:25 2012
-MD5:7e1eb0c31cc29d94bac39f57302bcce2 -- If you edit this, you'll get what you deserve.
+GFORTRAN module version '6' created from pro-2boxV2.f90 on Fri Sep 28 21:34:26 2012
+MD5:c82c17e6cad7baae58bee46e9ed8fce9 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -153,73 +153,82 @@ EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (2
 62 'rand' 'statistics' 'rand' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-63 'sel_mod' 'statistics' 'sel_mod' 1 ((VARIABLE UNKNOWN-INTENT
+63 'rec_mod' 'statistics' 'rec_mod' 1 ((VARIABLE UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
+0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
+64 'sel_mod' 'statistics' 'sel_mod' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-64 'selectivity' 'statistics' 'selectivity' 1 ((VARIABLE UNKNOWN-INTENT
+65 'selectivity' 'statistics' 'selectivity' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-65 'signal' 'statistics' 'signal' 1 ((VARIABLE UNKNOWN-INTENT
+66 'signal' 'statistics' 'signal' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (2 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2') (CONSTANT (INTEGER 4 0 0
 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '100')) 0 () ()
 () 0 0)
-66 'sr' 'statistics' 'sr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+67 'sr' 'statistics' 'sr' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (2 0
 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER
 4 0 0 INTEGER ()) 0 '200') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-67 'sr_mse_minimum' 'statistics' 'sr_mse_minimum' 1 ((VARIABLE
+68 'sr_mse_minimum' 'statistics' 'sr_mse_minimum' 1 ((VARIABLE
 UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 DIMENSION) (REAL 8
 0 0 REAL ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0
 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-68 'srtemp' 'statistics' 'srtemp' 1 ((VARIABLE UNKNOWN-INTENT
+69 'srtemp' 'statistics' 'srtemp' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-69 'ssb' 'statistics' 'ssb' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+70 'ssb' 'statistics' 'ssb' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-70 'ssb_male' 'statistics' 'ssb_male' 1 ((VARIABLE UNKNOWN-INTENT
+71 'ssb_male' 'statistics' 'ssb_male' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-71 'ssbmsytemp' 'statistics' 'ssbmsytemp' 1 ((VARIABLE UNKNOWN-INTENT
+72 'ssbmsytemp' 'statistics' 'ssbmsytemp' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-72 'ssn' 'statistics' 'ssn' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+73 'ssn' 'statistics' 'ssn' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-73 'ssn_male' 'statistics' 'ssn_male' 1 ((VARIABLE UNKNOWN-INTENT
+74 'ssn_male' 'statistics' 'ssn_male' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-74 'statistics' 'statistics' 'statistics' 1 ((MODULE UNKNOWN-INTENT
+75 'statistics' 'statistics' 'statistics' 1 ((MODULE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN UNKNOWN 0 0) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0
 () () () 0 0)
-75 'sum_yld' 'statistics' 'sum_yld' 1 ((VARIABLE UNKNOWN-INTENT
+76 'sum_yld' 'statistics' 'sum_yld' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0
 0 REAL ()) 0 0 () (2 0 DEFERRED () () () ()) 0 () () () 0 0)
-76 'sumsignal' 'statistics' 'sumsignal' 1 ((VARIABLE UNKNOWN-INTENT
+77 'sumsignal' 'statistics' 'sumsignal' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE 0 0 DIMENSION) (INTEGER 4 0 0 INTEGER
 ()) 0 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
-77 't' 'statistics' 't' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+78 't' 'statistics' 't' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (2
 0 DEFERRED () () () ()) 0 () () () 0 0)
-78 'tac' 'statistics' 'tac' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+79 'tac' 'statistics' 'tac' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-79 'u' 'statistics' 'u' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+80 'u' 'statistics' 'u' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (3
 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-80 'w' 'statistics' 'w' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
-EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (4
-0 DEFERRED () () () () () () () ()) 0 () () () 0 0)
-81 'yld' 'statistics' 'yld' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+81 'uf' 'statistics' 'uf' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
-82 'yrtemp' 'statistics' 'yrtemp' 1 ((VARIABLE UNKNOWN-INTENT
+82 'un' 'statistics' 'un' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
+83 'w' 'statistics' 'w' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0 0 () (4
+0 DEFERRED () () () () () () () ()) 0 () () () 0 0)
+84 'yld' 'statistics' 'yld' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN EXPLICIT-SAVE 0 0 ALLOCATABLE DIMENSION) (REAL 8 0 0 REAL ()) 0
+0 () (3 0 DEFERRED () () () () () ()) 0 () () () 0 0)
+85 'yrtemp' 'statistics' 'yrtemp' 1 ((VARIABLE UNKNOWN-INTENT
 UNKNOWN-PROC UNKNOWN EXPLICIT-SAVE 0 0 DIMENSION) (REAL 8 0 0 REAL ()) 0
 0 () (1 0 EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
 CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
@@ -229,8 +238,8 @@ CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '2')) 0 () () () 0 0)
 'discard_mod' 0 45 'f' 0 46 'f100' 0 47 'f_apical' 0 48 'f_current' 0 49
 'fbiomass' 0 50 'fmax' 0 51 'fp' 0 52 'landed_fraction' 0 53 'm' 0 54
 'maturity' 0 55 'msytemp' 0 56 'n' 0 57 'p_male' 0 58 'plusage' 0 59
-'quota' 0 60 'r' 0 61 'rand' 0 62 'sel_mod' 0 63 'selectivity' 0 64
-'signal' 0 65 'sr' 0 66 'sr_mse_minimum' 0 67 'srtemp' 0 68 'ssb' 0 69
-'ssb_male' 0 70 'ssbmsytemp' 0 71 'ssn' 0 72 'ssn_male' 0 73 'statistics'
-0 74 'sum_yld' 0 75 'sumsignal' 0 76 't' 0 77 'tac' 0 78 'u' 0 79 'w' 0
-80 'yld' 0 81 'yrtemp' 0 82)
+'quota' 0 60 'r' 0 61 'rand' 0 62 'rec_mod' 0 63 'sel_mod' 0 64
+'selectivity' 0 65 'signal' 0 66 'sr' 0 67 'sr_mse_minimum' 0 68 'srtemp'
+0 69 'ssb' 0 70 'ssb_male' 0 71 'ssbmsytemp' 0 72 'ssn' 0 73 'ssn_male'
+0 74 'statistics' 0 75 'sum_yld' 0 76 'sumsignal' 0 77 't' 0 78 'tac' 0
+79 'u' 0 80 'uf' 0 81 'un' 0 82 'w' 0 83 'yld' 0 84 'yrtemp' 0 85)

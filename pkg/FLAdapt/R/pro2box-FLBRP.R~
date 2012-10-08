@@ -1,12 +1,9 @@
 #pro2box-FLBRP
 
-pro2boxFLBRP=function(x,faa=NULL,							
-                        maa=NULL,
-                        sel=NULL,									
-                        recruits=NULL){
-  
+pro2boxFLBRP=function(x){
+  require(FLAdvice)
   require(stringr)
-
+  
   getGrw=function(x){
     
     grw=lapply(strsplit(x," +"),as.numeric)
@@ -25,7 +22,7 @@ pro2boxFLBRP=function(x,faa=NULL,
     
     return(par)}
   
-  getPro2boxCtrl=function(object){
+  getP2boxCtrl=function(object){
     
     ctrl=scan(object,what=as.character(),sep="\n")
     ctrl=gsub("\t+", " ", str_trim(ctrl))
@@ -38,20 +35,8 @@ pro2boxFLBRP=function(x,faa=NULL,
     
     s2n=function(x) as.numeric(str_trim(strsplit(x," ")[[1]]))
   
-    ctrl=getPro2boxCtrl(x)
-  
-    fn=function(aa)
-        switch(tolower(getExt(aa)),
-               "out"= paste("1", aa),
-               "txt"= paste("0", aa),
-               stop("Extension should be 'out' ot 'txt'"))
-      
-    if (!is.null(faa))      ctrl[23]=fn(faa)
-    if (!is.null(maa))      ctrl[26]=fn(maa)
-    if (!is.null(sel))      ctrl[27]=fn(sel)
-    if (!is.null(recruits)) ctrl[28]=fn(recruits)
-  
-  dmns=list(age=s2n(ctrl[12])[1]:s2n(ctrl[12])[2])
+    ctrl=getP2boxCtrl(x)
+    dmns=list(age=s2n(ctrl[12])[1]:s2n(ctrl[12])[2])
     
     mat.=gsub("\t+", " ", ctrl[18])
     mat.=FLQuant(as.numeric(strsplit(mat.," +")[[1]][length(dmns$age)]),dimnames=dmns)
@@ -78,7 +63,7 @@ pro2boxFLBRP=function(x,faa=NULL,
       return(rtn)}
     
     ### m
-    dmns$iter=seq(s2n(ctrl[3])[[1]][1])
+    dmns$iter=seq(s2n(ctrl[3][[1]][1]))
     m(res)=getOut(strsplit(ctrl[26]," +")[[1]][1:2],dir.,dmns)
     dmns=dimnames(m(res))
     

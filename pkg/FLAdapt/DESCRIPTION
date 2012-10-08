@@ -7,7 +7,7 @@ Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What Licence is it under ?
-Collate: generics.R class-FLAdaptControl.R class-FLAdaptControls.R  class-FLAdapt.R  class-FLAdapts.R constructors-FLAdapt.R constructors-FLAdaptControl.R createAccessors.R io.funcs.R writeFuncs.R plot.R methods-FLAdapt.R io.Pro2Box.R io.VPA2Box.R io.Retros.R io.FLIndices.R adapt-Diags.R rcpp_hello_world.R fit.R io.Diags.R io.ICCAT.R
+Collate: generics.R class-FLAdaptControl.R class-FLAdaptControls.R  class-FLAdapt.R  class-FLAdapts.R constructors-FLAdapt.R constructors-FLAdaptControl.R createAccessors.R io.funcs.R writeFuncs.R plot.R methods-FLAdapt.R io.VPA2Box.R io.Retros.R io.FLIndices.R adapt-Diags.R rcpp_hello_world.R fit.R io.Diags.R io.ICCAT.R pro2box-class.R pro2box-constructors.R pro2box-io.R  pro2box-methods.R pro2box-run.R pro2box-FLBRP.R
 LazyLoad: yes
-Depends: Rcpp (>= 0.9.7), FLCore, ggplotFL
+Depends: Rcpp (>= 0.9.7), FLCore, ggplotFL, FLAdvice
 LinkingTo: Rcpp
