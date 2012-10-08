@@ -1,4 +1,4 @@
-	# #######################################################################################
+# #######################################################################################
 # ### SS3 stuff for Kobe ################################################################
 # #######################################################################################
 ac=as.character
@@ -10,8 +10,8 @@ readPro2boxKobe=function(x,proxy){
 
     res=transform(merge(       vpaOut[,c("year","iter","tac","ssb","fapex")], 
                         subset(vpaRef, refpt==proxy, select=c(iter,ssb,harvest)),by="iter"),
-                    ssb    =ssb.x/ssb.y, 
-                    harvest=fapex/harvest)[,c("year","iter","tac","ssb","harvest")]
+                     ssb    =ssb.x/ssb.y, 
+                     harvest=fapex/harvest)[,c("year","iter","tac","ssb","harvest")]
     
     return(res)}
 

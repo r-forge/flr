@@ -19,7 +19,7 @@
 \begin{document}
 
 %------ Frontmatter ------
-\title{Kobe plotting and processing.}
+\title{Kobe Plotting}
 \author{Laurie Kell\footnote{ICCAT}}
 \date{June 2012}
 \maketitle
@@ -27,22 +27,29 @@
 
 \section{Introduction}
 
-Scientific Advice provided within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on the recommendations of Kobe II. 
-The advice requires three main items 
+Scientific Advice within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on a common framework 
+following the recommendations of Kobe II. The advice is based on estimations of the probabilities of $F \textless F_{MSY}$, 
+$B$ \textgreater $B_{MSY}$ for a range of management options, generally in the form of a range of total allowable catchs (TAC).
+
+This requires, a stock assessment, estimation of reference points and projections. In this document we show how
+R can be used to summarise stock assessment results in the Kobe II format. 
+
+This is done using the R package \texttt{kobe} the probabilities of $B \is intended to three main items, i.e. 
 
 \begin{itemize}
- \item The Kobe matrix which summarises the probability of achieving management targets for different management options;
- \item The Kobe phase plot showing fishng mortality and stock status relevant to management reference points; and
- \item  A pie chart summarising stock status 
+ \item a phase plot showing fishng mortality and stock status relevant to management reference points
+ \item a pie chart summarising current stock status; and 
+ \item a Kobe strategy matrix which summarises the probability of achieving management targets for different management options over time.
 \end{itemize}
 
-In this document we show how to use R to provide stock assessment advice consistent with these recommendations.
  
 \section{Examples}
 
 <<echo=FALSE>>=
 #### prepares data and plots ########################################################################################## 
 library(kobe)
+library(plyr)
+library(reshape)
 
 #### Data #############################################################################################################
 ## simulated time series
@@ -65,10 +72,26 @@ pie.dat=melt(pie.dat,id.vars=c("year","TAC"))
 <<echo=FALSE>>=
 ## plots ##############################################################################################################
 ## summary of data
-fig1=ggplot(subset(kobe.ts)) + geom_boxplot(aes(factor(year),ssb)) +
-                               facet_wrap(~TAC)
-fig2=ggplot(smry.ts)+geom_line(aes(year,ssb,    colour=factor(TAC),group=TAC))
-fig3=ggplot(smry.ts)+geom_line(aes(year,harvest,colour=factor(TAC),group=TAC))
+fig1=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year),ssb)) +
+                               facet_wrap(~TAC,ncol=2) +
+                               scale_x_discrete(breaks=seq(2005,2020,5)) +
+                               xlab("Year")+ylab(expression(SSB/B[MSY])) +
+                               geom_hline(aes(yintercept=1),col="red")
+fig2=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year),harvest)) +
+                               facet_wrap(~TAC,ncol=2) +
+                               scale_x_discrete(breaks=seq(2005,2020,5)) +
+                               xlab("Year")+ylab(expression(F/F[MSY])) +
+                               geom_hline(aes(yintercept=1),col="red")+
+                               scale_y_continuous(limits=c(0,2))
+
+.fig2=ggplot(smry.ts)+geom_line(aes(year,ssb,  colour=factor(TAC),group=TAC),size=2) +
+                               xlab("Year")+ylab(expression(SSB/B[MSY])) +
+                               geom_hline(aes(yintercept=1),col="red")
+
+.fig3=ggplot(smry.ts)+geom_line(aes(year,harvest,colour=factor(TAC),group=TAC),size=2) +
+                               xlab("Year")+ylab(expression(F/F[MSY])) +
+                               geom_hline(aes(yintercept=1),col="red") +
+                               scale_y_continuous(limits=c(0,2))
 
 ## Kobe phase plots
 fig4=kobe(subset(smry.ts,year<=2010)) + 
@@ -78,7 +101,7 @@ fig5=kobe(subset(smry.ts,year>=2010)) +
     geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
 
 ## pie charts
-fig7=ggplot(subset(pie.dat,year>=2011 & year<=2020 & TAC==4000), aes(x ="", y=value, fill = factor(variable))) + 
+fig7=ggplot(subset(pie.dat,year %in% seq(2011,2021,3) & TAC %in% c(3000,4000,5000)), aes(x ="", y=value, fill = factor(variable))) + 
         geom_bar(width = 1) + 
         coord_polar(theta = "y") +
         labs(fill='Kobe Quadrant') + xlab('') + ylab('')       +
@@ -89,13 +112,57 @@ fig7=ggplot(subset(pie.dat,year>=2011 & year<=2020 & TAC==4000), aes(x ="", y=va
 
 \begin{figure}
 \begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=3>>=
+<<fig=TRUE, echo=FALSE, width=6, height=6>>=
 print(fig1)
 @
-\caption{\label{benzene} Time series of SSB}
+\caption{Time series of SSB}
 \end{center}
 \end{figure}
 
+\begin{figure}
+\begin{center}
+<<fig=TRUE, echo=FALSE, width=6, height=6>>=
+print(fig2)
+@
+\caption{Time series of Fishing Mortality}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+<<fig=TRUE, echo=FALSE, width=6, height=5>>=
+print(fig4)
+@
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+<<fig=TRUE, echo=FALSE, width=6, height=5>>=
+print(fig5)
+@
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+<<fig=TRUE, echo=FALSE, width=6, height=4>>=
+k2sm(subset(kobe.ts,year>=2010)[,c("year","TAC","green")])
+@
+\caption{K2SM}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+<<fig=TRUE, echo=FALSE>>=
+print(fig7)
+@
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
 
 \section{Implementation}
 
@@ -108,7 +175,7 @@ The data and code used in this document is in the package {\tt kobe} , which fir
 
 Loading the libraries and data
 <<echo=TRUE>>=
-library(FLAdvice)
+library(kobe)
 
 data(kobe.ts)
 head(kobe.ts)

@@ -1,6 +1,7 @@
 % kobe.Rnw --
 %
 % Author: laurence kell <lauriekell@gmail.com>
+
 %\VignetteIndexEntry{kobe}
 % Meta information - fill between {} and do not remove %
 % \VignetteIndexEntry{An R Package for ...}
@@ -18,251 +19,148 @@
 \begin{document}
 
 %------ Frontmatter ------
-\title{Kobe plotting and processing.}
+\title{Kobe Plotting}
 \author{Laurie Kell\footnote{ICCAT}}
 \date{June 2012}
 \maketitle
 \tableofcontents
 
+
+ 
 \section{Introduction}
 
-The Scientific Advice provided within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on the recommendations of Kobe II. 
-In this document we show how to provide stock assessment advice consistent with these recommendations.
-
-The advice requires three main items 
+Scientific Advice within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on a common framework 
+(ref). The advice requires estimation of the probabilities of $F \textless F_{MSY}$ and
+$B$ \textgreater $B_{MSY}$ for a range of management options, generally a range of total allowable catchs (TAC). Advice is presented as 
 
 \begin{itemize}
- \item Kobe matrices
- \item Kobe matrices
- \item Kobe matrices
+ \item a phase plot showing fishng mortality and stock status relevant to management reference points
+ \item a pie chart summarising current stock status; and 
+ \item a Kobe strategy matrix which summarises the probability of achieving management targets for different management options over time.
 \end{itemize}
 
+This requires, a stock assessment, estimates of reference points and projections
+In this document we show how R can be used to summarise stock assessment results in the Kobe II format using the R package \texttt{kobe}. 
+
+The package can be loaded with the command:
+
+library(kobe)
+
+\section{Input Data}
+
+The package requires a data.frame with columns for stock and fishing mortality relative and columns describing
+any scenarios. Data can be read in from different stock assessment outputs using methods 
+in other FLR packages; see the section on Stock Assessment Packages for examples.
+
+The basic data needed are time series of $F/F_{MSY}$ and $SSB/B_{MSY}$ (or some other benchmark such as $F_{0.1}$)
+for historic and projections. These need to include estimates of uncertainty, e.g. produced by bootstrapping an
+assessment or running Monte Carlo Markov Chain simulations. An example data set is
+
+data(kobe.ts)
+head(kobe.ts)
+
+\section{Stock Trends}
+
+\section{Examples}
 
 
-A Kobe plot chart showing:
+\subsection{Stock Assessment Packages}
 
-
-A pie chart summarizing the stock status showing the proportion of model outputs that are within the
-green quadrant of the Kobe plot chart (not overfished, no overfishing), the yellow quadrant (overfished
-or overfishing), and the red quadrant (overfished and overfishing), in accordance with the format set out
-in Annex Figure 2.
+ 
+\section{Examples}
 
 
 
-\section{Coding}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-003}
+\caption{Time series of SSB}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-004}
+\caption{Time series of Fishing Mortality}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-005}
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-006}
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-007}
+\caption{K2SM}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics{kobe-008}
+\caption{Kobe phase plot}
+\end{center}
+\end{figure}
+
+\section{Implementation}
+
+
+
+The plots are implement using three methods, 
 
 The data and code used in this document is in the package {\tt kobe} , which first need to be loaded e.g.
 
-Loading the libraries and data
-\begin{Schunk}
-\begin{Sinput}
-> library(FLAdvice)
-> data(kobe.ts)
-> head(kobe.ts)
-\end{Sinput}
-\begin{Soutput}
-   year TAC iter   harvest      ssb
-11 2001   0    1 0.8564326 2.619338
-12 2002   0    1 1.0132627 2.472721
-13 2003   0    1 0.9745105 2.221563
-14 2004   0    1 1.1328116 1.968105
-15 2005   0    1 0.9475996 1.743191
-16 2006   0    1 0.8563178 1.599180
-\end{Soutput}
-\end{Schunk}
+
 
 kobe.ts contains a time series of ssb relatuve to $B_{MSY}$ and F relative to $F_{MSY}$ for a historical time series and a projected time series for a range of TACs by iteration.
 There is a method kobe that produces the kobe phase, a function that generates the K2SM and a utility function kobeP.
 
 To summarise these data the medians of ssb and havest are calculated, since the data are by iteration
 
-\begin{Schunk}
-\begin{Sinput}
-> smry.ts=ddply(kobe.ts, .(TAC,year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
-> head(smry.ts)
-\end{Sinput}
-\begin{Soutput}
-  TAC year      ssb   harvest
-1   0 2001 2.413782 0.7669716
-2   0 2002 2.191820 0.8634968
-3   0 2003 1.968419 0.8868873
-4   0 2004 1.786212 0.9408810
-5   0 2005 1.627186 1.0037876
-6   0 2006 1.496721 1.0588488
-\end{Soutput}
-\end{Schunk}
-
 as seen by plotting the data
-\begin{Schunk}
-\begin{Sinput}
-> kb=ggplot(subset(kobe.ts)) + geom_boxplot(aes(factor(year),ssb)) +
-+                              facet_wrap(~TAC)
-> kb
-\end{Sinput}
-\end{Schunk}
 
-\includegraphics{kobe-004}
 
 
 The trends in SSB and fishing mortality can also be plotted
-\begin{Schunk}
-\begin{Sinput}
-> ggplot(smry.ts)+geom_line(aes(year,ssb,    colour=factor(TAC),group=TAC))
-\end{Sinput}
-\end{Schunk}
 
-\begin{Schunk}
-\begin{Sinput}
-> ggplot(smry.ts)+geom_line(aes(year,harvest,colour=factor(TAC),group=TAC))
-\end{Sinput}
-\end{Schunk}
+%<<fig=TRUE, echo=FALSE, width=6, height=3>>=
+%@
 
-\includegraphics{kobe-007}
-
-\includegraphics{kobe-008}
 
 \section*{Kobe Advice Framework}
 
 The Kobe Advice Framework is based on the Kobe Phase Plot and the Kobe II Strategy Matrix (K2SM). 
 The phase plot plots F relative to $F_{MSY}$ against SSB relative to $B_{MSY}$
 
-\begin{Schunk}
-\begin{Sinput}
-> kpp=kobe(subset(smry.ts,year<=2010)) + 
-+     geom_path(aes(ssb,harvest,colour=year),size=2)+
-+     geom_point(aes(ssb,harvest), data=subset(kobe.ts,year==2010 & TAC==0))
-\end{Sinput}
-\end{Schunk}
 
 The four quadrants correspond to
 
 The management objective is to recover the stock and reduce fishing mortality so that the stock is in the green quadrant. Therefore
 projections are performed to evaluate the consequences of different TACs e.g. by plotting the median trajectories
-\begin{Schunk}
-\begin{Sinput}
-> kobe(subset(smry.ts,year>=2010)) + 
-+   geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
-\end{Sinput}
-\end{Schunk}
 
 This plot does not include the full uncertainty, i.e. the probability of being in the green quadrant for a given TAC in any year.
 The function kobeP caculates the various probabilities e.g. 
-\begin{Schunk}
-\begin{Sinput}
-> kobe.ts=data.frame(kobe.ts, kobeP(kobe.ts$ssb,kobe.ts$harvest))
-> head(kobe.ts)
-\end{Sinput}
-\begin{Soutput}
-   year TAC iter   harvest      ssb f b p collapsed
-11 2001   0    1 0.8564326 2.619338 1 1 1         0
-12 2002   0    1 1.0132627 2.472721 0 1 0         0
-13 2003   0    1 0.9745105 2.221563 1 1 1         0
-14 2004   0    1 1.1328116 1.968105 0 1 0         0
-15 2005   0    1 0.9475996 1.743191 1 1 1         0
-16 2006   0    1 0.8563178 1.599180 1 1 1         0
-\end{Soutput}
-\begin{Sinput}
-> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","p")])
-\end{Sinput}
-\end{Schunk}
 
 In addition 
 
-\begin{Schunk}
-\begin{Sinput}
-> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","b")])
-\end{Sinput}
-\end{Schunk}
-
-\begin{Schunk}
-\begin{Sinput}
-> kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","f")])
-\end{Sinput}
-\end{Schunk}
 
 or a matrix
-
-\begin{Schunk}
-\begin{Sinput}
-> library(xtable)
-> res=kobeM(subset(kobe.ts,year>=2010)[,c("year","TAC","f")])
-> head(res)
-\end{Sinput}
-\begin{Soutput}
-      TAC
-year      0 1000 2000 3000 4000 5000
-  2010 0.09 0.09 0.09 0.09 0.09 0.09
-  2011 1.00 1.00 1.00 1.00 0.48 0.02
-  2012 1.00 1.00 1.00 1.00 0.49 0.03
-  2013 1.00 1.00 1.00 1.00 0.50 0.03
-  2014 1.00 1.00 1.00 1.00 0.50 0.04
-  2015 1.00 1.00 1.00 1.00 0.51 0.04
-\end{Soutput}
-\begin{Sinput}
-> head(kobeShade(res))
-\end{Sinput}
-\begin{Soutput}
-      TAC
-       0               1000            2000            3000           
-  [1,] "\\{9}"         "\\{9}"         "\\{9}"         "\\{9}"        
-  [2,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
-  [3,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
-  [4,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
-  [5,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
-  [6,] "\\grey90{100}" "\\grey90{100}" "\\grey90{100}" "\\grey90{100}"
-      TAC
-       4000           5000   
-  [1,] "\\{9}"        "\\{9}"
-  [2,] "\\{48}"       "\\{2}"
-  [3,] "\\{49}"       "\\{3}"
-  [4,] "\\{50}"       "\\{3}"
-  [5,] "\\{50}"       "\\{4}"
-  [6,] "\\grey50{51}" "\\{4}"
-\end{Soutput}
-\begin{Sinput}
-> t.=kobeShade(t(res))
-> xtable(kobeShade(t(res)))
-\end{Sinput}
-\begin{Soutput}
-% latex table generated in R 2.15.0 by xtable 1.7-0 package
-% Fri Jun 22 18:51:47 2012
-\begin{table}[ht]
-\begin{center}
-\begin{tabular}{rllllllllllllllllllllllllll}
-  \hline
- & 2010 & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 & 2017 & 2018 & 2019 & 2020 & 2021 & 2022 & 2023 & 2024 & 2025 & 2026 & 2027 & 2028 & 2029 & 2030 & 2031 & 2032 & 2033 & 2034 & 2035 \\ 
-  \hline
-1 & $\backslash$\{9\} & $\backslash$\{48\} & $\backslash$\{49\} & $\backslash$\{50\} & $\backslash$\{50\} & $\backslash$\{4\} & $\backslash$\{4\} & $\backslash$\{4\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{2\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} & $\backslash$\{1\} \\ 
-  2 & $\backslash$\{9\} & $\backslash$\{2\} & $\backslash$\{3\} & $\backslash$\{3\} & $\backslash$\{4\} & $\backslash$grey50\{51\} & $\backslash$grey50\{51\} & $\backslash$grey50\{51\} & $\backslash$grey50\{56\} & $\backslash$grey50\{59\} & $\backslash$gey60\{65\} & $\backslash$gey60\{64\} & $\backslash$gey60\{64\} & $\backslash$gey60\{64\} & $\backslash$gey60\{65\} & $\backslash$gey60\{69\} & $\backslash$gey60\{69\} & $\backslash$gey60\{69\} & $\backslash$gey60\{64\} & $\backslash$gey60\{65\} & $\backslash$gey60\{69\} & $\backslash$gey60\{68\} & $\backslash$gey60\{68\} & $\backslash$gey60\{66\} & $\backslash$gey60\{66\} & $\backslash$gey60\{68\} \\ 
-  3 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
-  4 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
-  5 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
-  6 & $\backslash$\{9\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} & $\backslash$grey90\{100\} \\ 
-   \hline
-\end{tabular}
-\end{center}
-\end{table}
-\end{Soutput}
-\end{Schunk}
 
 
 The probabilities can also be plotted as pie charts e.g. if the Commission have a agreed a TAC of x then the expected probabilities over time are given by
 
-\begin{Schunk}
-\begin{Sinput}
-> dat=transform(subset(kobe.ts,year>2010),red=collapsed,green=p,yellow=1-p-collapsed)
-> dat=ddply(dat,.(TAC,year),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
-> dat=melt(dat,id.vars=c("year","TAC"))
-> pie = ggplot(subset(dat,year>=2011 & year<=2020 & TAC==4000), aes(x ="", y=value, fill = factor(variable))) + 
-+         geom_bar(width = 1) + 
-+         coord_polar(theta = "y") +
-+         labs(fill='Kobe Quadrant') + xlab('') + ylab('')       +
-+         scale_fill_manual(values=c("red","green","yellow"))    + 
-+         facet_grid(TAC~year) 
-\end{Sinput}
-\end{Schunk}
-
-\includegraphics{kobe-017}
 
 \section*{Extended Examples}
 
@@ -301,7 +199,7 @@ ASPIC
 
 \section*{References}
 
-\section[Appendix]{}
+\section*{Appendix}
 
   \begin{enumerate}
     \item  In support of the SCRS scientific advice, the Executive Summaries within the SCRS annual report which present the results of the stock assessment results should include, when possible: 

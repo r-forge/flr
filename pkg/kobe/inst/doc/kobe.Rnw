@@ -19,7 +19,7 @@
 \begin{document}
 
 %------ Frontmatter ------
-\title{Kobe plotting and processing.}
+\title{Kobe Plotting}
 \author{Laurie Kell\footnote{ICCAT}}
 \date{June 2012}
 \maketitle
@@ -27,22 +27,52 @@
 
 \section{Introduction}
 
-Scientific Advice provided within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on the recommendations of Kobe II. 
-The advice requires three main items 
+Scientific Advice within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on a common framework 
+(ref). The advice requires estimation of the probabilities of $F \textless F_{MSY}$ and
+$B$ \textgreater $B_{MSY}$ for a range of management options, generally a range of total allowable catchs (TAC). Advice is presented as 
 
 \begin{itemize}
- \item The Kobe matrix which summarises the probability of achieving management targets for different management options;
- \item The Kobe phase plot showing fishng mortality and stock status relevant to management reference points; and
- \item  A pie chart summarising stock status 
+ \item a phase plot showing fishng mortality and stock status relevant to management reference points
+ \item a pie chart summarising current stock status; and 
+ \item a Kobe strategy matrix which summarises the probability of achieving management targets for different management options over time.
 \end{itemize}
 
-In this document we show how to use R to provide stock assessment advice consistent with these recommendations.
- 
-\section{Examples}
+This requires, a stock assessment, estimates of reference points and projections
+In this document we show how R can be used to summarise stock assessment results in the Kobe II format using the R package \texttt{kobe}. 
+
+The package can be loaded with the command:
+
+
+library(kobe)
+
+\section{Input Data}
+
+The package requires a data.frame with columns for stock and fishing mortality relative and columns describing
+any scenarios. Data can be read in from different stock assessment outputs using methods 
+in other FLR packages; see the section on Stock Assessment Packages for examples.
+
+The basic data needed are time series of $F/F_{MSY}$ and $SSB/B_{MSY}$ (or some other benchmark such as $F_{0.1}$)
+for historic and projections. These need to include estimates of uncertainty, e.g. produced by bootstrapping an
+assessment or running Monte Carlo Markov Chain simulations. An example data set is
+
+data(kobe.ts)
+head(kobe.ts)
+
+\section{Stock Trends}
+
+\section{Phase plot}
+
+\section{Probabilities}
+
+\section{K2SM}
+
+\section{Assessment Packages}
 
 <<echo=FALSE>>=
 #### prepares data and plots ########################################################################################## 
 library(kobe)
+library(plyr)
+library(reshape)
 
 #### Data #############################################################################################################
 ## simulated time series
@@ -70,6 +100,11 @@ fig1=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year
                                scale_x_discrete(breaks=seq(2005,2020,5)) +
                                xlab("Year")+ylab(expression(SSB/B[MSY])) +
                                geom_hline(aes(yintercept=1),col="red")
+                               
+fig1+geom_line(aes(year,ssb,group=iter,col=iter),data=subset(kobe.ts, year %in% 2005:2020 & iter %in% sample(1:100,5)))
+  
+                                                      
+                                  
 fig2=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year),harvest)) +
                                facet_wrap(~TAC,ncol=2) +
                                scale_x_discrete(breaks=seq(2005,2020,5)) +

@@ -1,3 +1,7 @@
 \contentsline {section}{\numberline {1}\relax Introduction}{1}
-\contentsline {section}{\numberline {2}\relax Examples}{1}
-\contentsline {section}{\numberline {3}\relax Implementation}{1}
+\contentsline {section}{\numberline {2}\relax Input Data}{2}
+\contentsline {section}{\numberline {3}\relax Stock Trends}{2}
+\contentsline {section}{\numberline {4}\relax Examples}{2}
+\contentsline {subsection}{\numberline {4.1}\relax Stock Assessment Packages}{2}
+\contentsline {section}{\numberline {5}\relax Examples}{2}
+\contentsline {section}{\numberline {6}\relax Implementation}{2}

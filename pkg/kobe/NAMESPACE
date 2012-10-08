@@ -1,10 +1,10 @@
-import("FLCore","ggplotFL")
 export("k2sm",
        "kobeP",
-       "readPro2boxKobe",
-       "kobePfn")
-exportMethods("kobe",
-              "kobeSS3",
-              "kobe2box",
-              "kobeAspic",
-              "kobeShade")
+       "phaseFn",
+       "theme_flr",
+       "calcFreq",
+       "calcDensity",
+       "calcProb")
+exportMethods("kobeAspic",
+              "kobePhase",
+               "shade")

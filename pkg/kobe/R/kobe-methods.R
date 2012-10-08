@@ -1,15 +1,15 @@
 ### provid
-setMethod('kobe', signature(object='missing'),
+setMethod('kobePhase', signature(object='missing'),
   function(object,xlim=c(0,2),ylim=xlim){
     
        invisible(kobeFn(NULL,xlim,ylim))})
 
-setMethod('kobe', signature(object='data.frame'),
+setMethod('kobePhase', signature(object='data.frame'),
   function(object,xlim=c(0,2),ylim=xlim){
     
        invisible(kobeFn(object,xlim,ylim))})
 
-setMethod('kobe', signature(object='FLBRP'),
+setMethod('kobePhase', signature(object='FLBRP'),
   function(object,xlim=c(0,2),ylim=xlim){
     
        object=model.frame(FLQuants(ssb    =sweep( ssb.obs(object),6,refpts(object)["msy","ssb"],    "/"),
@@ -17,7 +17,7 @@ setMethod('kobe', signature(object='FLBRP'),
 
        invisible(kobeFn(object,xlim,ylim))})
 
-setMethod('kobe', signature(object='FLlst'),
+setMethod('kobePhase', signature(object='FLlst'),
   function(object,xlim=c(0,2),ylim=xlim){
        
        ldply(object, function(object)
@@ -53,7 +53,7 @@ setMethod('kobeP', signature(b="FLStock",f="FLBRP"),
    return(res)})
 
 
-setMethod('kobeShade', signature(object='numeric'),
+setMethod('shade', signature(object='numeric'),
           function(object,breaks=c(-0.1,50,60,70,80,90,100),
                      shades=c("","\\cellcolor{gray90}","\\cellcolor{gray80}","\\cellcolor{gray70}","\\cellcolor{gray60}","\\cellcolor{gray50}"),
                      pct="\\%",...){
@@ -73,18 +73,18 @@ setMethod('kobeShade', signature(object='numeric'),
   
   return(res)})
 
-setMethod('kobeShade', signature(object='data.frame'),
+setMethod('shade', signature(object='data.frame'),
           function(object,breaks =c(-0.1,50,60,70,80,90,100),
                    shades=c("","\\cellcolor{gray90}","\\cellcolor{gray80}","\\cellcolor{gray70}","\\cellcolor{gray60}","\\cellcolor{gray50}"),
                    pct="\\%",...){
 
-     apply(object,2,kobeShade,breaks=breaks,shades=shades,pct=pct)})
-setMethod('kobeShade', signature(object='matrix'),
+     apply(object,2,shade,breaks=breaks,shades=shades,pct=pct)})
+setMethod('shade', signature(object='matrix'),
           function(object,breaks =c(-0.1,50,60,70,80,90,100),
                    shades=c("","\\cellcolor{gray90}","\\cellcolor{gray80}","\\cellcolor{gray70}","\\cellcolor{gray60}","\\cellcolor{gray50}"),
                    pct="\\%",...){
 
-     apply(object,2,kobeShade,breaks=breaks,shades=shades,pct=pct)})
+     apply(object,2,shade,breaks=breaks,shades=shades,pct=pct)})
 
 setMethod('k2sm', signature(object='data.frame'),
           function(object,cex   =1.0,

@@ -6,7 +6,6 @@ ac=as.character
 ## Heavy lifting functions ##############################################################
 ioSS3=function(x,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nwrms=10,what=c("ts","smry","pts","wrms"),nrows=-1,thin=1){
 
-print(x)
   
     if (is.null(yrs)){
        nms=names(read.csv(x,sep=" ",nrows=1))
