@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.9.2)  5 OCT 2012 16:49
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.9.2)  8 OCT 2012 19:20
 entering extended mode
  %&-line parsing enabled.
 **kobe.tex
@@ -224,87 +224,83 @@ LaTeX Font Info:    ... okay on input line 19.
 \everyMPtoPDFconversion=\toks17
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 25.
+(Font)              <12> on input line 26.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 25.
+(Font)              <8> on input line 26.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 25.
+(Font)              <6> on input line 26.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 25.
+(Font)              <5> on input line 26.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 25.
- (./kobe.toc
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 3.
-)
+(Font)              <9> on input line 26.
+ (./kobe.toc)
 \tf@toc=\write5
 \openout5 = `kobe.toc'.
 
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 32.
 
 
-LaTeX Warning: Command \textless invalid in math mode on input line 33.
+LaTeX Warning: Command \textless invalid in math mode on input line 32.
 
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 37.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 36.
 (/usr/share/texmf/tex/latex/R/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10.95> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 37.
-LaTeX Font Info:    Try loading font information for T1+aett on input line 43.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 36.
 
-(/usr/share/texmf-texlive/tex/latex/ae/t1aett.fd
-File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
-) [1
+Overfull \vbox (0.36407pt too high) has occurred while \output is active []
+
+
+[1
 Non-PDF special ignored!
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-<kobe-003.pdf, id=14, 433.62pt x 433.62pt>
-File: kobe-003.pdf Graphic file (type pdf)
- <use kobe-003.pdf>
-<kobe-004.pdf, id=15, 433.62pt x 433.62pt>
-File: kobe-004.pdf Graphic file (type pdf)
- <use kobe-004.pdf>
-<kobe-005.pdf, id=16, 433.62pt x 361.35pt>
+LaTeX Font Info:    Try loading font information for T1+aett on input line 42.
+
+(/usr/share/texmf-texlive/tex/latex/ae/t1aett.fd
+File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
+)
+<kobe-005.pdf, id=14, 433.62pt x 433.62pt>
 File: kobe-005.pdf Graphic file (type pdf)
  <use kobe-005.pdf>
-<kobe-006.pdf, id=17, 433.62pt x 361.35pt>
+<kobe-006.pdf, id=15, 433.62pt x 433.62pt>
 File: kobe-006.pdf Graphic file (type pdf)
  <use kobe-006.pdf>
-<kobe-007.pdf, id=18, 433.62pt x 289.08pt>
+<kobe-007.pdf, id=16, 433.62pt x 433.62pt>
 File: kobe-007.pdf Graphic file (type pdf)
- <use kobe-007.pdf>
-<kobe-008.pdf, id=19, 433.62pt x 433.62pt>
-File: kobe-008.pdf Graphic file (type pdf)
- <use kobe-008.pdf> [2] [3 <./kobe-003.pdf>] [4 <./kobe-004.pdf>] [5 <./kobe-00
-5.pdf> <./kobe-006.pdf>] [6 <./kobe-007.pdf> <./kobe-008.pdf>] [7] [8]
-Overfull \hbox (0.41139pt too wide) in paragraph at lines 223--224
+ <use kobe-007.pdf> [2] [3 <./kobe-005.pdf>] [4 <./kobe-006.pdf>] [5 <./kobe-00
+7.pdf>] [6] [7]
+Overfull \hbox (0.41139pt too wide) in paragraph at lines 211--212
 []\T1/aer/m/n/10.95 management ref-er-ence points ex-pressed as FCUR-RENT on $\
 OML/cmm/m/it/10.95 F[]$
  []
 
-[9] [10] (./kobe.aux) ) 
+[8] [9] [10] (./kobe.aux) ) 
 Here is how much of TeX's memory you used:
- 2676 strings out of 493848
- 35327 string characters out of 1152824
+ 2664 strings out of 493848
+ 35124 string characters out of 1152824
  84119 words of memory out of 3000000
- 5900 multiletter control sequences out of 15000+50000
- 29536 words of font info for 61 fonts, out of 3000000 for 9000
+ 5889 multiletter control sequences out of 15000+50000
+ 30027 words of font info for 63 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 35i,11n,21p,388b,323s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.
-enc}</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/s
-hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-
-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fon
-ts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/pub
-lic/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
-/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.pfb>
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texliv
-e/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/publi
-c/cm-super/sfrm1095.pfb>
-Output written on kobe.pdf (10 pages, 971608 bytes).
+ 35i,11n,21p,388b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-
+ts1.enc}</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/te
+xmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.
+pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr
+/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf
+-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fon
+ts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/public/cm-
+super/sfrm1095.pfb>
+Output written on kobe.pdf (10 pages, 385790 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
+ 105 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

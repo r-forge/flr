@@ -1,7 +1,8 @@
 \contentsline {section}{\numberline {1}\relax Introduction}{1}
 \contentsline {section}{\numberline {2}\relax Input Data}{2}
 \contentsline {section}{\numberline {3}\relax Stock Trends}{2}
-\contentsline {section}{\numberline {4}\relax Examples}{2}
-\contentsline {subsection}{\numberline {4.1}\relax Stock Assessment Packages}{2}
-\contentsline {section}{\numberline {5}\relax Examples}{2}
-\contentsline {section}{\numberline {6}\relax Implementation}{2}
+\contentsline {section}{\numberline {4}\relax Phase plot}{2}
+\contentsline {section}{\numberline {5}\relax Probabilities}{2}
+\contentsline {section}{\numberline {6}\relax K2SM}{2}
+\contentsline {section}{\numberline {7}\relax Assessment Packages}{2}
+\contentsline {section}{\numberline {8}\relax Implementation}{6}

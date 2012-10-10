@@ -18,6 +18,28 @@
 
 \begin{document}
 
+<<echo=FALSE>>=
+library(kobe)
+
+data(sims)
+assmt=subset(sims,year<=2010 & TAC==15000 & Run=="run02", select=c(year,iter,stock,harvest))
+
+fig1=ggplot(assmt) +                                 
+  geom_line(aes(year,stock,group=iter,col=iter)) 
+
+fig2=ggplot(assmt)     + 
+  geom_hline(aes(yintercept=1),col="red",size=2)   + 
+  geom_line(aes(year,harvest,group=iter,col=iter)) +
+  scale_y_continuous(limits=c(0,4))
+
+fig3=ggplot(assmt)                                +
+  geom_hline(aes(yintercept=1),col="red")         +
+  geom_boxplot(aes(factor(year),stock))           +
+  scale_x_discrete(breaks=seq(1980,2010,10))      +
+  xlab("Year")                                    +
+  ylab(expression(SSB/B[MSY]))   
+@
+
 %------ Frontmatter ------
 \title{Kobe Plotting}
 \author{Laurie Kell\footnote{ICCAT}}
@@ -42,8 +64,8 @@ In this document we show how R can be used to summarise stock assessment results
 
 The package can be loaded with the command:
 
-
-library(kobe)
+<<echo=TRUE>>=
+@
 
 \section{Input Data}
 
@@ -55,8 +77,6 @@ The basic data needed are time series of $F/F_{MSY}$ and $SSB/B_{MSY}$ (or some 
 for historic and projections. These need to include estimates of uncertainty, e.g. produced by bootstrapping an
 assessment or running Monte Carlo Markov Chain simulations. An example data set is
 
-data(kobe.ts)
-head(kobe.ts)
 
 \section{Stock Trends}
 
@@ -68,79 +88,27 @@ head(kobe.ts)
 
 \section{Assessment Packages}
 
-<<echo=FALSE>>=
-#### prepares data and plots ########################################################################################## 
+<<echo=TRUE>>=
 library(kobe)
+
+library(ggplot2)
 library(plyr)
 library(reshape)
 
-#### Data #############################################################################################################
-## simulated time series
-data(kobe.ts)
-data(kobe.ts2)
-
-## add probabilities
-kobe.ts =data.frame(kobe.ts,with(kobe.ts,  kobeP(ssb,harvest)))
-kobe.ts2=data.frame(kobe.ts,with(kobe.ts2, kobeP(ssb,harvest)))
-
-## calc medians
-smry.ts=ddply(kobe.ts, .(TAC,year), function(x) data.frame(ssb=median(x$ssb),harvest=median(x$harvest)))
-
-## summaries for pie charts
-pie.dat=transform(subset(kobe.ts,year>2010), kobeP(ssb,harvest))
-pie.dat=ddply(pie.dat,.(TAC,year),function(x) data.frame(red=mean(x$red),green=mean(x$green),yellow=mean(x$yellow)))
-pie.dat=melt(pie.dat,id.vars=c("year","TAC"))
+## example data sets
+data(sims)
 @
 
-<<echo=FALSE>>=
-## plots ##############################################################################################################
-## summary of data
-fig1=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year),ssb)) +
-                               facet_wrap(~TAC,ncol=2) +
-                               scale_x_discrete(breaks=seq(2005,2020,5)) +
-                               xlab("Year")+ylab(expression(SSB/B[MSY])) +
-                               geom_hline(aes(yintercept=1),col="red")
-                               
-fig1+geom_line(aes(year,ssb,group=iter,col=iter),data=subset(kobe.ts, year %in% 2005:2020 & iter %in% sample(1:100,5)))
-  
-                                                      
-                                  
-fig2=ggplot(subset(kobe.ts, year %in% 2005:2020)) + geom_boxplot(aes(factor(year),harvest)) +
-                               facet_wrap(~TAC,ncol=2) +
-                               scale_x_discrete(breaks=seq(2005,2020,5)) +
-                               xlab("Year")+ylab(expression(F/F[MSY])) +
-                               geom_hline(aes(yintercept=1),col="red")+
-                               scale_y_continuous(limits=c(0,2))
-
-.fig2=ggplot(smry.ts)+geom_line(aes(year,ssb,  colour=factor(TAC),group=TAC),size=2) +
-                               xlab("Year")+ylab(expression(SSB/B[MSY])) +
-                               geom_hline(aes(yintercept=1),col="red")
-
-.fig3=ggplot(smry.ts)+geom_line(aes(year,harvest,colour=factor(TAC),group=TAC),size=2) +
-                               xlab("Year")+ylab(expression(F/F[MSY])) +
-                               geom_hline(aes(yintercept=1),col="red") +
-                               scale_y_continuous(limits=c(0,2))
-
-## Kobe phase plots
-fig4=kobe(subset(smry.ts,year<=2010)) + 
-    geom_path(aes(ssb,harvest,colour=year),size=2)+
-    geom_point(aes(ssb,harvest), data=subset(kobe.ts,year==2010 & TAC==0))
-fig5=kobe(subset(smry.ts,year>=2010)) + 
-    geom_path(aes(ssb,harvest,colour=factor(TAC),group=TAC),size=2)
-
-## pie charts
-fig7=ggplot(subset(pie.dat,year %in% seq(2011,2021,3) & TAC %in% c(3000,4000,5000)), aes(x ="", y=value, fill = factor(variable))) + 
-        geom_bar(width = 1) + 
-        coord_polar(theta = "y") +
-        labs(fill='Kobe Quadrant') + xlab('') + ylab('')       +
-        scale_fill_manual(values=c("red","green","yellow"))    + 
-        facet_grid(TAC~year) 
+<<echo=TRUE>>=
+ggplot(assmt)   + 
+  geom_hline(aes(yintercept=1),col="red",size=2)  + 
+  geom_line( aes(year,stock,group=iter,col=iter))
 @
 
 
 \begin{figure}
 \begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=6>>=
+<<fig=TRUE, echo=FALSE>>=
 print(fig1)
 @
 \caption{Time series of SSB}
@@ -149,48 +117,22 @@ print(fig1)
 
 \begin{figure}
 \begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=6>>=
+<<fig=TRUE, echo=FALSE>>=
 print(fig2)
 @
-\caption{Time series of Fishing Mortality}
-\end{center}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=5>>=
-print(fig4)
-@
-\caption{Kobe phase plot}
-\end{center}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=5>>=
-print(fig5)
-@
-\caption{Kobe phase plot}
-\end{center}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-<<fig=TRUE, echo=FALSE, width=6, height=4>>=
-k2sm(subset(kobe.ts,year>=2010)[,c("year","TAC","green")])
-@
-\caption{K2SM}
+\caption{Time series of SSB}
 \end{center}
 \end{figure}
 
 \begin{figure}
 \begin{center}
 <<fig=TRUE, echo=FALSE>>=
-print(fig7)
+print(fig3)
 @
-\caption{Kobe phase plot}
+\caption{Time series of SSB}
 \end{center}
 \end{figure}
+
 
 \section{Implementation}
 
@@ -200,14 +142,6 @@ The plots are implement using three methods,
 
 The data and code used in this document is in the package {\tt kobe} , which first need to be loaded e.g.
 
-
-Loading the libraries and data
-<<echo=TRUE>>=
-library(kobe)
-
-data(kobe.ts)
-head(kobe.ts)
-@
 
 kobe.ts contains a time series of ssb relatuve to $B_{MSY}$ and F relative to $F_{MSY}$ for a historical time series and a projected time series for a range of TACs by iteration.
 There is a method kobe that produces the kobe phase, a function that generates the K2SM and a utility function kobeP.
@@ -219,9 +153,6 @@ as seen by plotting the data
 
 
 The trends in SSB and fishing mortality can also be plotted
-
-%<<fig=TRUE, echo=FALSE, width=6, height=3>>=
-%@
 
 
 \section*{Kobe Advice Framework}
