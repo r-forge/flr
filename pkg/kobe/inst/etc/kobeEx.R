@@ -1,5 +1,8 @@
 library(kobe)
 
+nao <- read.table("http://www.cdc.noaa.gov/data/correlation/nao.data", skip=1, nrow=62, na.strings="-99.90")
+
+
 data(sims)
 data(assmt)
 
