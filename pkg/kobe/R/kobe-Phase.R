@@ -1,4 +1,4 @@
-phaseFn=function(pts,ts=NULL,mns=FALSE,maxX=2,maxY=maxX,col=colorRampPalette(c("orange","blue"),space="Lab"),
+kobePhaseMar=function(pts,ts=NULL,mns=FALSE,maxX=2,maxY=maxX,col=colorRampPalette(c("orange","blue"),space="Lab"),
                  xlab="Stock relative to Benchmark",
                  ylab="F relative to Benchmark",
                  size=1,

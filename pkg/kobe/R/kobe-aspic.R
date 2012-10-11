@@ -58,9 +58,9 @@ aspicPrb. =function(file){
   return(res[do.call("order",res[,c("iter","year")]),c("iter","year","stock","harvest","bmsy","fmsy")])}
 
 ## Heavy lifting functions ##############################################################
-ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),nwrms=10,what=c("all","trks","pts","smry","wrms")[-1]){
+ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],nwrms=10){
     
-    if (!all(what %in% c("trks","pts","smry","wrms"))) stop("what not in valid options")
+    if (!all(what %in% c("trks","pts","smry","wrms","sims"))) stop("what not in valid options")
     
     if (tolower(getExt(bio)) %in% "bio") bio.=aspicBio.(bio) else stop("Second arg not a .bio file")
     
@@ -74,9 +74,8 @@ ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),nwrms=10,what=c("all","trks","pts"
     pts.  =NULL
     smry. =NULL
     wrms. =NULL
-    all.  =NULL
-    
-    
+    sims. =NULL
+        
     if ("trks" %in% what){ 
       stock  =ddply(res,.(year),function(x) quantile(x$stock,    prob, na.rm=T))
       harvest=ddply(res,.(year),function(x) quantile(x$harvest,  prob, na.rm=T))
@@ -86,8 +85,8 @@ ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),nwrms=10,what=c("all","trks","pts"
     if ("pts" %in% what)
       pts.=subset(res,year %in% max(sort(unique(bio.$year))))
     
-    if ("all" %in% what)
-      all.=res
+    if ("sims" %in% what)
+      sims.=res
     
     if ("smry" %in% what)
        smry. =ddply(data.frame(res,kobeP(res$stock,res$harvest)),
@@ -102,11 +101,11 @@ ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),nwrms=10,what=c("all","trks","pts"
     if ("wrms" %in% what)
        wrms.=subset(res,res$iter %in% sample(unique(res$iter),nwrms))
     
-    return(list(trks=trks.,pts=pts.,smry=smry.,wrms=wrms.,all=all.))
+    return(list(trks=trks.,pts=pts.,smry=smry.,wrms=wrms.,sims=sims.))
     }
  
 setMethod('kobeAspic', signature(object='character'),
-  function(object,prb,dir="",prob=c(0.75,0.5,.025),nwrms=10,what=c("all","trks","pts","smry","wrms")[-1]){
+  function(object,prb,dir="",prob=c(0.75,0.5,.025),nwrms=10,what=c("sims","trks","pts","smry","wrms")[1]){
     
     bio=paste(dir,object,sep="/")
     prb=paste(dir,prb,   sep="/")
@@ -119,13 +118,15 @@ setMethod('kobeAspic', signature(object='character'),
                                    ioAspic(bio=bio,prb=x,prob=prob,nwrms=nwrms,what=what),
                       bio=bio,prob=prob,nwrms=nwrms,what=what)
                  
-      res=list(ts  =ldply(res, function(x) x$ts),
+      res=list(trks=ldply(res, function(x) x$trks),
                pts =ldply(res, function(x) x$pts),
                smry=ldply(res, function(x) x$smry),
-               wrms=ldply(res, function(x) x$wrms))
+               wrms=ldply(res, function(x) x$wrms),
+               sims=ldply(res, function(x) x$sims))
       }
     
-    if(length(what)==1) return(res[[what]]) else return(res)
+    #if(length(what)==1) return(res[[what]]) else 
+    return(res)
     })
 
 # #######################################################################################

@@ -85,7 +85,12 @@ kobeL <- function(x,image=list(levels=seq(0.0,1.0,0.05),
     invisible(tapply(x[,3],x[,2:1],mean))}
 
 ## Calculates frequency of points in squares
-calcFreq=function(x,y,x.n=11,y.n=x.n){
+kobeFreq=function(x,y,x.n=11,y.n=x.n,na.rm=FALSE){
+  
+  if (na.rm){
+    .na=is.na(x)|is.na(y)|is.nan(x)|is.nan(y)
+    x=x[.na]
+    y=y[.na]}
   
   df=data.frame(x=x,y=y)
   df=data.frame(df,xFac=cut(df$x,seq(min(df$x),max(df$x),length.out=x.n)),
@@ -98,8 +103,14 @@ calcFreq=function(x,y,x.n=11,y.n=x.n){
   return(p.[order(p.$freq),])}
 
 ## calculates density of points
-calcDensity=function(x,y,n=11){
-   
+kobeDens=function(x,y,n=11,na.rm=FALSE){
+  
+  if (na.rm){
+    .na=is.na(x)|is.na(y)|is.nan(x)|is.nan(y)
+    x=x[.na]
+    y=y[.na]}
+  
+  
   dat=data.frame(x=x,y=y,n=n)
   f1 =with(dat, kde2d(x,y,n=n)) 
   f2 =data.frame(expand.grid(x=f1$x, y=f1$y), z=as.vector(f1$z))
@@ -107,12 +118,49 @@ calcDensity=function(x,y,n=11){
   return(f2)}
 
 ## calculates 2D probabilities
-calcProb=function(x,y,prob=c(0.6,0.9)){
+kobeProb=function(x,y,prob=c(0.5, 0.75,0.95),na.rm=FALSE){
   
+  if (na.rm){
+    .na=is.na(x)|is.na(y)|is.nan(x)|is.nan(y)
+    x=x[.na]
+    y=y[.na]}
+    
   tmp=HPDregionplot(mcmc(data.frame(x,y)),prob=prob)
   
   
   prb=ldply(tmp, function(dat) data.frame(level=dat$level,x=dat$x, y=dat$y))
   
   return(prb)}
+
+kobeTrks=function(x,vars,prob=c(0.1,0.5,0.9)){
+  stk=ddply(tmp, vars, function(x) quantile(x$stock,prob=prob))
+  stk=melt(stk,id.vars=vars,variable_name="Percentile")
+  
+  hvt=ddply(tmp, vars, function(x) quantile(x$harvest,prob=prob))
+  hvt=melt(hvt,id.vars=vars,variable_name="Percentile")
+  
+  trks=merge(stk,hvt,by=c(vars,"Percentile"))
+  names(trks)[5:6]=c("stock","harvest")
+  
+  trks}
+
+smry=function(x){}
+
+k2smFn2=function(x,image  =list(levels=seq(0.0,1.0,0.05),
+                                col   =c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))),
+                 nIterp=101){
+  
+  x=subset(x, !is.na(x[,1]) & !is.na(x[,2]) & !is.na(x[,3]))
+  
+  ##### smooth
+  t.<-akima::interp(x[,1],x[,2],x[,3],
+                    xo=seq(min(x[,1]),   max(x[,1]), length=nIterp),
+                    yo=seq(min(x[,2]),   max(x[,2]), length=nIterp),
+                    duplicate="mean")
+  
+  
+  cbind(expand.grid(x=t.$x,y=t.$y),z=cut(t.$z,image$levels,include.lowest=T),w=c(t.$z))}
+
+
+
 

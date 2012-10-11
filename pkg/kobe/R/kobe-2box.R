@@ -3,34 +3,58 @@
 # #######################################################################################
 ac=as.character
 
+
+nmsRef <- c("iter", 
+            "fmsy",   "ymsy",   "yrmsy",    "srmsy",   "sprmsy",  "ssbmsy",
+            "fmax",             "yrmax",    "srmax",   "sprmax",  "ssbmax",
+            "f0.1",             "yr0.1",    "sr0.1",   "spr0.1",  "ssb0.1",
+            "f20",              "yr20",     "sr20",               "ssb20",
+            "f30",              "yr30",     "sr30",               "ssb30",
+            "f40",              "yr40",     "sr40",               "ssb40",
+            "f90max", "y90max", "yr90max",  "sr90max",            "ssb90max",
+            "f75max", "y75max", "yr75max",  "sr75max",            "ssb75max")
+
 ## Heavy lifting functions ##############################################################
-readPro2boxKobe=function(x,proxy){
-    vpaOut=readPro2box(x,type="out")
-    vpaRef=readPro2box(x,type="ref")
+readKobe2box=function(dir,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75max")[1]){
 
-    res=transform(merge(       vpaOut[,c("year","iter","tac","ssb","fapex")], 
-                        subset(vpaRef, refpt==proxy, select=c(iter,ssb,harvest)),by="iter"),
-                     ssb    =ssb.x/ssb.y, 
-                     harvest=fapex/harvest)[,c("year","iter","tac","ssb","harvest")]
-    
-    return(res)}
-
-io2box=function(x,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nwrms=10,what=c("ts","smry","pts","wrms"),proxy="msy"){
-
-  res=readPro2boxKobe(x,proxy)
-
-    if (is.null(yrs))
-       yrs=sort(unique(res$year))
-       
-    if (is.null(pts))
-       pts=yrs
+  rfp=read.table(paste(dir,"BENCH-1.OUT",sep="/"),header=F,skip=1,col.names=nmsRef)[,c("iter",proxy,paste("ssb",substr(proxy,2,nchar(proxy)),sep=""))]
  
-   
-    ts  =NULL
-    pts.=NULL
-    wrms=NULL
-    smry=NULL
+  bio=read.table(paste(dir,"BIO_f-1.OUT",sep="/"),header=F,skip=1)
+  names(bio)=c("tac","iter",seq(dim(bio)[2]-2))
+  bio=merge(bio,rfp)
+  bio=melt(bio,id.vars=c("tac",names(rfp)),variable_name="year")
+  names(bio)[6]="stock"
+  
+  hvt=read.table(paste(dir,"Fapex-1.OUT",sep="/"),header=F,skip=1)
+  names(hvt)=c("tac","iter",seq(dim(hvt)[2]-2))
+  hvt=merge(hvt,rfp)
+  hvt=melt(hvt,id.vars=c("tac",names(rfp)),variable_name="year")
+  names(hvt)[6]="harvest"
+  
+  res=merge(bio,hvt[,c("tac","iter","year","harvest")])
+  res=transform(res,stock  =stock/res[,paste("ssb",substr(proxy,2,nchar(proxy)),sep="")],
+                    harvest=harvest/res[,proxy])
+  
+  res=res[do.call(order,res[,c("tac","iter","year")]),]
+  
+  dimnames(res)[[1]]=sort(as.numeric(dimnames(res)[[1]]))
     
+  return(res)}
+
+io2box=function(x,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75max")[1],prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],nwrms=10,ptYrs=NULL){
+  
+  if (!all(what %in% c("trks","pts","smry","wrms","sims"))) stop("what not in valid options")
+  
+  res=readKobe2box(x,proxy)
+
+  ts  =NULL
+  pts.=NULL
+  wrms=NULL
+  smry=NULL
+   
+    if ("sims" %in% what)
+      sims.=res
+  
     if ("ts" %in% what){ 
       ssb =ddply(res,.(year,tac),function(x) quantile(x$ssb,    prob))
       hvt =ddply(res,.(year,tac),function(x) quantile(x$harvest,prob))
@@ -38,7 +62,7 @@ io2box=function(x,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nwrms=10,what=c("ts","
       names(ts)[3:4]=c("Percentile","ssb")}
 
     if ("pts" %in% what)
-      pts.=subset(res,year %in% pts)[,c("iter","year","ssb","harvest")]
+      if (is.null(yrPts)) stop("need to specify 'ptYrs'") else pts.=subset(res,year %in% pts)[,c("iter","year","ssb","harvest")]
            
     if ("smry" %in% what)
        smry   =ddply(res,  .(year), function(x) data.frame(ssb        =median(x$ssb,       na.rm=T),
@@ -52,29 +76,28 @@ io2box=function(x,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,nwrms=10,what=c("ts","
     if ("wrms" %in% what)
       wrms=subset(res,iter %in% sample(unique(res$iter),nwrms))[,c("iter","year","ssb","harvest")]
                                                          
-    return(list(ts=ts,pts=pts.,smry=smry,wrms=wrms))}
+    return(list(ts=ts,pts=pts.,smry=smry,wrms=wrms,sims=sims.))}
  
 setMethod('kobe2box', signature(object='character'),
-  function(object,prob=c(0.75,0.5,.025),yrs=NULL,pts=NULL,what=c("ts","pts","smry","wrms"),proxy="msy"){
-   
-    require(FLAdapt)
-
+          function(object,prob=c(0.75,0.5,.025),what=c("sims","trks","pts","smry","wrms")[1],nwrms=10,ptYrs=NULL){
+            
     if (length(object)==1)
-       res=io2box(object,prob=prob,yrs=yrs,pts=pts,proxy=proxy)
-    
-    if (length(object) >1){
-       res=mlply(object, function(x,prob=prob,yrs=yrs,pts=pts,nwrms=nwrms,what=what,proxy=proxy)
-                                   io2box(x,prob=prob,yrs=yrs,pts=pts,nwrms=nwrms,what=what,proxy=proxy),
-                      prob=prob,yrs=yrs,pts=pts,nwrms=nwrms,what=what,proxy=proxy)
-                 
-      res=list(ts  =ldply(res, function(x) x$ts),
-               pts =ldply(res, function(x) x$pts),
-               smry=ldply(res, function(x) x$smry),
-               wrms=ldply(res, function(x) x$wrms))
-      }
-             
-    return(res)})
+       res=io2box(dir,prob=prob,nwrms=nwrms,ptYrs=ptYrs)
+            
+    if (length(object)>1){
+       res=mlply(object, function(x,prob=prob,nwrms=nwrms,what=what,ptYrs=ptYrs)
+                 io2box(x,prob=prob,nwrms=nwrms,what=what,ptYrs=ptYrs),
+                        prob=prob,nwrms=nwrms,what=what,ptYrs=ptYrs)
+              
+              res=list(trks=ldply(res, function(x) x$trks),
+                       pts =ldply(res, function(x) x$pts),
+                       smry=ldply(res, function(x) x$smry),
+                       wrms=ldply(res, function(x) x$wrms),
+                       sims=ldply(res, function(x) x$sims))
+       }
+            
+       #if(length(what)==1) return(res[[what]]) else 
+       return(res)
+       })
 
-
-  
 
