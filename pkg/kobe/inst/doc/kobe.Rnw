@@ -5,7 +5,7 @@
 %\VignetteIndexEntry{kobe}
 % Meta information - fill between {} and do not remove %
 % \VignetteIndexEntry{An R Package for ...}
-% \VignetteDepends{foo, bar, ...}
+% \VignetteDepends{reshape, plyr}
 % \VignetteKeywords{kwd1, kwd2}
 % \VignettePackage{...}
 

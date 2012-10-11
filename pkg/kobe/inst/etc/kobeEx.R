@@ -26,7 +26,7 @@ assmt3=ggplot(assmt)                              +
 ## time series
 ### tracks
 tmp=subset(sims, year %in% 1980:2020, select=c(Run,TAC,iter,year,stock,harvest))
-trks=trks(tmp,c("Run","TAC","year"))
+trks=kobeTrks(tmp,c("Run","TAC","year"))
 
 head(trks)
 
@@ -69,7 +69,7 @@ ggplot(pts) +
   geom_density(aes(x = harvest,  y =  -..count..,  group=Run, fill=Run, alpha=0.4)) +
   geom_density(aes(x = harvest,  y =  ..count.., group=Run, fill=Run), fill="grey", col="grey", position = "stack") 
 
-phaseFn(transform(pts,group=Run))           
+kobePhaseMar(transform(pts,group=Run))           
 
 ### Pies ############################################################################################
 pie.dat=with(subset(sims,year==2010 & TAC==15000),cbind(Run,kobeP(stock,harvest)))[,c("Run","red","green","yellow")]
@@ -87,16 +87,8 @@ ggplot(pie.dat, aes(x ="", y=value, fill = factor(variable))) +
   scale_y_continuous(breaks=NULL) 
 
 ### K2SM #####################################################################################################
-smry=with(subset(sims,year %in% 2010:2020), cbind(Run,year,TAC,kobeP(stock,harvest)))
-k2sm.=ddply(smry,.(year,TAC), function(x) data.frame(overFishing=mean(x$overFishing),overFished=mean(x$overFished),green=mean(x$green)))
-
-k2sm(k2sm.)[[1]]
-
-k2smTab=k2sm(subset(k2sm., (year %in% 2010:2020), select=c(year,TAC,overFishing,overFished,green)))
-
-
 library(directlabels)
-
+  
 ### K2SM
 sim2x=function(x){
   x=cbind(x[,c("year","TAC")],kobeP(x$stock,x$harvest)[,c("green","overFished","overFishing")])

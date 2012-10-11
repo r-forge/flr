@@ -7,5 +7,5 @@ Author: Who wrote it
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
-Depends: methods, ggplot2, grid, MASS, coda, emdbook, tables
-Collate: kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss3.R kobe-FLBRP.R kobe-FLBioDym.R kobe-Phase.R kobe-themes.R
+Depends: methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables
+Collate: kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss3.R kobe-MFCL.R kobe-FLBRP.R multiplot.R kobe-FLBioDym.R kobe-Phase.R kobe-k2sm-ggplot2.R kobe-themes.R
