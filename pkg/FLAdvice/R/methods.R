@@ -113,6 +113,7 @@ setMethod('yield.obs', signature(object='FLBRP'),
   function(object)
     return(landings.obs(object)))
                                
+
 setGeneric('computeFbar', function(object, ...)
   	standardGeneric('computeFbar'))
 setMethod('computeFbar', signature(object='FLBRP'),
