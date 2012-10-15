@@ -112,14 +112,7 @@ setGeneric('yield.obs', function(object, ...)
 setMethod('yield.obs', signature(object='FLBRP'),
   function(object)
     return(landings.obs(object)))
-
-setGeneric('revenue.obs', function(object, ...)
-  	standardGeneric('revenue.obs'))
-setMethod('revenue.obs', signature(object='FLBRP'),
-  function(object){
-    if ("revenue.obs" %in% getSlots(class(object))) return(object@revenue.obs)
-    else return(NA,dimnames=yield.obs(object))}
-
+                               
 setGeneric('computeFbar', function(object, ...)
   	standardGeneric('computeFbar'))
 setMethod('computeFbar', signature(object='FLBRP'),
