@@ -1,11 +1,11 @@
 Package: kobe
 Type: Package
-Title: What the package does (short line)
+Title: Tools for providing advice for the Tuna RFMOs
 Version: 1.0
 Date: 2012-06-22
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Author: Laurence Kell
+Maintainer: Laurence Kell <laurie.kell@iccat.int>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Depends: methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables
-Collate: kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss3.R kobe-MFCL.R kobe-FLBRP.R multiplot.R kobe-FLBioDym.R kobe-Phase.R kobe-k2sm-ggplot2.R kobe-themes.R
+License: GPL-2
+Depends: methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables, akima, LaF
+Collate: kobe-funcs.R kobe-generics.R kobePhase.R kobePhaseMar.R kobe2sm.R kobeShade.R kobeP.R kobeTrks.R kobeSmry.R kobe-aspic.R kobe-2box.R kobe-MFCL.R kobe-ss3.R ggplotFL-multiplot.R ggplotFL-theme.R

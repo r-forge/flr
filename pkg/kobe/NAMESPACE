@@ -1,13 +1,16 @@
-export("kobe2sm",
-       "kobeP",
-       "kobePhase",
-       "kobePhaseMar",
-       "kobeTrks",
+export("kobeAspic",
+       "kobeMFCL",
+       "kobe2box",
+       "kobeSS3",
+       
        "kobeProb",  
+   
+       "kobePhaseMar",    
        "theme_flr",
        "multiplot")
-exportMethods("kobeAspic",
-              "kobeSS3",
-              "kobeMFCL",
-              "kobe2box",
-              "kobeShade")
+exportMethods("kobeTrks",
+              "kobeP",
+              "kobePhase",
+              "kobeShade",
+              "kobeSmry",
+              "kobe2sm")
