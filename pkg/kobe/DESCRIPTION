@@ -7,5 +7,5 @@ Author: Laurence Kell
 Maintainer: Laurence Kell <laurie.kell@iccat.int>
 Description: More about what it does (maybe more than one line)
 License: GPL-2
-Depends: methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables, akima, LaF
-Collate: kobe-funcs.R kobe-generics.R kobePhase.R kobePhaseMar.R kobe2sm.R kobeShade.R kobeP.R kobeTrks.R kobeSmry.R kobe-aspic.R kobe-2box.R kobe-MFCL.R kobe-ss3.R ggplotFL-multiplot.R ggplotFL-theme.R
+Depends: methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables
+Collate:ggplotFL-multiplot.R kobe2sm.R kobe-generics.R kobePhase.R kobeSmry.R ggplotFL-theme.R kobe-aspic.R kobe-MFCL.R kobeP.R kobe-ss3.R kobe-2box.R kobe-funcs.R kobePhaseMar.R kobeShade.R kobeTrks.R

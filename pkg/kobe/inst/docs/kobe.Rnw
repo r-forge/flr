@@ -52,6 +52,7 @@ fig3=ggplot(assmt)                                +
 Scientific Advice within the tuna Regional Fisheries Management Organisations (tRFMOs) is based on a common framework 
 (ref). The advice requires estimation of the probabilities of $F \textless F_{MSY}$ and
 $B$ \textgreater $B_{MSY}$ for a range of management options, generally a range of total allowable catchs (TAC). Advice is presented as 
+Use \url{http://www.tuna-org.org/Documents/TRFMO3/K3-REC_ENG.pdf} %or \href{}{} for web.
 
 \begin{itemize}
  \item a phase plot showing fishng mortality and stock status relevant to management reference points

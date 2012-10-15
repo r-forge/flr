@@ -70,7 +70,7 @@ Maintainer: Laurence Kell <laurie.kell@iccat.int>
 }
 
 \references{
-Use \url{} or \href{}{} for web.
+Use \url{http://www.tuna-org.org/Documents/TRFMO3/K3-REC_ENG.pdf} %or \href{}{} for web.
 }
 
 %~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
