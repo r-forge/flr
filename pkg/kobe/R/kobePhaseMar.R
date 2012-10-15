@@ -1,0 +1,67 @@
+kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
+             xlab="Stock relative to Benchmark",
+             ylab="F relative to Benchmark",
+             maxX=2,maxY=maxX,
+             col =colorRampPalette(c("orange","blue"),space="Lab"),
+             col2="#CCCCCCCC"){
+     
+    if (!("group" %in% names(pts)))
+       pts=cbind(pts,group=1)
+
+    if ("function" %in% is(col))
+       col=col(length(unique(pts$group)))
+   
+    ##### Density plots   #############################################################################################
+    # stock density plot
+    dS<-ggplot(pts) + 
+          geom_density(aes(x = stock, y =  ..count.., group=group), fill=col2, col=col2, position = "stack") + 
+          geom_density(aes(x = stock, y = -..count.., fill =group, alpha=0.4)) + 
+          geom_vline(xintercept=1,col="red")  +
+          theme_flr(18,textColor=NA, axisColor=NA,angle.y=-90) +
+          opts(legend.position = "none") + 
+              scale_x_continuous(limits=c(0,maxX)) +
+              scale_fill_manual(values=col)+
+              xlab(xlab) + ylab(ylab)              +
+              opts(axis.title.x=NULL,axis.text.x=NULL)
+    
+    # second density plot, oriented vertically (hence the 'coord_flip()' at the end
+    dH<-ggplot(pts) + 
+          geom_density(aes(x = harvest, y =  ..count.., group=group), fill=col2, col=col2, position = "stack") + 
+          geom_density(aes(x = harvest, y = -..count..,               fill=group, alpha=0.4)) + 
+          geom_vline(xintercept=1,col="red")  +
+          theme_flr(18,textColor=NA, axisColor=NA,angle.y=-90) +
+              opts(legend.position = "none") + 
+              scale_x_continuous(limits=c(0,maxY)) +
+              scale_fill_manual(values=col)+
+              xlab(xlab) + ylab(ylab)              +
+              opts(axis.title.y=NULL, axis.text.y=NULL) 
+  
+    # kobe phase plot
+    kC=kobePhase(pts) +
+       geom_point(aes(stock,harvest,col=group,group=group),size=size) +  
+       scale_y_continuous(limits=c(0,maxY)) +
+       scale_x_continuous(limits=c(0,maxX)) +
+       theme_flr(18)                        +
+       opts(legend.position = "none")       +
+       xlab(xlab) + ylab(ylab)              +
+       scale_colour_manual(values=col)
+   
+    if (mns)
+        kC=kC+geom_point(aes(stock,harvest,col=group,group=group),size=6.0*size, colour="black",  data=ddply(pts,.(group),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest)))) +
+              geom_point(aes(stock,harvest,col=group,group=group),size=4.5*size, colour="cyan",   data=ddply(pts,.(group),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest))))
+   if (!is.null(trks))
+        kC=kC+geom_path(aes(stock,harvest, col=group,col=group),size=1*size, data=trks)   
+      
+    fnVP=function(dH,dS,kC){
+        vplayout <- function(x, y)
+        viewport(layout.pos.row = x, layout.pos.col = y)
+          
+        grid.newpage()
+        pushViewport(viewport(layout = grid.layout(5, 5)))  # 5 by 5 grid
+        print(dS, vp=vplayout(1,1:4))                       # the first density plot will occupy the top of the grid
+        print(dH +coord_flip(), vp=vplayout(2:5,5))         # 2nd to the left +opts(legend.position = c(0,1.05)) + opts(legend.text = theme_text(colour = "black")) 
+        print(kC, vp=vplayout(2:5,1:4))                     # the main x/y plot will instead spread across most of the grid
+        }
+    
+    fnVP(dH,dS,kC)
+    invisible(list(harvest=dH,stock=dS,phase=kC))}
