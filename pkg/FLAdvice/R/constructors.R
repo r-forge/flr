@@ -42,7 +42,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     # resize: ages
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
-      'availability', 'price')
+      'availability', 'price', 'revenue.obs')
     
     # find slots not provided as argument
     empty <- !slots %in% names(args)
@@ -174,7 +174,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       profit.obs = FLQuant(dimnames=snames),
       
       # revenue.obs
-#      revenue.obs = FLQuant(dimnames=snames),
+      revenue.obs = FLQuant(dimnames=snames),
 
       # vcost & fcost
       vcost=FLQuant(dimnames=cnames),
@@ -307,6 +307,9 @@ setMethod('FLBRP', signature(object='FLBRP', sr='list'),
 
    return(newObj)})
 
+setMethod('FLBRP', signature(object='character', sr='missing'),
+          function(object, sr, ...) pro2boxFLBRP(object, ...))
+
 setPA=function(x,df) {
   
   dmns=dimnames(refpts(x))
@@ -339,14 +342,14 @@ setObs=function(x,df) {
   
   flq              =FLQuant(NA,dimnames=list(year=df$year))
   
-  x@fbar.obs     =FLQuant(df$fbar.obs,     dimnames=dimnames(flq))
+  x@fbar.obs      =FLQuant(df$fbar.obs,     dimnames=dimnames(flq))
   x@landings.obs  =FLQuant(df$landings.obs, dimnames=dimnames(flq)) 
   x@discards.obs  =flq 
   x@rec.obs       =FLQuant(df$rec.obs,      dimnames=dimnames(flq)) 
   x@ssb.obs       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
   x@stock.obs     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
-  x@profit.obs     =flq 
-#  x@revenue.obs    =flq 
+  x@profit.obs    =flq 
+  x@revenue.obs   =flq 
   
   x}
 
