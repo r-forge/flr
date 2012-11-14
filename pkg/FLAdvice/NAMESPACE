@@ -44,8 +44,6 @@ exportMethods(
 	"landings.obs<-",
 	"discards.obs",
 	"discards.obs<-",
-  "revenue.obs",
-  "revenue.obs<-",
   "refpts",
 	"rec.obs",
 	"rec.obs<-",

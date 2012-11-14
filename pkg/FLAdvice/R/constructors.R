@@ -42,7 +42,7 @@ setMethod('FLBRP', signature(object='missing', sr='missing'),
     # resize: ages
     slots <- c('landings.sel', 'discards.sel', 'bycatch.harvest', 'stock.wt',
       'landings.wt', 'discards.wt', 'bycatch.wt', 'm', 'mat', 'harvest.spwn', 'm.spwn',
-      'availability', 'price', 'revenue.obs')
+      'availability', 'price') #, 'revenue.obs')
     
     # find slots not provided as argument
     empty <- !slots %in% names(args)
@@ -174,7 +174,7 @@ setMethod('FLBRP', signature(object='FLStock', sr='missing'),
       profit.obs = FLQuant(dimnames=snames),
       
       # revenue.obs
-      revenue.obs = FLQuant(dimnames=snames),
+      # revenue.obs = FLQuant(dimnames=snames),
 
       # vcost & fcost
       vcost=FLQuant(dimnames=cnames),
@@ -349,7 +349,7 @@ setObs=function(x,df) {
   x@ssb.obs       =FLQuant(df$ssb.obs,      dimnames=dimnames(flq)) 
   x@stock.obs     =FLQuant(df$biomass.obs,  dimnames=dimnames(flq)) 
   x@profit.obs    =flq 
-  x@revenue.obs   =flq 
+#  x@revenue.obs   =flq 
   
   x}
 
