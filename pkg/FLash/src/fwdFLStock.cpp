@@ -608,7 +608,8 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
   
     SEXP AryDims = GET_DIM(xAry);
 
-    REAL(Err)[0]=6;
+    REAL(Err)[0]=6.0;
+    
     if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
                                 INTEGER(AryDims)[1] != 3                    ||
                                 INTEGER(AryDims)[2] != stk.niters)  {
