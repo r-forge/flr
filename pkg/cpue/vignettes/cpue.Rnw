@@ -1,0 +1,389 @@
+% diags.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+
+%\VignetteIndexEntry{diags}
+%\VignetteIndexEntry{An R Package for read/wrting CPUE files and plotting data from a variety of fish stock assessment programs}
+%\VignetteKeyword{CPUE, diagnostics, IO, read, write}
+
+
+\documentclass[shortnames,nojss,article]{jss}
+
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+\usepackage{enumerate}
+
+\usepackage{booktabs,flafter} %,thumbpdf}
+\usepackage{hyperref}
+
+%\newcommand{\code}[1]{\texttt{#1}}
+%\newcommand{\proglang}[1]{\textsf{#1}}
+%\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+
+\author{Laurence Kell\\ICCAT}
+\Plainauthor{Laurence Kell}
+
+\title{\pkg{cpue}: \proglang{R} tools for catch per unit effort}
+\Plaintitle{cpue: R tools  tools for catch per unit effort}
+
+\Abstract{The \pkg{cpue} package provides methods to work with CPUE data from a variety of fish stock assessment progams. 
+             Stock assessment programs are generally implemented as a variety of standalone executable programs with their 
+             own input and output file formats. This package provide a set of common methods for reading these data into R, plotting
+             and summarising them. It also provides methods for data exchange between programs, since as well as reading
+             in data from a variety of file formats it also provides methods for writing data to the different file formats.}
+
+\Keywords{\proglang{R}, CPUE, stock assessment}
+\Plainkeywords{R, CPUE, stock assessment}
+
+\Address{
+  Laurence Kell \\
+  ICCAT Secretariat\\ 
+  C/Coraz\'{o}n de Mar\'{\i}a, 8. \\
+  28002 Madrid\\
+  Spain\\ 
+  
+  E-mail: \email{Laurie.Kell@iccat.int}
+}
+
+%% need no \usepackage{Sweave.sty}
+
+<<prelim,echo=FALSE,print=FALSE>>=
+library(cpue)
+
+cpue.version=packageDescription("cpue")$Version
+cpue.date   =packageDescription("cpue")$Date
+now.date    =strftime(Sys.Date(), "%B %d, %Y")
+@
+%
+
+\begin{document}
+  
+\section{Introduction}
+
+The \pkg{cpue} package is intended to help analyse catch per unit effort (CPUE) time series used in fish stock assessment.
+
+There are three main usage for the package
+
+\begin{itemize}
+ \item reading and writing input files from the different stock assessment methods;
+ \item summarising CPUE data sets; and
+ \item examination of diagnostics from models fitted with CPUE data.
+\end{itemize}
+ 
+Different stock assessment methods have generally been implemented as executable programs with a variety of text files for input and output. 
+This can make it difficult to summarise the data used and results across methods. Therefore there are methods to read text files 
+into common data frames.
+
+
+\section{Stock Assessments}
+
+The stock assessment programs for which there are methods to read and write text files for are
+
+
+\begin{itemize}
+ \item \href{http://iccat.int/en/AssessCatalog.htm}{ASPIC} a biomass dynamic model fitted by maximising the likelihood 
+ \item \href{http://iccat.int/en/AssessCatalog.htm}{BSP}  a Bayesian biomass dynamic model fitted using the SIR algorithm
+ \item \href{http://www.ices.dk/committe/acom/wg/asoft/VPA/}{VPA Suite} Imput file format mainly used by ICES for virtual population analysis
+ \item \href{http://iccat.int/en/AssessCatalog.htm}{VPA2Box} An age structured model based on virtual population analysis
+ \item \href{http://www.multifan-cl.org}{MultifanCL} A statistical, length-based, age-structured model
+ \item \href{http://nft.nefsc.noaa.gov/Stock_Synthesis_3.htm}{Stock Synthesis} age and size structure assessment model
+\end{itemize}
+
+
+\section{Reading}
+
+CPUE data are read in using the \code{readU} method, e.g. for ASPIC the CPUE data are found in the \code{inp} file, along 
+with the starting guesses and run settings.
+
+<<echo=TRUE,eval=FALSE>>=
+library(RCurl)
+
+inp="http://iccat.int/stocka/Models/ASPIC/albs/2011/run2/aspicb.inp"
+uAsp=readU(inp,"aspic")
+@
+
+The \code{value} column contains the CPUE values, if appropriate there are also columns for catch and effort.
+
+An attribute field, provides a summary of the different time series e.g.
+
+<<echo=TRUE,eval=FALSE>>=
+head(uAsp)
+attributes(uAsp)$smry
+@
+
+Examples of reading the different input file formats 
+<<echo=TRUE,eval=FALSE>>=
+dirMy=""
+#### 2box  #############################################################
+## data file
+dat="/home/laurie/Desktop/gcode/gbyp-sam/data/ICCAT/VPA/YFT/2011/run5/yft2011.dat"
+u2box=readU(dat,"2box")
+        
+#### bsp   #############################################################
+## cpue file
+u="/home/laurie/Desktop/gcode/gbyp-sam/data/ICCAT/BSP/albs/2011/input/albSA2011cpue1.csv"
+uBsp=readU(u,"bsp")
+
+#### vpa suite##########################################################
+## survey file
+vpa="/home/laurie/Desktop/ICCAT/SCRS/2013/SWO/SAM/swon/data/survey.dat"
+uVpa=readU(vpa,"vpa")
+
+#### mfcl ##############################################################
+## frequency file
+frq="/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/albN.frq"
+uMfcl=readU(rep,"mfcl")
+
+#### ss ################################################################
+## directory
+outDir=""
+uSS=readU(outDir,"ss")
+@
+
+\section{Diagnostics}
+
+\subsection{Goodness of fit}
+
+The \code{diagU} method also reads in time series of CPUE indices, however, these are read in from output files and so also contain
+fitted values and residuals.
+
+<<echo=TRUE,eval=FALSE>>=
+inp="http://iccat.int/stocka/Models/ASPIC/albs/2011/run2/aspicb.inp"
+cpue=readU(inp,"aspic")
+@
+
+The \code{value} column contains the CPUE values, if appropriate there are also columns for catch and effort.
+
+An attribute field, provides a summary of the different time series e.g.
+
+<<echo=TRUE,eval=FALSE>>=
+head(cpue)
+attributes(cpue)$smry
+@
+
+\subsection{Standardisation}
+
+\section{File output}
+
+Stock assessment input files often mix data of different types, e.g catch data and biological data as well as CPUE
+and so \pkg{cpue} can not generate a complete file. Therefore there are two methods for 
+writing stock assessment input text files, i.e. \code{writeU} and \code{updateU}. \code{writeU} writes a text file with
+the CPUE data section which needs to be pasted into an existing file, while \code{updateU} reads in an existing data 
+file and updates the CPUE data section.
+
+\section{Writing}
+
+\section{Updating}
+
+There are various reasons for updating an input file, e.g. to run an assessment with data from additional years 
+or to change data when running a simulation.
+
+
+\section{Methods}
+
+\section{Plotting}
+
+\end{document}
+
+
+########################################################################
+## Reading in diagnostics
+########################################################################
+library(cpue)
+
+
+#### aspic #############################################################
+inp="/home/laurie/Desktop/gcode/gbyp-sam/data/ICCAT/ASPIC/albs/2011/run2/aspic.prn"
+dAsp=diagU(inp,"aspic")
+
+#### 2box  #############################################################
+dat="/home/laurie/Desktop/gcode/gbyp-sam/data/ICCAT/VPA/YFT/2011/run5/yft2011.r01"
+d2box=diagU(dat,"2box")
+    
+    
+#### bsp   #############################################################
+u="/home/laurie/Desktop/gcode/gbyp-sam/data/ICCAT/BSP/albs/2011/input/albSA2011cpue1.csv"
+dBsp=diagU(u,"bsp")
+
+#### SAM ###############################################################
+sam="/home/laurie/Desktop/ICCAT/SCRS/2013/SWO/SAM/swon/run/sam"
+dSam=diagU(sam,"sam")
+
+#### mfcl ##############################################################
+rep="/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/plot-09.par.rep"
+dMfcl=diagU(rep,"mfcl")
+
+
+  #### ss ################################################################
+  outDir="/home/laurie/Desktop/ICCAT/SCRS/2012/whm/section_6/Inputs/SS3/mcmc_diagnostics/Run_1"
+  dSS=diagU(outDir,"ss")	
+  
+  
+  ################################################################################
+#                                                                              #
+# Albacore N Atlantic MSE                                                      #
+# Estimation Error in MFCL                                                     #
+#                                                                              #
+################################################################################
+
+## Directories
+myDir  <-"/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B"
+albDir <-"/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B"
+
+########## Population and management parameters
+crFile<-"/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/albN.cor"
+vrFile<-"/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/albN.var"
+
+########### Hessian
+hess<-function(invHess,var){
+  crMat =cov2cor(invHess[var,var])
+  
+  zlim  =c(0,1)
+  col   =heat.colors(20)[20:1]
+  breaks=seq(zlim[1],zlim[2],length.out=21)
+  
+  intp=list(x=1:length(var), y=1:length(var), z=crMat)
+  image(intp,col=col,breaks=breaks)
+  
+  invisible(crMat)
+  #invisible(invHess[var,var])
+}
+
+invHess               <-as.matrix(read.table("/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/albN.hesinv",header=FALSE))
+nms                   <-read.table(          "/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/xinit.rpt",  header=FALSE)
+names(nms)            <-c("pos","var")
+dimnames(invHess)[[1]]<-nms[,2]
+dimnames(invHess)[[2]]<-nms[,2]
+vars                  <-ac(unique(nms[,"var"]))
+
+#### Uncertainty ###############################################################
+nits   <-100
+
+#### Estimation error
+#### Historic Uncertainty
+#### Recruitment
+rCor<-hess(invHess,1331:1409)
+savePlot(paste(myDir,"\\figs\\RCor.wmf",sep=""),type="wmf")
+
+rCor<-hess(invHess,1:1436) 
+
+lnRec  <-read.table(paste(albDir,"/inputs/2009/4B/lnRec.txt",sep=""),header=TRUE)
+histRec<-FLQuant(rep(lnRec[11:78,"val"],nits),dimnames=list(year=1940:2007,iter=1:nits))
+rCov   <-cor2cov(rCor,lnRec[11:78,"cv"]^2)
+
+#### Uncertainty ###############################################################
+nits   <-100
+
+#### Estimation error
+#### Historic Uncertainty
+#### Recruitment
+rCor<-hess(invHess,1342:1409)
+savePlot(paste(myDir,"\\figs\\RCor.wmf",sep=""),type="wmf")
+
+lnRec  <-read.table(paste(albDir,"/inputs/2009/4B/lnRec.txt",sep=""),header=TRUE)
+histRec<-FLQuant(rep(lnRec[11:78,"val"],nits),dimnames=list(year=1940:2007,iter=1:nits))
+rCov   <-cor2cov(rCor,lnRec[11:78,"cv"]^2)
+
+# generate random variates
+cholesky<-t(chol(rCov))
+for (i in  1:nits)
+   histRec[,,,,,i]<-histRec[,,,,,i,drop=T]+cholesky%*%as.vector(rnorm(dim(cholesky)[1]))
+
+histRec4B<-exp(histRec)
+save(histRec4B, file=paste(myDir,"/data/histRec4B.RData", sep=""))
+
+ax   <- list(x=list(tick.number=2, cex=0.7), y=list(cex=0.7))
+#akey <- simpleKey(text=c("male", "female"), points=F, lines=T)
+#xyplot(data~age|as.factor(year), data=ple4sex@mat, type="l", groups=unit, key=akey, main=ttl, ylab=yttl, xlab=xttl, scales=ax, par.strip.text=stripttl)
+
+plot(histRec,ylab="Recruitment",scales=ax)
+savePlot(paste(myDir,"\\figs\\RHist.wmf",sep=""),type="wmf")
+
+
+#### effort Devs
+tmp<-getCPUEo(fileRep)
+tmp<-cbind(expand.grid(tmp[,"time"],dimnames(tmp)[[2]][-1]),chk=!is.na(unlist(tmp[,-1])))
+tmp<-tmp[tmp[,"chk"],]
+tmp$m<-tmp[,1]-floor(tmp[,1])
+tmp$y<-floor(tmp[,1])
+
+hess(invHess,order(order(tmp[,"Var2"],tmp[,"y"],tmp[,"m"])))
+
+hess(invHess,nms[nms[,2]=="selcoff",1])
+
+#### Process error
+#### Future uncertainty
+srRsdls<-FLQuant(sample(c(predict(alb4BSR))/c(rec(alb4BSR)),nits*length(yrs),replace=T),dimnames=list(year=yrs,iter=1:nits))
+srRsdls<-sweep(srRsdls,2,apply(srRsdls,2,median),"/")
+
+## Selection Pattern
+yrMC        <-sample(ac(2003:2007),nits*length(yrs),replace=TRUE)
+smplSel     <-FLQuant(c(t.[,yrMC]),dimnames=list(age=1:15,year=2008:2020,iter=1:nits))
+harvest(alb)<-propagate(harvest(alb),nits)
+harvest(alb)[,ac(2008:2020)]<-smplSel
+
+library(ggplotFL)
+library(miscTools)
+
+det(matrix(c(2,1,0,1,4,0,0,0,2),3,3)[1,1])
+
+hes="/home/lkell/Dropbox/MyStuff/WHM/ftp/SS3/RUN_1_Forecast/Run_1/admodel.hes"
+cv =read.csv("/home/lkell/Dropbox/MyStuff/WHM/ftp/SS3/RUN_1_Forecast/Run_1/covar.sso",sep=" ",skip=6)
+
+
+x<-file(hes,'rb')
+  npar<-readBin(x,"integer",1)
+  H<-matrix(readBin(x,"numeric",npar*npar),npar)
+
+pars=c("SR_LN.R0.",as.character(unique(cv[cv[,5]=="Par",8])))
+           
+H=matrix(c(H),ncol=length(pars),nrow=length(pars),
+              dimnames=list(params=pars,params=pars))
+
+semidefiniteness(H)
+
+eigen(H)$values
+
+hess[c(10,1),c(1,10)]
+
+1/rcond(H)
+
+max(eigen(H)$values)/min(eigen(H)$values)
+
+kappa(H)
+
+pars[rev(order(abs(eigen(H)$vector[,3])))][1:4]
+
+eH=eigen(H)
+
+eigen(H)$vector[rev(order(abs(eigen(H)$vector[,2])))]
+
+plot(log(abs(eigen(H)$vector[rev(order(abs(eigen(H)$vector[,2])))])))
+
+par[rev(order(abs(eigen(H)$vector[,1])))][1:4]
+
+evc.=evc[rev(order(evc$value)),]
+
+
+
+pos=read.csv("/home/lkell/Dropbox/MyStuff/WHM/analysis/Inputs/SS3/mcmc_200/posteriors.sso",sep=" ",nrows=10000)[900:1000,1:60]
+pos=apply(pos,2,function(x) as.numeric(ac(x)))
+
+plotmatrix(data.frame(pos[,pars[rev(order(abs(eigen(H)$vector[,3])))][1:4]]))
+
+dimnames(eH$vector)=list(params=pars,params=pars)
+
+evc=data.frame(value=c(eH$vector),expand.grid(par=pars,eigen=1:44))
+evc=data.frame(value=c(sweep(eH$vector,1,eH$value,"*")),expand.grid(par=pars,eigen=1:44))
+
+evc.=evc[rev(order(evc$value)),]
+
+ggplot(subset(evc,eigen<=6))+geom_point(aes(par,value))+facet_wrap(~eigen)
+
+
+
+
+
+pH=princomp(H)
+

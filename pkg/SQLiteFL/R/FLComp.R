@@ -39,6 +39,9 @@ setMethod("iter", signature(object="sqliteFLComp"),
 
 # iter<-
 
+# range
+
+
 # ----
 
 # updateFLComp  {{{
