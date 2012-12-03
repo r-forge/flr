@@ -6,12 +6,13 @@ Date: 2012-11-01
 Author: Laurence Kell
 Maintainer: Laurence Kell <LaurieKell@iccat.int>
 Description: This package provides methods to work with CPUE data from a variety of fish
-  stock assessment progams. Stock assessment is conducted using a variety of standalone 
-	executable programs with their own input and output file formats. This package provides
-	a set of common methods for reading these data into R, plotting and summarising them.
+  stock assessment programs. Stock assessment is conducted using a variety of standalone 
+	executable programs, each with their own input and output file formats. This package
+	provides a set of common methods for reading these data into R, plotting and
+	summarising them.
 	It also provides methods for data exchange between programs, i.e. as well as reading
-	in data from a variety of file formats it also provides methods for writing data to the 
-	different file formats.   
+	in data from a variety of file formats it also provides methods for writing data in
+	the same file formats.   
 License: GPL-2
-Depends:  R(>= 2.15.1), stringr, r4ss, ggplot2, reshape, plyr, methods
+Depends:  R(>= 2.15.1), stringr, r4ss, ggplot2, reshape, plyr, methods, cluster
 Suggests: RCurl, lattice, tables, Hmisc, survival
