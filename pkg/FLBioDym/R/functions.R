@@ -75,7 +75,7 @@ calcB0<-function(index,params,nyrB0,error="log"){
    else if (error=="normal")
       t.<-sweep(index[,1:nyrB0,,,,,drop=FALSE],c(1,6),params["q",],"/")
 
-   return(exp(apply(t.,c(1,6),mean))/params["K",])
+   return(exp(apply(t.,c(1,6),mean))/params["k",])
    }
 
 

@@ -8,7 +8,7 @@ Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
 License: What Licence is it under ?
 LazyLoad: yes
-Depends: Rcpp (>= 0.9.7), FLCore(>=2.15.0), ggplotFL,FLAdvice,FLash,mixdist
+Depends: Rcpp (>= 0.9.7), FLCore, ggplotFL,FLAdvice,FLash,mixdist
 Collate: generics.R class.R constructors.R coercion.R createAccessors.R FLszs.R methods.R plot.R runExe.R indicators.R ageIt.R ageThem.R simFLsz.R rcpp_hello_world.R
 LazyLoad: Yes
 LazyData: No

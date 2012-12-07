@@ -69,7 +69,7 @@ utils::globalVariables(c("index"))
                     residual =residual*exp(sam$est[sam$names=="logSdLogObs"])[name])
     
   res=ddply(res,.(name,age),  function(x) transform(x, rstudent =rstudent( lm(obs~0+hat)),
-                                                    rstandard=rstandard(lm(obs~0+hat))))
+                                                       rstandard=rstandard(lm(obs~0+hat))))
   
   res=ddply(res,.(name,age),  diagsFn)
   

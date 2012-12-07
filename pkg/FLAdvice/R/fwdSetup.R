@@ -35,9 +35,9 @@ setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
       object=CheckNor1(object)
 
     
-      slot(object[,yrs],"stock.n")[]    <-NA  
-      slot(object[,yrs],"catch.n")[]    <-NA      
-    
+      stock.n(object)[,yrs]=NA  
+      catch.n(object)[,yrs]=NA  
+      
       args<-data.frame(e1=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.n",  "discards.n",   "m","mat","harvest"  ,"harvest.spwn","m.spwn"),    
                        e2=c("stock.wt","landings.wt","discards.wt","catch.wt","landings.sel","discards.sel", "m","mat","catch.sel","harvest.spwn","m.spwn"))
                        
@@ -51,9 +51,9 @@ setMethod('fwdWindow', signature(x='FLStock',y="FLBRP"),
        names(t..)<-args[,1]
        object[[ac(args[,1])]]=t..
 
-       object[,yrs][[ac(args[,1])]]=t.
+       for (i in names(t.))
+          slot(object,i)[,yrs]=t.[[i]]
 
-                       
      ## replace any slot passed in as an arg option
      args<-list(...)
      for (slt in names(args)[names(args) %in% names(getSlots(class(object)))]) 

@@ -11,7 +11,7 @@ summaryStats <- function(bd) {
   hvt   =as.data.frame(catch(bd)[,dims(bd)$year-1]/stock(bd)[,dims(bd)$year-1])[,6:7]
   stkRel=as.data.frame(stock(bd)[,dims(bd)$year-1]/c(refpts(bd)["bmsy"]))[,6:7]
   hvtRel=as.data.frame((catch(bd)[,dims(bd)$year-1]/stock(  bd)[,dims(bd)$year-1])/c(refpts(bd)["fmsy"]))[,6:7]
-  stkK  =as.data.frame(stock(bd)[,dims(bd)$year-1]/c(params(bd)["K"]))[,6:7]
+  stkK  =as.data.frame(stock(bd)[,dims(bd)$year-1]/c(params(bd)["k"]))[,6:7]
   rps   =as.data.frame(refpts(bd))
   par   =as.data.frame(params(bd))
     

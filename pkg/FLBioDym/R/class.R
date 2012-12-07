@@ -1,11 +1,5 @@
-# class - ?Short one line description?
-# FLBioDym/R/class.R
+bdModel=factor(c("pellat","fox","schaefer","gulland","fletcher","shepherd"))
 
-# Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainers: Laurence Kell
-# $ Id: $
-
-# validity {{{
 validFLBioDym <- function(object) {
   ## Catch must be continous
   yrs<-dimnames(catch(object))$year
@@ -23,13 +17,11 @@ validFLBioDym <- function(object) {
   #if(range$minyear < dims$minyear | range$maxyear > dims$maxyear)
   #  return("mismatch between range and object dimensions")
 
-  return(TRUE)
-  } # }}}
+  return(TRUE)}
 
-# FLBioDym {{{
 setClass('FLBioDym', representation(
     "FLComp",
-    model         ="character",
+    model         ="factor",
     distribution  ="factor",
     catch         ='FLQuant',
     index         ='FLQuant',
@@ -50,14 +42,10 @@ setClass('FLBioDym', representation(
     index       =FLQuant(),
     fitted      =FLQuant(),
     stock       =FLQuant(),
-    model       ="pellat",
+    model       =bdModel[3],
     distribution=factor("lnorm", levels=c("norm", "lnorm")),
-    params      =FLPar(c(.5,NA,2,1,NA,NA),                    dimnames=list(param=c("r","K","p","b0","q","sigma"),iter=1)),
-    bounds      =array(rep(c(1,NA,NA,NA),each=6), dim=c(6,4), dimnames=list(param=c("r","K","p","b0","q","sigma"),c("phase","lower","upper","start"))),
-    priors      =array(rep(c(-1,0,0.3,1),each=6), dim=c(6,4), dimnames=list(param=c("r","K","p","b0","q","sigma"),c("weight","a","b","type")))
+    params      =FLPar(c(.5,NA,2,1,NA,NA),                    dimnames=list(param=c("r","k","p","b0","q","sigma"),iter=1)),
+    bounds      =array(rep(c(1,NA,NA,NA),each=6), dim=c(6,4), dimnames=list(param=c("r","k","p","b0","q","sigma"),c("phase","lower","upper","start"))),
+    priors      =array(rep(c(-1,0,0.3,1),each=6), dim=c(6,4), dimnames=list(param=c("r","k","p","b0","q","sigma"),c("weight","a","b","type")))
     ),
 	validity=validFLBioDym) # }}}
-
-# fitted {{
-#    return(sweep(stock(object), c(6), object@params["q",], "*"))
-# }}}

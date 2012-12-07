@@ -3,6 +3,7 @@ importFrom("ggplotFL")
 #importFrom("foreach", "foreach")
 import("FLCore")
 exportClasses("FLsz","FLszs")
+export("ageIt","ageThem")
 exportMethods(
   "FLsz",
   "FLszs",

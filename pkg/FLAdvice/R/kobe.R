@@ -1,3 +1,14 @@
+setGeneric('kobe',   function(file,method,...) standardGeneric('kobe'))
+
+setMethod('kobe',  signature(file='FLBRP',method="missing"),
+    function(file,proxy=c("f0.1","fmax","spr.30","msy","mey")[4]){
+  
+     res=model.frame(FLQuants(stock  =ssb.obs( file)%/%refpts(file)[proxy,"ssb"],
+                              harvest=fbar.obs(file)%/%refpts(file)[proxy,"harvest"]),drop=TRUE)
+     return(res)})
+     
+
+
 # 
 # #### Quadrants
 # ##### Kobe I ############################################################################################3

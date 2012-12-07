@@ -7,12 +7,12 @@
 
 # parLst {{{
 parLst<-list(
-  fox       =c("r","K"),
-  schaefer  =c("r","K"),
-  pellat    =c("r","K","p"),
-  shepherd  =c("r","K","m"),
-  gulland   =c("r","K"),
-  fletcher  =c("K","msy","p"))
+  fox       =c("r","k"),
+  schaefer  =c("r","k"),
+  pellat    =c("r","k","p"),
+  shepherd  =c("r","k","m"),
+  gulland   =c("r","k"),
+  fletcher  =c("k","msy","p"))
 # }}}
 
 # setParams {{{
@@ -28,8 +28,8 @@ defaultPar<-function(object) {
    if ("r"     %in% dimnames(params(object))$params){
       params(object)["r",    ]<-0.5
       unt<-c(unt,"")}
-   if ("K"     %in% dimnames(params(object))$params){
-      params(object)["K",    ]<-mean(catch(object))*10
+   if ("k"     %in% dimnames(params(object))$params){
+      params(object)["k",    ]<-mean(catch(object))*10
       unt<-c(unt,units(catch(object)))}
    if ("p"     %in% dimnames(params(object))$params){
       params(object)["p",    ]<-2

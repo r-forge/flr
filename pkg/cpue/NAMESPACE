@@ -1,7 +1,4 @@
-export(
-	"theme_ms",
-	"vplayout",
-	"moments",
+export("moments",
 	"decade",
 	"stdz",
 	"minMax")

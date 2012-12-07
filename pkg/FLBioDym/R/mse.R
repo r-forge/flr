@@ -1,4 +1,3 @@
-
 mseFLBioDym<-function(OM,start,
                       sr,srRsdl=FLQuant(1,dimnames=dimnames(window(rec(OM),start=start))),
                       CV   =0.3,
