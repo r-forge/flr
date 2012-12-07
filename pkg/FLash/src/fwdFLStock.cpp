@@ -565,12 +565,12 @@ SEXP fwdStk::Init(SEXP xStk, SEXP xYrs, SEXP xSRModel,SEXP xSRParam,SEXP xSRResi
     stk.Init(xStk); 
 
     //Set SRR
-    REAL(Err)[0]=1;
+    //REAL(Err)[0]=1.0;
     if (!SR.Init(1, xYrs)) {
        UNPROTECT(1);
        return Err;}
 
-    REAL(Err)[0]=2;
+    //REAL(Err)[0]=2.0;
     if (!SR.Init(1, xSRModel, xSRParam, xSRResiduals, xMult))  {
        UNPROTECT(1);
        return Err;}
@@ -588,31 +588,31 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     SEXP Err = PROTECT(NEW_NUMERIC(1)); 
 
     // check target object
-    REAL(Err)[0]=3;
+    REAL(Err)[0]=3.0;
     if (!isMatrix(xTrgt) || !isNumeric(xTrgt)) {
        UNPROTECT(1);
        return Err;}
 
     // check target min/max/value object
-    REAL(Err)[0]=4;
+    REAL(Err)[0]=4.0;
     if (!isArray(xAry) || !isNumeric(xAry)) {
        UNPROTECT(1);
        return Err;}
 
     SEXP TrgtDims = GET_DIM(xTrgt);
 
-    REAL(Err)[0]=5;
+    REAL(Err)[0]=5.0*0 +(double)(LENGTH(TrgtDims)*1.0) + (double)(INTEGER(TrgtDims)[1]*100.0);
     if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 15)  {
        UNPROTECT(1);
        return Err;}
   
     SEXP AryDims = GET_DIM(xAry);
 
-    REAL(Err)[0]=6.0;
-    
+    REAL(Err)[0]=6.0*0.0 +  (double) stk.niters;  //INTEGER(AryDims)[0]- INTEGER(TrgtDims)[0] + INTEGER(AryDims)[1]-3 + INTEGER(AryDims)[2] - 
+                            
     if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
                                 INTEGER(AryDims)[1] != 3                    ||
-                                INTEGER(AryDims)[2] != stk.niters)  {
+                                INTEGER(AryDims)[2] != (int) stk.niters)  {
        UNPROTECT(1);
        return Err;}
 
@@ -663,7 +663,7 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
                                    (int)(Trgt)[iTrgt-1+fwdTargetPos_unit  *nrow], 
                                    (int)(Trgt)[iTrgt-1+fwdTargetPos_season*nrow], 
                                    (int)(Trgt)[iTrgt-1+fwdTargetPos_area  *nrow],  iter);
-			 else
+			  else
                 indep[i]=0.1;
 
            // Taping the computation of the jacobian 
