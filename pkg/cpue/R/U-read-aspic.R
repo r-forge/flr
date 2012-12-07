@@ -65,7 +65,7 @@ iUAspic=function(x){
   cpue=transform(cpue,code=cde[as.numeric(id.)])
   
   cpue=adply(cpue,1,function(x)
-    with(x,switch(code,
+    with(x,switch(as.character(code),
         CE=data.frame(index  =V3/V2,effort=V2, catch=V3),
         CC=data.frame(index  =V2,   catch =V3),
         B0=data.frame(biomass=V2),
@@ -75,17 +75,14 @@ iUAspic=function(x){
         I1=data.frame(index  =V2),
         I2=data.frame(index  =V2))))[,-(3:4)]
 
-  rng       =range(cpue$year)
-  names(rng)=c("minyr","maxyr")
-
   smry=data.frame(unlist(dlply(cpue,.(id.), function(x) unique(x$code))),
                          ddply(cpue,.(id.), function(x) range(x$year)))
   names(smry)=c("code","name","minyr","maxyr")
   smry=smry[,c(2,3,4,1)]
-  smry[,1]=flts[smry[,1]]
+  smry[,1]=flts[as.numeric(smry[,"name"])]
   
   names(cpue)[1]="name"
-  cpue[,1]=flts[cpue[,1]]
+  cpue[,1]=flts[as.numeric(cpue[,1])]
   
   attributes(cpue)$smry=smry
   
