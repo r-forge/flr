@@ -57,7 +57,7 @@ chkIters=function(object){
 
 jkIdx=function(x) dimnames(x)[[1]][ !is.na(x$index)]
 
-runExe=function(object, package="aspic", exeNm=package, dir=tempdir(),jk=FALSE){
+runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
  
   if (any(is.na(object@catch))){
        tmp=ddply(object@cpue, .(year), with, mean(catch,na.rm=TRUE))
@@ -80,7 +80,7 @@ runExe=function(object, package="aspic", exeNm=package, dir=tempdir(),jk=FALSE){
     object=chkIters(object)
   
     for (i in seq(dims(object)$iter)){  
-        m_ply(c("prn","rdat","bio","inp","fit","sum","rdatb"), function(x)
+        m_ply(c("prn","rdat","bio","inp","fit","sum","rdatb","det","sum","bot"), function(x)
            if (file.exists(paste(exeNm,".",x,sep=""))) system(paste("rm ",exeNm,".",x,sep="")))
     
         if (jk){
@@ -119,6 +119,10 @@ runExe=function(object, package="aspic", exeNm=package, dir=tempdir(),jk=FALSE){
     return(object)}
   
 runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500){
+  if (boot<3) {
+      boot=3
+      warning("Requires a minimum of 3 bootstraps so boot option changed")
+      }
   
   ## add catch baed on index catches if missing
   if (any(is.na(object@catch))){
@@ -138,7 +142,7 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
 
   oldwd=setExe(package,exeNm,dir)
   
-  m_ply(c("prn","rdat","bio","inp","fit","sum","rdatb"), function(x)
+  m_ply(c("prn","rdat","bio","inp","fit","sum","rdatb","det","sum","bot"), function(x)
       if (file.exists(paste(exeNm,".",x,sep=""))) system(paste("rm ",exeNm,".",x,sep="")))
       
   # create exe input files
@@ -149,16 +153,15 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   
   det=aspicDet(paste(exeNm,"det",sep="."))
   bio=aspicBio(paste(exeNm,"bio",sep="."))
-  
+
   coerceDP=function(x)  FLPar(unlist(c(t(x))),params=names(x),iter=dim(x)[1])
+ 
+  parNms=c("b0",modelParams(tolower(model(swon))))
   
-  parNms=c("b0",modelParams( tolower(model(swon))))
   object@params[parNms,]=coerceDP(det[,parNms])
-  
   qNms=names(det)[!(names(det) %in% c("iter","stock","harvest","r","trial","loss","msy","bmsy","brel","frel","b1.k",parNms))]
 
   object@params[-(seq(length(parNms)))][]=unlist(c(det[,qNms]))
-    
   object@stock=bio[["stock"]]%*%bio[["bmsy"]]
   
   setwd(oldwd)
