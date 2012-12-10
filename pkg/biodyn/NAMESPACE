@@ -1,0 +1,10 @@
+import("FLCore","ggplotFL")
+import("kobe","cpue")
+exportClasses("biodyn","biodyns")
+exportMethods("biodyn","biodyns",
+              "msy","fmsy","bmsy","refpts","refptSE",
+              "computeSP",
+              "fwd","hcr") 
+export("modelParams")
+
+

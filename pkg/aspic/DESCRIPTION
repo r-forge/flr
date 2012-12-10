@@ -1,0 +1,12 @@
+Package: aspic
+Type: Package
+Title: What the package does (short line)
+Version: 2.0.0
+Date: 2012-05-31
+Author: Laurence Kell
+Maintainer: Laurence Kell <laurieKell@gmail.com>
+Description: ASPIC
+License: GPL-2
+LazyLoad: yes
+Depends: R(>= 2.15.0), FLCore, ggplotFL, biodyn, stringr, reshape, kobe, cpue
+Collate: aspic-class.R  aspic-generics.R aspic-accessors.R aspic-constructors.R aspic-coerce.R aspic-io.R aspic-tests.R aspic-patch.R aspic-plot.R aspic-exe.R aspics.R aspic-methods.R
