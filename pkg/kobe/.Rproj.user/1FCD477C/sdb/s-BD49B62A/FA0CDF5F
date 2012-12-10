@@ -1,0 +1,15 @@
+{
+    "contents" : "Combining ASPIC Indices using GLMs\n========================================================\n\nRead in data from ASPIC assessment for Southern Atlantic Albacore\n```{r,message=FALSE,warning=FALSE,echo=TRUE}\nlibrary(aspic)\n\ndirAspic=\"http://gbyp-sam.googlecode.com/svn/trunk/data/ASPIC\"\n\nruns=testRuns()\n\nu=readU(paste(dirAspic,subset(runs,stockId==\"albs\" & run==\"run2\")$dir,\"aspic.inp\",sep=\"/\"))\nu=subset(u,!is.na(index))\nu=ddply(u, .(name), transform,index=log(index/mean(index)))\nhead(u)\n```\n\nCPUE Indices\n```{r fig.width=8, fig.height=6,warning=FALSE,message=FALSE}\nggplot(u) + geom_line( aes(year, index), col=\"black\") +\n            geom_point(aes(year, index))             +\n            facet_wrap(~name,scale=\"free_y\",ncol=2)       +\n            theme_ms()\n```\n\n\n```{r fig.width=8, fig.height=6,warning=FALSE,message=FALSE}\nlibrary(ellipse)\nlibrary(corrplot)\n\nu.=cast(u,year~name,value=\"index\")\np.=plotmatrix(u.[,-c(1,3:4)])\np.$layers[[2]]=NULL\n\np. + geom_hline(aes(y=0))+\n     stat_smooth(method=\"lm\")\n   \ncr=cor(u.[,-c(1,3:4)],use=\"pairwise.complete.obs\",method=\"spearman\")\ncorrplot(cr,diag=F,order=\"hclust\",addrect=2)\n\n```\n\nFit GLM to data and estimate year and fleet effects\n```{r,warning=FALSE}\nfit1=glm(index~factor(year)+factor(name),              data=u)\nfit2=glm(index~factor(year)+factor(name),weights=catch,data=u)\n\nu=data.frame(u,hat1=predict(fit1),hat2=predict(fit2))\nu=merge(u,data.frame(year=1960:2009,coef1=fit1$coefficients[1960:2009-1958],\n                                    coef2=fit2$coefficients[1960:2009-1958]),all=T)\n```\n\n\n```{r fig.width=8, fig.height=6,warning=FALSE,message=FALSE}\nggplot(u) + geom_line( aes(year,  hat1    ), col=\"blue\")  +\n            geom_line( aes(year,  hat2    ), col=\"black\") +\n            geom_point(aes(year,  index))                 +\n            facet_wrap(~name,scale=\"free_y\",ncol=2)       +\n            theme_ms()\n```\n\n```{r fig.width=8, fig.height=6,warning=FALSE,message=FALSE}\nggplot(u) + geom_point( aes(year,  index-hat1), col=\"blue\")   +\n            geom_point( aes(year,  index-hat2), col=\"black\")  +\n            geom_hline(aes(yintercept=0))                     +\n            facet_wrap(~name,scale=\"free_y\",ncol=2)           +\n            theme_ms()\n```\n\n```{r}\ncombineGlm=function(u,maxyr=max(u$year),weights=rep(1, dim(u)[1])){\n  \n   u  =subset(u,year<=maxyr)\n   fit=glm(log(index)~factor(year)+name,weights=weights,data=u)\n   \n   yrs=sort(unique(u$year))\n   u  =merge(u,data.frame(year=yrs,cindex=fit$coefficients[yrs+2-min(yrs)]))\n   \n   return(u)}\n```\n   \n   ",
+    "created" : 1354795841752.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3929095015",
+    "id" : "FA0CDF5F",
+    "lastKnownWriteTime" : 1354811213,
+    "path" : "~/Desktop/gcode/gbyp-sam/papers/SCRS/2013/SCRS-2013-hindcast/R/combineGlm.Rmd",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}
