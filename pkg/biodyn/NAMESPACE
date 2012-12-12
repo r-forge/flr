@@ -4,7 +4,8 @@ exportClasses("biodyn","biodyns")
 exportMethods("biodyn","biodyns",
               "msy","fmsy","bmsy","refpts","refptSE",
               "computeSP",
-              "fwd","hcr") 
+              "fwd","hcr",
+              "kobe") 
 export("modelParams")
 
 

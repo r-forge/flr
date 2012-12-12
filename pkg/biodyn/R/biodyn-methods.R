@@ -1,4 +1,4 @@
-setMethod('harvest', signature(object='biodym'),
+setMethod('harvest', signature(object='biodyn'),
           function(object) {
             res <- catch(object)/stock(object)[,dimnames(catch(object))$year]
             units(res) <- "hr"
@@ -10,3 +10,4 @@ setMethod( 'computeSP', signature(object="biodyn",   biomass="numeric"),     fun
 setMethod( 'computeSP', signature(object="biodyn",   biomass="FLQuant"),     function(object,biomass)     spFn(model(object),params(object),biomass))
 setMethod( 'computeSP', signature(object="character",biomass="numeric"),     function(object,biomass,par) spFn(object,params,biomass))
 
+setGeneric('kobe',       function(file,method,...)    standardGeneric('kobe'))

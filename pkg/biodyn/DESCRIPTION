@@ -5,7 +5,7 @@ Author: Laurence Kell
 Description: implements a biomass dynamic model class
 Depends: methods, R(>= 2.15.0), FLCore(>= 2.2)
 Maintainer: Laurence Kell <laurie.kell@iccat.int>
-Collate:  biodyn-class.R biodyn-generics.R biodyn-constructors.R biodyns.R biodyn-msy.R biodyn-plots.R biodyn-methods.R biodyn-fwd.R biodyn-hcr.R
+Collate:  biodyn-class.R biodyn-generics.R biodyn-constructors.R biodyns.R biodyn-msy.R biodyn-plots.R biodyn-methods.R biodyn-fwd.R biodyn-hcr.R biodyn-kobe.R
 License: GPL 2
 LazyLoad: Yes
 LazyData: No

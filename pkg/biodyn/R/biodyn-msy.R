@@ -4,7 +4,7 @@ setMethod('fmsy',  signature(object='biodyn',    params="missing"), function(obj
 
 setMethod('msy',   signature(object='character', params="FLPar"),   function(object=factor(object), params=params)         msyFn(   object, params))
 setMethod('msy',   signature(object='factor',    params="FLPar"),   function(object=       object,  params=params)         msyFn(   object, params))
-setMethod('msy',   signature(object='biodyn',    params="missing"), function(object)                                       msyFn(model(object), params(object)))
+setMethod('msy',   signature(object='biodyn',    params="missing"), function(object)   msyFn(model(object), params(object)))
 
 setMethod('bmsy',  signature(object='character', params="FLPar"),   function(object=factor(object), params=params)         bmsyFn(  object, params))
 setMethod('bmsy',  signature(object='factor',    params="FLPar"),   function(object=       object,  params=params)         bmsyFn(  object, params))
@@ -84,6 +84,7 @@ bmsyFletcher <- function(params)
 
 fmsyFn=function(object,params,...){
   
+  object=tolower(object)
   fmsyPellaT  <-function(params) params["r"]*(1/(1+params["p"]))
   fmsyFox     <-function(params) params["r"]*(1-(log(params["k"])-1)/log(params["k"]))
   fmsySchaefer<-function(params) params["r"]/2
@@ -109,6 +110,7 @@ fmsyFn=function(object,params,...){
 
 msyFn=function(object,params,...) {
   
+  object=tolower(object)
   res<-switch(object,
               fox      = msyFox(params),
               schaefer = msySchaefer(params),
@@ -125,7 +127,7 @@ msyFn=function(object,params,...) {
 
 bmsyFn=function(object,params) {
   
-  
+  object=tolower(object)
   res<-switch(object,
               fox     =bmsyFox(params) ,
               schaefer=bmsySchaefer(params),
