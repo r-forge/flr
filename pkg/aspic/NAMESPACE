@@ -1,5 +1,5 @@
 importFrom("ggplotFL")
-import("FLCore","biodyn")
+import("FLCore","biodyn","kobe","cpue")
 exportClasses("aspic","aspics")
 exportMethods("aspic","aspics",
               "harvest",
