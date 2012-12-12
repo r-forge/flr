@@ -84,7 +84,8 @@ theme_ms <- function(base_size = 12, base_family = "",...) {
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\SweaveOpts{concordance=TRUE,width=7,height=5}
+
   
 \section{Introduction}
 
@@ -170,10 +171,6 @@ uSS=readU(outDir,"ss")
 
 \section{Diagnostics}
 
-\begin{document}
-\SweaveOpts{concordance=TRUE,width=7,height=5}
-
-  
 \section{Data}
 
 <<data,echo=TRUE,print=FALSE>>=
