@@ -1,0 +1,18 @@
+export("kobeAspic",
+       "kobeMFCL",
+       "kobe2box",
+       "kobeSS3",
+       
+       "kobeProb",
+   
+       "kobeInterp", 
+       "kobePhaseMar",
+        
+       "kobeFn",
+       
+       "theme_ms", "multiplot")
+exportMethods("kobeTrks",
+              "kobeP",
+              "kobePhase",
+              "kobeShade",
+              "kobeSmry")
