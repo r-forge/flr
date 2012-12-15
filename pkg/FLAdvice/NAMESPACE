@@ -25,6 +25,7 @@ export(
   "plotCatches",
   "doIt")
 exportMethods(
+  "FLBRPs",
   "simAR",
   "Arith",
 #  "fwd",

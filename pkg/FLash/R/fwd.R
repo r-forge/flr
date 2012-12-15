@@ -177,7 +177,7 @@ setMethod("fwd", signature(object="FLStock", ctrl="FLQuants"),
     function(object, ctrl,
                sr =NULL, sr.residuals=FLQuant(1,dimnames=dimnames(rec(object))), sr.residuals.mult=TRUE,
                availability=NULL,maxF=2.0){    
-      
+print(1)      
     res=FLStocks(mlply(seq(length(ctrl)),
           function(x,object,ctrl,sr,sr.residuals,sr.residuals.mult,availability,maxF) {
             fwd(object,ctrl=ctrl[[x]],quantity=names(ctrl)[x],
