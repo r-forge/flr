@@ -590,21 +590,27 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     // check target object
     REAL(Err)[0]=3.0;
     if (!isMatrix(xTrgt) || !isNumeric(xTrgt)) {
-       UNPROTECT(1);
-       return Err;}
+       ;
+       //UNPROTECT(1);
+       //return Err;
+       }
 
     // check target min/max/value object
     REAL(Err)[0]=4.0;
     if (!isArray(xAry) || !isNumeric(xAry)) {
-       UNPROTECT(1);
-       return Err;}
+       ;
+       //UNPROTECT(1);
+       //return Err;
+       }
 
     SEXP TrgtDims = GET_DIM(xTrgt);
 
     REAL(Err)[0]=5.0*0 +(double)(LENGTH(TrgtDims)*1.0) + (double)(INTEGER(TrgtDims)[1]*100.0);
     if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 15)  {
-       UNPROTECT(1);
-       return Err;}
+       ;
+       //UNPROTECT(1);
+       //return Err;
+       }
   
     SEXP AryDims = GET_DIM(xAry);
 
@@ -613,8 +619,9 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
                                 INTEGER(AryDims)[1] != 3                    ||
                                 INTEGER(AryDims)[2] != (int) stk.niters)  {
-       UNPROTECT(1);
-       return Err;}
+       //UNPROTECT(1);
+       //return Err;
+       }
 
     double *Trgt = NUMERIC_POINTER(xTrgt);
     double *Ary  = NUMERIC_POINTER(xAry);
