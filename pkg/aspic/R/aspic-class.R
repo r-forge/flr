@@ -6,10 +6,10 @@
 # 8.00000 							## Maximum F allowed in estimating effort              #
 ################################################################################
 
-models=factor(c("LOGISTIC", #Schaefer
-                "GENGRID",  #generalized model at grid of values or at one specified value
-                "FOX",      #Fox
-                "GENFIT"))  #Fit the generalized model and estimate its exponent directly.
+model=factor(c("LOGISTIC", #Schaefer
+               "GENGRID",  #generalized model at grid of values or at one specified value
+               "FOX",      #Fox
+               "GENFIT"))  #Fit the generalized model and estimate its exponent directly.
 
 conditioning=c("YLD", #Condition fitting on yield (recommended for most analyses).
                "EFT") #Condition fitting on fishing-effort rate
@@ -37,8 +37,6 @@ cpueCode=transform(cpueCode[,-1],startf=c(0,0,0,0,1,0,0,1),
 
 
 validAspic <- function(object) {
-  return(TRUE)
-  
   ## Catch must be continous
   yrs<-dimnames(catch(object))$year
   
@@ -46,7 +44,7 @@ validAspic <- function(object) {
       return("years in catch not continous")
   
   #model         ="factor"
-  if (!("factor" %in% is(object@model)) || !(model %in% models))
+  if (!("factor" %in% is(object@model)) || !(model %in% model))
     stop()
   
   #obj           ="factor",
@@ -60,24 +58,33 @@ validAspic <- function(object) {
   return(TRUE)}
 
 setClass('aspic', representation(
-    "biodyn",
+    "FLComp",
+    model         ="factor",
     obj           ="factor",
     conditioning  ="factor",
     options       ="numeric",
     
+    catch         ='FLQuant',
+    stock         ='FLQuant',
+    
     cpue          ="data.frame",
     diags         ="data.frame",
     
+    params        ='FLPar',
+    bounds        ='array',
     stopmess      ="character",
     objFn         ="numeric",
     rnd           ="numeric"),
   prototype(
     range         =unlist(list(minyear=as.numeric(NA),   maxyear=as.numeric(NA))),
-    model         =factor("LOGISTIC",levels=models,      labels=models),
+    model         =factor("LOGISTIC",levels=model,       labels=model),
     obj           =factor("SSE",     levels=objFn,       labels=objFn),
     conditioning  =factor("YLD",     levels=conditioning,labels=conditioning),
     options       =c(search=1,trials=100000,simplex=1e-8,restarts=3e-8,nrestarts=6,effort=1e-4,nsteps=0,maxf=8.0),
    
+    catch         =FLQuant(),
+    stock         =FLQuant(),
+
     params        =FLPar(NA,dimnames=list(params=c("b0","msy","k"),iter=1)),
     bounds        =FLPar(NA,c(length(c(c("b0","msy","k"),paste("q",seq(1),sep=""))),5),dimnames=list(params=c(c("b0","msy","k"),paste("q",seq(1),sep="")),c("fit","min","start","max","lambda"),iter=1)),
     vcov          =FLPar(NA,dimnames=list(params=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),

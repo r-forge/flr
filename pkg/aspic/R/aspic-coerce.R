@@ -1,3 +1,28 @@
+setMethod('aspic', signature(object="FLStock"),
+    function(object){
+                  
+      res      =new("aspic")
+      res@catch=catch(object)
+      res@stock=window(catch(object),end=dims(object)$maxyear+1)
+      res@cpue =data.frame(model.frame(FLQuants(catch=catch(object),index=catch(object)/fbar(object)/mean(catch(object)/fbar(object))),drop=T),type="CC",name="1")
+      
+      dmns=dimnames(res@params)
+      dmns$params=c(dmns$params,"q1")
+      
+      res@params=FLPar(NA,dimnames=dmns)
+      res@params[]=c(1,mean(res@catch),4*mean(res@catch), mean(res@cpue$index/res@cpue$catch)*.2)
+      
+      res@bounds[,"start"]=res@params
+      res@bounds[,"min"]=res@bounds[,"start"]*.1
+      res@bounds[,"max"]=res@bounds[,"start"]*10
+      res@bounds[,"lambda"]=1.0
+      res@bounds[,"fit"]=c(0,1,1,1)
+      
+      range(res)[]=range(res@cpue$year)
+      
+      res})
+
+
 #bdModel=attributes(model(new("FLBioDym")))$levels
   # 
   # setMethod('aspic', signature(object="data.frame"),
@@ -60,6 +85,7 @@ paramFn=function(object){
                  "pellat"  =pellatFn(  biomass,params),
                  stop("has to be either 'fox', 'schaefer' or 'pellat'"))
     
+    res@rnd=9999
     return(res)}
    
    b2aParams(model(object),params(object))}

@@ -12,6 +12,10 @@ setMethod('boot', signature(object='aspic'),
           function(object, package=class(object), exeNm="aspic", dir=tempdir(),boot=500)
             runBoot(object=object,package=package, exeNm=exeNm, dir=dir,boot=boot))
 
+
+utils::globalVariables(c("year","swon","year","B","obs"))
+
+
 setExe=function(package,exeNm,dir){
   ##### set up temp dir with exe for data files
   # Linux
@@ -96,14 +100,13 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
      
         rdat=dget(paste(exeNm,"rdat",sep="."))
         #rdat$estimates
-     
         object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-12)]
-     
-        #iter(object@stock,i)
-        object@stock[,,,,,i]=as.FLQuant(transform(rdat$t.series[,c("year","B")],data=B)[c("year","data")])
-        object@objFn[i]=rdat$diagnostics$obj.fn.value
-        }
+
+        iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","B")],data=B)[c("year","data")])
+        
+        object@objFn[i]=rdat$diagnostics$obj.fn.value  
+    }
 
     if (dims(object)$iter==1){
       rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
@@ -157,7 +160,7 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   coerceDP=function(x)  FLPar(unlist(c(t(x))),params=names(x),iter=dim(x)[1])
  
   parNms=c("b0",modelParams(tolower(model(swon))))
-  
+ 
   object@params[parNms,]=coerceDP(det[,parNms])
   qNms=names(det)[!(names(det) %in% c("iter","stock","harvest","r","trial","loss","msy","bmsy","brel","frel","b1.k",parNms))]
 

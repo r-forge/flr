@@ -1,6 +1,8 @@
 setMethod("readAspic",     signature(object="character"),   function(object,...)            .readAspic(object,...))
 setMethod("writeAspic",    signature(object="aspic"),       function(object,cpue=object@cpue,what="FIT",niter=1,fl="aspic.inp",...)        .writeAspicInp(object,cpue,what,niter,fl=fl,...))
 
+utils::globalVariables(c("aspicCtl"))
+
 checkFile=function(x){
   
   ln=tolower(scan(x,nlines=1,what=character(),sep="\n"))
