@@ -1,17 +1,36 @@
-setGeneric('fit',   function(object,...)     standardGeneric('fit'))
-setGeneric('boot',  function(object,...)     standardGeneric('boot'))
-setGeneric('jk',    function(object,...)     standardGeneric('jk'))
-
+#' The length of a string (in characters).
+#'
+#' @param An aspic object
+#' @return An aspic object with parameter estimate
+#' @seealso \code{\link{biodyn}}
+#' @examples
+#' seq(10)
 setMethod('fit',  signature(object='aspic'),
           function(object, package=class(object), exeNm="aspic", dir=tempdir(),jk=FALSE)
             runExe(object=object,package=package, exeNm=exeNm, dir=dir,jk=jk))
+
+
+#' The length of a string (in characters).
+#'
+#' @param An aspic object
+#' @return An aspic object with parameter estimate
+#' @seealso \code{\link{biodyn}}
+#' @examples
+#' seq(10)
 setMethod('jk',  signature(object='aspic'),
           function(object, package=class(object), exeNm="aspic", dir=tempdir())
             runExe(object=object,package=package, exeNm=exeNm, dir=dir,jk=TRUE))
+
+#' The length of a string (in characters).
+#'
+#' @param An aspic object
+#' @return An aspic object with parameter estimate
+#' @seealso \code{\link{biodyn}}
+#' @examples
+#' seq(10)
 setMethod('boot', signature(object='aspic'),
           function(object, package=class(object), exeNm="aspic", dir=tempdir(),boot=500)
             runBoot(object=object,package=package, exeNm=exeNm, dir=dir,boot=boot))
-
 
 utils::globalVariables(c("year","swon","year","B","obs"))
 

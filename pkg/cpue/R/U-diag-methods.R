@@ -7,7 +7,7 @@ setMethod('diagU',  signature(file='character',method="character"), function(fil
   switch(substr(method[1],1,2),
          ad=diagU2box( file,...),
          as=diagUaspic(file,...),
-         bs=diagUbspc( file,...),
+         bs=diagUbsp(  file,...),
          mf=diagUmfcl( file,...),
          ss=diagUss(   file,...),
          sa=diagUsam(  file,...))

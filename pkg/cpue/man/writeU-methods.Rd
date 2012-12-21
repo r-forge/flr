@@ -3,6 +3,7 @@
 \alias{writeU}
 \alias{writeU-methods}
 \alias{writeU,character,character-method}
+\alias{writeU,data.frame,character,character-method}
 
 
 \title{Writes CPUE series or other indices to text files}

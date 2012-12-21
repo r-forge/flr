@@ -4,8 +4,6 @@
 # Two dispatch methods.  One where SR is FLSR, the other SR is missing.
 # If missing need to specify model and params.  Model can be text string, formula, or function (the sr function used by FLSR).
 # Gives a total of four different methods of making the SR
-
-
 # Will eventually be expanded so that the multiple SRs can be returned.  For the moment s a single SR is returned
 
 if(!isGeneric('setSR'))
@@ -16,8 +14,8 @@ setMethod('setSR', signature(sr='FLSR'),
 
     # Strip out sr model and params then call that method
     setSR(list(model = model(sr), params = params(sr)), object = object, yrs = yrs, sr.residuals = sr.residuals, sr.residuals.mult = sr.residuals.mult, availability=availability)
-    }
-)
+    })
+
 
 setMethod('setSR', signature(sr='list'),
     function(sr,object,yrs,sr.residuals=NULL,sr.residuals.mult=TRUE,availability=NULL)
@@ -25,7 +23,7 @@ setMethod('setSR', signature(sr='list'),
 # ****** Check arguments are all present and of correct type *******
     if(!(is(sr,"list") & all(c("model","params") %in% names(sr))))
         stop("sr has to be a list with items 'model' & 'params'")
-    model <- sr$model
+    model  <- sr$model
     params <- sr$params
 
     if (!is(params,'FLPar') & !is(params,'FLQuant')) stop("params must be of type FLPar or FLQuant")

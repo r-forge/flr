@@ -60,12 +60,7 @@ sims                    kobe datasets
 
 The package can be used to read in stock assessment results as text files from a variety of packages. These can then be summarised and plotted. 
 }
-\author{
-Laurence Kell
-
-Maintainer: Laurence Kell <laurie.kell@iccat.int>
-
-}
+\author{Laurence Kell \\ Maintainer: Laurence Kell <laurie.kell@iccat.int>}
 
 \references{
 Use \url{http://www.tuna-org.org/Documents/TRFMO3/K3-REC_ENG.pdf} %or \href{}{} for web.

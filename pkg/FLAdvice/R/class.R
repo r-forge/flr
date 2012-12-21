@@ -133,9 +133,7 @@ FLBRPs <- setClass("FLBRPs", contains="FLComps",
     if(!all(unlist(lapply(object, is, 'FLBRP'))))
       return("Components must be FLBRP")	
 	
-	  return(TRUE)
-  }
-)
+	  return(TRUE)})
 
 setGeneric('FLBRPs', function(object, ...)
     standardGeneric('FLBRPs'))

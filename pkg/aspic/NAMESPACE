@@ -1,14 +1,15 @@
-importFrom("ggplotFL")
-import("FLCore","biodyn","kobe","cpue")
+import("FLash","biodyn")
 exportClasses("aspic","aspics")
+
 exportMethods("aspic","aspics",
               "harvest",
               "readAspic","writeAspic",
               "fit","boot","jk",
               "window",
               "cpue<-","params<-","bounds<-","catch<-",
-              "msy","fmsy","bmsy","refpts","refptSE",
+              "msy","fmsy","bmsy","refptSE",
               "computeSP",
-              "fwd","hcr")
+              "fwd","hcr",
+              "iter")
 
 export("testTac","testRuns")

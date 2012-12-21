@@ -1,7 +1,6 @@
 #file="/home/laurie/Desktop/ICCAT/SCRS/2012/bfte/VPA/2012/K2SM/2012/Reported/low/bfte2012.d1"
 
-utils::globalVariables(c("variable"))
-utils::globalVariables(c("id."))
+utils::globalVariables(c("variable","id."))
 
 iU2box = function(file,na.strings="NA") {
   skip.hash=function(i) {

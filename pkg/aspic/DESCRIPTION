@@ -8,5 +8,5 @@ Maintainer: Laurence Kell <laurieKell@gmail.com>
 Description: ASPIC
 License: GPL-2
 LazyLoad: yes
-Depends: R(>= 2.15.0), FLCore, ggplotFL, biodyn, stringr, reshape, kobe, cpue
-Collate: aspic-class.R  aspic-generics.R aspic-accessors.R aspic-constructors.R aspic-coerce.R aspic-io.R aspic-tests.R aspic-patch.R aspic-plot.R aspic-exe.R aspics.R aspic-methods.R
+Depends: R(>= 2.15.0), methods, FLCore, FLash, ggplotFL, biodyn, stringr, reshape, kobe, cpue, plyr
+Collate: aspic-class.R  aspic-generics.R aspic-accessors.R aspic-constructors.R aspic-coerce.R aspic-io.R aspic-tests.R aspic-patch.R aspic-plot.R aspic-exe.R aspics.R aspic-methods.R aspic-iter.R aspic-kobe.R aspic-refpts.R

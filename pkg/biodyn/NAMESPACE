@@ -1,11 +1,14 @@
-import("FLCore","ggplotFL")
-import("kobe","cpue")
-exportClasses("biodyn","biodyns")
-exportMethods("biodyn","biodyns",
-              "msy","fmsy","bmsy","refpts","refptSE",
-              "computeSP",
-              "fwd","hcr",
-              "kobe") 
-export("modelParams")
-
-
+exportClasses(biodyn)
+export(is.biodyn)
+exportMethods(biodyn)
+exportMethods(biodyns)
+exportMethods(bmsy)
+exportMethods(computeSP)
+exportMethods(fmsy)
+exportMethods(fwd)
+exportMethods(hcr)
+exportMethods(msy)
+exportMethods(plot)
+exportMethods(refpts)
+exportMethods(tac)
+export(plotSP)

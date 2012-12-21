@@ -7,7 +7,7 @@
 
 
 # msy {{{
-setMethod("msy", signature(object="FLBRP"),
+setMethod("msy", signature(object="FLBRP",params="missing"),
   function(object) {
     refpts(object) <- refpts(as.numeric(NA), refpt='msy',
       iter=as.numeric(dimnames(object@refpts)$iter))

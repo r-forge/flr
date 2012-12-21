@@ -3,9 +3,28 @@ Title: Biomass Dynamic Model
 Version: 0.0.0
 Author: Laurence Kell
 Description: implements a biomass dynamic model class
-Depends: methods, R(>= 2.15.0), FLCore(>= 2.2)
+Depends:
+    methods,
+    R(>= 2.15.0),
+    FLCore(>= 2.2),
+    FLash,
+    FLAdvice,
+    ggplotFL,
+    kobe,
+    cpue
 Maintainer: Laurence Kell <laurie.kell@iccat.int>
-Collate:  biodyn-class.R biodyn-generics.R biodyn-constructors.R biodyns.R biodyn-msy.R biodyn-plots.R biodyn-methods.R biodyn-fwd.R biodyn-hcr.R biodyn-kobe.R
-License: GPL 2
+Collate:
+    'biodyn-generic.R'
+    'biodyn-class.R'
+    'biodyns.R'
+    'biodyn-accessors.R'
+    'biodyn-methods.R'
+    'biodyn-constructors.R'
+    'biodyn-msy.R'
+    'biodyn-fwd.R'
+    'biodyn-hcr.R'
+    'biodyn-plots.R'
+    'biodyn-kobe.R'
+License: GPL-2
 LazyLoad: Yes
 LazyData: No

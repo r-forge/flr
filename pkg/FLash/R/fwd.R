@@ -16,6 +16,7 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
                availability=NULL,maxF=2.0)
     {      
     if (is(sr,"FLBRP")) sr=list(params=params(sr),model=SRModelName(model(sr)))
+
     ## make sure slots have correct iters 
     if (is(sr,"FLSR")) nDim=dims(params(sr))$iter  else nDim=1
     if (!is.null(sr.residuals)) nDim=max(nDim, dims(sr.residuals)$iter, na.rm=TRUE)  
@@ -50,7 +51,7 @@ setMethod("fwd", signature(object="FLStock",ctrl="fwdControl"),
        endYr<-NULL     
  
     if (is.null(availability)) availability<-sweep(stock.n(object),c(1:4,6),apply(stock.n(object),c(1:4,6), sum),"/")
-
+    
     sr<-setSR(sr=sr, object=object, yrs=yrs, sr.residuals=sr.residuals, sr.residuals.mult=sr.residuals.mult, availability=availability)
     
     ## check iters in ctrl are '1 or n' and correct if necessary

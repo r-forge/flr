@@ -6,5 +6,4 @@ export("moments",
 exportMethods(
 	"readU",
 	"diagU",
-	"writeU",
-	"updateU")
+	"writeU")

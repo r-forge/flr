@@ -1,5 +1,5 @@
 
-utils::globalVariables(c("read.frq","catch","effort","qtr","week","fishery"))
+utils::globalVariables(c("read.frq","catch","effort","qtr","week","fishery","read.rep"))
 
 utils::globalVariables(c("value.x"))
 utils::globalVariables(c("value.y"))

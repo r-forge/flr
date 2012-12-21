@@ -1,4 +1,4 @@
-setGeneric("iter", function(obj, ...)
+if (!isGeneric("iter")) setGeneric("iter", function(obj, ...)
   standardGeneric("iter"))
 
 setMethod("iter", signature(obj="FLComp"),

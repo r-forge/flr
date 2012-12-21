@@ -1,3 +1,5 @@
+utils::globalVariables(c("readFLIndices","catch.n"))
+
 .writeUss=function(x,file,...){
   
   #install.packages("FLAssess",repos="http://R-Forge.R-project.org")

@@ -14,5 +14,5 @@ Description: This package provides methods to work with CPUE data from a variety
 	in data from a variety of file formats it also provides methods for writing data in
 	the same file formats.   
 License: GPL-2
-Depends:  R(>= 2.15.1), stringr, r4ss, ggplot2, reshape, plyr, methods, cluster
+Depends:  R(>= 2.15.1), stringr, r4ss, ggplot2, reshape, plyr, methods, cluster, kobe, grid
 Suggests: RCurl, lattice, tables, Hmisc, survival

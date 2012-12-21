@@ -1,4 +1,4 @@
-.writeUmfclx=function(x,file,...){
+.writeUMFCL=function(x,file,...){
   
   
   return(TRUE)}

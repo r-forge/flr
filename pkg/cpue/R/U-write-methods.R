@@ -1,5 +1,7 @@
 setGeneric('writeU',   function(x,file,method,...) standardGeneric('writeU'))
 
+utils::globalVariables(c(".writeUAspic",".writeUbsp",".writeUSS",".writeUVPASuite"))
+
 setMethod('writeU',  signature(x="data.frame",file='character',method="character"), function(x,file,method=c("aspic","adapt","bsp","mfcl","ss","vpa"),...) {
   
   method=tolower(method)
@@ -7,12 +9,10 @@ setMethod('writeU',  signature(x="data.frame",file='character',method="character
   switch(substr(method[1],1,2),
          ad=writeU2box( x,file,...),
          as=writeUaspic(x,file,...),
-         bs=writeUbspc( x,file,...),
+         bs=writeUbsp(  x,file,...),
          mf=writeUmfcl( x,file,...),
          ss=writeUss(   x,file,...),
-         vp=writeUvpa(  x,file,...))
-})
-
+         vp=writeUvpa(  x,file,...))})
 
 setGeneric('writeU2box',   function(x,file,...) standardGeneric('writeU2box'))
 setGeneric('writeUvpa',    function(x,file,...) standardGeneric('writeUvpa'))
@@ -26,5 +26,5 @@ setMethod('writeU2box',  signature(x="data.frame",file='character'), function(x,
 setMethod('writeUvpa',   signature(x="data.frame",file='character'), function(x,file,...) .writeUVPASuite(x,file,...))
 setMethod('writeUss',    signature(x="data.frame",file='character'), function(x,file,...) .writeUSS(      x,file,...))
 setMethod('writeUmfcl',  signature(x="data.frame",file='character'), function(x,file,...) .writeUMFCL(    x,file,...))
-setMethod('writeUbsp',   signature(x="data.frame",file='character'), function(x,file,...) .writeUBSP(     x,file,...))
+setMethod('writeUbsp',   signature(x="data.frame",file='character'), function(x,file,...) .writeUbsp(     x,file,...))
 setMethod('writeUaspic', signature(x="data.frame",file='character'), function(x,file,...) .writeUAspic(   x,file,...))

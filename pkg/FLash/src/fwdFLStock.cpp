@@ -619,6 +619,7 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
                                 INTEGER(AryDims)[1] != 3                    ||
                                 INTEGER(AryDims)[2] != (int) stk.niters)  {
+       ;
        //UNPROTECT(1);
        //return Err;
        }

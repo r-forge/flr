@@ -11,7 +11,7 @@ setGeneric('FLBRP', function(object, sr, ...)
 setGeneric("fbar<-", function(object, value){
 	standardGeneric("fbar<-")})
 
-setGeneric('refpts', function(object, ...)
+setGeneric('refpts', function(object,params,...)
 		standardGeneric('refpts'))
 
 setGeneric("refpts<-", function(object, ..., value){
