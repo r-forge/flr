@@ -1,15 +1,7 @@
-import("FLash","biodyn")
-exportClasses("aspic","aspics")
-
-exportMethods("aspic","aspics",
-              "harvest",
-              "readAspic","writeAspic",
-              "fit","boot","jk",
-              "window",
-              "cpue<-","params<-","bounds<-","catch<-",
-              "msy","fmsy","bmsy","refptSE",
-              "computeSP",
-              "fwd","hcr",
-              "iter")
-
-export("testTac","testRuns")
+exportClasses(aspic)
+exportClasses(aspics)
+exportMethods(aspics)
+exportMethods(boot)
+exportMethods(fit)
+exportMethods(jk)
+exportMethods(plot)
