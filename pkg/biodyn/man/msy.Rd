@@ -1,10 +1,6 @@
 \docType{methods}
 \name{msy}
 \alias{msy}
-\alias{msy,biodyn,missing-method}
-\alias{msy,character,FLPar-method}
-\alias{msy,factor,FLPar-method}
-
 \title{Maximum Sustainable Yield.}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

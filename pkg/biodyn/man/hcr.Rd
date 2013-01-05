@@ -1,8 +1,6 @@
 \docType{methods}
 \name{hcr}
 \alias{hcr}
-\alias{hcr,biodyn-method}
-
 \title{Harvest Control Rule}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

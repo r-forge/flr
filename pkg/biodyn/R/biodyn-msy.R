@@ -232,6 +232,33 @@ bmsyFn=function(object,params) {
   
   return(res)}
 
+##############################################################
+#' Calculate Carrying Capacity
+#'
+#' Calculates $k$ given msy, r and K for a Pella-Tomlinson biomass dynamic model
+#'
+#' @param  \code{msy}, a guess for $MSY$
+#'
+#' @param  \code{r}, a guess for $r$ the population growth rate
+#'
+#' @param \code{p}, a guess for $p$ the shape parameter
+#'
+#' @return an \code{FLPar} object with an estimate for $k$
+#' 
+#' @seealso \code{\link{msy}} and \code{\link{bmsy}} 
+#' 
+#' @export
+#' @rdname calcK
+#'
+#' @examples
+#' calcK(5000,r=.6,p=1.0)
+calcK <- function(msy,r=.6,p=1,params=FLPar(r=r,p=p)){
+  res=msy/(params["r"]*(1/(1+params["p"]))^(1/params["p"]+1))
+  
+  dimnames(res)$params="k"
+  
+  return(res)} 
+
 refptsFn=function(model,params){
   model=tolower(model)
   dmns<-dimnames(params)

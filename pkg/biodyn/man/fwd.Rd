@@ -1,10 +1,6 @@
 \docType{methods}
 \name{fwd}
 \alias{fwd}
-\alias{fwd,biodyn,FLQuants-method}
-\alias{fwd,biodyn,list-method}
-\alias{fwd,biodyn,missing-method}
-
 \title{Forward Projections}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

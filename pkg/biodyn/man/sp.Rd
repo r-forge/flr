@@ -1,10 +1,6 @@
 \docType{methods}
 \name{computeSP}
 \alias{computeSP}
-\alias{computeSP,biodyn,FLQuant-method}
-\alias{computeSP,biodyn,missing-method}
-\alias{computeSP,biodyn,numeric-method}
-
 \title{Calculates surplus production}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}}

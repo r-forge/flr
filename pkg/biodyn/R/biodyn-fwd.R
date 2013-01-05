@@ -104,7 +104,7 @@ iavFn=function(val,bnd,lag=1){
 
 setMethod("fwd", signature(object="biodyn",ctrl="missing"),
    function(object, catch=NULL, harvest=NULL, stock=NULL, hcr=NULL, pe=NULL, peMult=TRUE,minF=0,maxF=2,lag=0,
-           bounds=list(catch=c(Inf,Inf)),end=NULL,...) {
+           bounds=list(catch=c(Inf,Inf)),end=NULL,ptYr=0,...) {
 #  object =simbiodyn()
 #  harvest=FLQuant(0.9,dimnames=list(year=50:80))
 #  catch  =NULL
@@ -191,6 +191,7 @@ setMethod("fwd", signature(object="biodyn",ctrl="missing"),
         if (peMult) sp.=computeSP(object,object@stock[, ac(y)])*pe[, ac(y)] 
         else        sp.=computeSP(object,object@stock[, ac(y)])+pe[, ac(y)]
      } else sp.=computeSP(object,object@stock[, ac(y)])
+     #} else sp.=computeSP(object,object@stock[, ac(y)]*(1-ptYr)+object@stock[, ac(y+1)]*(ptYr))
 
      ## targets 
      if (hcrTrgt)
@@ -216,8 +217,8 @@ setMethod("fwd", signature(object="biodyn",ctrl="missing"),
       object@stock[,ac(y+1)]=object@stock[,ac(y)] - object@catch[,ac(y)] + sp.
       }
     
-    object@stock[stock(object) < 0] = 0
-    object@catch[catch(object) < 0] = 0
+    object@stock[stock(object) < 0] = 0.001
+    object@catch[catch(object) < 0] = 0.0000001
 
     return(object)}) 
 

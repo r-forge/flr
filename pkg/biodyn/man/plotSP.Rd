@@ -24,6 +24,6 @@
 refpts("logistic",FLPar(msy=100,k=500))
 }
 \seealso{
-  \code{\link{plotSP}} 
+  \code{\link{plotSP}}
 }
 

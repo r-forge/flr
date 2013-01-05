@@ -21,3 +21,4 @@ if (!isGeneric("fwd"))       setGeneric("fwd",      function(object, ctrl, ...) 
 if (!isGeneric("hcr"))       setGeneric("hcr",      function(object, ...)          standardGeneric("hcr"))
 setGeneric("tac",      function(object, harvest, ...) standardGeneric("tac"))
 
+#if (!isGeneric("pella"))      setGeneric('pella',   function(object,...)  standardGeneric('pella'))

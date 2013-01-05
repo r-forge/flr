@@ -1,9 +1,5 @@
 \name{biodyn}
 \alias{biodyn}
-\alias{biodyn,character,FLPar-method}
-\alias{biodyn,factor,FLPar-method}
-\alias{biodyn,missing,missing-method}
-
 \title{Biomass Dynamic Model Class}
 \arguments{
   \item{model}{a factor or string that specifies the model
@@ -30,7 +26,7 @@
   biomass dynamic stock assessment model.
 }
 \examples{
-\dontrun{biodyn()}
+\dontrun{aspic()}
 bd=biodyn("logistic",FLPar(k=50000,msy=1000,b0=1))
 }
 

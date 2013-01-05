@@ -16,15 +16,19 @@ Maintainer: Laurence Kell <laurie.kell@iccat.int>
 Collate:
     'biodyn-generic.R'
     'biodyn-class.R'
-    'biodyns.R'
     'biodyn-accessors.R'
     'biodyn-methods.R'
+    'biodyn-control.R'
     'biodyn-constructors.R'
     'biodyn-msy.R'
+    'biodyns.R'
+    'biodyn-kobe.R'
+    'biodyn-plots.R'
     'biodyn-fwd.R'
     'biodyn-hcr.R'
-    'biodyn-plots.R'
-    'biodyn-kobe.R'
+    'biodyn-pella.R'
+    'biodyn-OEM.R'
+    'biodyn-admb.R'
 License: GPL-2
 LazyLoad: Yes
 LazyData: No

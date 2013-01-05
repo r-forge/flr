@@ -1,11 +1,6 @@
 \docType{methods}
 \name{bmsy}
 \alias{bmsy}
-\alias{bmsy,biodyn,missing-method}
-\alias{bmsy,character,FLPar-method}
-\alias{bmsy,factor,FLPar-method}
-
-
 \title{Biomass at Maximum Sustainable Yield.}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

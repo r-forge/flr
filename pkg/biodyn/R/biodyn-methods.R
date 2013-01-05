@@ -31,3 +31,48 @@ setMethod( 'computeSP', signature(object="biodyn",   biomass="numeric"),     fun
 setMethod( 'computeSP', signature(object="biodyn",   biomass="FLQuant"),     function(object,biomass)                spFn(model(object),params(object),biomass))
 
 setGeneric('kobe',       function(file,method,...)    standardGeneric('kobe'))
+
+# calcLogLik
+
+calcSigma <- function(obs,hat=rep(0,length(obs)),error="log"){
+  yrs=dimnames(obs)$year
+  yrs=yrs[yrs %in% dimnames(hat)$year]
+  hat=hat[,yrs]
+  obs=obs[,yrs]
+  
+  if (error=="log"){
+    hat=log(hat)
+    obs=log(obs)}
+  
+  SS =sum((obs-hat)^2,na.rm=T)
+  
+  return((SS/length(hat))^.5)}
+
+logl<-function(obs,se,hat=rep(0,length(obs))){
+  flag=!is.na(obs) & !is.na(hat)
+  obs =obs[flag]
+  hat =hat[flag]
+  
+  SS<-sum((obs-hat)^2)
+  
+  n   <-length(obs)
+  res <-(log(1/(2*pi))-n*log(se)-SS/(2*se^2))/2
+  
+  return(res)}
+
+calcLogLik<-function(obs,hat=rep(0,length(obs)),error="log",type=1){
+  
+  yrs=dimnames(obs)$year
+  yrs=yrs[yrs %in% dimnames(hat)$year]
+  hat=hat[,yrs]
+  obs=obs[,yrs]
+  
+  if (error=="log"){
+    hat=log(hat)
+    obs=log(obs)}
+  
+  se<-calcSigma(obs,hat)
+  
+  if (type==1) return(logl(se,obs,hat)) else
+    if (type==2) return(-sum(dnorm(obs, hat, se, log=(error=="log"), na.rm=TRUE))) else
+      if (type==3) return(sum((obs-hat)^2))}

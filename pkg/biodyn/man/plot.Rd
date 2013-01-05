@@ -1,9 +1,6 @@
 \docType{methods}
 \name{plot}
 \alias{plot}
-\alias{plot,biodyn,missing-method}
-\alias{plot,biodyns,missing-method}
-
 \title{Create a \code{ggplot} plot}
 \arguments{
   \item{\code{x},}{an object of class \code{biodyn}}

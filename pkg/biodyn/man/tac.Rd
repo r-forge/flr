@@ -1,8 +1,6 @@
 \docType{methods}
 \name{tac}
 \alias{tac}
-\alias{tac,biodyn-method}
-
 \title{Total Allowable Catch}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

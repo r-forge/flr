@@ -1,10 +1,6 @@
 \docType{methods}
 \name{fmsy}
 \alias{fmsy}
-\alias{fmsy,biodyn,missing-method}
-\alias{fmsy,character,FLPar-method}
-\alias{fmsy,factor,FLPar-method}
-
 \title{Fishing Mortality at Maximum Sustainable Yield.}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}

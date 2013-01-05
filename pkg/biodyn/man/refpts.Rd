@@ -1,10 +1,6 @@
 \docType{methods}
 \name{refpts}
 \alias{refpts}
-\alias{refpts,biodyn,missing-method}
-\alias{refpts,character,FLPar-method}
-\alias{refpts,factor,FLPar-method}
-
 \title{Maximum Sustainable Yield reference points}
 \arguments{
   \item{\code{object},}{an object of class \code{biodyn}
