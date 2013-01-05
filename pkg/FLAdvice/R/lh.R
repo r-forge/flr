@@ -266,12 +266,15 @@ lh=function(par,
    if ("fbar" %in% names(args)) 
       fbar(res)<-args[["fbar"]] else 
    if (any((!is.nan(refpts(res)["crash","harvest"])))) 
-      fbar(res)<-FLQuant(seq(0,1,length.out=101))*refpts(res)["crash","harvest"]
+      fbar(res)<-FLQuant(seq(0,1,length.out=101),quant="age")*refpts(res)["crash","harvest"]
   
+   
    res=brp(res)
 
-   if (!("units" %in% names(attributes(par))))  return(res)
 
+  if (!("units" %in% names(attributes(par))))  return(res)
+  if (all(is.na(attributes(par)$units)))  return(res)
+   
    res <- setUnits(res, par)
 
   return(res)}
