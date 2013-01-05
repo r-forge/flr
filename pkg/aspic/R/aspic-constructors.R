@@ -1,3 +1,13 @@
+#' aspic Class
+#'
+#' @description Creates an object of the \pkg{aspic} class that implements a biomass dynamic stock assessment model.
+#' @name aspic
+#' @paramobject, a factor or string that specifies the model type, has to be one of "fox", "schaefer", "pellat", "gulland", "fletcher", "shepherd", "logistic", "genfit"
+#' @param params, an \code{FLPar}  object with model parameters
+#' @return an \code{aspic} object
+#' @export
+#' @doctype method
+#' @examples \dontrun{bd=biodyn("logistic",FLPar(k=50000,msy=1000,b0=1))}
 setMethod('aspic', signature(object='missing'),
           function(...)
           {
@@ -29,7 +39,7 @@ setMethod('aspic', signature(object="data.frame"),
                object=transform(object, index=catch/effort)
             range(res)=unlist(list(minyear=min(object$year), maxyear=max(object$year)))
             
-            res@cpue=object
+            res@index=object
             # Load given slots
             for(i in names(args))
               slot(res, i) <- args[[i]]
@@ -39,24 +49,24 @@ setMethod('aspic', signature(object="data.frame"),
             
             res@params=FLPar(NA,dimnames=nms)
             
-            nms=dimnames(res@bounds)
+            nms=dimnames(res@control)
             nms$params=dimnames(res@params)[[1]]
             nms$params=nms$params
             
-            res@bounds=array(as.numeric(NA),dim=laply(nms[-3],length),dimnames=nms[-3])
-            res@bounds["b0", "start"]=1.0
-            res@bounds["msy","start"]=mean(res@catch,na.rm=T)
-            res@bounds["k",  "start"]=mean(res@bounds["msy","start"])*4.0/r
+            res@control=array(as.numeric(NA),dim=laply(nms[-3],length),dimnames=nms[-3])
+            res@control["b0", "start"]=1.0
+            res@control["msy","start"]=mean(res@catch,na.rm=T)
+            res@control["k",  "start"]=mean(res@control["msy","start"])*4.0/r
      
-            res@bounds[-(1:3),"start"]=daply(res@cpue, .(name), with, 2*mean(index,na.rm=T))/res@bounds["k",  "start"]
+            res@control[-(1:3),"start"]=daply(res@index, .(name), with, 2*mean(index,na.rm=T))/res@control["k",  "start"]
             
-            res@bounds[,"min"] = res@bounds[,"start"]*0.01
-            res@bounds[,"max"] = res@bounds[,"start"]*100.0
-            res@bounds[,"fit"]    =1
-            res@bounds[,"lambda"] =1
+            res@control[,"min"] = res@control[,"start"]*0.01
+            res@control[,"max"] = res@control[,"start"]*100.0
+            res@control[,"fit"]    =1
+            res@control[,"lambda"] =1
                
-            res@bounds["b0","fit"]   =0
-            res@bounds[1:3, "lambda"]=0
+            res@control["b0","fit"]   =0
+            res@control[1:3, "lambda"]=0
             
             res@rnd=2062012
             

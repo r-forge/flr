@@ -46,36 +46,10 @@ setMethod('boot', signature(object='aspic'),
 utils::globalVariables(c("year","swon","year","B","obs"))
 
 
-setExe=function(package,exeNm,dir){
-  ##### set up temp dir with exe for data files
-  # Linux
-  if (R.version$os=="linux-gnu") {
-    exe <- paste(system.file("bin", "linux", package=package, mustWork=TRUE),exeNm, sep="/")
-    file.copy(exe, dir)
-    path <- paste(dir, "/", sep="")
-    
-    # Wind0ws
-  } else if (.Platform$OS.type == "windows") {
-    exe <- paste(system.file("bin", "windows", package=package, mustWork=TRUE),
-                 paste(exeNm, ".exe", sep=""), sep="/")
-    file.copy(exe, dir)
-    path <- paste(dir, "\\", sep="")
-    
-    # Mac OSX
-  }else 
-    stop()
-  
-  oldwd <- getwd()
-  
-  # change wd to avoid exe case bug
-  setwd(dir)
-
-  oldwd}
-
 chkIters=function(object){
-  N=max(dims(object)$iter,dims(object@bounds)$iter,dims(object@params)$iter)
+  N=max(dims(object)$iter,dims(object@control)$iter,dims(object@params)$iter)
   
-  #params(object)=FLPar(object@bounds[,"start",drop=T])
+  #params(object)=FLPar(object@control[,"start",drop=T])
   
   if (N>1){
     object@stock=propagate(stock( object),N)
@@ -94,22 +68,22 @@ jkIdx=function(x) dimnames(x)[[1]][ !is.na(x$index)]
 runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
  
   if (any(is.na(object@catch))){
-       tmp=ddply(object@cpue, .(year), with, mean(catch,na.rm=TRUE))
+       tmp=ddply(object@index, .(year), with, mean(catch,na.rm=TRUE))
        object@catch=as.FLQuant(tmp[,"V1"], dimnames=list(year=tmp[,"year"]))
        dmns=dimnames(object@catch)
        dmns$year=c(dmns$year,as.numeric(max(dmns$year))+1)
        object@stock=FLQuant(NA,dimnames=dmns)
        }
 
-  oldwd=setExe(package,exeNm,dir)
+  oldwd=biodyn:::setExe(package,exeNm,dir)
 
   ## Jack knife if wished 
   j=1
   if (jk){
-    object=propagate(object,length(jkIdx(object@cpue)))
-    object@params=propagate(object@params,length(jkIdx(object@cpue)))
-    j   = jkIdx(object@cpue)
-    cpue=object@cpue}
+    object=propagate(object,length(jkIdx(object@index)))
+    object@params=propagate(object@params,length(jkIdx(object@index)))
+    j   = jkIdx(object@index)
+    index=object@index}
  
     object=chkIters(object)
   
@@ -118,8 +92,8 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
            if (file.exists(paste(exeNm,".",x,sep=""))) system(paste("rm ",exeNm,".",x,sep="")))
     
         if (jk){
-               object@cpue=cpue
-               object@cpue[j[i],"index"]=NA
+               object@index=index
+               object@index[j[i],"index"]=NA
                }
         
         # create exe input files
@@ -159,12 +133,12 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
 
   ## add catch baed on index catches if missing
   if (any(is.na(object@catch))){
-    tmp=ddply(object@cpue, .(year), with, mean(catch,na.rm=TRUE))
+    tmp=ddply(object@index, .(year), with, mean(catch,na.rm=TRUE))
     object@catch=as.FLQuant(tmp[,"V1"], dimnames=list(year=tmp[,"year"]))
     }
   
   ## add catch baed on index catches if missing
-  if (dim(object@bounds)[3] >1)    stop("bounds can only have iter dim of 1")
+  if (dim(object@control)[3] >1)    stop("control can only have iter dim of 1")
   if (dim(object@params)[2]==1)    object@params=propagate(object@params,boot)
   if (dim(object@params)[2]!=boot) stop("params iters either have to be 1 or same as number of boot")
   if (dims(object@catch)$iter>1)   stop("catch must only have 1 iter")

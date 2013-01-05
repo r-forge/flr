@@ -4,14 +4,14 @@ if (!isGeneric("iter")) setGeneric("iter", function(obj, ...)
 setMethod("iter", signature(obj="FLComp"),
           function(obj, iter) {
             
-          obj@params=iter(obj@params,iter)
-          obj@bounds=iter(obj@bounds,iter)
-          obj@catch =iter(obj@catch, iter)
-          obj@stock =iter(obj@stock, iter)
+          obj@params=iter(obj@params,  iter)
+          obj@control=iter(obj@control,iter)
+          obj@catch =iter(obj@catch,   iter)
+          obj@stock =iter(obj@stock,   iter)
           
-          if ("iter" %in% names(obj@cpue)){
-          flag=obj@cpue$iter %in% iter
-          obj@cpue=obj@cpue[flag,]}
+          if ("iter" %in% names(obj@index)){
+          flag=obj@index$iter %in% iter
+          obj@index=obj@index[flag,]}
           
           return(obj)})
             

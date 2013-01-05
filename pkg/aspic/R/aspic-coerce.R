@@ -4,21 +4,21 @@ setMethod('aspic', signature(object="FLStock"),
       res      =new("aspic")
       res@catch=catch(object)
       res@stock=window(catch(object),end=dims(object)$maxyear+1)
-      res@cpue =data.frame(model.frame(FLQuants(catch=catch(object),index=catch(object)/fbar(object)/mean(catch(object)/fbar(object))),drop=T),type="CC",name="1")
+      res@index =data.frame(model.frame(FLQuants(catch=catch(object),index=catch(object)/fbar(object)/mean(catch(object)/fbar(object))),drop=T),type="CC",name="1")
       
       dmns=dimnames(res@params)
       dmns$params=c(dmns$params,"q1")
       
       res@params=FLPar(NA,dimnames=dmns)
-      res@params[]=c(1,mean(res@catch),4*mean(res@catch), mean(res@cpue$index/res@cpue$catch)*.2)
+      res@params[]=c(1,mean(res@catch),4*mean(res@catch), mean(res@index$index/res@index$catch)*.2)
       
-      res@bounds[,"start"]=res@params
-      res@bounds[,"min"]=res@bounds[,"start"]*.1
-      res@bounds[,"max"]=res@bounds[,"start"]*10
-      res@bounds[,"lambda"]=1.0
-      res@bounds[,"fit"]=c(0,1,1,1)
+      res@control[,"start"]=res@params
+      res@control[,"min"]=res@control[,"start"]*.1
+      res@control[,"max"]=res@control[,"start"]*10
+      res@control[,"lambda"]=1.0
+      res@control[,"fit"]=c(0,1,1,1)
       
-      range(res)[]=range(res@cpue$year)
+      range(res)[]=range(res@index$year)
       
       res})
 
@@ -49,7 +49,7 @@ setMethod('aspic', signature(object="FLStock"),
   #                                      pellat  =factor("GENFIT"))
   #           
   #             slot(res,"params")  =paramFn(object)
-  #             slot(res,"bounds")  =boundFn(res)
+  #             slot(res,"control")  =controlFn(res)
   #  
   #             # Load given slots
   #             for(i in names(args))
@@ -90,7 +90,7 @@ paramFn=function(object){
    
    b2aParams(model(object),params(object))}
      
-boundFn=function(object){
+controlFn=function(object){
   
   schaefer2Logistic=function(x){FLPar()}
   fox2fox          =function(x){FLPar()}
@@ -105,7 +105,27 @@ boundFn=function(object){
          shepherd=stop("Gulland not available in ASPIC"))
   }
 
-# setAs('aspic', 'biodyn',
-#       function(from)
-#         return(FLMetier(from, range=from@range)))
+setAs('aspic', 'biodyn',
+      function(from){
+        sA=getSlots("aspic")
+        sB=getSlots("biodyn")
+        
+        res=biodyn()
+        
+        for (i in names(sA[(names(sA) %in% names(sB))]))
+          slot(res,i)=slot(from,i)
+        
+        return(res)})
+
+setAs('biodyn','aspic',
+      function(from){
+        sA=getSlots("aspic")
+        sB=getSlots("biodyn")
+        
+        res=aspic()
+        
+        for (i in names(sA[(names(sA) %in% names(sB))]))
+          slot(res,i)=slot(from,i)
+        
+        return(res)})
 

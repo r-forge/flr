@@ -1,5 +1,6 @@
 exportClasses(aspic)
 exportClasses(aspics)
+exportMethods(aspic)
 exportMethods(aspics)
 exportMethods(boot)
 exportMethods(fit)
