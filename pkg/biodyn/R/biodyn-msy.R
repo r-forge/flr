@@ -273,3 +273,60 @@ refptsFn=function(model,params){
   res["bmsy"]<-bmsyFn(model, params)
   
   return(res)}
+
+fnB=function(x,bd,year=range(bd)["maxyear"]){
+  if (is.numeric(year)) year=ac(year)
+  params(bd)[c("r","k")]=x
+  stock(bd[,year])/refpts(bd)["bmsy"]}
+
+fnF=function(x,bd,year=range(bd)["maxyear"]){
+  if (is.numeric(year)) year=ac(year)
+  params(bd)[c("r","k")]=x
+  harvest(bd[,"2008"])/refpts(bd)["fmsy"]}
+
+fnY=function(x,bd,year=range(bd)["maxyear"]){
+  if (is.numeric(year)) year=ac(year)
+  params(bd)[c("r","k")]=x
+  catch(bd[,"2008"])/refpts(bd)["msy"]}
+
+fnJ=function(x,bd,year=range(bd)["maxyear"]){
+  if (is.numeric(year)) year=ac(year)
+  bd@params[biodyn:::activeParams(bd)]=x
+  c(stock  =stock(  bd[,"2008"])/refpts(bd)["bmsy"],
+    harvest=harvest(bd[,"2008"])/refpts(bd)["fmsy"],
+    catch  =catch(  bd[,"2008"])/refpts(bd)[ "msy"])}  
+
+
+refJacobian=function(bd,year=range(bd)["maxyear"]){
+
+  x0=bd@params[biodyn:::activeParams(bd)]
+  
+  res <- jacobian(func=fnJ, x=x0, bd=swon)
+  
+  nms=dimnames(bd@params[biodyn:::activeParams(bd)])[[1]]
+  
+  res=FLPar(array(t(res),dim=c(length(nms),3,1),dimnames=list("params"=nms," "=c("stock","harvest","catch"),iter=1)))
+  
+  return(res)}
+
+relVar=function(bd,year=range(bd)["maxyear"]){
+  
+  nms=dimnames(bd@params[biodyn:::activeParams(bd)])[[1]]
+  res=refJacobian(bd,year=year)
+  cov=bd@vcov[nms,nms]
+  
+  
+  res.=as.data.frame(res)
+  
+  iter(cov,1)[lower.tri(iter(cov,1)[drop=T])] =NA
+  cov.=as.data.frame(cov)
+  cov.=cov.[!is.na(cov.$data),]
+  
+  vars=merge(cov., merge(res.,res.,by="params",all=T),by="params",all=T)
+  
+  vars=ddply(transform(vars,var=data.x*data.y*data)[,c("X..x","iter","var")],.(X..x,iter), function(x) data.frame(var=sum(x$var)))
+  
+  return(res)}  
+
+
+
