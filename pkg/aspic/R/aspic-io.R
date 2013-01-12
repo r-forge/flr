@@ -336,8 +336,8 @@ aspicPrn =function(x){
   
   res$residual=log(res$obs/res$hat)
   
-  names(res)[2]="name"
-  
+  names(res)[2:3]=c("name","index")
+
   res=ddply(res,.(name),fnDiags)
   
   res}

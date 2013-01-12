@@ -116,9 +116,11 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
       rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
       if (is.data.frame(rtn)) object@diags=rtn
     
-      object@diags=transform(object@diags,stockHat=hat/c(object@params[grep("q",dimnames(params(object))$params)])[name],
-                                          stockObs=obs/c(object@params[grep("q",dimnames(params(object))$params)])[name])
+      object@diags=transform(object@diags,stock.  =  hat/c(object@params[grep("q",dimnames(params(object))$params)])[name],
+                                          stockHat=index/c(object@params[grep("q",dimnames(params(object))$params)])[name])
       object@diags=merge(object@diags,model.frame(mcf(FLQuants(stock=object@stock,harvest=harvest(object))),drop=TRUE),all=T)
+      object@diags$stock=object@diags$stock.
+      object@diags=object@diags[,-10]
       }
   
     setwd(oldwd)
@@ -147,7 +149,7 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   dmns$year=c(dmns$year,as.numeric(max(dmns$year))+1)
   object@stock=propagate(FLQuant(NA,dimnames=dmns),boot)
 
-  oldwd=setExe(package,exeNm,dir)
+  oldwd=biodyn:::setExe(package,exeNm,dir)
   
   m_ply(c("prn","rdat","bio","inp","fit","sum","rdatb","det","sum","bot"), function(x)
       if (file.exists(paste(exeNm,".",x,sep=""))) system(paste("rm ",exeNm,".",x,sep="")))
@@ -163,8 +165,8 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
 
   coerceDP=function(x)  FLPar(unlist(c(t(x))),params=names(x),iter=dim(x)[1])
  
-  parNms=c("b0",biodyn:::modelParams(tolower(model(swon))))
- 
+  parNms=c("b0",biodyn:::modelParams(tolower(model(object))))
+   
   object@params[parNms,]=coerceDP(det[,parNms])
   qNms=names(det)[!(names(det) %in% c("iter","stock","harvest","r","trial","loss","msy","bmsy","brel","frel","b1.k",parNms))]
 
@@ -172,5 +174,6 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   object@stock=bio[["stock"]]%*%bio[["bmsy"]]
 
   setwd(oldwd)
+  
   
   return(object)}
