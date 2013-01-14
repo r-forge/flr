@@ -351,7 +351,7 @@ void flc::InitStocks(SEXP x)
    if (!isFLStocks(x)) return;
 
    nfleet()  = NElemList(x);
-   nstock()    = nfleet();
+   nstock()  = nfleet();
    nmetier() = 1;
 
    int i,j;
