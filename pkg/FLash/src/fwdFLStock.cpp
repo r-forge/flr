@@ -626,28 +626,26 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     // check target min/max/value object
     REAL(Err)[0]=4.0;
     if (!isArray(xAry) || !isNumeric(xAry)) {
-       ;
-       //UNPROTECT(1);
-       //return Err;
+       UNPROTECT(1);
+       return Err;
        }
 
     SEXP TrgtDims = GET_DIM(xTrgt);
 
-    //REAL(Err)[0]=5.0*0 +(double)(LENGTH(TrgtDims)*1.0) + (double)(INTEGER(TrgtDims)[1]*100.0);
-    //if (INTEGER(LENGTH(TrgtDims)) != 2 || INTEGER(TrgtDims)[1] != 15)  {
-       ;
-       //UNPROTECT(1);
-       //return Err;
-     //  }
+    REAL(Err)[0]=5.0;
+    if (INTEGER(LENGTH(TrgtDims)) != 2 || INTEGER(TrgtDims)[1] != 15)  {
+       UNPROTECT(1);
+       return Err;
+       }
   
    SEXP AryDims = GET_DIM(xAry);
-  
-   cout  << "test\n";
-
-   cout  << (int)LENGTH(AryDims)     << "\t" <<  INTEGER(AryDims)[0]  << "\t" <<  
-            INTEGER(TrgtDims)[0]     << "\t" <<  INTEGER(AryDims)[1]  << "\t" << 
-            INTEGER(AryDims)[2]      << "\t" <<  
-            ((int) stk.niters) <<endl;
+//  
+//   cout  << "test\n";
+//
+//   cout  << (int)LENGTH(AryDims)     << "\t" <<  INTEGER(AryDims)[0]  << "\t" <<  
+//            INTEGER(TrgtDims)[0]     << "\t" <<  INTEGER(AryDims)[1]  << "\t" << 
+//            INTEGER(AryDims)[2]      << "\t" <<  
+//            ((int) stk.niters) <<endl;
 
    REAL(Err)[0]=6; 
                             
@@ -658,8 +656,6 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
        UNPROTECT(1);
        return Err;
        }
-
-   REAL(Err)[0]=7; 
   
     double *Trgt = NUMERIC_POINTER(xTrgt);
     double *Ary  = NUMERIC_POINTER(xAry);
@@ -677,14 +673,14 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     depen_ad = new  adouble[n];
     indep_ad = new  adouble[n];
     
-cout<<"Jac"<<endl;
+//cout<<"Jac"<<endl;
 
     for (i=0; i<n; i++){
        jac[i]   = new double[n];
 	   indep[i] = 1.0;
 	   }
 
-cout<<"Jac End"<<endl;
+//cout<<"Jac End"<<endl;
 
     int iTrgt = 0, 
         iter  = 0,
