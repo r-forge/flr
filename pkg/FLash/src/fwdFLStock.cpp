@@ -1,10 +1,38 @@
+//Long vectors
+//============
+//
+//On 64-bit platforms, the length of a vector is no longer limited to
+//2^31-1 elements.  This applies to matrices and arrays, but for the
+//forseeable future each of their dimensions is limited to 2^31-1.
+//
+//The most important consequence is that length(x) is now more likely to
+//not be an integer.  (This has always been a possibility for length()
+//methods, and e.g. package Matrix had methods that return a double.)
+//Programmers have frequently assumed that lengths were integers when
+//passing to .C/.Fortran, and furthermore that as.integer(length(x)) was
+//not NA.  So safe code will
+//
+//- always use as.integer(length(x)) when calling .C/.Fortran
+//- if using NAOK = TRUE, check that the result is not NA.
+//
+//As a precaution, .C and .Fortran do not accept long vectors (as a
+//common idiom is to pass a vector and its length).
+//
+
+
 #define ADOLC TAPELESS
 #include <adouble.h>
 #include "fwdFLStock.hpp"
 #include "fwd.hpp"
 #include "float.h"
+#include<ostream>
 
-//#include <iostream>
+using std::cout;
+using std::endl;
+
+//ofstream outFile("/tmp/tst.txt");
+  
+  
 //using namespace std;
 
 fwdStk::fwdStk(void)
@@ -605,25 +633,34 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
 
     SEXP TrgtDims = GET_DIM(xTrgt);
 
-    REAL(Err)[0]=5.0*0 +(double)(LENGTH(TrgtDims)*1.0) + (double)(INTEGER(TrgtDims)[1]*100.0);
-    if (LENGTH(TrgtDims) != 2 || INTEGER(TrgtDims)[1] != 15)  {
+    //REAL(Err)[0]=5.0*0 +(double)(LENGTH(TrgtDims)*1.0) + (double)(INTEGER(TrgtDims)[1]*100.0);
+    //if (INTEGER(LENGTH(TrgtDims)) != 2 || INTEGER(TrgtDims)[1] != 15)  {
        ;
        //UNPROTECT(1);
        //return Err;
-       }
+     //  }
   
-    SEXP AryDims = GET_DIM(xAry);
+   SEXP AryDims = GET_DIM(xAry);
+  
+   cout  << "test\n";
 
-    REAL(Err)[0]=6.0*0.0 +  (double) stk.niters;  //INTEGER(AryDims)[0]- INTEGER(TrgtDims)[0] + INTEGER(AryDims)[1]-3 + INTEGER(AryDims)[2] - 
+   cout  << (int)LENGTH(AryDims)     << "\t" <<  INTEGER(AryDims)[0]  << "\t" <<  
+            INTEGER(TrgtDims)[0]     << "\t" <<  INTEGER(AryDims)[1]  << "\t" << 
+            INTEGER(AryDims)[2]      << "\t" <<  
+            ((int) stk.niters) <<endl;
+
+   REAL(Err)[0]=6; 
                             
-    if (LENGTH(AryDims) != 3 || INTEGER(AryDims)[0] != INTEGER(TrgtDims)[0] || 
-                                INTEGER(AryDims)[1] != 3                    ||
-                                INTEGER(AryDims)[2] != (int) stk.niters)  {
-       ;
-       //UNPROTECT(1);
-       //return Err;
+    if (((int) LENGTH(AryDims) != 3) || 
+        ((int) INTEGER(AryDims)[0]) != ((int) INTEGER(TrgtDims)[0]) || 
+        ((int) INTEGER(AryDims)[1]) != 3                    ||
+        ((int) INTEGER(AryDims)[2]) != ((int) stk.niters))  {
+       UNPROTECT(1);
+       return Err;
        }
 
+   REAL(Err)[0]=7; 
+  
     double *Trgt = NUMERIC_POINTER(xTrgt);
     double *Ary  = NUMERIC_POINTER(xAry);
 
@@ -640,10 +677,14 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     depen_ad = new  adouble[n];
     indep_ad = new  adouble[n];
     
-	for (i=0; i<n; i++){
+cout<<"Jac"<<endl;
+
+    for (i=0; i<n; i++){
        jac[i]   = new double[n];
 	   indep[i] = 1.0;
 	   }
+
+cout<<"Jac End"<<endl;
 
     int iTrgt = 0, 
         iter  = 0,
