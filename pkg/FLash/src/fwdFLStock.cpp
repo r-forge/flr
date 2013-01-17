@@ -633,7 +633,7 @@ SEXP fwdStk::run(SEXP xTrgt, SEXP xAry)
     SEXP TrgtDims = GET_DIM(xTrgt);
 
     REAL(Err)[0]=5.0;
-    if (INTEGER(LENGTH(TrgtDims)) != 2 || INTEGER(TrgtDims)[1] != 15)  {
+    if ((int)LENGTH(TrgtDims) != 2 || (INTEGER(TrgtDims)[1] != 15))   {
        UNPROTECT(1);
        return Err;
        }
