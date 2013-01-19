@@ -6,6 +6,7 @@
 # $Id:  $
 
 library(FLBioDym)
+library(plyr)
 
 #library(doMC)
 

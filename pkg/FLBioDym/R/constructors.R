@@ -15,12 +15,9 @@ setMethod('FLBioDym', signature(object='FLQuant'),
     # empty object
     object[]= NA
     dims    = dims(object)
-    res     = new("FLBioDym")
+    res     = new("FLBioDym", catch  = object, index  = object,
+			fitted= object, stock  = FLQuant(dimnames=c(dimnames(object)[-2], list(year=seq(dims$minyear,dims$maxyear))), quant=quant(object)))
 
-    catch(res)  = object
-    index(res)  = object
-    fitted(res) = object
-    stock(res)  = FLQuant(dimnames=c(dimnames(object)[-2], list(year=seq(dims$minyear,dims$maxyear))))
     range(res)  = unlist(list(minyear=dims$minyear, maxyear=dims$maxyear))
 
     res@model =model

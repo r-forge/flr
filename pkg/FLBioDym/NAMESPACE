@@ -1,6 +1,8 @@
 import("FLash")
 #importFrom("foreach", "foreach")
 import("FLCore")
+importFrom("FLAdvice",
+	"kobe")
 exportClasses("FLBioDym","FLBioDyms","FLBDEcon")
 export(
   "mseFLBioDym",

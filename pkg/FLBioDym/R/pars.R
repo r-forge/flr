@@ -17,7 +17,7 @@ parLst<-list(
 
 # setParams {{{
 setParams<-function(model="pellat",its=1)
-  return(FLPar(NA,dimnames=list(params=c(parLst[[model]],"b0","q","sigma"),iter=its)))
+  return(FLPar(NA,dimnames=list(params=c(parLst[[as.character(model)]],"b0","q","sigma"),iter=its)))
 # }}}
 
 # defaultPar {{{
