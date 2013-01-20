@@ -1,0 +1,148 @@
+Testing pella
+========================================================
+
+
+```{r}
+library(biodyn)
+library(aspic)
+```
+
+
+ASPIC
+```{r}
+asp=aspic("/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/swon/2009/lowProd/aspic.inp")
+asp=fit(asp)
+```
+
+pella-ADMB
+```{r}
+data(swonIndex)
+
+pars=rbind(r=FLPar(r=4*params(asp)["msy"]/params(asp)["k"],p=1), params(asp)[c("k","b0")])
+bd  =biodyn("pellat",params=pars, catch =catch(asp))
+setParams( bd) <-swonIndex
+setControl(bd) <-params(bd)
+
+# fix b0 and the shape parameter
+control(bd)[c("b0","p"),"phase"]=-1
+
+# fit
+bd=pella(bd,swonIndex)
+
+plot(biodyns(biodyn=bd,aspic=as(asp,"biodyn")))
+```
+
+
+```{r}
+pars=rbind(r=FLPar(r=4*params(asp[["det"]])["msy"]/params(asp[["det"]])["k"],p=1),params(asp[["det"]])[c("k","b0")])
+swon=biodyn("pellat",params=pars, catch =catch(asp[["det"]]))
+
+setParams( swon) <-FLQuants("1"=swonIndex,"2"=swonIndex)
+setControl(swon) <-params(swon)
+control(swon)[c("b0","p","sigma"),"phase"]=-1
+swon=pella(list(swon,FLQuants("1"=swonIndex,"2"=swonIndex)))
+plot(biodyns(biodyn=swon,aspic=as(asp[["det"]],"biodyn")))
+```
+
+```{r}
+t.=pella(list(bd[[1]],swonIndex),cmdOps=c("-mcmc 100000, -mcsave 100"))
+plot(stock(t.)[,"2008"]/bmsy(t.), harvest(t.)[,"2008"]/fmsy(t.))
+
+plot(t.)+coord_cartesian(xlim=c(1970,2010))
+```
+
+
+```{r}
+control(swon)=propagate(control(swon),121)
+rk=expand.grid(r=seq(.15,   .65,   length.out=121),
+               k=seq(100000,200000,length.out=3)[2])
+
+control(swon)[,"phase"]=-1
+control(swon)[c("q","sigma"),"phase"]=1
+control(swon)["r","val"]@.Data[]=unlist(c(rk$r))
+control(swon)["k","val"]@.Data[]=unlist(c(rk$k))
+swon=pella(list(swon,swonIndex))
+
+dat=as.data.frame(swon[[c("harvest","stock","catch")]],drop=T)
+dat=data.frame(dat,rk[dat$iter,])
+dat=transform(dat,r=factor(r),k=factor(k))
+ggplot(subset(dat,qname=="stock"))+
+     geom_line(aes(year,data,group=k,colour=k))+
+     facet_wrap(~r,scales="free") + theme(legend.position = "none")
+
+rk=data.frame(rk,ll=c(swon@objFn["ll"]))
+
+v <- ggplot(rk, aes(r, k, z = ll))
+
+v + stat_contour(aes(colour = ..level..), size = 1) + scale_colour_gradient(low = "magenta", high = "cyan")
+```
+
+```{r}
+asp[["det"]]@bounds[,"fit"]=0
+asp[["det"]]@bounds[,"start"][]=asp[["det"]]@params
+asp[["det"]]@bounds[,"lambda"][]=1
+asp[["det"]]=fit(asp[["det"]])
+asp[["det"]]@objFn
+
+asp[["det"]]@bounds=propagate(asp[["det"]]@bounds,21)
+asp[["det"]]@bounds["msy","start"]@.Data[]=asp[["det"]]@params["msy"]*seq(.9,1.1,length.out=21)
+asp[["det"]].=fit(asp[["det"]])
+asp[["det"]].@objFn
+
+
+
+```
+
+
+```{r}
+swon=biodyn("pellat",FLPar(r=1.5),msy=mean(swonCatch)*2.5,catch=swonCatch)
+plot(swon)
+
+swonIndex=swonIndex/mean(swonIndex,na.rm=T)*mean(stock(swon))
+
+setParams(swon) <-swonIndex
+setControl(swon)<-params(swon)
+control(swon)[c("p","b0"),"phase"]=-1
+control(swon)["r",c("min","max")]=c(.1,2)
+control(swon)[c("q","sigma"),c("min","max")]=rep(c(.0001,2),each=2)
+swon=pella(list(swon,swonIndex))
+plot(swon)
+
+control(swon)=propagate(control(swon),20)
+control(swon)["r","val"]=seq(.5,1.25,length.out=20)
+control(swon)["r","phase"]=-1
+
+swon=pella(object=list(swon,swonIndex))
+plot(swon)
+ggplot(stock(swon))+geom_line(aes(year,data,group=iter,colour=iter))
+
+swon=biodyn("pellat",FLPar(r=1.2),msy=mean(swonCatch)*2.5,catch=swonCatch)
+setParams(swon)<-swonIndex
+setControl(swon)<-params(swon)
+control(swon)[c("r","p","b0"),"phase"]=-1
+control(swon)=propagate(control(swon),20)
+control(swon)["r","val"]=seq(.7,3,length.out=20)
+object=list(swon,swonIndex)
+#attach(list(exeNm="pella",package="biodyn", dir=tempdir(),set=setPella,get=getPella,cmdOps=paste("-maxfn 500")))
+swon=pella(object)
+swon=fwd(swon,catch=catch(swon))
+plot(swon)
+
+```
+
+You can also embed plots, for example:
+
+```{r fig.width=7, fig.height=6}
+obs=stock(swon);hat=swonIndex
+calcLogLik(stock(swon),swonIndex)
+
+hst=read.table("/tmp/RtmpzdI3Mq/pella.hst",sep=" ",skip=20,nrows=45)
+colnames(hst)=c("value","freq")
+
+ggplot(hst)+geom_line(aes(value,freq))
+
+```
+
+
+ 
+

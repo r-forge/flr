@@ -1,0 +1,26 @@
+Testing management statistics in mng
+========================================================
+
+
+```{r, message=FALSE, warning=FALSE}
+library(biodyn)
+
+data(bd)
+```
+
+
+```{r fig.width=7, fig.height=6, message=FALSE, warning=FALSE}
+plot(bd)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+bd@mng
+```
+
+```{r}
+
+```
+
+ 
+
