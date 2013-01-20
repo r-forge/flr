@@ -92,7 +92,8 @@ validity<-function(object) {
     priors        ="array",
     vcov          ="FLPar",
     hessian       ="FLPar",
-    objFn         ="FLPar"),
+    objFn         ="FLPar",
+    mng           ="FLPars"),
   prototype(
     range       =unlist(list(minyear=as.numeric(NA), maxyear=as.numeric(NA))),
     catch       =FLQuant(),

@@ -255,7 +255,7 @@ setMethod("fwd", signature(object="biodyn",ctrl="FLQuants"),
 #' @examples
 #'  bd=biodyn("logistic",FLPar(msy=1000,k=50000,b0=1),stock=FLQuant(50000,dimnames=list(year=1:50)))
 #'  bd.=fwd(bd,catch=FLQuant(500,dimnames=list(year=1:50)))
-  #'   
+#'   
 setMethod("fwd", signature(object="biodyn",ctrl="list"),
   function(object, ctrl, pe=NULL, peMult=TRUE,minF=0,maxF=2,lag=0,
            bounds=list(catch=c(Inf,Inf)),end=range(object,"maxyear")+15,...) {
