@@ -20,6 +20,7 @@ setMethod('aspic', signature(object="FLStock"),
       
       range(res)[]=range(res@index$year)
       
+      res@rnd=99999
       res})
 
 

@@ -20,10 +20,10 @@ setClass("aspics",
 #' @param  object which can be missing, a list of aspic or a sigle aspic object
 #' @examples
 #' \dontrun{aspics()}
-setMethod("aspics", signature(object="aspic"), function(object, ...) {
-    lst <- c(object, list(...))
-    aspics(lst)
-})
+# setMethod("aspics", signature(object="aspic"), function(object, ...) {
+#     lst <- c(object, list(...))
+#     aspics(lst)
+# })
 
 setMethod("aspics", signature(object="missing"),
   function(...) {

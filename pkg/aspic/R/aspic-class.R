@@ -19,13 +19,13 @@ objFn=c("SSE",     #Sum of squared errors (recommended default).
         "LAV")     #Least absolute values (robust objective function).
 
 indexCode=c("CE", "Fishing effort rate, catch (weight)",                  "Effort rate: annual average,Catch: annual total",
-           "CC", "Index (weight-based), catch (weight)",                  "Index: annual average,Catch: annual total",
-           "B0", "Estimate of biomass Effort rate: annual average",      "Start of year",
-           "B1", "Estimate of biomass Catch: annual total",              "Annual average",
-           "B2", "Estimate of biomass Index: annual average",             "End of year",
-           "I0", "Index of biomass Catch: annual total",                 "Start of year",
-           "I1", "Index of biomass Start of year",                       "Annual average", 
-           "I2", "Index of biomass Annual average",                      "End of year")
+            "CC", "Index (weight-based), catch (weight)",                 "Index: annual average,Catch: annual total",
+            "B0", "Estimate of biomass Effort rate: annual average",      "Start of year",
+            "B1", "Estimate of biomass: annual total",                    "Annual average",
+            "B2", "Estimate of biomass: annual average",                  "End of year",
+            "I0", "Index of biomass: annual total",                       "Start of year",
+            "I1", "Index of biomass Start of year",                       "Annual average", 
+            "I2", "Index of biomass Annual average",                      "End of year")
 
 indexCode=t(array(indexCode, dim=c(3,8),dimnames=list(c("code","desc","timing"),NULL)))
 dimnames(indexCode)[[1]]=indexCode[,1]
@@ -83,7 +83,9 @@ setClass('aspic', representation(
     options       =c(search=1,trials=100000,simplex=1e-8,restarts=3e-8,nrestarts=6,effort=1e-4,nsteps=0,maxf=8.0),
    
     params        =FLPar(NA,dimnames=list(params=c("b0","msy","k"),iter=1)),
-    control       =FLPar(NA,c(length(c(c("b0","msy","k"),paste("q",seq(1),sep=""))),5),dimnames=list(params=c(c("b0","msy","k"),paste("q",seq(1),sep="")),c("fit","min","start","max","lambda"),iter=1)),
+    control       =FLPar(NA,c(length(c(c("b0","msy","k"),paste("q",seq(1),sep=""))),5),
+                         dimnames=list(params=c(c("b0","msy","k"),paste("q",seq(1),sep="")),
+                                              c("fit","min","start","max","lambda"),iter=1)),
     vcov          =FLPar(NA,dimnames=list(params=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),
     hessian       =FLPar(NA,dimnames=list(params=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),
     stopmess      ="not ran"),
