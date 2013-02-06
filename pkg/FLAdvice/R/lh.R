@@ -259,16 +259,19 @@ lh=function(par,
   }else
     params(res)=ab(par[c("s","v")],sr,spr0=spr0(res))[c("a","b")]
 
-   dimnames(refpts(res))$refpt[5]="crash"
+   dimnames(refpts(res))$refpt[c(3,5)]=c("virgin","crash")
+   refpts(res)["virgin"]=NA
+   refpts(res)["virgin","harvest"]=0
+  
+   refpts(res)=refpts(res)[c("virgin","msy","crash","f0.1","fmax")]
 
    res=brp(res)
-   
+  
    if ("fbar" %in% names(args)) 
       fbar(res)<-args[["fbar"]] else 
    if (any((!is.nan(refpts(res)["crash","harvest"])))) 
       fbar(res)<-FLQuant(seq(0,1,length.out=101),quant="age")*refpts(res)["crash","harvest"]
   
-   
    res=brp(res)
 
 
