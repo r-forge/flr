@@ -449,7 +449,7 @@ setMethod("apply", signature(X="FLArray", MARGIN="numeric", FUN="function"),
 	if(length(dim(data))<=length(MARGIN)){
 		# set dim
 		dim <- c(1,1,1,1,1,1)
-		# if apply generated a new dimension
+		# if apply returns a vector
 		if (is.null(dim(data)))
 			dim[MARGIN] <- length(data)
 		else
