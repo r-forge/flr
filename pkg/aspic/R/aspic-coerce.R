@@ -105,19 +105,6 @@ controlFn=function(object){
          fletcher=stop("Gulland not available in ASPIC"),
          shepherd=stop("Gulland not available in ASPIC"))
   }
-
-setAs('aspic', 'biodyn',
-      function(from){
-        sA=getSlots("aspic")
-        sB=getSlots("biodyn")
-        
-        res=biodyn()
-        
-        for (i in names(sA[(names(sA) %in% names(sB))]))
-          slot(res,i)=slot(from,i)
-        
-        return(res)})
-
 setAs('biodyn','aspic',
       function(from){
         sA=getSlots("aspic")
@@ -129,4 +116,25 @@ setAs('biodyn','aspic',
           slot(res,i)=slot(from,i)
         
         return(res)})
+
+setAs('aspic', 'biodyn',
+   function(from){
+        sA=getSlots("aspic")
+        sB=getSlots("biodyn")
+        
+        sA=sA[!(names(sA) %in% c("model","params"))]
+        sB=sB[!(names(sB) %in% c("model","params"))]
+        
+        par=rbind(FLPar("r"=.6),params(asp)[c("k","b0")],FLPar("p"=1))
+        
+        par["r"]=params(asp)["msy"]/(par["k"]*(1/(1+par["p"]))^(1/par["p"]+1))
+          
+        res=biodyn("pellat",par)
+        
+        for (i in names(sA[(names(sA) %in% names(sB))]))
+          slot(res,i)=slot(from,i)
+        
+        model(res)=factor("pella")
+        return(res)})
+
 
