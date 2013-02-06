@@ -17,6 +17,8 @@ readADMB<-function(file){
 writeADMB<-function(x,file,append=FALSE){
   cat("#", names(x[1]),"\n",file=file,append=append)
   cat(x[[1]],"\n",file=file,append=TRUE)
+  
+  if (length(x)>1)
   for (i in 2:length(x)){
     cat("#", names(x[i]),"\n",file=file,append=TRUE)
     cat(x[[i]],"\n",file=file,append=TRUE)}}

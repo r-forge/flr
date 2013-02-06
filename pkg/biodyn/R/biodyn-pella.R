@@ -38,8 +38,8 @@ setPella=function(obj, exeNm="pella", dir=tempdir()) {
   # cpue
   if (is.FLQuant(obj[[2]])){  
      idx=model.frame(FLQuants(index=obj[[2]]), drop=TRUE)
-     idx=data.frame(idx,name=1)}
-  else if ("FLQuants" %in% class(obj[[2]])){  
+     idx=data.frame(idx,name=1)
+  }else if ("FLQuants" %in% class(obj[[2]])){  
      idx=FLCore:::as.data.frame(obj[[2]], drop=TRUE)
      names(idx)[2:3]=c("index","name")
      idx=transform(idx,name=as.numeric(name))
@@ -122,7 +122,6 @@ getPella=function(obj, exeNm="pella") {
   obj@objFn["rss"]=t2[length(t2)]
   obj@objFn["ll" ]=t2[length(t2)-1]
  
-
   # stock biomass
   obj@stock[,1:dim(t1)[1]] = unlist(c(t1["stock"])) 
 
@@ -202,7 +201,7 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
      x<-file(paste(dir,"admodel.hes",sep="/"),'rb')
      nopar<-readBin(x,"integer",1)
      H<-matrix(readBin(x,"numeric",nopar*nopar),nopar)
-     bd@hessian@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] = H
+     try(bd@hessian@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
      close(x)
      
      ## vcov
@@ -210,7 +209,7 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
        x<-file(paste(dir,"admodel.cov",sep="/"),'rb')
        nopar<-readBin(x,"integer",1)
        H<-matrix(readBin(x,"numeric",nopar*nopar),nopar)
-       bd@vcov@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] = H
+       try(bd@vcov@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
        close(x)}
      
      bd@params@.Data[  ,i] = object[[1]]@params
@@ -237,9 +236,9 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
     }
   bd@diags=getDiags()
   
-  
-  bd@mng=admbCor()
+  #try(bd@mng<-admbCor())
 
+  
   setwd(oldwd)
   
   return(bd)})
@@ -257,7 +256,7 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
 admbCor=function(fl="pella.cor"){
   if (!file.exists(fl)) return
   require(matrixcalc)
-  
+
   tmp=options()
   options(warn=-1)
   

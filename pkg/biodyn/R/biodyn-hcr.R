@@ -133,3 +133,21 @@ function(object,harvest,...){
 
   return(catch(object)[,ac(yr)])})
 
+#   object=biodyn("pellat",FLPar(r=.5,k=10000))
+hockeyStick=function(object,target=c(0.7,0.7),limit=c(0.2,0.1),maxB=1){
+  
+  pts=rbind(cbind(refpt="Target",model.frame(rbind(bmsy(object)*target[1],
+                                                   fmsy(object)*target[2]))),
+            cbind(refpt="Limit", model.frame(rbind(bmsy(object)*limit[1],
+                                                   fmsy(object)*limit[2]))))
+  pts.=pts
+  pts.[1,"bmsy"]=params(object)["k"]*maxB
+  pts.[2,"bmsy"]=0
+  pts.[,1]=c("")
+  
+  pts=rbind(pts.[1,],pts[1:2,],pts.[2,])
+  
+  names(pts)[2:3]=c("biomass","harvest")
+  
+  pts}
+

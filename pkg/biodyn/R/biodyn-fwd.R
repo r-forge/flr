@@ -271,5 +271,4 @@ setMethod("fwd", signature(object="biodyn",ctrl="list"),
   return(biodyns(res))})
       
 
-
     

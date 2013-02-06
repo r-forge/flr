@@ -58,7 +58,7 @@ setMethod("plot", signature(x="biodyns", y="missing"),
 #' refpts("logistic",FLPar(msy=100,k=500))
 #' 
 plotSP=function(object,biomass=FLQuant(seq(0,params(object)["k"],length.out=101))) {
-   p <-  ggplot(model.frame(FLQuants(stock=biomass, yield=computeSP(object,biomass)))) +
+   p <-  ggplot(model.frame(FLQuants(stock=biomass, yield=FLQuant(computeSP(object,biomass))))) +
              geom_line(aes(stock, yield)) +
              geom_point(aes(bmsy,msy),data=cast(as.data.frame(refpts(object)),iter~refpts,value="data")) +
              xlab("Stock") + ylab("Surplus Production")
