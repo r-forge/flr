@@ -25,6 +25,7 @@ Collate:
     'aspics.R'
     'aspic-generics.R'
     'aspic-methods.R'
+    'aspic-control.R'
     'aspic-io.R'
     'aspic-exe.R'
     'aspic-constructors.R'
@@ -33,3 +34,4 @@ Collate:
     'aspic-coerce.R'
     'aspic-tests.R'
     'aspic-plot.R'
+    'aspic-profile.R'
