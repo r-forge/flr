@@ -12,9 +12,9 @@ setMethod('aspic', signature(object="FLStock"),
       res@params=FLPar(NA,dimnames=dmns)
       res@params[]=c(1,mean(res@catch),4*mean(res@catch), mean(res@index$index/res@index$catch)*.2)
       
-      res@control[,"start"]=res@params
-      res@control[,"min"]=res@control[,"start"]*.1
-      res@control[,"max"]=res@control[,"start"]*10
+      res@control[,"val"]=res@params
+      res@control[,"min"]=res@control[,"val"]*.1
+      res@control[,"max"]=res@control[,"val"]*10
       res@control[,"lambda"]=1.0
       res@control[,"fit"]=c(0,1,1,1)
       
@@ -124,17 +124,16 @@ setAs('aspic', 'biodyn',
         
         sA=sA[!(names(sA) %in% c("model","params"))]
         sB=sB[!(names(sB) %in% c("model","params"))]
-        
-        par=rbind(FLPar("r"=.6),params(asp)[c("k","b0")],FLPar("p"=1))
-        
-        par["r"]=params(asp)["msy"]/(par["k"]*(1/(1+par["p"]))^(1/par["p"]+1))
-          
-        res=biodyn("pellat",par)
+       
+        par=FLPar("r"=.6,"k"=c(params(from)["k"]),"b0"=c(params(from)["b0"]),"p"=1)
+        par["r"]=c(params(from)["msy"]/(par["k"]*(1/(1+par["p"]))^(1/par["p"]+1)))
+        res=biodyn(factor("pellat"),par)
         
         for (i in names(sA[(names(sA) %in% names(sB))]))
           slot(res,i)=slot(from,i)
         
-        model(res)=factor("pella")
+        dimnames(res@objFn)$value=c("rss","ll")
+        
         return(res)})
 
 

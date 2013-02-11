@@ -49,13 +49,13 @@ utils::globalVariables(c("year","swon","year","B","obs"))
 chkIters=function(object){
   N=max(dims(object)$iter,dims(object@control)$iter,dims(object@params)$iter)
   
-  #params(object)=FLPar(object@control[,"start",drop=T])
+  #params(object)=FLPar(object@control[,"val",drop=T])
   
   if (N>1){
     object@stock=propagate(stock( object),N)
     if (dims(object@params)[1]!=N) 
         object@params=propagate(object@params,N)
-    object@objFn  =rep(as.numeric(NA),N)
+    object@objFn  =propagate(object@objFn,N)
   }
   
   object@stock=propagate(stock(object),dims(object)$iter)
@@ -74,7 +74,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
        dmns$year=c(dmns$year,as.numeric(max(dmns$year))+1)
        object@stock=FLQuant(NA,dimnames=dmns)
        }
-
+  
   oldwd=biodyn:::setExe(package,exeNm,dir)
 
   ## Jack knife if wished 
@@ -103,6 +103,9 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         system(paste("./", exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
      
         rdat=dget(paste(exeNm,"rdat",sep="."))
+        
+        print(rdat$estimates)
+        
         #rdat$estimates
         object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-length(rdat$estimates)+1)]
@@ -110,8 +113,9 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         names(rdat$t.series)=tolower(names(rdat$t.series))
         iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
         
-        #object@objFn[i]=rdat$diagnostics$obj.fn.value  
-    }
+        object@objFn[2,i][]=rdat$diagnostics$obj.fn.value
+        object@objFn[1,i][]=rdat$diagnostics$rsquare             
+       }
 
     if (dims(object)$iter==1){
       rtn=try(readAspic(paste(exeNm,"prn",sep=".")))

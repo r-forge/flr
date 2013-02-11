@@ -68,9 +68,9 @@ setMethod("aspics", signature(object="list"),
 
     return(
       do.call('new', args)
-      )
+      )}) 
 
-}) # }}}
-
-
-
+setMethod("aspics", signature(object="character"),
+          function(object) {
+           
+          aspics(mlply(object,aspic))})

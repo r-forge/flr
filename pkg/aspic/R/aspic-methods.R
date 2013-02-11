@@ -14,7 +14,7 @@ setMethod('index<-',  signature(object='aspic',value="character"),
             
               return(object)
               })
-#index(swon)="/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.inp"
+#index(object)="/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.inp"
            
 setMethod('params<-',  signature(object='aspic',value="character"),
           function(object,value) {
@@ -27,21 +27,21 @@ setMethod('params<-',  signature(object='aspic',value="character"),
             
             return(object)
           })
-#params(swon)<-"/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.det"
+#params(object)<-"/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.det"
 
 setMethod('control<-',  signature(object='aspic',value="FLPar"),
           function(object,value,min=0.1,max=10.0,fix=T) {
             
-            if (fix) nms=dimnames(value)$params[swon@control[,"fit"]==1] else
-                     nms=dimnames(value)$params[swon@control[,"fit"]==1]
+            if (fix) nms=dimnames(value)$params[object@control[,"fit"]==1] else
+                     nms=dimnames(value)$params[object@control[,"fit"]==1]
             
-            object@control[nms,"start"]=value[nms]
-            object@control[nms,"min"]  =value[nms]*min
-            object@control[nms,"max"]  =value[nms]*max
+            object@control[nms,"val"]=value[nms]
+            object@control[nms,"min"]=value[nms]*min
+            object@control[nms,"max"]=value[nms]*max
             
             return(object)
           })
-#control(swon)<-swon@params
+#control(object)<-object@params
 
 setMethod('catch<-',  signature(object='aspic',value="character"),
           function(object,value) {
@@ -52,7 +52,7 @@ setMethod('catch<-',  signature(object='aspic',value="character"),
             object@catch=as.FLQuant(dat)
 
             return(object)})
-#catch(swon)="/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.inp"
+#catch(object)="/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.inp"
 
 
 

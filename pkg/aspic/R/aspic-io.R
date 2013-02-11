@@ -21,6 +21,8 @@ checkFile=function(x){
    u$index[is.na(u$index)]=-9999
    u$catch[is.na(u$catch)]=0
    
+print(object@control)
+   
     comment=rep("",22)
     comment[ 1]= "\n"                                                                                               
     comment[ 2]= "\n"                                                                                               
@@ -59,15 +61,15 @@ checkFile=function(x){
     cat(object@options["effort"],object@options["nsteps"],comment[ 9],file=fl,append=TRUE)
     cat(object@options["maxf"]                           ,comment[10],file=fl,append=TRUE)
     cat(0                                                ,comment[11],file=fl,append=TRUE)
-    cat(dim(object@control)[1]-3                          ,comment[12],file=fl,append=TRUE)
-    cat(object@control[-(1:3),"lambda"]                   ,comment[13],file=fl,append=TRUE)
-    cat(object@control["b0",  "start"]                    ,comment[14],file=fl,append=TRUE)
-    cat(object@control["msy", "start"]                    ,comment[15],file=fl,append=TRUE)
-    cat(object@control["k",   "start"]                    ,comment[16],file=fl,append=TRUE)
-    cat(object@control[-(1:3),"start"]                    ,comment[17],file=fl,append=TRUE)
-    cat(object@control[      ,"fit"]                      ,comment[18],file=fl,append=TRUE)
-    cat(object@control["msy",c("min","max")]              ,comment[19],file=fl,append=TRUE)
-    cat(object@control["k",  c("min","max")]              ,comment[20],file=fl,append=TRUE)
+    cat(dim(object@control)[1]-3                         ,comment[12],file=fl,append=TRUE)
+    cat(object@control[-(1:3),"lambda"]                  ,comment[13],file=fl,append=TRUE)
+    cat(object@control["b0",  "val"]                     ,comment[14],file=fl,append=TRUE)
+    cat(object@control["msy", "val"]                     ,comment[15],file=fl,append=TRUE)
+    cat(object@control["k",   "val"]                     ,comment[16],file=fl,append=TRUE)
+    cat(object@control[-(1:3),"val"]                     ,comment[17],file=fl,append=TRUE)
+    cat(object@control[      ,"fit"]                     ,comment[18],file=fl,append=TRUE)
+    cat(object@control["msy",c("min","max")]             ,comment[19],file=fl,append=TRUE)
+    cat(object@control["k",  c("min","max")]             ,comment[20],file=fl,append=TRUE)
     cat(object@rnd                                       ,comment[21],file=fl,append=TRUE)
     
     cat(daply(u,.(name), with, length(name)),comment[22],file=fl,append=TRUE)
@@ -265,16 +267,16 @@ aspicInp =function(x){
   parNms=c(c("b0","msy","k"),paste("q",seq(n),sep=""))
   res@params=FLPar(NA,parNms,iter=1)
   
-  res@control=FLPar(array(NA,c(length(c(c("b0","msy","k"),paste("q",seq(n),sep=""))),5,1),dimnames=list(params=parNms,c("fit","min","start","max","lambda"),iter=1)))
+  res@control=FLPar(array(NA,c(length(c(c("b0","msy","k"),paste("q",seq(n),sep=""))),5,1),dimnames=list(params=parNms,c("fit","min","val","max","lambda"),iter=1)))
   
   # [10] "1.00000  ## B1/K (starting guess, usually 0 to 1)"                                                                                 
-  res@control["b0", "start"]=ctrl[[10]][1]
+  res@control["b0", "val"]=ctrl[[10]][1]
   # [11] "3.0000E+04  ## MSY (starting guess)"                                                                                               
-  res@control["msy","start"]=ctrl[[11]]
+  res@control["msy","val"]=ctrl[[11]]
   # [12] "2.6700E+05  ## K (carrying capacity) (starting guess)"                                                                             
-  res@control["k", "start"]=ctrl[[12]]
+  res@control["k", "val"]=ctrl[[12]]
   # [13] "2.1126E-06  6.0195E-06  9.7627E-06  1.4944E-04  2.9980E-06  4.2138E-04  8.3406E-04    ## q (starting guesses -- 1 per data series)"
-  res@control[parNms[-(1:3)],"start"]=ctrl[[13]][1:n]
+  res@control[parNms[-(1:3)],"val"]=ctrl[[13]][1:n]
   
   # [14] "0  1  1  1  1  1  1  1  1  1    ## Estimate flags (0 or 1) (B1/K,MSY,K,q1...qn)"                                                   
   res@control[,"fit"]=ctrl[[14]]
@@ -284,8 +286,8 @@ aspicInp =function(x){
   # [16] "1.0000E+04  2.0000E+07  ## Min and max constraints -- K"                                                                           
   res@control["k",  c("min","max")]=ctrl[[16]]
   
-  res@control[parNms[-(1:3)],"min"]=res@control[parNms[-(1:3)],"start"]*0.01  
-  res@control[parNms[-(1:3)],"max"]=res@control[parNms[-(1:3)],"start"]*100  
+  res@control[parNms[-(1:3)],"min"]=res@control[parNms[-(1:3)],"val"]*0.01  
+  res@control[parNms[-(1:3)],"max"]=res@control[parNms[-(1:3)],"val"]*100  
   res@control["b0","min"]=0.01  
   res@control["b0","max"]=1  
   

@@ -54,14 +54,14 @@ setMethod('aspic', signature(object="data.frame"),
             nms$params=nms$params
             
             res@control=array(as.numeric(NA),dim=laply(nms[-3],length),dimnames=nms[-3])
-            res@control["b0", "start"]=1.0
-            res@control["msy","start"]=mean(res@catch,na.rm=T)
-            res@control["k",  "start"]=mean(res@control["msy","start"])*4.0/r
+            res@control["b0", "val"]=1.0
+            res@control["msy","val"]=mean(res@catch,na.rm=T)
+            res@control["k",  "val"]=mean(res@control["msy","val"])*4.0/r
      
-            res@control[-(1:3),"start"]=daply(res@index, .(name), with, 2*mean(index,na.rm=T))/res@control["k",  "start"]
+            res@control[-(1:3),"val"]=daply(res@index, .(name), with, 2*mean(index,na.rm=T))/res@control["k",  "start"]
             
-            res@control[,"min"] = res@control[,"start"]*0.01
-            res@control[,"max"] = res@control[,"start"]*100.0
+            res@control[,"min"] = res@control[,"val"]*0.01
+            res@control[,"max"] = res@control[,"val"]*100.0
             res@control[,"fit"]    =1
             res@control[,"lambda"] =1
                
