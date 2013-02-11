@@ -13,16 +13,16 @@ checkFile=function(x){
   }
   
 .writeAspicInp<-function(object,index=object@index,what="FIT",niter=ifelse(what=="FIT",1,501),fl="aspic.inp"){
-    
+   dgts=options()$digits
+   options(digits=22)
+   
    dmmy=expand.grid(year=min(as.numeric(as.character(index$year))):max(as.numeric(as.character(index$year))),
                     name=unique(index$name))[,2:1]
   
    u=merge(dmmy,index,all=TRUE,sort=FALSE)   
    u$index[is.na(u$index)]=-9999
    u$catch[is.na(u$catch)]=0
-   
-print(object@control)
-   
+      
     comment=rep("",22)
     comment[ 1]= "\n"                                                                                               
     comment[ 2]= "\n"                                                                                               
@@ -88,7 +88,9 @@ print(object@control)
 #                  
 #             cat(paste(t(apply(as.matrix(mm),1,paste,collapse=" ")),"\n"),file=fl,append=TRUE)})
 
-        
+   
+    options(digits=dgts)
+   
     return()}
 
 

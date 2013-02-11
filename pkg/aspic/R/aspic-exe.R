@@ -104,8 +104,6 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
      
         rdat=dget(paste(exeNm,"rdat",sep="."))
         
-        print(rdat$estimates)
-        
         #rdat$estimates
         object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-length(rdat$estimates)+1)]
