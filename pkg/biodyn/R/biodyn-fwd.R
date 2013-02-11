@@ -228,7 +228,6 @@ setMethod("fwd", signature(object="biodyn",ctrl="FLQuants"),
     
   res=mlply(seq(length(names(ctrl))),
       function(x,object,ctrl,pe,peMult,minF,maxF,lag,bounds){
-        print(names(ctrl[x]))
         if (names(ctrl)[x]=="catch")  return(fwd(object,catch  =ctrl[[x]],pe=pe,peMult=peMult,minF=minF,maxF=maxF,lag=lag,bounds=bounds))
         if (names(ctrl)[x]=="harvest")return(fwd(object,harvest=ctrl[[x]],pe=pe,peMult=peMult,minF=minF,maxF=maxF,lag=lag,bounds=bounds))
         if (names(ctrl)[x]=="stock")  return(fwd(object,stock  =ctrl[[x]],pe=pe,peMult=peMult,minF=minF,maxF=maxF,lag=lag,bounds=bounds))},
@@ -262,7 +261,6 @@ setMethod("fwd", signature(object="biodyn",ctrl="list"),
     
   res=mlply(seq(length(names(ctrl))),
       function(x,object,ctrl,pe,peMult,minF,maxF,lag,bounds,end){
-        print(names(ctrl[x]))
         return(fwd(object,hcr=ctrl[[x]],pe=pe,peMult=peMult,minF=minF,maxF=maxF,lag=lag,bounds=bounds,end=end))},
        object=object,ctrl=ctrl,pe=pe,peMult=peMult,minF=minF,maxF=maxF,lag=lag,bounds=bounds,end=end)
   

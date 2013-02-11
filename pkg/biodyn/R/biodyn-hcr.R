@@ -27,10 +27,10 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
       yrTac=ac(yrTac)
  
       SSB =apply(stock(object)[,yrRef],6,sum)
-      val=sweep(sweep(SSB,6,a,"*"),6,b,"+")
+      val=(SSB%*%a) + b
       for (i in seq(dim(val)[6])){
-         val[,,,,,i]=max(val[,,,,,i],params["Fmin",i])
-         val[,,,,,i]=min(val[,,,,,i],params["Ftar",i])}
+         val[,,,,,i]=max(val[,,,,,i],params["Fmin",min(dim(params)[2],i)])
+         val[,,,,,i]=min(val[,,,,,i],params["Ftar",min(dim(params)[2],i)])}
 
       dimnames(val)$year=yrTac
       

@@ -114,14 +114,14 @@ getPella=function(obj, exeNm="pella") {
 
   nms=c("r","k","b0","p")
   obj@params[nms,] = t2
-
+  
   obj@params[grep("q",dimnames(obj@params)$params),]=q. 
   obj@params[grep("s",dimnames(obj@params)$params),]=s. 
+  t3 = unlist(c(read.table(paste(exeNm,".rep",sep=""),skip=dim(params(bd))[1]*2,nrows=2,header=F)))
+
+  obj@objFn["ll"] =t3[length(t3)]
+  obj@objFn["rss"]=t3[length(t3)-1]
   
-  names(t2)=NULL
-  obj@objFn["rss"]=t2[length(t2)]
-  obj@objFn["ll" ]=t2[length(t2)-1]
- 
   # stock biomass
   obj@stock[,1:dim(t1)[1]] = unlist(c(t1["stock"])) 
 
@@ -177,40 +177,42 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
       bd=propagate(bd,its)
       }
 
-
+  cpue=object[[2]]
   for (i in seq(its)){
+     object[[2]] = iter(cpue,i) 
     
      for (s in names(slts)){
-        #print(s)
         slot(object[[1]],s) = iter(slot(bd,s),i) 
         }
      object[[1]]=set(object,exeNm,dir)
 
+         
      # run
      system(paste("./", exeNm, " ", cmdOps, sep=""))
-
+     
      # gets results
      object[[1]]=get(object[[1]], exeNm)
      
      for (s in names(slts)[slts=="FLQuant"]){
-         #print(s)
          iter(slot(bd,s),i) = slot(object[[1]],s)
          } 
 
-     ##hessian
-     x<-file(paste(dir,"admodel.hes",sep="/"),'rb')
-     nopar<-readBin(x,"integer",1)
-     H<-matrix(readBin(x,"numeric",nopar*nopar),nopar)
-     try(bd@hessian@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
-     close(x)
-     
-     ## vcov
-     if (file.exists(paste(dir,"admodel.cov",sep="/"))){
-       x<-file(paste(dir,"admodel.cov",sep="/"),'rb')
+     if (its<=1){
+       ##hessian
+       x<-file(paste(dir,"admodel.hes",sep="/"),'rb')
        nopar<-readBin(x,"integer",1)
        H<-matrix(readBin(x,"numeric",nopar*nopar),nopar)
-       try(bd@vcov@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
+       try(bd@hessian@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
+       close(x)
+     
+       ## vcov
+       if (file.exists(paste(dir,"admodel.cov",sep="/"))){
+         x<-file(paste(dir,"admodel.cov",sep="/"),'rb')
+         nopar<-readBin(x,"integer",1)
+         H<-matrix(readBin(x,"numeric",nopar*nopar),nopar)
+         try(bd@vcov@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
        close(x)}
+       }
      
      bd@params@.Data[  ,i] = object[[1]]@params
      bd@control@.Data[,,i] = object[[1]]@control
@@ -218,7 +220,7 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
      }
 
   bd=fwd(bd,catch=catch(bd)[,rev(dimnames(catch(bd))$year)[1]])
-   
+  
   if (length(grep("-mcmc",cmdOps))>0 & length(grep("-mcsave",cmdOps))>0){
     #"-mcmc 100000 -mcsave 100"
     setMCMC=function(obj,dir){
@@ -234,7 +236,8 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
     bd@stock=propagate(bd@stock,dim(params(bd))[2])
     bd=fwd(bd,catch=catch(t.))
     }
-  bd@diags=getDiags()
+  
+  if (its<=1) bd@diags=getDiags()
   
   #try(bd@mng<-admbCor())
 

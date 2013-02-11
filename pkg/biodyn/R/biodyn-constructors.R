@@ -5,7 +5,7 @@ rb=function(..., deparse.level=1) {
   args <- list(...)
   
   # dims
-  dimar <- lapply(args, function(x) dim(x))
+  dimar  <- lapply(args, function(x) dim(x))
   iterar <- lapply(dimar, function(x) x[length(x)])
   
   
@@ -142,67 +142,3 @@ setMethod('biodyn', signature(model='missing',params="missing"),
 is.biodyn = function(x)
   return(inherits(x, "biodyn"))
 
-calcSigma <- function(obs,hat=rep(0,length(obs)),na.rm=T){
-
-  n  =length(obs[!is.na(obs+hat)])
-  SS =sum((obs-hat)^2,na.rm=na.rm)
-  
-  return((SS/n)^.5)}
-
-calcQ<-function(stock,index,error="log",na.rm=T){
-    
-  stock<-(stock[-length(stock)]+stock[-1])/2
-  n    <-length(stock)
-  index<-index[seq(n)]
-  if (na.rm)
-     n=length(seq(n)[!is.na(index+stock)])
-  
-  res=switch(error,
-    normal={q    =sum(stock*index, na.rm=T)/sum(stock*stock, na.rm=na.rm)
-            sigma=calcSigma(index/(q*stock))
-            data.frame(q=q,sigma=sigma)
-            },
-    log   ={q    =exp(sum(log(index)-log(stock), na.rm=na.rm)/n)
-            sigma=calcSigma(log(index),log(q*stock))
-            data.frame(q=q,sigma=sigma)},
-    cv   ={res   <-sum(index/stock)
-           sigma2<-calcSigma(res,na.rm=na.rm)
-           q     <-(-res+(res^2+4*length(index)*sigma2*sum((index/stock)^2)))/(2*length(index)*sigma2)
-           data.frame(q=q,sigma=sigma)})
-  
-  return(res)}
-
-calcB0<-function(index,q,k,nyrB0=3,error="log"){
-  if (is.null(nyrB0)) return(params["b0"])
-  
-  if (error=="log"){
-    t.<-sweep(log(index[,1:nyrB0,,,,,drop=FALSE]),c(1,6),q,"/")
-    return(qmax(qmin(exp(apply(t.,c(1,6),mean))/k,1),0))}
-  if (error=="normal"){
-    t.<-sweep(index[,1:nyrB0,,,,,drop=FALSE],c(1,6),q,"/")
-    return(qmax(qmin(apply(t.,c(1,6),mean)/k,1),0))}       
- }
-
-setQ=function(object,index,error="log"){
-  res=switch(is(index)[1],
-              FLQuant   =data.frame(name=1,model.frame(mcf(FLQuants(stock=stock(object),index=index)),drop=T)),
-              FLQuants  =ldply(index, function(x) model.frame(mcf(FLQuants(stock=stock(object),index=x)),drop=T)),
-              data.frame=merge(model.frame(stock=stock(object)),index,by=year,all=T))
-
-  names(res)[1]="name"
-  res=ddply(res, .(name), function(x,log) data.frame(calcQ(x$stock,x$index)),log="log")
-  
-  if (dim(res)[1]>1){
-    res=transform(melt(res,id="name"),params=paste(variable,name,sep=""))[,c("params","value")]
-    names(res)[2]="data"
-    }
-  else{
-    res=melt(res,id="name")[,-1]
-    names(res)[1:2]=c("params","data")
-    }
-  
-  res=as(res,"FLPar")[,1]
-  
-  object@params=FLCore:::rbind(object@params,res)
-  
-  object@params}
