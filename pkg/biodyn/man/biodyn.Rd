@@ -27,6 +27,6 @@
 }
 \examples{
 \dontrun{aspic()}
-bd=biodyn("logistic",FLPar(k=50000,msy=1000,b0=1))
+bd=biodyn("pellat",FLPar(r=0.6,k=50000,p=1,b0=1))
 }
 

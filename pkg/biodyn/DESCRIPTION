@@ -29,6 +29,9 @@ Collate:
     'biodyn-pella.R'
     'biodyn-OEM.R'
     'biodyn-admb.R'
+    'biodyn-mse.R'
+    'biodyn-coerce.R'
+    'biodyn-profile.R'
 License: GPL-2
 LazyLoad: Yes
 LazyData: No
