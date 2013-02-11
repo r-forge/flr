@@ -151,3 +151,4 @@ hockeyStick=function(object,target=c(0.7,0.7),limit=c(0.2,0.1),maxB=1){
   
   pts}
 
+

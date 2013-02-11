@@ -34,7 +34,9 @@ setExe=function(exeNm,package,dir=tempdir()){
 
 setPella=function(obj, exeNm="pella", dir=tempdir()) {
   # create input files ################################
-
+  dgts=options()$digits
+  options(digits=22)
+  
   # cpue
   if (is.FLQuant(obj[[2]])){  
      idx=model.frame(FLQuants(index=obj[[2]]), drop=TRUE)
@@ -101,6 +103,8 @@ setPella=function(obj, exeNm="pella", dir=tempdir()) {
                            dimnames=list(params=dimnames(params(bd.))[[1]],
                                          params=dimnames(params(bd.))[[1]],iter=1)))
   
+  
+  options(digits=dgts)
   return(bd.)}
 
 getPella=function(obj, exeNm="pella") {
@@ -157,8 +161,11 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
   slts=getSlots("biodyn")
   slts=slts[slts %in% c("FLPar","FLQuant")]
  
-  oldwd =setExe(exeNm,package,dir)
-
+  #oldwd =setExe(exeNm,package,dir)
+  oldwd=getwd()
+  setwd(dir)
+  pellaExe();
+ 
   object=list(object,index)
   bd =object[[1]]
   its=max(maply(names(slts), function(x) dims(slot(bd,x))$iter))
@@ -188,7 +195,8 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
 
          
      # run
-     system(paste("./", exeNm, " ", cmdOps, sep=""))
+     #system(paste("./", exeNm, " ", cmdOps, sep=""))
+     system(paste(exeNm, " ", cmdOps, sep=""))
      
      # gets results
      object[[1]]=get(object[[1]], exeNm)
@@ -351,5 +359,23 @@ calcElasticity=function(bd,mn=3,rg=5){
 
 
 
+pellaExe=function(package="biodyn"){
 
+  sep =  function() if (R.version$os=="linux-gnu") ":" else if (R.version$os=="windows") ";" else ","
+  
+  # Linux
+  if (R.version$os=="linux-gnu") {
+    path = paste(system.file("bin", "linux",  package=package, mustWork=TRUE), sep="/")
+    # Windows
+  } else if (.Platform$OS.type == "windows") {
+    path = paste(system.file("bin", "windows", package=package, mustWork=TRUE), sep="/")
+    # Mac OSX
+  }else 
+    stop()
+  
+  path <- paste(path, sep(), Sys.getenv("PATH"),sep="")
+
+  Sys.setenv(PATH=path)
+
+return(path)}
 
