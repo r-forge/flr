@@ -121,7 +121,7 @@ getPella=function(obj, exeNm="pella") {
   
   obj@params[grep("q",dimnames(obj@params)$params),]=q. 
   obj@params[grep("s",dimnames(obj@params)$params),]=s. 
-  t3 = unlist(c(read.table(paste(exeNm,".rep",sep=""),skip=dim(params(bd))[1]*2,nrows=2,header=F)))
+  t3 = unlist(c(read.table(paste(exeNm,".rep",sep=""),skip=dim(params(obj))[1]*2,nrows=2,header=F)))
 
   obj@objFn["ll"] =t3[length(t3)]
   obj@objFn["rss"]=t3[length(t3)-1]
@@ -164,7 +164,7 @@ setMethod("pella",signature(object='biodyn',index="FLQuant"),
   #oldwd =setExe(exeNm,package,dir)
   oldwd=getwd()
   setwd(dir)
-  pellaExe();
+  exe()
  
   object=list(object,index)
   bd =object[[1]]
@@ -357,9 +357,7 @@ calcElasticity=function(bd,mn=3,rg=5){
   
   return(jbn)}
 
-
-
-pellaExe=function(package="biodyn"){
+exe=function(package="biodyn"){
 
   sep =  function() if (R.version$os=="linux-gnu") ":" else if (R.version$os=="windows") ";" else ","
   
