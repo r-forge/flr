@@ -1,4 +1,3 @@
-setGeneric("index<-",    function(object,value,...) standardGeneric('index<-'))
 #setGeneric("params<-",  function(object,value,...) standardGeneric('params<-'))
 # 
 setGeneric("control",    function(object,...)       standardGeneric('control'))
@@ -7,14 +6,6 @@ setGeneric("control<-",  function(object,value,...) standardGeneric('control<-')
 
 setMethod('control',  signature(object='aspic'),
           function(object)  object@control)
-
-setMethod('index<-',  signature(object='aspic',value="character"),
-          function(object,value) {
-              object@index=readU(value)
-            
-              return(object)
-              })
-#index(object)="/home/laurie/Desktop/gcode/gbyp-sam/data/ASPIC/albs/2011/run2/aspic.inp"
            
 setMethod('params<-',  signature(object='aspic',value="character"),
           function(object,value) {

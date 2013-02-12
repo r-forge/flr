@@ -35,3 +35,4 @@ Collate:
     'aspic-tests.R'
     'aspic-plot.R'
     'aspic-profile.R'
+    'aspic-index.R'

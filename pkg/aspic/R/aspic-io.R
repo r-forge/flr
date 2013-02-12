@@ -53,7 +53,7 @@ checkFile=function(x){
     cat(what                                             ,comment[ 1],file=fl,append=FALSE)
     cat("FLR generated"                                  ,comment[ 2],file=fl,append=TRUE)
     cat(ac(object@model), ac(object@conditioning), ac(object@obj)  ,comment[ 3],file=fl,append=TRUE)
-    cat("112"                                            ,comment[ 4],file=fl,append=TRUE)
+    cat(                                                  comment[ 4],file=fl,append=TRUE)
     cat(niter                                            ,comment[ 5],file=fl,append=TRUE)
     cat(as.integer(object@options[c("search","trials")])             ,comment[ 6],file=fl,append=TRUE)
     cat(object@options["simplex"]                        ,comment[ 7],file=fl,append=TRUE)
@@ -154,7 +154,8 @@ checkExt=function(x) (tolower(getExt(x)) %in% aspicFiles[,"ext"])
                 "rdat"=aspicRdat(x),
                 "ctl" =aspicCtl(x),
                 "det" =aspicDet(x),
-                "prn" =aspicPrn(x)))
+                "prn" =aspicPrn(x),
+                "prn" =aspicFit(x)))
 
 
 }
@@ -343,5 +344,19 @@ aspicPrn =function(x){
   names(res)[2:3]=c("name","index")
 
   res=ddply(res,.(name),fnDiags)
+  
+  res}
+
+#x="/home/laurie/Desktop/flr/tests/aspic/Inputs/swon/2009/run9/aspic.fit"
+aspicFit=function(x){
+  txt=str_trim(scan(x,sep="\n",what=as.character()))
+  
+  start=seq(length(txt))[substr(txt,1,9)=="ESTIMATED"]+5
+  end  =seq(length(txt))[substr(txt,1,7)=="RESULTS"]  -3
+  
+  txt=txt[start:end]
+  
+  res=as.data.frame(t(matrix(as.numeric(unlist(strsplit(txt," +"))),ncol=end-start+1,nrow=10)))[,-1]
+  names(res)=c("year","harvest","biomass","biomassMn","yield","yieldHat","sp","harvestMSY","biomassMSY")
   
   res}

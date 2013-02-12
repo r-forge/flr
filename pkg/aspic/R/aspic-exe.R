@@ -75,8 +75,11 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
        object@stock=FLQuant(NA,dimnames=dmns)
        }
   
-  oldwd=biodyn:::setExe(package,exeNm,dir)
-
+  #oldwd =setExe(exeNm,package,dir)
+  oldwd=getwd()
+  setwd(dir)
+  biodyn:::exe("aspic")
+  
   ## Jack knife if wished 
   j=1
   if (jk){
@@ -100,8 +103,9 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         .writeAspicInp(iter(object,i),what="FIT",niter=1,fl=paste(exeNm,".inp",sep=""))
     
         # run
-        system(paste("./", exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
-     
+        #system(paste("./", exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
+        system(paste(exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
+        
         rdat=dget(paste(exeNm,"rdat",sep="."))
         
         #rdat$estimates
