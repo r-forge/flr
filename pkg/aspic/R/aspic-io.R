@@ -49,7 +49,6 @@ checkFile=function(x){
 
     # search    trials   simplex  restarts nrestarts    effort    nsteps      maxf 
     #1e+00     1e+05     1e-08     3e-08     6e+00     1e-04     0e+00     8e+00 
-    
     cat(what                                             ,comment[ 1],file=fl,append=FALSE)
     cat("FLR generated"                                  ,comment[ 2],file=fl,append=TRUE)
     cat(ac(object@model), ac(object@conditioning), ac(object@obj)  ,comment[ 3],file=fl,append=TRUE)
@@ -70,8 +69,8 @@ checkFile=function(x){
     cat(object@control[      ,"fit"]                     ,comment[18],file=fl,append=TRUE)
     cat(object@control["msy",c("min","max")]             ,comment[19],file=fl,append=TRUE)
     cat(object@control["k",  c("min","max")]             ,comment[20],file=fl,append=TRUE)
-    cat(object@rnd                                       ,comment[21],file=fl,append=TRUE)
-    
+    cat(as.integer(object@rnd)                           ,comment[21],file=fl,append=TRUE)
+ 
     cat(daply(u,.(name), with, length(name)),comment[22],file=fl,append=TRUE)
     d_ply(u,.(name), function(x) {
       cat(as.character(unique(x$name)),"\n",file=fl,append=TRUE)

@@ -109,16 +109,17 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         rdat=dget(paste(exeNm,"rdat",sep="."))
         
         #rdat$estimates
-        object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]
+        object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]       
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-length(rdat$estimates)+1)]
 
         names(rdat$t.series)=tolower(names(rdat$t.series))
         iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
         
-        object@objFn[2,i][]=rdat$diagnostics$obj.fn.value
-        object@objFn[1,i][]=rdat$diagnostics$rsquare             
-       }
-
+        if (.Platform$OS!="windows"){
+        try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)
+        try(object@objFn[1,i]<-rdat$diagnostics$rsquare) }            
+        }
+  
     if (dims(object)$iter==1){
       rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
       if (is.data.frame(rtn)) object@diags=rtn
