@@ -2,11 +2,11 @@
 #'
 #' @description Creates an object of the \pkg{aspic} class that implements a biomass dynamic stock assessment model.
 #' @name aspic
-#' @paramobject, a factor or string that specifies the model type, has to be one of "fox", "schaefer", "pellat", "gulland", "fletcher", "shepherd", "logistic", "genfit"
+#' @param object, a factor or string that specifies the model type, has to be one of "fox", "schaefer", "pellat", "gulland", "fletcher", "shepherd", "logistic", "genfit"
 #' @param params, an \code{FLPar}  object with model parameters
 #' @return an \code{aspic} object
 #' @export
-#' @doctype method
+#' @doctype methods
 #' @examples \dontrun{bd=biodyn("logistic",FLPar(k=50000,msy=1000,b0=1))}
 setMethod('aspic', signature(object='missing'),
           function(...)

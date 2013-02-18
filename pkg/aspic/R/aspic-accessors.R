@@ -57,5 +57,5 @@ createFLAccesors <- function(class, exclude=character(1), include=missing) {
 	return(defined)
 }	# }}}
 
-invisible(createFLAccesors("aspic", exclude=c("range","obj","conditioning","options","hessian",
+invisible(createFLAccesors("aspic", exclude=c("desc","range","obj","conditioning","options","hessian",
                                               "stopmess","objFn","rnd","index","priors","diags","mng")))

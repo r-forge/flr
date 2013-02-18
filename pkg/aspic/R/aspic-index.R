@@ -10,7 +10,7 @@ validIndex=function(x){
 
 setMethod('index<-',  signature(object='aspic',value="character"),
           function(object,value) {
-            object@index=readU(value)
+            object@index=readCpue(value,"aspic")
             
             if (!validIndex(object@index)) stop()
             

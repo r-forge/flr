@@ -1,23 +1,26 @@
 \name{fit}
 \alias{fit}
-\title{The length of a string (in characters).}
+\title{Fit the \code{aspic} biomass dynamic model.}
 \arguments{
-  \item{An}{aspic object}
+  \item{object;}{an \code{aspic} object}
+
+  \item{dir;}{an optional \code{dir} where aspic text files
+  used for fitting can be found}
 }
 \value{
-  An aspic object with parameter estimate
+  An aspic object with fitted values and parameter
+  estimates
 }
 \description{
-  The length of a string (in characters).
+  Fits the aspic model to catch and catch per unit effort
+  data
 }
 \examples{
-seq(10)
+\dontrun{
+    data(asp)
+    asp=fit(asp)}
 }
 \seealso{
-  \code{\link{biodyn}}
-
-  \code{\link{boot}}
-
-  \code{\link{jk}}
+  \code{\link{aspic},\link{biodyn},\link{boot},\link{jk}}
 }
 

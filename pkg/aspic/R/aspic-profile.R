@@ -1,9 +1,19 @@
-##############################################################
 #' profile
 #'
-#' Profiles aspic  
+#' @description 
+#' Performs a profile using residual sum of squares, fixes some parameters for a range of values 
+#' and then estimate the others 
 #'
-#' @param   \code{fitted}, an object of class \code{biodyn}
+#' @param fitted: an \code{aspic} object
+#' @param which: \code{character} giving the parameters to do the profile for, i.e. to fix.
+#' @param fixed: \code{character} any parameters that should be fixed, all others are extimated. 
+#' @param maxsteps: \code{numeric} number of parameter values to vary, default is 11.
+#' @param range; \code{numeric} how mucg to vary parameter values by, default [0.5,1.5]. 
+#' @param fn: \code{function} that gives values to be profiled.
+#' @param run: \code{logical} if \code{TRUE} then returns profile, otherwise it just sets the control object-
+#' 
+#' @return a \code{data frame} with results turned by \code{fn} by values in \code{which}. 
+#' @seealso \code{\link{biodyn},\link{fit}}
 #'
 #' @export
 #' @docType methods
@@ -15,23 +25,6 @@
 #' res=profile(asp,which="msy",fixed="b0",maxsteps=31,range=c(0.5,1.1))
 #' ggplot(res)+geom_line(aes(k,rss))
 #' }       
-
-
-
-# ### debugging stuff
-# data(bd)
-# fitted=biodyn(factor("pellat"),params(bd),catch=catch(bd))
-# cpue=rlnorm(1,log(stock(bd)),.2)[,-60]
-# setParams(fitted)     =cpue
-# 
-# 
-# attach(list(maxsteps=11, range=0.5, ci=c(0.25, 0.5, 0.75, 0.95),
-#             plot=TRUE,fixed=c()))
-# which="r"
-# fixed=c("p","b0")
-# ###
-# rtn=profile(swon[[1]],which="k",fixed="b0",maxsteps=31,range=c(.75,1.5))
-# ggplot(rtn)+geom_line(aes(msy,rss))
 setMethod("profile", signature(fitted="aspic"),
       function(fitted,which,fixed=c(),
                    maxsteps=11, range=0.5,
@@ -62,3 +55,19 @@ setMethod("profile", signature(fitted="aspic"),
         rtn=fn(res)
         
         return(rtn)})
+
+
+# ### debugging stuff
+# data(bd)
+# fitted=biodyn(factor("pellat"),params(bd),catch=catch(bd))
+# cpue=rlnorm(1,log(stock(bd)),.2)[,-60]
+# setParams(fitted)     =cpue
+# 
+# 
+# attach(list(maxsteps=11, range=0.5, ci=c(0.25, 0.5, 0.75, 0.95),
+#             plot=TRUE,fixed=c()))
+# which="r"
+# fixed=c("p","b0")
+# ###
+# rtn=profile(swon[[1]],which="k",fixed="b0",maxsteps=31,range=c(.75,1.5))
+# ggplot(rtn)+geom_line(aes(msy,rss))

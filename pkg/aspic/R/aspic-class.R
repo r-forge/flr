@@ -59,17 +59,42 @@ validAspic <- function(object) {
 
 
 #' ASPIC Biomass Dynamic Model Class
-#'
+#' 
 #' @description A class that represents the ASPIC biomass dynamic stock assessment model.
 #' @return biodyn object
 #' @export
 #' @examples
 #' \dontrun{aspic()}
+#' 
+#'@section Slots:                                 
+#' \describe{                                  
+#' \item{\code{obj}:          \code{factor} .}          
+#' \item{\code{conditioning}: \code{factor} .}
+#' \item{\code{options}:      \code{numeric} .}     
+#' \item{\code{index}:        \code{data.frame} .}   
+#' \item{\code{stopmess}:     \code{character} .}  
+#' \item{\code{rnd}:          \code{numeric} .}       
+#' \item{\code{model}:        \code{factor} .}        
+#' \item{\code{catch}:        \code{FLQuant} .}      
+#' \item{\code{stock}:        \code{FLQuant} .}       
+#' \item{\code{diags}:        \code{data.frame} .}   
+#' \item{\code{params}:       \code{FLPar} .}    
+#' \item{\code{control}:      \code{FLPar} .}      
+#' \item{\code{priors}:       \code{array} .}        
+#' \item{\code{vcov}:         \code{FLPar} .}         
+#' \item{\code{hessian}:      \code{FLPar} .}       
+#' \item{\code{objFn}:        \code{FLPar} .}        
+#' \item{\code{mng}:          \code{FLPars} .}          
+#' \item{\code{name}:         \code{character} .}     
+#' \item{\code{desc}:         \code{character} .}      
+#' \item{\code{range}:        \code{numeric} .}      
+#' }
+
 setClass('aspic', representation(
     "biodyn",
     obj           ="factor",
     conditioning  ="factor",
-    options       ="numeric",    
+    options       ="numeric",     
     
     index          ="data.frame",
     
@@ -91,3 +116,13 @@ setClass('aspic', representation(
     hessian       =FLPar(NA,dimnames=list(params=c("b0","msy","k"),param=c("b0","msy","k"),iter=1)),
     stopmess      ="not ran"),
   validity=validAspic)
+
+# printSlot=function(x){
+#    res=data.frame(getSlots(x))
+#    c("#'@section Slots:", "#'  \\describe{",
+#      paste("#' \\item{\\code{", dimnames(res)[[1]], "}: \\code{", as.character(res[,1]),"} .}",sep=""),
+#      "#'  }")}
+
+
+
+

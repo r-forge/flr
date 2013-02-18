@@ -1,47 +1,61 @@
-
-#' The length of a string (in characters).
+#' Fit the \code{aspic} biomass dynamic model.
+#' 
+#' @description 
+#' Fits the aspic model to catch and catch per unit effort data
 #'
-#' @param An aspic object
-#' @return An aspic object with parameter estimate
-#' @seealso \code{\link{biodyn}}
-#' @seealso \code{\link{boot}}
-#' @seealso \code{\link{jk}}
+#' @param object; an \code{aspic} object 
+#' @param dir; an optional \code{dir} where aspic text files used for fitting can be found 
+#' @return An aspic object with fitted values and parameter estimates 
+#' @seealso \code{\link{aspic},\link{biodyn},\link{boot},\link{jk}}
 #' @export
 #' @examples
-#' seq(10)
+#' \dontrun{
+#'     data(asp)
+#'     asp=fit(asp)}
 setMethod('fit',  signature(object='aspic'),
-          function(object, package=class(object), exeNm="aspic", dir=tempdir(),jk=FALSE)
-            runExe(object=object,package=package, exeNm=exeNm, dir=dir,jk=jk))
+          function(object, dir=tempdir(), package=class(object), exeNm="aspic",jk=FALSE)
+            runExe(object=object, dir=dir, package=package, exeNm=exeNm,jk=jk))
 
 
-#' The length of a string (in characters).
+#' jk, jack knifes \code{aspic} 
+#' 
+#' @description 
+#' Fits the aspic model to catch and catch per unit effort data removing 1 cpue observation at a time
 #'
-#' @param An aspic object
-#' @return An aspic object with parameter estimate
-#' @seealso \code{\link{biodyn}}
-#' @seealso \code{\link{boot}}
-#' @seealso \code{\link{fit}}
+#' @param object; an \code{aspic} object or
+#' @param object; a character string giving an aspic "inp" file
+#' @param dir; an optional \code{dir} where aspic text files used for fitting can be found 
+#' @return An aspic object with fitted values and parameter estimates 
+#' @seealso \code{\link{biodyn},\link{boot},\link{fit}}
 #' @export
+#' @rdname profile
 #' @examples
-#' seq(10)
+#' \dontrun{
+#'     data(asp)
+#'     asp=jk(asp)}
 setMethod('jk',  signature(object='aspic'),
-          function(object, package=class(object), exeNm="aspic", dir=tempdir())
-            runExe(object=object,package=package, exeNm=exeNm, dir=dir,jk=TRUE))
+          function(object, dir=tempdir(), package=class(object), exeNm="aspic")
+            runExe(object=object, dir=dir, package=package, exeNm=exeNm,jk=TRUE))
 
-#' The length of a string (in characters).
+#' boot, Bootstraps the ASPIC biomass dynamic model.
 #'
-#' @param An aspic object
-#' @return An aspic object with parameter estimate
-#' @seealso \code{\link{biodyn}}
-#' @seealso \code{\link{fit}}
-#' @seealso \code{\link{jk}}
-#' @method boot
+#' @description 
+#' Bootstraps the aspic model
+#'
+#' @param object; an \code{aspic} object or
+#' @param object; a character string giving an aspic "inp" file
+#' @param dir; an optional \code{dir} where aspic text files used for fitting can be found 
+#' @return An aspic object with fitted values and parameter estimates 
+#' @seealso \code{\link{biodyn},\link{boot},\link{jk}}
 #' @export
+#' @rdname boot
 #' @examples
-#' seq(10)
+#' \dontrun{
+#'     data(asp)
+#'     asp=boot(asp)}
 setMethod('boot', signature(object='aspic'),
-          function(object, package=class(object), exeNm="aspic", dir=tempdir(),boot=500)
-            runBoot(object=object,package=package, exeNm=exeNm, dir=dir,boot=boot))
+          function(object, dir=tempdir(), package=class(object), exeNm="aspic",boot=500)
+            runBoot(object=object, dir=dir,package=package, exeNm=exeNm,boot=boot))
 
 utils::globalVariables(c("year","swon","year","B","obs"))
 
@@ -98,7 +112,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
                object@index=index
                object@index[j[i],"index"]=NA
                }
-        
+          
         # create exe input files
         .writeAspicInp(iter(object,i),what="FIT",niter=1,fl=paste(exeNm,".inp",sep=""))
     
@@ -107,7 +121,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         system(paste(exeNm, paste(" ",exeNm,".inp",sep=""),sep=""))
         
         rdat=dget(paste(exeNm,"rdat",sep="."))
-        
+       
         #rdat$estimates
         object@params[c("b0","msy","k"),i]=rdat$estimates[c("B1.K","MSY","K")]       
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-length(rdat$estimates)+1)]
@@ -117,7 +131,8 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         
         if (.Platform$OS!="windows"){
         try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)
-        try(object@objFn[1,i]<-rdat$diagnostics$rsquare) }            
+        #try(object@objFn[1,i]<-rdat$diagnostics$rsquare) 
+        }            
         }
   
     if (dims(object)$iter==1){
@@ -182,6 +197,5 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   object@stock=bio[["stock"]]%*%bio[["bmsy"]]
 
   setwd(oldwd)
-  
   
   return(object)}

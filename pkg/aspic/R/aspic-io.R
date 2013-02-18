@@ -1,4 +1,59 @@
-setMethod("readAspic",     signature(object="character"),   function(object,...)            .readAspic(object,...))
+#' read ASPIC text files.
+#' @description 
+#' Reads the the various \code{ASPIC} files and returns if possible an \code{FLR} object, otherwise returns 
+#' a \code{data frame}.
+#'       
+#' @param file; the name of the file which the data are to be read from. 
+#' @return The object returned depends upon what is being read in.
+#' @seealso \code{\link{writeAspic},\link{biodyn}}
+#' @export
+#' 
+
+#'@section Longwinded Explanation: 
+#'  The executable version of ASPIC uses a number of text files i.e.
+#'  \describe{
+#'   \item{\code{inp}, the input file with data, starting guesses, and run settings and for output,}
+#'   \item{\code{bio}  estimated stock and F trajectory for each bootstrap trial,}        
+#'   \item{\code{prb}  as \code{bio} but with projection results,}         
+#'   \item{\code{rdat} inputs and estimates specially formatted for R, }       
+#'   \item{\code{det} estimates }}
+
+#' 
+#' @examples
+#' \dontrun{
+#'    dirMy="/home/laurie/Desktop/gcode/gbyp-sam/tests/aspic/bet/2010/run3"
+#'    
+#'    ## list of file types
+#'    aspic:::files
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.inp",sep="/")))
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.bio",sep="/")))
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.inp",sep="/")))
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.prb",sep="/")))
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.rdat",sep="/")))
+#'    
+#'    is(readAspic(paste(dirMy,"aspic.det",sep="/")))
+#'    }
+setMethod("readAspic",  signature(object="character"),   function(object,...)  .readAspic(object,...))
+
+
+#' \code[writeAspic} Writes the ASPIC text input file \cod{inp} to a file or connection.
+#'
+#' @param object; of type \code{aspic}
+#' @seealso \code{\link{readAspic},\link{aspic:::files}}
+#' @export
+#' @note
+#' The executable version of ASPIC uses an input file, this method generates that file
+#' 
+#' @examples
+#' \dontrun{
+#'     data(asp)
+#'     writeAspic(asp,"aspic.inp")}
+#'     
 setMethod("writeAspic",    signature(object="aspic"),       function(object,index=object@index,what="FIT",niter=1,fl="aspic.inp",...)        .writeAspicInp(object,index,what,niter,fl=fl,...))
 
 utils::globalVariables(c("aspicCtl"))
@@ -127,18 +182,19 @@ fnDiags=function(res){
   
   res}
 
-aspicFiles=data.frame(ext =c("inp","bio","prb","rdat","det","prn"),
+files=data.frame(ext =c("inp","bio","prb","rdat","det","prn","fit"),
                       desc=c("Input file with data, starting guesses, and run settings",
                              "Estimated B and F trajectory for each bootstrap trial",
                              "As .bio but with projection results",
                              "Inputs and estimates specially formatted for R",
                              "Estimates from each bootstrap trial",
-                             "index fitted and observed"),stringAsFactor=FALSE)
+                             "index fitted and observed",
+                             "results in print format"),stringsAsFactor=FALSE)
 
 getExt <- function(file)
   tolower(substr(file,max(gregexpr("\\.", file)[[1]])+1,nchar(file)))
 
-checkExt=function(x) (tolower(getExt(x)) %in% aspicFiles[,"ext"])
+checkExt=function(x) (tolower(getExt(x)) %in% aspic:::files[,"ext"])
 
 #### Aspic #####################################################################################
 .readAspic<-function(x){
@@ -318,7 +374,7 @@ aspicInp =function(x){
   #   #  [7] "0.0  ## Stat weight for B1>K as residual (usually 0 or 1)" 
   #   res@wt      =ctrl[[7]][1]
   
-  res@index=readU(x)
+  res@index=readCpue(x,"aspic")
   
   rng       =range(res@index$year)
   names(rng)=c("minyear","maxyear")
