@@ -359,7 +359,7 @@ calcElasticity=function(bd,mn=3,rg=5){
 
 exe=function(package="biodyn"){
 
-  sep =  function() if (R.version$os=="linux-gnu") ":" else if (R.version$os=="windows") ";" else ","
+  sep =  function() if (R.version$os=="linux-gnu") ":" else if (.Platform$OS=="windows") ";" else ","
   
   # Linux
   if (R.version$os=="linux-gnu") {
@@ -371,9 +371,12 @@ exe=function(package="biodyn"){
   }else 
     stop()
   
+  #path="C:\\R\\R-2.15.1\\library\\aspic\\bin\\windows"
+  
   path <- paste(path, sep(), Sys.getenv("PATH"),sep="")
-
+   
   Sys.setenv(PATH=path)
 
 return(path)}
-
+#asp=aspic("http://gbyp-sam.googlecode.com//svn//trunk//tests//aspic//swon//2009//high//aspic.inp")
+#asp=fit(asp)

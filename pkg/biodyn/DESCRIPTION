@@ -1,6 +1,6 @@
 Package: biodyn
 Title: Biomass Dynamic Model
-Version: 0.0.0
+Version: 0.0.1
 Author: Laurence Kell
 Description: implements a biomass dynamic model class
 Depends:
