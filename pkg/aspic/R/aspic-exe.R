@@ -12,7 +12,7 @@
 #' \dontrun{
 #'     data(asp)
 #'     asp=fit(asp)}
-setMethod('fit',  signature(object='aspic'),
+setMethod('fit',  signature(object='aspic',index="missing"),
           function(object, dir=tempdir(), package=class(object), exeNm="aspic",jk=FALSE)
             runExe(object=object, dir=dir, package=package, exeNm=exeNm,jk=jk))
 
@@ -129,9 +129,19 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         names(rdat$t.series)=tolower(names(rdat$t.series))
         iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
         
-        if (.Platform$OS!="windows"){
+        if (.Platform$OS=="windows"){
         try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)
         #try(object@objFn[1,i]<-rdat$diagnostics$rsquare) 
+        } else {
+          rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
+          if (is.data.frame(rtn)) object@diags=rtn
+          
+          object@diags=transform(object@diags,stock.  =  hat/c(object@params[grep("q",dimnames(params(object))$params)])[name],
+                                 stockHat=index/c(object@params[grep("q",dimnames(params(object))$params)])[name])
+          object@diags=merge(object@diags,model.frame(mcf(FLQuants(stock=object@stock,harvest=harvest(object))),drop=TRUE),all=T)
+          object@diags$stock=object@diags$stock.
+          object@diags=object@diags[,-10]
+          try(object@objFn[1,i]<-sum(diags(object)$residual^2,na.rm=T)) 
         }            
         }
   

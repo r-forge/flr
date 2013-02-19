@@ -24,6 +24,11 @@
 #' data(asp)
 #' res=profile(asp,which="msy",fixed="b0",maxsteps=31,range=c(0.5,1.1))
 #' ggplot(res)+geom_line(aes(k,rss))
+#' 
+#' fn =function(x) cbind( data.frame(model.frame(params(x)),rss=sum(diags(x)$residual^2,na.rm=T)))
+#' res=profile(asp,which="msy",fixed="b0",maxsteps=3,range=c(0.5,1.1),fn=fn)
+#' 
+#' 
 #' }       
 setMethod("profile", signature(fitted="aspic"),
       function(fitted,which,fixed=c(),

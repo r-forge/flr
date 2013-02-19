@@ -14,7 +14,6 @@ setGeneric("writeAspic",   function(object,...)   standardGeneric('writeAspic'))
 #if (!isGeneric("hcr"))       setGeneric("hcr",      function(object, ctrl, ...) standardGeneric("hcr"))
 #if (!isGeneric("tac"))       setGeneric("tac",      function(object, ctrl, ...) standardGeneric("tac"))
 
-setGeneric('fit',   function(object,...)     standardGeneric('fit'))
 setGeneric('boot',  function(object,...)     standardGeneric('boot'))
 setGeneric('jk',    function(object,...)     standardGeneric('jk'))
 

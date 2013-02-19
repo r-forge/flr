@@ -83,9 +83,24 @@ theme_ms <- function(base_size = 12, base_family = "",...) {
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
-
-
 \section{Introduction}
+
+ASPIC is a biomass dynamic model originially implemented as a Fortan executable (Prager et al. [1996). In order to allow
+it to be simulation tested as part 
+We do this for ASPIC, a biomass production model Prager et al. [1996] and ?, and discuss how the
+diagnostics can be applied to a range of models. ASPIC is implemented as a package in R, this allows it
+to be used with a variety of other packages for plotting, summarising results and to be simulation tested,
+e.g. as part of the FLR tools for management strategy evaluation Kell et al. [2007].
+
+\section{Data}
+\section{Fitting}
+\section{Plotting}
+\section{Diagnostics}
+\section{Uncertainty}
+\section{MP}
+\section{OEM}
+\section{OM}
+
 
 %\textbf{Table}~\ref{tab:3}
 
