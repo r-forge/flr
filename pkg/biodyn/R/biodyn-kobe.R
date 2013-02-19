@@ -29,7 +29,7 @@ setMethod('kobe',  signature(file="biodyn",method="missing"),
     if (is.null(ptYrs)) ptYrs=range(file)["maxyear"]
     dat=model.frame(mcf(FLQuants(stock  =stock(  file)%/%bmsy(file),
                                  harvest=harvest(file)%/%fmsy(file))),drop=T)
-    res=kobe:::kobeFn(dat,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+    res=kobe:::kobeFn(dat,what=what,prob=prob,pts=ptYrs,nwrms=nwrms)
     if (length(what)==1)
          return(res[[what]])
     else
@@ -82,5 +82,23 @@ setMethod('kobe',  signature(file="data.frame",method="missing"),
 #   res=list(trks=trks.,pts=pts.,smry=smry.,wrms=wrms.,sims=sims.)
 #   
 #   res}
-# 
-# 
+
+#' kobePhase 
+#' 
+#' @description 
+#' produces the kobe Phase plot background, i.e. green, red and yellow quadrants to which 
+#' layers can be added
+#'
+#' @param object; a \code{biodyn} object 
+#' @return A ggplot2 object 
+#' @seealso \code{\link{kobe}}
+#' @export
+#' @examples
+#' \dontrun{
+#'     data(asp)
+#'     kobePhase(asp)+geom_path( aes(stock,harvest)) +
+#'     geom_point(aes(stock,harvest))
+setMethod('kobePhase', signature(object='biodyn'),
+          function(object,xlim=c(0,2),ylim=xlim){
+            
+            invisible(kobe:::kobePhaseFn(kobe(object),xlim,ylim))})

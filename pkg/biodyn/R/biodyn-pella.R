@@ -138,9 +138,9 @@ activeParams=function(obj) dimnames(control(obj))$params[c(control(obj)[,"phase"
 ## runs exe
 
 ##############################################################
-#' pella
+#' fit
 #'
-#' Fits the Pella-Tomlinson to the catch data in a biodyn using CPUE index
+#' Estimates parameters in a \code{biodyn} class by fitting catch to CPUE indeices
 #' 
 #'
 #' @param   \code{object}, an object of class \code{biodyn}
@@ -149,13 +149,13 @@ activeParams=function(obj) dimnames(control(obj))$params[c(control(obj)[,"phase"
 #'
 #' @export
 #' @docType methods
-#' @rdname pella
+#' @rdname fit
 #'
 #' @examples
 #' /dontrun{
 #' data(bd)
 #' bd=fit(bd,swonIndex)}
-setMethod("pella",signature(object='biodyn',index="FLQuant"),
+setMethod("fit",signature(object='biodyn',index="FLQuant"),
           function(object,index=index,exeNm="pella",package="biodyn", dir=tempdir(),set=setPella,get=getPella,cmdOps=paste("-maxfn 500 -iprint 0")) {
 
   slts=getSlots("biodyn")

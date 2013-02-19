@@ -1,4 +1,4 @@
-##############################################################
+  ##############################################################
 #' profile
 #'
 #' Profiles biodyn  
@@ -9,7 +9,7 @@
 #'
 #' @export
 #' @docType methods
-#' @rdname pella
+#' @rdname fit
 #'
 #' @examples
 #' /dontrun{
@@ -49,7 +49,7 @@ setMethod("profile", signature(fitted="biodyn"),
         if (dims(cpue)$maxyear>=dims(stock(fitted))$maxyear) stop("cpue years greater in length than stock")
         if (dims(fitted)$iter>1) stop("can only be done for a single iter")
                  
-        setControl(fitted)=params(fitted)
+        #setControl(fitted)=params(fitted)
         control(fitted)=propagate(control(fitted),maxsteps^length(which))
           
         if (length(range)==1) range=c(range,2-range)
@@ -66,7 +66,7 @@ setMethod("profile", signature(fitted="biodyn"),
         
         if (!run) return(fitted)
         
-        res=pella(fitted,cpue)
+        res=fit(fitted,cpue)
         
         rtn=fn(res)
         
