@@ -8,8 +8,6 @@ export("kobeAspic",
        "kobeInterp", 
        "kobePhaseMar",
         
-       "kobeFn",
-       
        "theme_ms", "multiplot")
 exportMethods("kobeTrks",
               "kobeP",

@@ -1,9 +1,1 @@
-export("moments",
-	"decade",
-	"stdz",
-	"minMax")
-
-exportMethods(
-	"readU",
-	"diagU",
-	"writeU")
+exportMethods(readCpue)

@@ -68,36 +68,3 @@ Use \url{http://www.tuna-org.org/Documents/TRFMO3/K3-REC_ENG.pdf} %or \href{}{} 
 
 %~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
 \keyword{ package }
-\examples{
-### examples of the most important functions ###
-
-## Example file on google code
-aBio="http://gbyp-sam.googlecode.com/svn/trunk/data/ASPIC/whm/2012/noBrazil/aspic.bio"
-
-## reads in data for kobe phase plot
-res=kobeAspic(aBio,what=c("pts","trks"))
-
-## inspect the returned object
-names(res)
-head(res$pts)
-head(res$trks)
-
-## plot the results
-kobePhase(res$pts)+
-      geom_point(aes(stock,harvest))+
-      geom_path( aes(stock,harvest),data=res$trks)
-
-## K2SM
-data(sims)
-head(sims)      
-k2sm=subset(sims,year>= 2010 & year<=2020) 
-
-## summarise points
-k2sm=ddply(k2sm, .(TAC,year), kobeSmry)
-head(sims)
-
-## create K2SM
-cast(k2sm,TAC~year,value="green")
- 
-
-}

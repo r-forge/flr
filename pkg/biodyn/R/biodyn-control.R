@@ -22,12 +22,15 @@
 setGeneric('setControl<-', function(object,value,...)  standardGeneric('setControl<-'))
 
 setMethod('setControl<-', signature(object='biodyn',value="FLPar"), function(object,value,min=0.1,max=10.0) {
-
+    
+    if (dims(value)$iter>1 & dims(control(object))$iter==1)
+      control(object)=propagate(control(object),dims(value)$iter)
+  
     nms=dimnames(object@params)$params
-    object@control=FLPar(array(rep(c(1,NA,NA,NA),each=length(nms)), dim=c(length(nms),4,1), dimnames=list(params=nms,option=c("phase","min","val","max"),iter=1)))
+    object@control=FLPar(array(rep(c(1,NA,NA,NA),each=length(nms)), dim=c(length(nms),4,dims(value)$iter), dimnames=list(params=nms,option=c("phase","min","val","max"),iter=seq(dims(value)$iter))))
     object@control[nms,"val"]=value
-    object@control[nms,"min"]=value[nms,]*min
-    object@control[nms,"max"]=value[nms,]*max
+    object@control[nms,"min"]=value[nms]*min
+    object@control[nms,"max"]=value[nms]*max
   
     prr=object@priors
     object@priors=array(rep(c(0,0,0.3,1),each=length(nms)), dim=c(length(nms),4),   dimnames=list(params=nms,c("weight","a","b","type")))
@@ -81,27 +84,27 @@ calcQ<-function(stock,index,error="log",na.rm=T){
 
 setQ=function(object,index,error="log"){
   res=switch(is(index)[1],
-             FLQuant   =data.frame(name=1,model.frame(mcf(FLQuants(stock=stock(object),index=index)),drop=T)),
-             FLQuants  =ldply(index, function(x) model.frame(mcf(FLQuants(stock=stock(object),index=x)),drop=T)),
+             FLQuant   =data.frame(name=1,model.frame(mcf(FLQuants(stock=stock(object),index=index)))),
+             FLQuants  =ldply(index, function(x) model.frame(mcf(FLQuants(stock=stock(object),index=x)))),
              data.frame=merge(model.frame(stock=stock(object)),index,by=year,all=T))
-  
+
   names(res)[1]="name"
-  res=ddply(res, .(name), function(x,log) data.frame(calcQ(x$stock,x$index)),log="log")
+  res=ddply(res, .(name,iter), function(x,log) data.frame(calcQ(x$stock,x$index)),log="log")
   
-  if (dim(res)[1]>1){
-    res=transform(melt(res,id="name"),params=paste(variable,name,sep=""))[,c("params","value")]
-    names(res)[2]="data"
-  }
-  else{
-    res=melt(res,id="name")[,-1]
-    names(res)[1:2]=c("params","data")
-  }
+  its=dim(res)[1]
+
+    res.=transform(melt(res,id=c("name","iter")),params=paste(variable,name,sep=""))[,c("params","value","iter")]
+    names(res.)[2]="data"
+    res=iter(as(res.,"FLPar"),seq(its))
+    units(res)="NA"
+    res[]=res.[with(res.,order(iter,params)),"data"]
   
-  res=as(res,"FLPar")[,1]
+    if (dims(object@params)$iter==1)
+       object@params=propagate(object@params,its)
   
-  object@params=FLCore:::rbind(object@params,res)
-  
-  object@params}
+    object@params=FLCore:::rbind(object@params,res)
+
+    object@params}
 
 ##############################################################
 #' setParams<-
@@ -138,10 +141,11 @@ setMethod('setParams<-', signature(object='biodyn',value="FLPar"), function(obje
 setMethod('setParams<-', signature(object='biodyn',value="FLQuant"), function(object,value) {
   nms=c(biodyn:::modelParams(as.character(object@model)),"b0")
   object@params=object@params[nms]
-
-  value=FLCore:::apply(value,2,mean)
+print("setP 1")
+  #value=FLCore:::apply(value,2,mean)
   object@params =setQ(object,value)
-
+print("setP 2")
+  
   return(object)})
 
 setMethod('setParams<-', signature(object='biodyn',value="FLQuants"), function(object,value) {

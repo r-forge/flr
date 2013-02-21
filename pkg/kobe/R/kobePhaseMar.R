@@ -42,29 +42,29 @@ kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
                     panel.grid.minor = element_line(colour ="NA")              )
     
     # second density plot, oriented vertically (hence the 'coord_flip()' at the end
-    dH<-ggplot(pts) + 
-          geom_density(aes(x = harvest, y =  ..count.., group=group), fill=col2, col=col3, position = "stack") + 
-          geom_density(aes(x = harvest, y = -..count..,               fill=group, alpha=0.4)) + 
-          geom_vline(xintercept=1,col="red")  +
-              scale_x_continuous(limits=c(0,maxY))   +
-              scale_fill_manual(values=col)          +
-              xlab(xlab) + ylab(ylab)                +
-              theme(legend.position = "none", 
-                    axis.title.x = element_text(colour ='NA'), 
-                    axis.text.x  = element_text(colour ="NA"), 
-                    axis.ticks.x = element_line(colour ="NA"),
-                    axis.ticks =   element_line(colour ="NA"),
-                    
-                    axis.title.y = element_blank(), 
-                    axis.text.y  = element_blank(), 
-                    axis.ticks.y = element_blank(), 
-                    
-                    plot.margin = unit(c(0, 0, 1, 0), "lines"),
-                    panel.background = element_rect(fill   ="NA", colour ="NA"), 
-                    panel.border     = element_rect(fill   ="NA", colour ="NA"), 
-                    panel.grid.major = element_line(colour ="NA"), 
-                    panel.grid.minor = element_line(colour ="NA")                    
-              )
+      dH<-ggplot(pts) + 
+            geom_density(aes(x = harvest, y =  ..count.., group=group), fill=col2, col=col3, position = "stack") + 
+            geom_density(aes(x = harvest, y = -..count..,               fill=group, alpha=0.4)) + 
+            geom_vline(xintercept=1,col="red")  +
+                scale_x_continuous(limits=c(0,maxY))   +
+                scale_fill_manual(values=col)          +
+                xlab(xlab) + ylab(ylab)                +
+                theme(legend.position = "none", 
+                      axis.title.x = element_text(colour ='NA'), 
+                      axis.text.x  = element_text(colour ="NA"), 
+                      axis.ticks.x = element_line(colour ="NA"),
+                      axis.ticks =   element_line(colour ="NA"),
+                      
+                      axis.title.y = element_blank(), 
+                      axis.text.y  = element_blank(), 
+                      axis.ticks.y = element_blank(), 
+                      
+                      plot.margin = unit(c(0, 0, 1, 0), "lines"),
+                      panel.background = element_rect(fill   ="NA", colour ="NA"), 
+                      panel.border     = element_rect(fill   ="NA", colour ="NA"), 
+                      panel.grid.major = element_line(colour ="NA"), 
+                      panel.grid.minor = element_line(colour ="NA")                    
+                )
   
     # kobe phase plot
     kC=kobePhase(pts) +

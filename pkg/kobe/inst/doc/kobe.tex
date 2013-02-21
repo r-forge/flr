@@ -43,7 +43,7 @@
 
 \Address{
   Laurence Kell \\
-  ICCAT Secretariat\\ 
+  ICCAT Secretariat\\ 		
   C/Coraz\'{o}n de Mar\'{\i}a, 8. \\
   28002 Madrid\\
   Spain\\ 
@@ -401,7 +401,8 @@ can be plotted using \code{kobeP} e.g.
 \begin{Schunk}
 \begin{Sinput}
 > kp2 = kp + geom_path(aes(x,y,group=level),colour="blue",
-+                     data=ddply(subset(sims,year==2010 & TAC==15000),.(Run), function(pts) kobeProb(pts$stock,pts$harvest,prob=c(0.7,.5,.25)))) +
++                     data=ddply(subset(sims,year==2010 & TAC==15000),.(Run), 
++                                function(pts) kobeProb(pts$stock,pts$harvest,prob=c(0.7,.5,.25)))) +
 +                     facet_wrap(~Run) + 
 +                     theme(legend.position = "none")
 \end{Sinput}
@@ -453,8 +454,15 @@ The phase and marginal density plots can be combined using \code{kobePhasemar} e
 \begin{Schunk}
 \begin{Sinput}
 > ### Bespoke Stuff ###
-> kobePhaseMar(transform(pts,group=Run))          
+> print(kobePhaseMar(transform(pts,group=Run)))          
 \end{Sinput}
+\begin{Soutput}
+$harvest
+
+$stock
+
+$phase
+\end{Soutput}
 \end{Schunk}
 \includegraphics{kobe-023}
 \end{center}\end{figure}
@@ -470,7 +478,8 @@ Although pie charts have their critics ...
 \begin{Sinput}
 > ### Pies ###
 > pie.dat=ddply(subset(sims,year==2010 & TAC==15000),.(Run),kobeSmry,o=T)
-> pie.dat=ddply(melt(pie.dat,id.vars="Run"),.(Run,variable), function(x) data.frame(value=mean(x$value)))
+> pie.dat=ddply(melt(pie.dat,id.vars="Run"),.(Run,variable), 
++               function(x) data.frame(value=mean(x$value)))
 > ## pie charts
 > ggplot(subset(pie.dat,value>0), aes(x =factor(1), y=value, fill = variable)) + 
 +   geom_bar(width = 1) + 
@@ -486,21 +495,27 @@ Although pie charts have their critics ...
 \end{center}\end{figure}
 
 
+\clearpage
 \subsubsection{Kobe II Strategy Matrix}
 
 \begin{figure}\begin{center}
 \begin{Schunk}
 \begin{Sinput}
 > kobe2012=subset(sims,year %in% 2013:2022)
-> pdat=subset(ddply(kobe2012,.(year,TAC),kobeSmry),select=c(year,TAC,green,underFished,underFishing))
+> pdat=subset(ddply(kobe2012,.(year,TAC),kobeSmry),
++             select=c(year,TAC,green,underFished,underFishing))
 > pdat=melt(pdat,id.vars=c("year","TAC"))
 > pdat=ddply(pdat, .(variable), function(x) kobeInterp(data.frame(x$year,x$TAC,x$value)))
-> col.=c(colorRampPalette(c("red4","red"))(12),colorRampPalette(c("yellowgreen","darkgreen"))(8))
-> k2p = ggplot(aes(x=x,y=y,z=w),data=pdat)                        +
-+            geom_tile(aes(x,y,fill=z))                         +
+> col.=c(colorRampPalette(c("red4","red"))(12),
++        colorRampPalette(c("yellowgreen","darkgreen"))(8))
+> k2p = ggplot(aes(x=x,y=y,z=w),data=pdat)                 +
++            geom_tile(aes(x,y,fill=z))                    +
 +            scale_fill_manual(values=col.,guide="none")   +
-+            stat_contour(aes(colour = ..level..),size=1.2,  breaks=c(0.6,0.7,0.8,0.9))     +
-+            scale_colour_gradient(low="grey", high="black", breaks=c(0.6,0.7,0.8,0.9),labels=c(0.6,0.7,0.8,0.9),limits=c(0.6,1))    +
++            stat_contour(aes(colour= ..level..),size=1.2,  
++                             breaks=c(0.6,0.7,0.8,0.9))   +
++            scale_colour_gradient(low="grey", high="black", 
++                                  breaks=c(0.6,0.7,0.8,0.9),
++                                   labels=c(0.6,0.7,0.8,0.9),limits=c(0.6,1))    +
 +            facet_wrap(~variable,ncol=1)                       +
 +            xlab("Year")+ylab("TAC") 
 > k2p
@@ -510,6 +525,7 @@ Although pie charts have their critics ...
 \end{center}\end{figure}
 
 
+\clearpage
 \section{Tabulation}
 
 \subsection{Kobe II Strategy Matrix}
@@ -523,42 +539,42 @@ of 50-59 \%, 60- 69 \%, 70-79 \%, 80-89 \% and greater or equal to 90 \%) for di
  \item  the combined probability of Biomass or SSB being greater than $B_{MSY}$ and Fishing Mortality or Harvest Rate being less than $F_{MSY}$ 
 \end{itemize}
 
+
+\begin{Schunk}
+\begin{Sinput}
+> t.=ddply(subset(sims,year %in% 2013:2022),.(year,TAC),  kobeSmry)
+> k2smTab=list()
+> k2smTab[[1]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="underFishing")
+> k2smTab[[2]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="underFished")
+> k2smTab[[3]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="green")
+\end{Sinput}
+\end{Schunk}
+
+
 \end{document}
 
+%<<results=hide, quiet=TRUE, echo=FALSE>>=
+%# Making sure we can source code from github
+%source("http://www.r-statistics.com/wp-content/uploads/2012/01/source_https.r.txt")
+ 
+%# Reading in the function for using tabular on a cast_df object:
+%source_https("https://raw.github.com/talgalili/R-code-snippets/master/tabular.cast_df.r")
+%@ 
 
-% <<results=hide>>=
-% # Making sure we can source code from github
-% source("http://www.r-statistics.com/wp-content/uploads/2012/01/source_https.r.txt")
-%  
-% # Reading in the function for using tabular on a cast_df object:
-% source_https("https://raw.github.com/talgalili/R-code-snippets/master/tabular.cast_df.r")
-% 
-% 
-% t.=ddply(subset(sims,year %in% 2013:2022),.(year,TAC),  kobeSmry)
-% 
-% 
-% #t.=ddply(subset(sims,year %in% 2013:2022),.(year,TAC),  kobeSmry)[,c("year","TAC","green","underFished","underFishing")]
-% #t.=melt(t.,id=c("TAC","year"))
-% 
-% k2smTab=list()
-% k2smTab[[1]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="underFishing")
-% k2smTab[[2]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="underFished")
-% k2smTab[[3]]=cast(subset(t., year %in% 2013:2022),TAC~year,value="green")
-% @ 
-% 
-% 
-% <<results=tex,echo=FALSE>>=
-% latex(tabular.cast_df(k2smTab[[1]]),caption="Kobe II Strategy Matrix, $P(F\\leq F_{MSY})$.")
-% @ 
-% 
-% 
-% <<echo=TRUE,echo=FALSE>>=
-% library(tables)
-% latex(tabular.cast_df(k2smTab[[3]]))
-% @ 
-% %\caption{Kobe II Strategy Matrix, $P(SSB\\geq B_{MSY})$).}
-%                   
-% <<results=tex,echo=FALSE>>=
-% latex(tabular.cast_df(k2smTab[[3]]))
-% @ 
-% %\caption{Kobe II Strategy Matrix, $P(F\\leq F_{MSY})$ and $P(SSB\\geq B_{MSY})$.}
+
+%<<results=tex,quite=TRUE,echo=FALSE>>=
+%latex(tabular.cast_df(k2smTab[[1]]),caption="Kobe II Strategy Matrix, $P(F\\leq F_{MSY})$.")
+%@ 
+
+
+%<<echo=TRUE,quite=TRUE,echo=FALSE>>=
+%library(tables)
+%latex(tabular.cast_df(k2smTab[[3]]))
+%@ 
+%\caption{Kobe II Strategy Matrix, $P(SSB\\geq B_{MSY})$).}
+                  
+%<<results=tex,quite=TRUE,echo=FALSE>>=
+%latex(tabular.cast_df(k2smTab[[3]]))
+%@ 
+%\caption{Kobe II Strategy Matrix, $P(F\\leq F_{MSY})$ and $P(SSB\\geq B_{MSY})$.}
+

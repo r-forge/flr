@@ -2,6 +2,8 @@
 # ### sam stuff for Kobe ################################################################
 # #######################################################################################
 
+utils::globalVariables(c("pctl","FLQuant","stock.n<-","propagate","stock.n","harvest<-"))
+
 readSam<-function(file, reduced=FALSE){
   # Function to read a basic fit
   ret<-list()

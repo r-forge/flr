@@ -5,14 +5,58 @@ Version: 0.1
 Date: 2012-11-01
 Author: Laurence Kell
 Maintainer: Laurence Kell <LaurieKell@iccat.int>
-Description: This package provides methods to work with CPUE data from a variety of fish
-  stock assessment programs. Stock assessment is conducted using a variety of standalone 
-	executable programs, each with their own input and output file formats. This package
-	provides a set of common methods for reading these data into R, plotting and
-	summarising them.
-	It also provides methods for data exchange between programs, i.e. as well as reading
-	in data from a variety of file formats it also provides methods for writing data in
-	the same file formats.   
+Description: This package provides methods to work with CPUE data from a
+    variety of fish stock assessment programs. Stock assessment is conducted
+    using a variety of standalone executable programs, each with their own
+    input and output file formats. This package provides a set of common
+    methods for reading these data into R, plotting and summarising them. It
+    also provides methods for data exchange between programs, i.e. as well as
+    reading in data from a variety of file formats it also provides methods for
+    writing data in the same file formats.
 License: GPL-2
-Depends:  R(>= 2.15.1), stringr, r4ss, ggplot2, reshape, plyr, methods, cluster, kobe, grid
-Suggests: RCurl, lattice, tables, Hmisc, survival
+Depends:
+    R(>= 2.15.1),
+    stringr,
+    r4ss,
+    ggplot2,
+    reshape,
+    plyr,
+    methods,
+    cluster,
+    kobe,
+    grid,
+    r4ss
+Suggests:
+    RCurl,
+    lattice,
+    tables,
+    Hmisc,
+    survival
+Collate:
+    'hessian.R'
+    'coda-mcmc.R'
+    'ggplotFL-multiplot.R'
+    'read.frq.R'
+    'U-admb-methods.R'
+    'U-diag-2box.R'
+    'U-diag-aspic.R'
+    'U-diag-funcs.R'
+    'U-diag-methods.R'
+    'U-diag-MFCL.R'
+    'U-diags-SAM.R'
+    'U-diag-SS.R'
+    'U-funcs.R'
+    'U-read-2box.R'
+    'U-read-aspic.R'
+    'U-read-BSP.R'
+    'U-read-methods.R'
+    'U-read-MFCL.R'
+    'U-read-SS.R'
+    'U-read-VPASuite.R'
+    'U-write-2box.R'
+    'U-write-Aspic.R'
+    'U-write-BSP.R'
+    'U-write-methods.R'
+    'U-write-MFCL.R'
+    'U-write-SS3.R'
+    'U-write-VPASuite.R'

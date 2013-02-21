@@ -258,11 +258,7 @@ lh=function(par,
       warning("iter(FLBRP,i) doesnt work")
   }else
     params(res)=ab(par[c("s","v")],sr,spr0=spr0(res))[c("a","b")]
-
-   dimnames(refpts(res))$refpt[c(3,5)]=c("virgin","crash")
-   refpts(res)["virgin"]=NA
-   refpts(res)["virgin","harvest"]=0
-  
+ 
    refpts(res)=refpts(res)[c("virgin","msy","crash","f0.1","fmax")]
 
    res=brp(res)

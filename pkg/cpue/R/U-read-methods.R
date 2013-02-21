@@ -1,6 +1,22 @@
-setGeneric('readU',   function(file,method,...) standardGeneric('readU'))
+#' readCpue
+#' @description 
+#' read catch per unit effort data from a variety of stock assessment text files.
+#'       
+#' @param file; the name of the file which the data are to be read from. 
+#' @param method; stock assessment method type one of \code{c("aspic","adapt","bsp","mfcl","ss","sam","vpa")}
+#' @return a \code{data.frame} with the CPUE series.
+#' @export
+#' 
+#' 
+#' @examples
+#' \dontrun{
+#'    dirMy="/home/laurie/Desktop/gcode/gbyp-sam/tests/aspic/bet/2010/run3"
+#'    udat=readCpue(,what="")   
+#'    head(udat)
+#'    }
+setGeneric('readCpue',   function(file,method,...) standardGeneric('readCpue'))
 
-setMethod('readU',  signature(file='character',method="missing"), function(file,method=method,...) {
+setMethod('readCpue',  signature(file='character',method="missing"), function(file,method=method,...) {
   
   ln=tolower(scan(file,nlines=1,what=character(),sep="\n"))
   
@@ -10,38 +26,37 @@ setMethod('readU',  signature(file='character',method="missing"), function(file,
     method="aspic"
   
   switch(substr(method[1],1,2),
-         ad=readU2box( file,...),
-         as=readUaspic(file,...),
-         bs=readUbsp(  file,...),
-         mf=readUmfcl( file,...),
-         ss=readUss(   file,...),
-         vp=readUvpa(  file,...))
+         ad=cpue2box( file,...),
+         as=cpueAspic(file,...),
+         bs=cpueBSP(  file,...),
+         mf=cpueMFCL( file,...),
+         ss=cpueSS(   file,...),
+         vp=cpueVpa(  file,...))
 })
 
-setMethod('readU',  signature(file='character',method="character"), function(file,method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),...) {
+setMethod('readCpue',  signature(file='character',method="character"), function(file,method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),...) {
       
     type=tolower(method)
     if (any("2box" == method)) method["2box" == method]="adapt"   
     switch(substr(method[1],1,2),
-           ad=readU2box( file,...),
-           as=readUaspic(file,...),
-           bs=readUbsp(  file,...),
-           mf=readUmfcl( file,...),
-           ss=readUss(   file,...),
-           vp=readUvpa(  file,...))
+           ad=cpue2box( file,...),
+           as=cpueAspic(file,...),
+           bs=cpueBSP(  file,...),
+           mf=cpueMFCL( file,...),
+           ss=cpueSS(   file,...),
+           vp=cpueVpa(  file,...))
     })
 
-setGeneric('readU2box',   function(x,...) standardGeneric('readU2box'))
-setGeneric('readUvpa',    function(x,...) standardGeneric('readUvpa'))
-setGeneric('readUss',     function(x,...) standardGeneric('readUss'))
-setGeneric('readUmfcl',   function(x,...) standardGeneric('readUmfcl'))
-setGeneric('readUbsp',    function(x,...) standardGeneric('readUbsp'))
-setGeneric('readUaspic',  function(x,...) standardGeneric('readUaspic'))
+setGeneric('cpue2box',   function(x,...) standardGeneric('cpue2box'))
+setGeneric('cpueVpa',    function(x,...) standardGeneric('cpueVpa'))
+setGeneric('cpueSS',     function(x,...) standardGeneric('cpueSS'))
+setGeneric('cpueMFCL',   function(x,...) standardGeneric('cpueMFCL'))
+setGeneric('cpueBSP',    function(x,...) standardGeneric('cpueBSP'))
+setGeneric('cpueAspic',  function(x,...) standardGeneric('cpueAspic'))
  
-setMethod('readU2box',  signature(x='character'), function(x,...) iU2box(    x,...))
-setMethod('readUvpa',   signature(x='character'), function(x,...) iUVPASuite(x,...))
-setMethod('readUss',    signature(x='character'), function(x,...) iUSS(      x,...))
-setMethod('readUmfcl',  signature(x='character'), function(x,...) iUMFCL(    x,...))
-setMethod('readUbsp',   signature(x='character'), function(x,...) iUBSP(     x,...))
-setMethod('readUaspic', signature(x='character'), function(x,...) iUAspic(   x,...))
- 
+setMethod('cpue2box',  signature(x='character'), function(x,...) iU2box(    x,...))
+setMethod('cpueVpa',   signature(x='character'), function(x,...) iUVPASuite(x,...))
+setMethod('cpueSS',    signature(x='character'), function(x,...) iUSS(      x,...))
+setMethod('cpueMFCL',  signature(x='character'), function(x,...) iUMFCL(    x,...))
+setMethod('cpueBSP',   signature(x='character'), function(x,...) iUBSP(     x,...))
+setMethod('cpueAspic', signature(x='character'), function(x,...) iUAspic(   x,...))

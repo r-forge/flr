@@ -129,7 +129,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         names(rdat$t.series)=tolower(names(rdat$t.series))
         iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
         
-        if (.Platform$OS=="windows"){
+        if (.Platform$OS!="windows"){
         try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)
         #try(object@objFn[1,i]<-rdat$diagnostics$rsquare) 
         } else {
@@ -141,7 +141,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
           object@diags=merge(object@diags,model.frame(mcf(FLQuants(stock=object@stock,harvest=harvest(object))),drop=TRUE),all=T)
           object@diags$stock=object@diags$stock.
           object@diags=object@diags[,-10]
-          try(object@objFn[1,i]<-sum(diags(object)$residual^2,na.rm=T)) 
+          try(object@objFn[2,i]<-sum(diags(object)$residual^2,na.rm=T)) 
         }            
         }
   
