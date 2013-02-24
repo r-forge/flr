@@ -60,7 +60,7 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
 #'
 setMethod('hcr', signature(object='biodyn'),
            function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.25),
-                             msy  =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),...) 
+                            msy   =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),...) 
    hcr.(object,params,msy,...))
 
 # setGeneric('hcrJK', function(object, ...) standardGeneric('hcrJK'))
@@ -134,7 +134,7 @@ function(object,harvest,...){
   return(catch(object)[,ac(yr)])})
 
 #   object=biodyn("pellat",FLPar(r=.5,k=10000))
-hockeyStick=function(object,target=c(0.7,0.7),limit=c(0.2,0.1),maxB=1){
+hcrFn.=function(object=FLPar(stock=c(0.7,0.2),harvest=c(0.2,0.1)),maxB=1){
   
   pts=rbind(cbind(refpt="Target",model.frame(rbind(bmsy(object)*target[1],
                                                    fmsy(object)*target[2]))),

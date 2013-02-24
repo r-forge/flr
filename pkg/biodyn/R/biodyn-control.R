@@ -83,9 +83,17 @@ calcQ<-function(stock,index,error="log",na.rm=T){
   return(res)}
 
 setQ=function(object,index,error="log"){
+  
+  fn=function(index,stock){
+    if (dims(stock)$iter==1 & dims(index)$iter>1)
+       stock=propagate(stock,dims(index)$iter)
+    
+    model.frame(mcf(FLQuants(stock=stock,index=index)))
+    }
+  
   res=switch(is(index)[1],
-             FLQuant   =data.frame(name=1,model.frame(mcf(FLQuants(stock=stock(object),index=index)))),
-             FLQuants  =ldply(index, function(x) model.frame(mcf(FLQuants(stock=stock(object),index=x)))),
+             FLQuant   ={res=fn(index,stock(object));data.frame(name=1,res)},
+             FLQuants  =ldply(index, fn, model.frame(mcf(FLQuants(stock=stock,index=x))),stock=stock),
              data.frame=merge(model.frame(stock=stock(object)),index,by=year,all=T))
 
   names(res)[1]="name"
@@ -141,10 +149,9 @@ setMethod('setParams<-', signature(object='biodyn',value="FLPar"), function(obje
 setMethod('setParams<-', signature(object='biodyn',value="FLQuant"), function(object,value) {
   nms=c(biodyn:::modelParams(as.character(object@model)),"b0")
   object@params=object@params[nms]
-print("setP 1")
+
   #value=FLCore:::apply(value,2,mean)
   object@params =setQ(object,value)
-print("setP 2")
   
   return(object)})
 

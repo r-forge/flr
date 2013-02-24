@@ -162,6 +162,7 @@ activeParams=function(obj) dimnames(control(obj))$params[c(control(obj)[,"phase"
 setMethod("fit",signature(object='biodyn',index="FLQuant"),
           function(object,index=index,exeNm="pella",package="biodyn", dir=tempdir(),set=setPella,get=getPella,cmdOps=paste("-maxfn 500 -iprint 0")) {
 
+  first=TRUE          
   if (dims(object)$iter==1 &  dims(index)$iter>1)
     catch(object)=propagate(catch(object),dims(index)$iter)
   
@@ -246,12 +247,16 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
      bd@objFn@.Data[   ,i] = object[[1]]@objFn
      
      err=try(mng.<-read.table("pella.std",header=T)[,-1])
-     
-     if (is(err)!="try-error"){
-     if (i==1) bd@mng   =FLPar(array(unlist(c(mng.[,-1])),dim=c(dim(mng.)[1],2,its),dimnames=list(param=mng.[,1],var=c("hat","sd"),iter=seq(its))))
-     else      bd@mng@.Data[,,i][]=unlist(c(mng.[,-1]))}
-     }
-
+             
+     ## FLPar hack
+     if (first & is(err)!="try-error") {
+       bd@mng   =FLPar(array(unlist(c(mng.[,-1])),dim=c(dim(mng.)[1],2,its),dimnames=list(param=mng.[,1],var=c("hat","sd"),iter=seq(its))))
+       first=!first
+    }else{
+       if (is(err)!="try-error") bd@mng@.Data[,,i][]=unlist(c(mng.[,-1]))
+       }
+  }
+  
   units(bd@mng)="NA"
   
   bd=fwd(bd,catch=catch(bd)[,rev(dimnames(catch(bd))$year)[1]])
