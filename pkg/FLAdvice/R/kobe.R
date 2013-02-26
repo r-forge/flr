@@ -22,10 +22,12 @@ setMethod('kobe', signature(file="FLBRPs",method="missing"),
     return(res[what]) })
 
 setMethod('kobe',  signature(file="FLBRP",method="missing"),  
-          function(file,procy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
+          function(file,proxy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
             if (is.null(ptYrs)) ptYrs=range(file)["maxyear"]
+            
             dat=model.frame(mcf(FLQuants(stock  =ssb.obs( file)%/%refpts(file)[proxy,"ssb"],
                                          harvest=fbar.obs(file)%/%refpts(file)[proxy,"harvest"])),drop=T)
+            
             res=kobeFn(dat,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
             if (length(what)==1)
               return(res[[what]])
@@ -38,7 +40,7 @@ setMethod('kobe',  signature(file="data.frame",method="missing"),
 
 kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){         
   object=file
-  
+ 
   trks. =NULL
   pts.  =NULL
   smry. =NULL
