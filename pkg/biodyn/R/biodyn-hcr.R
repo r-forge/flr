@@ -3,13 +3,12 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
                         refpt ="missing",
                         bndTac=NULL, bndF=NULL,lag=1,...){
 
-      if (dims(params)$iter==1 & dims(refpts(object))$iter>1)
+  if (dims(params)$iter==1 & dims(refpts(object))$iter>1)
          params=propagate(params,dims(refpts(object))$iter)
-
       ## Reference Points
       if (refpt=="missing")
          refpt=refpts(object)
-      
+
       if (msy["Btrig"]) params["Btrig"]=refpt["bmsy"]*params["Btrig"]
       if (msy["Blim"])  params["Blim"] =refpt["bmsy"]*params["Blim"]
       if (msy["Fmin"])  params["Fmin"] =refpt["fmsy"]*params["Fmin"]
@@ -19,21 +18,29 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
       #if (Blim>=Btrig) stop("Btrig must be greater than Blim")
       a=(params["Ftar"]-params["Fmin"])/(params["Btrig"]-params["Blim"])
       b= params["Ftar"]-a*params["Btrig"]
- 
+
       ## Calc F
       #SSB =apply(stock(object)[,ac(as.numeric(dims(object)$year-lag))],6,sum)
       yrTac=dims(catch(object))$maxyear+1
       yrRef=ac(yrTac-lag)
       yrTac=ac(yrTac)
- 
+
+
       SSB =apply(stock(object)[,yrRef],6,sum)
-      val=(SSB%*%a) + b
+#print("bug")
+#return(list("SSB"=SSB,"a"=a,"b"=b))
+# bug
+      #val=(SSB%*%a) %+% b
+      val=sweep((SSB%*%a),6,b,"+")
+#print("bug")
+#print(val)
+
       for (i in seq(dim(val)[6])){
-         val[,,,,,i]=max(val[,,,,,i],params["Fmin",min(dim(params)[2],i)])
-         val[,,,,,i]=min(val[,,,,,i],params["Ftar",min(dim(params)[2],i)])}
+        val[,,,,,i]=max(val[,,,,,i],params["Fmin",min(dim(params)[2],i)])
+        val[,,,,,i]=min(val[,,,,,i],params["Ftar",min(dim(params)[2],i)])}
 
       dimnames(val)$year=yrTac
-      
+
       return(val)}
 
 ##############################################################
@@ -60,8 +67,12 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
 #'
 setMethod('hcr', signature(object='biodyn'),
            function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.25),
-                            msy   =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),...) 
-   hcr.(object,params,msy,...))
+                            msy   =    c(Ftar=TRUE, Btrig=TRUE, Fmin=TRUE,  Blim=TRUE),
+                            refpt ="missing",
+                            bndTac=NULL, 
+                            bndF  =NULL,
+                            lag   =1,...) 
+   hcr.(object,params,msy,refpt=refpt,bndTac=bndTac,bndF=bndF,lag=lag,...))
 
 # setGeneric('hcrJK', function(object, ...) standardGeneric('hcrJK'))
 # setMethod( 'hcrJK', signature(object='biodyn'),
@@ -134,12 +145,12 @@ function(object,harvest,...){
   return(catch(object)[,ac(yr)])})
 
 #   object=biodyn("pellat",FLPar(r=.5,k=10000))
-hcrFn.=function(object=FLPar(stock=c(0.7,0.2),harvest=c(0.2,0.1)),maxB=1){
+hcrFn=function(object,par=FLPar(Ftar=0.7, Btrig=0.8, Fmin=0.025, Blim=0.20) ,maxB=1){
   
-  pts=rbind(cbind(refpt="Target",model.frame(rbind(bmsy(object)*target[1],
-                                                   fmsy(object)*target[2]))),
-            cbind(refpt="Limit", model.frame(rbind(bmsy(object)*limit[1],
-                                                   fmsy(object)*limit[2]))))
+  pts=rbind(cbind(refpt="Target",model.frame(rbind(bmsy(object)*c(par["Btrig"]),
+                                                   fmsy(object)*c(par["Ftar"])))),
+            cbind(refpt="Limit", model.frame(rbind(bmsy(object)*c(par["Blim"]),
+                                                   fmsy(object)*c(par["Fmin"])))))
   pts.=pts
   pts.[1,"bmsy"]=params(object)["k"]*maxB
   pts.[2,"bmsy"]=0
@@ -148,6 +159,8 @@ hcrFn.=function(object=FLPar(stock=c(0.7,0.2),harvest=c(0.2,0.1)),maxB=1){
   pts=rbind(pts.[1,],pts[1:2,],pts.[2,])
   
   names(pts)[2:3]=c("biomass","harvest")
+  pts[,"biomass"]=pts[,"biomass"]/bmsy(object)
+  pts[,"harvest"]=pts[,"harvest"]/fmsy(object)
   
   pts}
 
