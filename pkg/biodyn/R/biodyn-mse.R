@@ -27,11 +27,13 @@ mseBiodyn<-function(OM,start,
   #### Observation Error (OEM) setup #######################
   ## Random variation for Catch & CPUE, CV=0.25%
   bd       =biodyn(OM)
-  params(bd)["k"]= refpts(brp)["virgin","biomass"]*2
+  params(bd)["k"]= refpts(brp)["virgin","biomass"]*5
  
   params(bd)["r"]= log(lambda(leslie(brp,c(refpts(brp)["crash","harvest"]))))*2
-  params(bd)["b0"]=.5
+  params(bd)["b0"]=.8
 
+ 
+  bd@mng=FLPar(a=1) 
   bd       =propagate(bd,nits)
 
   if (fishDepend) cpue=catch(OM)/fbar(OM) else cpue=stock(OM)
@@ -56,7 +58,7 @@ mseBiodyn<-function(OM,start,
      if (jk){
       hv =hcrJK(bd,Ftar,Btrig,Fmin,Blim,Fpct,Bpct) 
      }else{ 
-      bd =pella(bd,cpue)
+      bd =fit(bd,cpue)
  
        hv =hcr(bd,FLPar(Ftar=Ftar,Btrig=Btrig,Fmin=Fmin,Blim=Blim)) 
 #     return(list(bd,cpue))

@@ -243,7 +243,9 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
      
      bd@params@.Data[  ,i] = object[[1]]@params
      bd@control@.Data[,,i] = object[[1]]@control
-     bd@objFn@.Data[   ,i] = object[[1]]@objFn
+     #bd@objFn@.Data[   ,i] = object[[1]]@objFn
+     
+     if (file.exists("pella.std")){
      
      err=try(mng.<-read.table("pella.std",header=T)[,-1])
              
@@ -253,7 +255,7 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
        first=!first
     }else{
        if (is(err)!="try-error") bd@mng@.Data[,,i][]=unlist(c(mng.[,-1]))
-       }
+       }}
   }
   
   units(bd@mng)="NA"
