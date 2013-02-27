@@ -19,8 +19,7 @@ setExe=function(exeNm,package,dir=tempdir()){
     
     # Windows
   } else if (.Platform$OS.type == "windows") {
-    exe = paste(system.file("bin", "windows", package=package, mustWork=TRUE),
-                 paste(exeNm, ".exe", sep=""), sep="/")
+    exe = paste(system.file("bin", "windows", package=package, mustWork=TRUE), paste(exeNm, ".exe", sep=""), sep="/")
     file.copy(exe, dir)
     dir = paste(dir, "\\", sep="")
     
@@ -180,8 +179,8 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
   slts=getSlots("biodyn")
   slts=slts[slts %in% c("FLPar","FLQuant")]
 
-  #oldwd =setExe(exeNm,package,dir)
-  oldwd=getwd()
+  oldwd =setExe(exeNm,package,dir)
+  #oldwd=getwd()
   setwd(dir)
   exe()
   
@@ -278,10 +277,6 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
     }
   
   if (its<=1) bd@diags=getDiags()
-  
-  
-  
-  
   
   setwd(oldwd)
   
