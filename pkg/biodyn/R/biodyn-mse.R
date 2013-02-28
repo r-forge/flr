@@ -7,16 +7,6 @@ mseBiodyn<-function(OM,start,
                       jk    =FALSE,
                       bounds=NULL,
                       fishDepend=TRUE){
-#   start=2000
-# 
-#   attach(list(srRsdl=FLQuant(1,dimnames=dimnames(window(rec(OM),start=start))),
-#   CV   =0.3,
-#   Ftar =0.75,    Btrig=0.75,
-#   Fmin =0.7*0.1,Blim =0.7*0.0001,
-#   Bpct =0.5,     Fpct =0.5,
-#   jk    =FALSE,
-#   bounds=NULL,
-#   fishDepend=TRUE))
   
   ## Get number of iterations in OM
   nits=c(OM=dims(OM)$iter, sr=dims(params(brp))$iter, rsdl=dims(srRsdl)$iter)
@@ -27,12 +17,15 @@ mseBiodyn<-function(OM,start,
   #### Observation Error (OEM) setup #######################
   ## Random variation for Catch & CPUE, CV=0.25%
   bd       =biodyn(OM)
-  params(bd)["k"]= refpts(brp)["virgin","biomass"]*5
+  params(bd)["k"]= refpts(brp)["virgin","biomass"]*2
  
-  params(bd)["r"]= log(lambda(leslie(brp,c(refpts(brp)["crash","harvest"]))))*2
-  params(bd)["b0"]=.8
+  params(bd)["k"]=5.0e+09
+    
+  params(bd)["r"]= log(lambda(leslie(brp,c(refpts(brp)["crash","harvest"]))))
+  params(bd)["b0"]=.9
 
- 
+  params(bd)["r"]=0.3
+    
   bd@mng=FLPar(a=1) 
   bd       =propagate(bd,nits)
 
@@ -60,9 +53,9 @@ mseBiodyn<-function(OM,start,
      }else{ 
       bd =fit(bd,cpue)
  
-       hv =hcr(bd,FLPar(Ftar=Ftar,Btrig=Btrig,Fmin=Fmin,Blim=Blim)) 
+      hv =hcr(bd,FLPar(Ftar=Ftar,Btrig=Btrig,Fmin=Fmin,Blim=Blim)) 
 #     return(list(bd,cpue))
-     }
+      }
      
      TAC=tac(bd,hv)
    
@@ -75,6 +68,7 @@ mseBiodyn<-function(OM,start,
      ctrl@trgtArray[2,"max", ]<-.99
    
      OM <-fwd(OM,ctrl=ctrl,sr=brp,sr.residuals=srRsdl)
+     print(iYr)
      }
 
-   return(list(OM=OM,bd=bd,cpue=cpue))}
+   return(list(OM=OM,MP=bd,cpue=cpue))}
