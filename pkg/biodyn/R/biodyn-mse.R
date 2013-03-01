@@ -1,4 +1,4 @@
-mseBiodyn<-function(OM,start,
+  mseBiodyn<-function(OM,start,
                       brp,srRsdl=FLQuant(1,dimnames=dimnames(window(rec(OM),start=start))),
                       CV   =0.1,
                       Ftar =0.75,    Btrig=0.75,
