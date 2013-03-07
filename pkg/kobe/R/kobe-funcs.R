@@ -54,12 +54,11 @@ kobeProb=function(x,y,prob=c(0.5, 0.75,0.95),na.rm=FALSE){
   
   return(prb)}
 
-setMethod('kobe',  signature(file="data.frame",method="missing"), 
-          function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){ 
-            kobeFn(file,what=what,prob=prob,pts=pts,nwrms=nwrms)})
+setMethod('kobe',  signature(object="data.frame",method="missing"), 
+          function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){ 
+            kobeFn(object,what=what,prob=prob,year=year,nwrms=nwrms)})
 
-kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){         
-            object=file
+kobeFn=function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){         
             
             trks. =NULL
             pts.  =NULL
@@ -77,8 +76,8 @@ kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.
              trks.=cast(trks.,year+pctl~quantity,value="value") 
               }
             
-            if ("pts" %in% what & !is.null(pts))
-              pts. =object[object$year==pts,]
+            if ("pts" %in% what & !is.null(year))
+              pts. =object[object$year==year,]
             
             
             if ("smry" %in% what)

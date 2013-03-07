@@ -11,5 +11,5 @@ Description:  The package reads in results from a variety of fish stock assessme
   maximum sustainable yield (MSY) for a range of management options.
 License: GPL-2
 Depends: R(>= 2.15.1), methods,  ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables, akima, RCurl, ellipse
-Collate:ggplotFL-multiplot.R ggplotFL-theme.R kobeInterp.R kobe-generics.R kobePhase.R kobeSmry.R kobe-aspic.R kobe-MFCL.R kobeP.R kobe-ss3.R kobe-2box.R kobe-funcs.R kobePhaseMar.R kobeTrks.R kobe-read-methods.R kobe-SAM.R kobeShade.R 
+Collate:ggplotFL-multiplot.R ggplotFL-theme.R kobeInterp.R kobe-generics.R kobePhase.R kobeSmry.R kobe-aspic.R kobe-MFCL.R kobeP.R kobe-ss.R kobe-2box.R kobe-funcs.R kobePhaseMar.R kobeTrks.R kobe-read-methods.R kobe-SAM.R kobeShade.R 
 BuildResaveData: xz

@@ -1,24 +1,24 @@
-utils::globalVariables(c("sims","ptsYrs"))
+utils::globalVariables(c("sims"))
 
-setMethod('kobe',  signature(file='character',method="character"), function(file,method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),
-                                                                            dir="",what=c("sims","trks","pts","smry","wrms")[1],
-                                                                            prob=c(0.75,0.5,0.25),pts=NULL,nwrms=10,...) {
+setMethod('kobe',  signature(object='character',method="character"), function(object,method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),
+                                                                              dir="",what=c("sims","trks","pts","smry","wrms")[1],
+                                                                              prob=c(0.75,0.5,0.25),year=NULL,nwrms=10,...) {
    
     method=tolower(method)
     if (any("2box" == method)) method["2box" == method]="adapt"   
     switch(substr(method[1],1,2),
-           ad=kobe2box( file,dir=dir,what=what,prob=prob,pts=pts,nwrms=nwrms,...),
-           as=kobeAspic(file,dir=dir,what=what,prob=prob,pts=pts,nwrms=nwrms,...),
-           mf=kobeMFCL( file,dir=dir,what=what,prob=prob,pts=pts,nwrms=nwrms,...),
-           ss=kobeSS3(  file,dir=dir,what=what,prob=prob,pts=pts,nwrms=nwrms,...))
+           ad=kobe2box( object,dir=dir,what=what,prob=prob,year=year,nwrms=nwrms,...),
+           as=kobeAspic(object,dir=dir,what=what,prob=prob,year=year,nwrms=nwrms,...),
+           mf=kobeMFCL( object,dir=dir,what=what,prob=prob,year=year,nwrms=nwrms,...),
+           ss=kobeSS(   object,what=what,prob=prob,year=year,nwrms=nwrms,...))
     })
 
 
-setMethod('kobe',  signature(file="data.frame",method="missing"),  function(file,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){
+setMethod('kobe',  signature(object="data.frame",method="missing"),  function(object,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
   
-  res=llply(object, function(x,what=what,prob=prob,pts=pts,nwrms=nwrms)
-    kobeFn(object,what=what,prob=prob,pts=pts,nwrms=nwrms),
-            what=what,prob=prob,pts=pts,nwrms=nwrms)
+  res=llply(object, function(x,what=what,prob=prob,year=year,nwrms=nwrms)
+    kobeFn(object,what=what,prob=prob,year=year,nwrms=nwrms),
+            what=what,prob=prob,year=year,nwrms=nwrms)
   
   res=list(trks=ldply(res, function(x) x$trks),
            pts =ldply(res, function(x) x$pts),

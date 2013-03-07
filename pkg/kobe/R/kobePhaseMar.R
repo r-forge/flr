@@ -7,20 +7,20 @@ kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
              col =colorRampPalette(c("orange","blue"),space="Lab"),
              shade=.5,col2=grey(shade),col3=grey(shade*1.1)){
      
-    if (!("group" %in% names(pts)))
-       pts=cbind(pts,group=factor(1))
-    if (!is.null(trks) & !("group" %in% names(trks)))
-      trks=cbind(trks,group=factor(1))
+    if (!("run" %in% names(pts)))
+       pts=cbind(pts,run=factor(1))
+    if (!is.null(trks) & !("run" %in% names(trks)))
+      trks=cbind(trks,run=factor(1))
  
     if ("function" %in% is(col))
-       col=col(length(unique(pts$group)))
+       col=col(length(unique(pts$run)))
    
 
     ##### Density plots   #############################################################################################
     # stock density plot
     dS<-ggplot(pts) + 
-          geom_density(aes(x = stock, y =  ..count.., group=group), fill=col2, col=col3, position = "stack") + 
-          geom_density(aes(x = stock, y = -..count.., fill =group, alpha=0.4)) + 
+          geom_density(aes(x = stock, y =  ..count.., group=run), fill=col2, col=col3, position = "stack") + 
+          geom_density(aes(x = stock, y = -..count.., fill =run, alpha=0.4)) + 
           geom_vline(xintercept=1,col="red")       +
               scale_x_continuous(limits=c(0,maxX)) +
               scale_fill_manual(values=col)        +
@@ -43,8 +43,8 @@ kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
     
     # second density plot, oriented vertically (hence the 'coord_flip()' at the end
       dH<-ggplot(pts) + 
-            geom_density(aes(x = harvest, y =  ..count.., group=group), fill=col2, col=col3, position = "stack") + 
-            geom_density(aes(x = harvest, y = -..count..,               fill=group, alpha=0.4)) + 
+            geom_density(aes(x = harvest, y =  ..count.., group=run), fill=col2, col=col3, position = "stack") + 
+            geom_density(aes(x = harvest, y = -..count..,               fill=run, alpha=0.4)) + 
             geom_vline(xintercept=1,col="red")  +
                 scale_x_continuous(limits=c(0,maxY))   +
                 scale_fill_manual(values=col)          +
@@ -68,7 +68,7 @@ kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
   
     # kobe phase plot
     kC=kobePhase(pts) +
-       geom_point(aes(stock,harvest,col=group,group=group),size=size) +  
+       geom_point(aes(stock,harvest,col=run,group=run),size=size) +  
        scale_y_continuous(limits=c(0,maxY)) +
        scale_x_continuous(limits=c(0,maxX)) +
        scale_colour_manual(values=col)      +
@@ -78,17 +78,17 @@ kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
              plot.margin = unit(c(0, 0, 1, 1), "lines")
        )
    
-#     if (length(group)>1){
+#     if (length(run)>1){
 #         dS=dS+scale_fill_manual(values=col)
 #         dH=dH+scale_fill_manual(values=col)
 #         kC=kC+scale_colour_manual(values=col)      
 #         }
 #     
     if (mns)
-        kC=kC+geom_point(aes(stock,harvest,col=group,group=group),size=6.0*size, colour="black",  data=ddply(pts,.(group),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest)))) +
-              geom_point(aes(stock,harvest,col=group,group=group),size=4.5*size, colour="cyan",   data=ddply(pts,.(group),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest))))
+        kC=kC+geom_point(aes(stock,harvest,col=run,group=run),size=6.0*size, colour="black",  data=ddply(pts,.(run),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest)))) +
+              geom_point(aes(stock,harvest,col=run,group=run),size=4.5*size, colour="cyan",   data=ddply(pts,.(run),function(x) data.frame(stock=median(x$stock),harvest=median(x$harvest))))
    if (!is.null(trks))
-        kC=kC+geom_path(aes(stock,harvest, col=group,col=group),size=1*size, data=trks)   
+        kC=kC+geom_path(aes(stock,harvest, col=run,col=run),size=1*size, data=trks)   
       
     fnVP=function(dH,dS,kC){
         vplayout <- function(x, y)

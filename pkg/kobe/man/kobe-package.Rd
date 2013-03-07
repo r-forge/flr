@@ -20,7 +20,7 @@ Version: \tab 1.0\cr
 Date: \tab 2012-06-22\cr
 License: \tab GPL-2\cr
 Depends: \tab methods, ggplot2, reshape, plyr, grid, MASS, coda, emdbook, tables\cr
-Collate: \tab kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss3.R kobe-MFCL.R multiplot.R kobe-Phase.R kobe-k2sm-ggplot2.R kobe-themes.R\cr
+Collate: \tab kobe-generics.R kobe-funcs.R kobe-methods.R kobe-aspic.R kobe-2box.R kobe-ss.R kobe-MFCL.R multiplot.R kobe-Phase.R kobe-k2sm-ggplot2.R kobe-themes.R\cr
 Built: \tab R 2.15.1; ; 2012-10-11 17:37:36 UTC; unix\cr
 }
 
@@ -47,7 +47,7 @@ kobePhaseMar            Calculates confidence intervals for different
                         Phaseabiity levels for pairs of data points.
 kobeProb                Calculates confidence intervals for different
                         probabiity levels for pairs of data points.
-kobeSS3                 Reads SS3 assessment results and returns stock
+kobeSS                  Reads SS assessment results and returns stock
                         and harvest rate relative to BMSY and FMSY
 kobeShade               Calculates confidence intervals for different
                         probabiity levels for pairs of data points.

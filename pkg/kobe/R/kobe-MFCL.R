@@ -1,20 +1,20 @@
 # #######################################################################################
-# ### SS3 stuff for Kobe ################################################################
+# ### SS stuff for Kobe #################################################################
 # #######################################################################################
   
 utils::globalVariables(c("bio"))
 
 #setMethod('kobeMFCL', signature(object='character'),
 kobeMFCL=function(object,dir="",what=c("sims","trks","pts","smry","wrms")[1],
-                                prob=c(0.75,0.5,0.25),pts=NULL,nwrms=10){
+                                prob=c(0.75,0.5,0.25),year=NULL,nwrms=10){
                      
             if (length(object)==1)
               res=ioMFCL(object,prob=prob,nwrms=nwrms)
             
             if (length(object)>1){
               res=mlply(object, function(x,prob=prob,nwrms=nwrms,what=what)
-                ioMFCL(x,what=what,prob=prob,pts=pts,nwrms=nwrms),
-                        bio=bio,what=what,pts=pts,prob=prob,nwrms=nwrms)
+                ioMFCL(x,what=what,prob=prob,year=year,nwrms=nwrms),
+                        bio=bio,what=what,year=year,prob=prob,nwrms=nwrms)
               
               res=list(trks=ldply(res, function(x) x$trks),
                        pts =ldply(res, function(x) x$pts),
@@ -120,7 +120,7 @@ getplotdat4 <- function(h="",plotrepfile) {
 object="/home/laurie/Desktop/Dropbox/collaboration/Shelton/ALBN/4B/plot-09.par.rep"
   
 ## Heavy lifting functions ##############################################################
-ioMFCL=function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,0.25),pts=NULL,nwrms=10){
+ioMFCL=function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,0.25),year=NULL,nwrms=10){
 
   if (!all(what %in% c("trks","pts","smry","wrms","sims"))) stop("what not in valid options")
   
@@ -138,7 +138,7 @@ ioMFCL=function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,
     trks.=data.frame(melt(stock,id.vars="year"),harvest=melt(harvest,id.vars="year")[,3])
     names(trks.)[c(2,3)]=c("Percentile","stock")}
   
-  if ("pts" %in% what & !is.null(pts))
+  if ("pts" %in% what & !is.null(year))
      pts.=res[res$year %in% pts,]
   
   if ("sims" %in% what)

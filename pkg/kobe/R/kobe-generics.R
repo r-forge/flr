@@ -6,6 +6,6 @@ setGeneric('kobeP',      function(stock,harvest,...)  standardGeneric('kobeP'))
 setGeneric('kobeSmry',   function(stock,harvest,...)  standardGeneric('kobeSmry'))
 setGeneric('kobeTrks',   function(stock,harvest,...)  standardGeneric('kobeTrks'))
 
-setGeneric('kobe',       function(file,method,...)    standardGeneric('kobe'))
+setGeneric('kobe',       function(object,method,...)    standardGeneric('kobe'))
 
 

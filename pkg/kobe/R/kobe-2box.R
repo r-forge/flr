@@ -1,5 +1,5 @@
 # #######################################################################################
-# ### SS3 stuff for Kobe ################################################################
+# ### SS stuff for Kobe #################################################################
 # #######################################################################################
 
 ##note need to think about years
@@ -19,15 +19,15 @@ nmsRef <- c("iter",
 #setMethod('kobe2box', signature(object='character'),
 kobe2box=function(object,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75max")[3], 
                          what=c("sims","trks","pts","smry","wrms")[1],
-                         prob=c(0.75,0.5,0.25),pts=NULL,nwrms=10){
+                         prob=c(0.75,0.5,0.25),year=NULL,nwrms=10){
             
     if (length(object)==1)
-       res=io2box(object,proxy=proxy,what=what,prob=prob,nwrms=nwrms,pts=pts)
+       res=io2box(object,proxy=proxy,what=what,prob=prob,nwrms=nwrms,year=year)
             
     if (length(object)>1){
-       res=mlply(object, function(x,proxy=proxy,what=what,prob=prob,nwrms=nwrms,pts=pts)
-                 io2box(x,proxy=proxy,what=what,prob=prob,nwrms=nwrms,pts=pts),
-                          proxy=proxy,what=what,prob=prob,nwrms=nwrms,pts=pts)
+       res=mlply(object, function(x,proxy=proxy,what=what,prob=prob,nwrms=nwrms,year=year)
+                           io2box(x,proxy=proxy,what=what,prob=prob,nwrms=nwrms,year=year),
+                                    proxy=proxy,what=what,prob=prob,nwrms=nwrms,year=year)
               
               res=list(trks=ldply(res, function(x) x$trks),
                        pts =ldply(res, function(x) x$pts),
@@ -35,7 +35,6 @@ kobe2box=function(object,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max"
                        wrms=ldply(res, function(x) x$wrms),
                        sims=ldply(res, function(x) x$sims))
        }
-    return(res)
     
     if (length(what)==1) 
       return(res[[what]]) 
@@ -70,7 +69,7 @@ readKobe2box=function(dir,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max
     
   return(res)}
 
-io2box=function(x,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75max")[3],prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],nwrms=10,pts=NULL){
+io2box=function(x,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75max")[3],prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],nwrms=10,year=NULL){
   
   if (!all(what %in% c("trks","pts","smry","wrms","sims"))) stop("what not in valid options")
   
@@ -91,8 +90,8 @@ io2box=function(x,proxy=c("fmsy","fmax","f0.1","f20","f30","f40","f90max","f75ma
        trks.=data.frame(melt(ssb,id.vars=c("year","tac")),harvest=melt(hvt,id.vars=c("year","tac"))[,4])
        names(trks.)[3:4]=c("Percentile","ssb")}
 
-   if ("pts" %in% what & !is.null(pts))
-        pts.=res[res$year %in% pts,]
+   if ("pts" %in% what & !is.null(year))
+        pts.=res[res$year %in% year,]
            
    if ("smry" %in% what)
        smry.   =ddply(res,  .(year), function(x) data.frame(ssb        =median(x$ssb,       na.rm=T),

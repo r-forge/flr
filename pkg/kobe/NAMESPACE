@@ -1,7 +1,7 @@
 export("kobeAspic",
        "kobeMFCL",
        "kobe2box",
-       "kobeSS3",
+       "kobeSS",
        
        "kobeProb",
    
@@ -9,7 +9,8 @@ export("kobeAspic",
        "kobePhaseMar",
         
        "theme_ms", "multiplot")
-exportMethods("kobeTrks",
+exportMethods("kobe",
+              "kobeTrks",
               "kobeP",
               "kobePhase",
               "kobeShade",

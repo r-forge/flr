@@ -3,7 +3,7 @@
 # #######################################################################################
 
 #### exported function
-kobeAspic=function(object,prb=NULL,dir="",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){
+kobeAspic=function(object,prb=NULL,dir="",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
     
     if (dir!=""){
       bio=paste(dir,object,sep="/")
@@ -11,7 +11,7 @@ kobeAspic=function(object,prb=NULL,dir="",what=c("sims","trks","pts","smry","wrm
     else bio=object
     
     if (length(prb) %in% 0:1)
-       res=ioAspic(bio,prb,what=what,prob=prob,nwrms=nwrms)
+       res=ioAspic(bio,prb,what=what,prob=prob,nwrms=nwrms,year=year)
     
     if (length(prb)>1){
        res=mlply(prb, function(x,bio,prob=prob,nwrms=nwrms,what=what)
@@ -88,7 +88,7 @@ aspicPrb=function(file){
 
 
 ## Heavy lifting functions 
-ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],pts=NULL,nwrms=10){
+ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry","wrms")[1],year=NULL,nwrms=10){
     
     if (!all(what %in% c("trks","pts","smry","wrms","sims"))) stop("what not in valid options")
     
@@ -104,7 +104,7 @@ ioAspic=function(bio,prb,prob=c(0.75,0.5,.25),what=c("sims","trks","pts","smry",
     else
       res=bio.
     
-    if (is.null(pts)) pts=max(bio.$year)
+    if (is.null(year)) pts=max(bio.$year)
       
     trks. =NULL
     pts.  =NULL
