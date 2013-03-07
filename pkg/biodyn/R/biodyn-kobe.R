@@ -4,14 +4,14 @@
 
 utils::globalVariables(c("ddply",".","year","pctl","cast","kobeP","sims"))
 
-setMethod('kobe', signature(file="biodyns",method="missing"),  function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
-     if (is.null(ptYrs)) ptYrs=range(file[[1]])["maxyear"]
+setMethod('kobe', signature(object="biodyns",method="missing"),  function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
+     if (is.null(year)) year=range(object[[1]])["maxyear"]
  
-     res=llply(file, function(x,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+     res=llply(object, function(x,what=what,prob=prob,year=year,nwrms=nwrms)
               kobe(model.frame(mcf(FLQuants(stock  =stock(  x)%/%bmsy(x),
                                             harvest=harvest(x)%/%fmsy(x))),drop=T),
-                       what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms),
-                       what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+                       what=what,prob=prob,year=year,nwrms=nwrms),
+                       what=what,prob=prob,year=year,nwrms=nwrms)
 
      res=list(trks=ldply(res, function(x) x$trks),
               pts =ldply(res, function(x) x$pts),
@@ -24,24 +24,23 @@ setMethod('kobe', signature(file="biodyns",method="missing"),  function(file,wha
      else
         return(res[what]) })
 
-setMethod('kobe',  signature(file="biodyn",method="missing"),  
-  function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
-    if (is.null(ptYrs)) ptYrs=range(file)["maxyear"]
-    dat=model.frame(mcf(FLQuants(stock  =stock(  file)%/%bmsy(file),
-                                 harvest=harvest(file)%/%fmsy(file))),drop=T)
-    res=kobe:::kobeFn(dat,what=what,prob=prob,pts=ptYrs,nwrms=nwrms)
+setMethod('kobe',  signature(object="biodyn",method="missing"),  
+  function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
+    if (is.null(year)) year=range(object)["maxyear"]
+    dat=model.frame(mcf(FLQuants(stock  =stock(  object)%/%bmsy(object),
+                                 harvest=harvest(object)%/%fmsy(object))),drop=T)
+    res=kobeFn(dat,what=what,prob=prob,year=year,nwrms=nwrms)
     if (length(what)==1)
          return(res[[what]])
     else
          return(res[what])})
 
 
-setMethod('kobe',  signature(file="data.frame",method="missing"), 
-          function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){ 
-            kobe:::kobeFn(file,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)})
+setMethod('kobe',  signature(object="data.frame",method="missing"), 
+          function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){ 
+            kobe:::kobeFn(object,what=what,prob=prob,year=year,nwrms=nwrms)})
 # 
-# kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){         
-#   object=file
+# kobeFn=function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){         
 #   
 #   trks. =NULL
 #   pts.  =NULL
@@ -59,8 +58,8 @@ setMethod('kobe',  signature(file="data.frame",method="missing"),
 #     trks.=cast(trks.,year+pctl~quantity,value="value") 
 #   }
 #   
-#   if ("pts" %in% what & !is.null(ptYrs))
-#     pts. =object[object$year==ptYrs,]
+#   if ("pts" %in% what & !is.null(year))
+#     pts. =object[object$year==year,]
 #   
 #   
 #   if ("smry" %in% what)
