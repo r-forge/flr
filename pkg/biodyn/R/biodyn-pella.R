@@ -49,7 +49,7 @@ setPella=function(obj, exeNm="pella", dir=tempdir()) {
      idx=transform(idx,name=as.numeric(name))
   }
   idx=idx[!is.na(idx$index),]
-  
+
   bd.        =obj[[1]]
  
   nms=c("r","k","p","b0")
@@ -64,13 +64,16 @@ setPella=function(obj, exeNm="pella", dir=tempdir()) {
   ctl[,2:4]     = log(ctl[,c(2,4,3)])
   ctl           = alply(ctl,1)
   names(ctl)    = nms
+
   biodyn:::writeADMB(ctl, paste(dir, "/", exeNm, ".ctl", sep=""),FALSE)
-  
+
   cat("# q ####################\n", file=paste(dir, "/", exeNm, ".ctl", sep=""),append=TRUE)
+
   ctl           = bd.@control[nmIdx[grep("q",nmIdx)],]
   ctl[,2:4]     = log(ctl[,c(2,4,3)])
   ctl           = alply(t(matrix(ctl,dim(ctl))),1)
   names(ctl)    = c("phase","lower","upper","guess")
+
   biodyn:::writeADMB(ctl, paste(dir, "/", exeNm, ".ctl", sep=""),TRUE)
   
   cat("# sigma ################\n", file=paste(dir, "/", exeNm, ".ctl", sep=""),append=TRUE)
@@ -203,16 +206,19 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
       
       bd=propagate(bd,its)
       }
-  
+print(1)    
   cpue=object[[2]]
   for (i in seq(its)){     
      object[[2]] = iter(cpue,i) 
     
      for (s in names(slts)[-(7:8)]){      
+        print(s)
         slot(object[[1]],s) = iter(slot(bd,s),i) 
-        }    
+        }  
+print(2)     
      object[[1]]=set(object,exeNm,dir)
-
+print(3)    
+     
      # run
      #system(paste("./", exeNm, " ", cmdOps, sep=""))
      system(paste(exeNm, " ", cmdOps, sep=""))
@@ -240,7 +246,7 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
          try(bd@vcov@.Data[activeParams(object[[1]]),activeParams(object[[1]]),i] <- H, silent=TRUE)
        close(x)}
        }
-     
+   
      bd@params@.Data[  ,i] = object[[1]]@params
      bd@control@.Data[,,i] = object[[1]]@control
      #bd@objFn@.Data[   ,i] = object[[1]]@objFn

@@ -2,6 +2,8 @@
 #### biodyn stuff for Kobe #############################################################
 ########################################################################################
 
+setGeneric('kobe',       function(object,method,...)    standardGeneric('kobe'))
+
 utils::globalVariables(c("ddply",".","year","pctl","cast","kobeP","sims"))
 
 setMethod('kobe', signature(object="biodyns",method="missing"),  function(object,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
@@ -29,7 +31,7 @@ setMethod('kobe',  signature(object="biodyn",method="missing"),
     if (is.null(year)) year=range(object)["maxyear"]
     dat=model.frame(mcf(FLQuants(stock  =stock(  object)%/%bmsy(object),
                                  harvest=harvest(object)%/%fmsy(object))),drop=T)
-    res=kobeFn(dat,what=what,prob=prob,year=year,nwrms=nwrms)
+    res=kobe:::kobeFn(dat,what=what,prob=prob,year=year,nwrms=nwrms)
     if (length(what)==1)
          return(res[[what]])
     else

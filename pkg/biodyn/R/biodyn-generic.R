@@ -22,3 +22,4 @@ setGeneric("hcr",      function(object, ...)          standardGeneric("hcr"))
 setGeneric("tac",      function(object, harvest, ...) standardGeneric("tac"))
 
 setGeneric('fit',   function(object,index,...)     standardGeneric('fit'))
+
