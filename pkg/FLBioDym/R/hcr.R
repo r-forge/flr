@@ -33,7 +33,10 @@ hcr.=  function(object, params=FLPar(Ftar=0.8,  Btrig=0.75, Fmin=0.025, Blim=0.2
          val[,,,,,i]=min(val[,,,,,i],params["Ftar",i])}
 
       dimnames(val)$year=yrTAC
-      
+      #hrRef <- catch(object[,yrRef])/stock(object[,yrRef])
+	  #if(val<hrRef*(1-bndF)) val <- hrRef*(1-bndF)
+	  #if(val>hrRef*(1+bndF)) val <- hrRef*(1+bndF)
+  
       return(val)}
 
 setMethod('hcr', signature(object='FLBioDym'),
