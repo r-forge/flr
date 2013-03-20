@@ -1,4 +1,4 @@
-# io.VPA2Box - «Short one line description»
+# io.VPA2Box - ??Short one line description??
 # io.VPA2Box
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
@@ -6,7 +6,7 @@
 # $Id:  $
 
 # readVPA2Box {{{
-readVPA2Box <- function(file, args=missing,m=NULL,minage=1,...) {
+readVPA2Box <- function(file,args=missing,m=NULL,minage=1,...) {
 
   if(!missing(args))
     args <- c(args, list(...))
@@ -46,18 +46,18 @@ readVPA2Box <- function(file, args=missing,m=NULL,minage=1,...) {
       year=aa[1,])))
   }
 
-  stk <- FLStock(stock.n=aaIn(dat[(ln[2]+1):(ln[3]-1)]))
+  stk <- FLStock(stock.n=aaIn(dat[(ln[2]+1):(ln[3]-1)],minage=minage))
 
-  harvest <- aaIn(dat[(ln[1]+1):(ln[2]-1)])
-  landings.n <- aaIn(dat[(ln[3]+1):(ln[4]-1)])
-  stock.wt <- aaIn(dat[(ln[4]+1):(ln[5]-1)])
+  harvest    <- aaIn(dat[(ln[1]+1):(ln[2]-1)],minage=minage)
+  landings.n <- aaIn(dat[(ln[3]+1):(ln[4]-1)],minage=minage)
+  stock.wt   <- aaIn(dat[(ln[4]+1):(ln[5]-1)],minage=minage)
 
   harvest(stk) <- harvest
   landings.n(stk) <- landings.n
   stock.wt(stk) <- stock.wt
   landings.wt(stk) <- stock.wt
   discards.wt(stk) <- 0
-  
+
   # data file
   # year range
   i <-0
@@ -91,9 +91,10 @@ readVPA2Box <- function(file, args=missing,m=NULL,minage=1,...) {
   ## mat
   i <- skip.hash(i,files[1])
   mat <- read.table(files[1],skip=i,nrows=1,sep="\n",colClasses="character",strip.white=TRUE)[[1,1]]
-  mat <- gsub("\t"," ",mat)
-  mat <- as.integer(strsplit(mat," +")[[1]])
   
+  mat <- gsub("\t"," ",mat)
+  mat <- as.numeric(strsplit(mat," +")[[1]])
+
   mat(stk)[] <- mat[1:dim(mat(stk))[1]]
 
   # Binary files
