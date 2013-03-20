@@ -1,8 +1,12 @@
 utils::globalVariables(c("sims"))
 
-setMethod('kobe',  signature(object='character',method="character"), function(object,method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),
-                                                                              dir="",what=c("sims","trks","pts","smry","wrms")[1],
-                                                                              prob=c(0.75,0.5,0.25),year=NULL,nwrms=10,...) {
+setMethod('kobe',  signature(object='character',method="character"), function(object,
+                                                                              method=c("aspic","adapt","bsp","mfcl","ss","sam","vpa"),
+                                                                              what  =c("sims","trks","pts","smry","wrms")[1],
+                                                                              dir   ="",
+                                                                              prob  =c(0.75,0.5,0.25),
+                                                                              year  =NULL,
+                                                                              nwrms =10,...) {
    
     method=tolower(method)
     if (any("2box" == method)) method["2box" == method]="adapt"   
@@ -14,7 +18,7 @@ setMethod('kobe',  signature(object='character',method="character"), function(ob
     })
 
 
-setMethod('kobe',  signature(object="data.frame",method="missing"),  function(object,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
+setMethod('kobe',  signature(object="data.frame",method="missing"),  function(object,method,what=c("sims","trks","pts","smry","wrms")[1],dir="",prob=c(0.75,0.5,.25),year=NULL,nwrms=10){
   
   res=llply(object, function(x,what=what,prob=prob,year=year,nwrms=nwrms)
     kobeFn(object,what=what,prob=prob,year=year,nwrms=nwrms),

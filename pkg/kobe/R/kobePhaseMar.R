@@ -1,4 +1,4 @@
-utils::globalVariables(c("stock","..count..","group","harvest"))
+utils::globalVariables(c("stock","..count..","group","harvest","run"))
 
 kobePhaseMar=function(pts,trks=NULL,mns=FALSE,size=1,
              xlab=expression(B:B[MSY]),

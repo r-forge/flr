@@ -1,6 +1,5 @@
 \name{kobe-package}
 \alias{kobe-package}
-\alias{kobe}
 \docType{package}
 \title{
 Tools for Tuna RFMOs in the Kobe
