@@ -17,9 +17,18 @@ setGeneric('refptSE',  function(object,params,...) standardGeneric('refptSE'))
 
 if (!isGeneric("harvest")) setGeneric('harvest',  function(object,params,...) standardGeneric('harvest'))
 
-if (!isGeneric("fwd"))       setGeneric("fwd",      function(object, ctrl, ...)    standardGeneric("fwd"))
-setGeneric("hcr",      function(object, ...)          standardGeneric("hcr"))
-setGeneric("tac",      function(object, harvest, ...) standardGeneric("tac"))
+if (!isGeneric("fwd"))      setGeneric("fwd",      function(object, ctrl, ...)    standardGeneric("fwd"))
+if (!isGeneric("hcr"))      setGeneric("hcr",      function(object, ...)          standardGeneric("hcr"))
+if (!isGeneric("hcrPlot"))  setGeneric("hcrPlot",  function(object, ...)          standardGeneric("hcrPlot"))
+if (!isGeneric("tac"))      setGeneric("tac",      function(object, harvest, ...) standardGeneric("tac"))
 
 setGeneric('fit',   function(object,index,...)     standardGeneric('fit'))
+
+if (!isGeneric("power"))    setGeneric('power',     function(object,ref,...)    standardGeneric('power'))
+if (!isGeneric("diags"))    setGeneric('diags',     function(object,method,...) standardGeneric('diags'))
+#if (!isGeneric("diags<-"))  
+#setGeneric('diags<-',   function(object,value)      standardGeneric('diags<-'))
+
+
+
 

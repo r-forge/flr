@@ -182,8 +182,8 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
   slts=getSlots("biodyn")
   slts=slts[slts %in% c("FLPar","FLQuant")]
 
-  oldwd =setExe(exeNm,package,dir)
-  #oldwd=getwd()
+  #oldwd =setExe(exeNm,package,dir)
+  oldwd=getwd()
   setwd(dir)
   exe()
   
@@ -206,18 +206,16 @@ setMethod("fit",signature(object='biodyn',index="FLQuant"),
       
       bd=propagate(bd,its)
       }
-print(1)    
+  
   cpue=object[[2]]
   for (i in seq(its)){     
      object[[2]] = iter(cpue,i) 
     
      for (s in names(slts)[-(7:8)]){      
-        print(s)
         slot(object[[1]],s) = iter(slot(bd,s),i) 
         }  
-print(2)     
+
      object[[1]]=set(object,exeNm,dir)
-print(3)    
      
      # run
      #system(paste("./", exeNm, " ", cmdOps, sep=""))
