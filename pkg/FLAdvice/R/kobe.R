@@ -1,14 +1,14 @@
 setGeneric('kobe',       function(file,method,...)    standardGeneric('kobe'))
 
 setMethod('kobe', signature(file="FLBRPs",method="missing"),  
-          function(file,proxy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
-  if (is.null(ptYrs)) ptYrs=range(file[[1]])["maxyear"]
+          function(file,proxy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){
+  if (is.null(pts)) pts=range(file[[1]])["maxyear"]
   
-  res=llply(file, function(x,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+  res=llply(file, function(x,what=what,prob=prob,pts=pts,nwrms=nwrms)
     kobe(model.frame(mcf(FLQuants(stock  =ssb.obs( x)%/%x@refpts[proxy,"ssb"],
                                   harvest=fbar.obs(x)%/%x@refpts[proxy,"harvest"])),drop=T),
-            what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms),
-            what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+            what=what,prob=prob,pts=pts,nwrms=nwrms),
+            what=what,prob=prob,pts=pts,nwrms=nwrms)
   
   res=list(trks=ldply(res, function(x) x$trks),
            pts =ldply(res, function(x) x$pts),
@@ -22,23 +22,36 @@ setMethod('kobe', signature(file="FLBRPs",method="missing"),
     return(res[what]) })
 
 setMethod('kobe',  signature(file="FLBRP",method="missing"),  
-          function(file,proxy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){
-            if (is.null(ptYrs)) ptYrs=range(file)["maxyear"]
+          function(file,proxy="msy",what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){
+            if (is.null(pts)) pts=range(file)["maxyear"]
             
             dat=model.frame(mcf(FLQuants(stock  =ssb.obs( file)%/%refpts(file)[proxy,"ssb"],
                                          harvest=fbar.obs(file)%/%refpts(file)[proxy,"harvest"])),drop=T)
             
-            res=kobeFn(dat,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)
+            res=kobeFn(dat,what=what,prob=prob,pts=pts,nwrms=nwrms)
+            if (length(what)==1)
+              return(res[[what]])
+            else
+              return(res[what])})
+
+setMethod('kobe',  signature(file="FLStock",method="FLPar"),  
+          function(file,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){
+            if (is.null(pts)) pts=range(file)["maxyear"]
+            
+            dat=model.frame(mcf(FLQuants(stock  =ssb( file)%/%method[,"ssb"],
+                                         harvest=fbar(file)%/%method[,"harvest"])),drop=T)
+            
+            res=kobeFn(dat,what=what,prob=prob,pts=pts,nwrms=nwrms)
             if (length(what)==1)
               return(res[[what]])
             else
               return(res[what])})
 
 setMethod('kobe',  signature(file="data.frame",method="missing"), 
-          function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){ 
-            kobeFn(file,what=what,prob=prob,ptYrs=ptYrs,nwrms=nwrms)})
+          function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){ 
+            kobeFn(file,what=what,prob=prob,pts=pts,nwrms=nwrms)})
 
-kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),ptYrs=NULL,nwrms=10){         
+kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),pts=NULL,nwrms=10){         
   object=file
  
   trks. =NULL
@@ -58,7 +71,7 @@ kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.
     }
   
   if ("pts" %in% what){
-    if (is.null(ptYrs)) ptYrs=max(object[,"year"])
+    if (is.null(pts)) pts=max(object[,"year"])
     flag=(object$year==max(object[,"year"]))
     pts. = object[flag,]
     }
@@ -82,3 +95,42 @@ kobeFn=function(file,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.
   res=list(trks=trks.,pts=pts.,smry=smry.,wrms=wrms.,sims=sims.)
   
   res}
+
+setMethod('kobe',  signature(file="FLStocks",method="FLPar"),  
+          function(file,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),
+                   pts =NULL,nwrms=10){
+                        
+            res=llply(file,function(x,method,what,prob,pts,nwrms) kobe(x,method,what,prob,pts,nwrms),
+                  method=method,what=what,prob=prob,pts=pts,nwrms=nwrms)  
+
+            if (length(what)==1)
+              return(ldply(res, function(x) x))  
+            
+            res=list(trks=ldply(res, function(x) x$trks),
+                     pts =ldply(res, function(x) x$pts),
+                     smry=ldply(res, function(x) x$smry),
+                     wrms=ldply(res, function(x) x$wrms),
+                     sims=ldply(res, function(x) x$sims))
+            
+            return(res[what])})
+
+setMethod('kobe',  signature(file="FLStocks",method="FLPars"),  
+          function(file,method,what=c("sims","trks","pts","smry","wrms")[1],prob=c(0.75,0.5,.25),
+                   pts =NULL,nwrms=10){
+            
+            res=llply(names(file),function(x,file,method,what,prob,pts,nwrms) 
+                  kobe(file[[x]],method[[x]],what,prob,pts,nwrms),
+                    file=file,method=method,what=what,prob=prob,pts=pts,nwrms=nwrms)   
+            names(res)=names(file)
+            if (length(what)==1)
+              return(ldply(res, function(x) x)) 
+            
+            res=list(trks=ldply(res, function(x) x$trks),
+                     pts =ldply(res, function(x) x$pts),
+                     smry=ldply(res, function(x) x$smry),
+                     wrms=ldply(res, function(x) x$wrms),
+                     sims=ldply(res, function(x) x$sims))
+            
+          
+              return(res[what])})
+

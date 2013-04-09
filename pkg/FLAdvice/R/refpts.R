@@ -2,7 +2,7 @@
 # FLBRP/R/refpts.R
 
 # Copyright 2003-2008 FLR Team. Distributed under the GPL 2 or later
-# Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
+# Maintainers: Laurence Kell, Cefas & Santiago Cervi??o, IEO
 # $Id: refpts.R 888 2011-01-17 00:56:11Z lauriekell $
 
 
@@ -230,3 +230,18 @@ setMethod("msy", signature(object="FLBRP",params="missing"),
 # )
 # # }}}
 # 
+setGeneric('msy',      function(object,params,...) standardGeneric('msy'))
+setGeneric('fmsy',     function(object,params,...) standardGeneric('fmsy'))
+setGeneric('bmsy',     function(object,params,...) standardGeneric('bmsy'))
+setGeneric('smsy',     function(object,params,...) standardGeneric('smsy'))
+
+setMethod('msy',   signature(object='FLBRP', params="missing"), 
+          function(object, params)  refpts(object)["msy","yield",drop=T])
+setMethod('fmsy',   signature(object='FLBRP', params="missing"), 
+          function(object, params)  refpts(object)["fmsy","harvest",drop=T])
+setMethod('bmsy',   signature(object='FLBRP', params="missing"), 
+          function(object, params)  refpts(object)["bmsy","ssb",drop=T])
+setMethod('smsy',   signature(object='FLBRP', params="missing"), 
+          function(object, params)  refpts(object)["msy","biomass",drop=T])
+
+

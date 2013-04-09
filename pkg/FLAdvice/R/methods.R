@@ -1,7 +1,7 @@
 # methods - methods for FLBRP
 # FLBRP/R/methods.Rd
 # Copyright 2003-2009 FLR Team. Distributed under the GPL 2 or later
-# Maintainers: Laurence Kell, Cefas & Santiago Cerviño, IEO
+# Maintainers: Laurence Kell, Cefas & Santiago Cervi??o, IEO
 # $Id: methods.R 950 2011-05-11 11:39:47Z imosqueira $
 
 chkIter=function(object){
@@ -373,6 +373,9 @@ setMethod('profit.hat', signature(object='FLBRP'),
 #      object@refpts=y
 #      return(object)})
 
+setMethod('residuals', signature(object='FLBRP'),
+          function(object) residuals(as(object,"FLSR")))
+
 setMethod("r", signature(m="FLBRP", fec="missing"),
 	function(m, by = 'year', method = 'el',...)
     do.call('r', list(m=m(m), fec=mat(m), by=by, method=method)))
@@ -380,7 +383,6 @@ setMethod("r", signature(m="FLBRP", fec="missing"),
 setMethod('sp', signature(stock='FLBRP', catch='missing'),
 	function(stock, rel=TRUE)
     return(sp(ssb.obs(stock), catch.obs(stock), rel=rel)))
-
 
 setMethod('myers', signature(object='FLBRP'),
 function(object){

@@ -158,4 +158,9 @@ exportMethods(
   "ep",
   "myers",
   "readSS3",
-  "kobe")
+  "kobe",
+  "sv",
+  "msy",
+  "bmsy",
+  "fmsy",
+  "smsy")
