@@ -69,8 +69,10 @@ chkIters=function(object){
     object@stock=propagate(stock( object),N)
     if (dims(object@params)[1]!=N) 
         object@params=propagate(object@params,N)
-    object@objFn  =propagate(object@objFn,N)
-  }
+    
+    object@ll   =propagate(object@ll,   N)
+    object@objFn=propagate(object@objFn,N)
+    }
   
   object@stock=propagate(stock(object),dims(object)$iter)
   object@stock=window(stock(object),end=max(as.numeric(dimnames(catch(object))$year))+1)
@@ -82,7 +84,7 @@ jkIdx=function(x) dimnames(x)[[1]][ !is.na(x$index)]
 runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
  
   if (any(is.na(object@catch))){
-       tmp=ddply(object@index, .(year), with, mean(catch,na.rm=TRUE))
+       tmp=ddply(object@index, .(year), with, sum(catch,na.rm=TRUE))
        object@catch=as.FLQuant(tmp[,"V1"], dimnames=list(year=tmp[,"year"]))
        dmns=dimnames(object@catch)
        dmns$year=c(dmns$year,as.numeric(max(dmns$year))+1)
@@ -102,6 +104,9 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
     j   = jkIdx(object@index)
     index=object@index}
  
+    us=paste("u",seq(length(dimnames(params(object))$params[grep("q",dimnames(params(object))$params)])),sep="")
+    object@ll=FLPar(NA,params=us,iter=seq(1))
+  
     object=chkIters(object)
   
     for (i in seq(dims(object)$iter)){  
@@ -130,8 +135,17 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
         
         if (.Platform$OS!="windows"){
-        try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)
+        try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)        
         #try(object@objFn[1,i]<-rdat$diagnostics$rsquare) 
+          
+        rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
+        if (is.data.frame(rtn)) object@diags=rtn
+              
+        object@diags=transform(object@diags,stock.  =  hat/c(object@params[grep("q",dimnames(params(object))$params)])[name],
+                               stockHat=index/c(object@params[grep("q",dimnames(params(object))$params)])[name])
+        object@diags=merge(object@diags,model.frame(mcf(FLQuants(stock=object@stock,harvest=harvest(object))),drop=TRUE),all=T)
+        object@diags$stock=object@diags$stock.
+        object@diags=object@diags[,-10]
         } else {
           rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
           if (is.data.frame(rtn)) object@diags=rtn
@@ -142,19 +156,13 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
           object@diags$stock=object@diags$stock.
           object@diags=object@diags[,-10]
           try(object@objFn[2,i]<-sum(diags(object)$residual^2,na.rm=T)) 
-        }            
+          
+          }            
+        
+        try(object@ll[,i]<-daply(object@diags, .(name), with, sum(residual^2,na.rm=T)/sum(count(!is.na(residual)))))
         }
   
-    if (dims(object)$iter==1){
-      rtn=try(readAspic(paste(exeNm,"prn",sep=".")))
-      if (is.data.frame(rtn)) object@diags=rtn
-    
-      object@diags=transform(object@diags,stock.  =  hat/c(object@params[grep("q",dimnames(params(object))$params)])[name],
-                                          stockHat=index/c(object@params[grep("q",dimnames(params(object))$params)])[name])
-      object@diags=merge(object@diags,model.frame(mcf(FLQuants(stock=object@stock,harvest=harvest(object))),drop=TRUE),all=T)
-      object@diags$stock=object@diags$stock.
-      object@diags=object@diags[,-10]
-      }
+    if (dims(object)$iter!=1) object@diags=data.frame(NULL)
   
     setwd(oldwd)
    
@@ -209,3 +217,4 @@ runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500)
   setwd(oldwd)
   
   return(object)}
+

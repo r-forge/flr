@@ -4,13 +4,13 @@
 #' Performs a profile using residual sum of squares, fixes some parameters for a range of values 
 #' and then estimate the others 
 #'
-#' @param fitted: an \code{aspic} object
+#' @param fitted: an \code{aspic} fitted
 #' @param which: \code{character} giving the parameters to do the profile for, i.e. to fix.
 #' @param fixed: \code{character} any parameters that should be fixed, all others are extimated. 
 #' @param maxsteps: \code{numeric} number of parameter values to vary, default is 11.
 #' @param range; \code{numeric} how mucg to vary parameter values by, default [0.5,1.5]. 
 #' @param fn: \code{function} that gives values to be profiled.
-#' @param run: \code{logical} if \code{TRUE} then returns profile, otherwise it just sets the control object-
+#' @param run: \code{logical} if \code{TRUE} then returns profile, otherwise it just sets the control fitted-
 #' 
 #' @return a \code{data frame} with results turned by \code{fn} by values in \code{which}. 
 #' @seealso \code{\link{biodyn},\link{fit}}
@@ -28,6 +28,7 @@
 #' fn =function(x) cbind( data.frame(model.frame(params(x)),rss=sum(diags(x)$residual^2,na.rm=T)))
 #' res=profile(asp,which="msy",fixed="b0",maxsteps=3,range=c(0.5,1.1),fn=fn)
 #' 
+#' fn=function(x) ddply(x@diags, .(name), with, sum(residual^2,na.rm=T)/sum(count(!is.na(residual))))
 #' 
 #' }       
 setMethod("profile", signature(fitted="aspic"),
@@ -47,9 +48,9 @@ setMethod("profile", signature(fitted="aspic"),
         sq=do.call("expand.grid",sq[rep(1,length(which))])
         
         for (i in seq(length(which))){
-           control(fitted)[which[i],"val"]=params(fitted)[which[i]]*sq[,i]
-           control(fitted)[which[i],"min"]=min(control(fitted)[which[i],"val"])*.1
-           control(fitted)[which[i],"max"]=max(control(fitted)[which[i],"val"])*10}
+           fitted@control[which[i],"val"]=params(fitted)[which[i]]*sq[,i]
+           fitted@control[which[i],"min"]=min(fitted@control[which[i],"val"])*.1
+           fitted@control[which[i],"max"]=max(fitted@control[which[i],"val"])*10}
         
         fitted@control[c(fixed,which),"fit"]=0
           
