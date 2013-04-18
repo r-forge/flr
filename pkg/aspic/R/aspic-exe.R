@@ -83,6 +83,8 @@ jkIdx=function(x) dimnames(x)[[1]][ !is.na(x$index)]
 
 runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
  
+  object@index=object@index[object@index$year %in% range(object)["minyear"]:range(object)["maxyear"],]
+ 
   if (any(is.na(object@catch))){
        tmp=ddply(object@index, .(year), with, sum(catch,na.rm=TRUE))
        object@catch=as.FLQuant(tmp[,"V1"], dimnames=list(year=tmp[,"year"]))
@@ -132,7 +134,7 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
         object@params[4:dim(object@params)[1],i]=rdat$estimates[8+seq(length(names(rdat$estimates))-length(rdat$estimates)+1)]
 
         names(rdat$t.series)=tolower(names(rdat$t.series))
-        iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])
+        iter(object@stock,i)=as.FLQuant(transform(rdat$t.series[,c("year","b")],data=b)[c("year","data")])[,dimnames(object@stock)$year]
         
         if (.Platform$OS!="windows"){
         try(object@objFn[2,i]<-rdat$diagnostics$obj.fn.value)        
@@ -169,6 +171,9 @@ runExe=function(object,package="aspic",exeNm=package,dir=tempdir(),jk=FALSE){
     return(object)}
   
 runBoot=function(object, package="aspic", exeNm=package, dir=tempdir(),boot=500){
+  
+  object@index=object@index[object@index$year %in% range(object)["minyear"]:range(object)["maxyear"],]
+
   if (boot<3) {
       boot=3
       warning("Requires a minimum of 3 bootstraps so boot option changed")

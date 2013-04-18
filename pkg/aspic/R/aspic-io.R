@@ -4,6 +4,7 @@
 #' a \code{data frame}.
 #'       
 #' @param file; the name of the file which the data are to be read from. 
+#' @relative logical; by default \code{TRUE}, i.e. returns stock and harvest time series relative to $F_{MSY}$ and  $B_{MSY}$. 
 #' @return The object returned depends upon what is being read in.
 #' @seealso \code{\link{writeAspic},\link{biodyn}}
 #' @export
@@ -12,34 +13,30 @@
 #'@section Longwinded Explanation: 
 #'  The executable version of ASPIC uses a number of text files i.e.
 #'  \describe{
-#'   \item{\code{inp}, the input file with data, starting guesses, and run settings and for output,}
+#'   \item{\code{inp}  the input file with data, starting guesses, and run settings and for output,}
 #'   \item{\code{bio}  estimated stock and F trajectory for each bootstrap trial,}        
 #'   \item{\code{prb}  as \code{bio} but with projection results,}         
 #'   \item{\code{rdat} inputs and estimates specially formatted for R, }       
-#'   \item{\code{det} estimates }}
+#'   \item{\code{det}  parameter estimates by bootstrap trial.}
+#'   \item{\code{fit}  data.frame with fiitted time series.}
+#'   }
 
 #' 
 #' @examples
 #' \dontrun{
-#'    dirMy="/home/laurie/Desktop/gcode/gbyp-sam/tests/aspic/bet/2010/run3"
+#'    dirMy="www.iccat.int/stocka/Models/ASPIC/albs/2011/run2"
 #'    
 #'    ## list of file types
 #'    aspic:::files
-#'    
-#'    is(readAspic(paste(dirMy,"aspic.inp",sep="/")))
-#'    
+#'
+#'    is(readAspic(paste(dirMy,"aspicb.inp",sep="/")))    
 #'    is(readAspic(paste(dirMy,"aspic.bio",sep="/")))
-#'    
-#'    is(readAspic(paste(dirMy,"aspic.inp",sep="/")))
-#'    
-#'    is(readAspic(paste(dirMy,"aspic.prb",sep="/")))
-#'    
-#'    is(readAspic(paste(dirMy,"aspic.rdat",sep="/")))
-#'    
+#'    is(readAspic(paste(dirMy,"aspic_20000.prb",sep="/")))
 #'    is(readAspic(paste(dirMy,"aspic.det",sep="/")))
+#'    is(readAspic(paste(dirMy,"aspic.rdat",sep="/")))
 #'    }
-setMethod("readAspic",  signature(object="character"),   function(object,...)  .readAspic(object,...))
-
+setMethod("readAspic",  signature(object="character"),   
+           function(object,relative=TRUE,...)  .readAspic(object,relative,...))
 
 #' \code[writeAspic} Writes the ASPIC text input file \cod{inp} to a file or connection.
 #'
@@ -197,26 +194,26 @@ getExt <- function(file)
 checkExt=function(x) (tolower(getExt(x)) %in% aspic:::files[,"ext"])
 
 #### Aspic #####################################################################################
-.readAspic<-function(x){
+.readAspic<-function(x,relative=TRUE){
   
   if (!checkExt(x)) stop(cat("File", x, "does not have a valid extension")) 
   type=getExt(x)
 
   return(switch(tolower(type),
                 "inp" =aspicInp(x),
-                "bio" =aspicBio(x),
-                "prb" =aspicPrb(x),
+                "bio" =aspicBio(x,relative),
+                "prb" =aspicPrb(x,relative),
                 "rdat"=aspicRdat(x),
                 "ctl" =aspicCtl(x),
                 "det" =aspicDet(x),
                 "prn" =aspicPrn(x),
-                "prn" =aspicFit(x)))
+                "fit" =aspicFit(x)))
 
 
 }
 
 ################################################################################
-aspicBio =function(file){
+aspicBio =function(file,relative=TRUE){
   t.  <-scan(file,skip=4)
   nits<-scan(file,skip=1,nmax=1)
   yrs <-scan(file,skip=2,nmax=2)
@@ -231,9 +228,13 @@ aspicBio =function(file){
   bmsy<-FLQuant(t.[unlist(tapply(((1:nits)-1)*nval+1,     1:nits,function(x,y=1)      x:(x+y-1)))],dimnames=list(                        iter=1:nits))
   fmsy<-FLQuant(t.[unlist(tapply(((1:nits)-1)*nval+nyrs+3,1:nits,function(x,y=1)      x:(x+y-1)))],dimnames=list(                        iter=1:nits))
   
-  return(FLQuants(stock=b.%/%bmsy,harvest=f.%/%fmsy,bmsy=bmsy,fmsy=fmsy))}
+  if (relative){
+    b.=b.%/%bmsy
+    f.=f.%/%fmsy}
+    
+  return(FLQuants(stock=b.,harvest=f.,bmsy=bmsy,fmsy=fmsy))}
 
-aspicPrb =function(file){
+aspicPrb =function(file,relative=TRUE){
   ## Stuff
   nits<-scan(file,skip=1,nmax=1)
   yrs <-scan(file,skip=2,nmax=2)
@@ -243,16 +244,21 @@ aspicPrb =function(file){
   ## stock
   first<-rep((1:nits-1)*ncol*2,each=yrs[2]-yrs[1]+1)+(1:(ncol-1))+1
   b.   <-FLQuant(t.[first],dimnames=list(year=yrs[1]:yrs[2],iter=1:nits))
-  first<-((1:nits-1)*ncol*2)+1
-  bmsy <-FLQuant(t.[first],dimnames=list(iter=1:nits))
-  b.   <-sweep(b.,6,bmsy,"/")
+  if (relative){
+    first<-((1:nits-1)*ncol*2)+1
+    bmsy <-FLQuant(t.[first],dimnames=list(iter=1:nits))
+    b.   <-sweep(b.,6,bmsy,"/")
+    }
   
   ## F
   first<-rep((1:nits-1)*ncol*2+ncol,each=yrs[2]-yrs[1]+1)+(1:(ncol-1))+1
   f.   <-FLQuant(t.[first],dimnames=list(year=yrs[1]:yrs[2],iter=1:nits))[,ac(yrs[1]:(yrs[2]-1))]
-  first<-((1:nits-1)*ncol*2)+ncol+1
-  fmsy <-FLQuant(t.[first],dimnames=list(iter=1:nits))
-  f.   <-sweep(f.,6,fmsy,"/")
+  if (relative)
+    {
+    first<-((1:nits-1)*ncol*2)+ncol+1
+    fmsy <-FLQuant(t.[first],dimnames=list(iter=1:nits))
+    f.   <-sweep(f.,6,fmsy,"/")
+    }
   
   return(FLQuants(harvest=f.,stock=b.))}
 
@@ -304,6 +310,8 @@ aspicPrn =function(x){
 
 
 aspicInp =function(x){
+
+  res=aspic()
   
   aspicC=function(file) {  
     inp=scan(file,sep="\n",what=character())
@@ -316,8 +324,11 @@ aspicInp =function(x){
     return(ctrl)}
   
   ctrl=suppressWarnings(aspicC(x))
-  
-  res=aspic()
+  ops =strsplit(scan(x,sep="\n",what=character(),skip=2,nlines=1), " ")[[1]]
+  ops =ops[nchar(ops)>0]
+  model(res)      =factor(ops[1])
+  res@conditioning=factor(ops[2])
+  res@obj         =factor(ops[3])
   
   #  [8] "7  ## Number of fisheries (data series)"                                                                                           
   n     =ctrl[[8]]  
