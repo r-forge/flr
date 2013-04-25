@@ -256,7 +256,7 @@ rickerAR1 <- function()
   initial <- structure(function(rec, ssb) {
 		# The function to provide initial values
     res  <-coefficients(lm(c(log(rec/ssb))~c(ssb)))
-    return(FLPar(a=max(exp(res[1])), b=-max(res[2])), rho=0)
+    return(FLPar(a=max(exp(res[1])), b=-max(res[2]), rho=0))
 	},
   # lower and upper limits for optim()
 	lower=c(rep(1e-10, 2), -1),
@@ -430,7 +430,7 @@ spr2v <- function(model, spr, a=NULL, b=NULL, c=NULL, d=NULL)
     "ricker"   = log(a*spr)/b,
     "cushing"  = (1/(a*spr))^(1/(b-1)),
     "shepherd" = b*(a*spr-1)^(1/c),
-    "segreg"   = ifelse(ssb <= b, a/(spr), 0),
+    "segreg"   = ifelse(spr <= b, a/(spr), 0),
     "mean"     = a/(spr),
     "dersh"    = ssb*a*(1-b*c*ssb)^c,
     "pellat"   = 1/(a/ssb-a/ssb*(ssb/b)^c),
