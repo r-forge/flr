@@ -1,0 +1,64 @@
+I´m in the middle of doing the CITES evaluations for bluefin using FLR.
+This is an important opportunity to promote FLR but there are a few bugs
+that mean the evaluations can´t be done using the released version. Can
+we correct these and release a maintainance version? If we don´t do this
+then the results won´t be replicable and a new potential user base will
+start complaining about version control.
+
+There are several issues in FLModel/FLSR i.e.
+
+1) dims(FLPar) returns iters 1st and params 2nd, which is in the wrong order
+2) can we add automatic scaling to fmle by setting the parscale vector
+in control to the starting values. This gets rid of the need to rescale
+parameters and make fitting much more robust.
+3) need to change sv2ab and ab2sv to be methods so that they can deal
+with a variety of objects like FLPar, FLSR.
+4) In FLSR, residuals are not on the log scale even if fitted assuming
+log normality, this makes it awkard to use the residuals in 2ndry
+methods like fwd() can we change this?
+
+Then in coerce.R
+
+5) as(FLStock,"FLIndex") is inconsistent in the various slots, I have
+created a new one that is consistent and corresponds to an unbiased
+index of stock.n
+
+Validation
+
+6) validation of FLIndex is wrong as index.q and effort should not be by
+age, can we change this
+
+Operators
+
+7) "]<-" for FLComp has to be done on a case specific basis as it
+doesn´t work when some FLQuant slots have ages and some don´t
+8) "]<-" doesn´t work when some slots have 1 iter and some n
+
+Then there´s a few things that could be tidied up e.g.
+
+9) when there are multiple iters in objects like FLPar, it would be
+easier if they were displayed in the same way as multiple iters in FLQuant.
+
+10) FLPar constructor doesn´t deal correctly with iters
+
+11) There are also various problems with iters e.g. creating an FLQuant
+out of an array with iters doesn´t work, i.e. the inverse of  is OK
+x<-m(ple4)[,ac(1990:2000),drop=T]
+FLQuant(x)
+
+but not
+x<-propagate(m(ple4),10)[,ac(1990:2000),drop=T]
+FLQuant(x)
+
+12) Querying the number of iters is also inconstent, for example you can
+have iters from 0;1000, where the 0th iter corresponds to the
+deterministic run, But if you use dims on a composite object like
+FLStock you wouldn´t know this as you cant´t query dimnames.
+
+I have changed the code for some of these already
+
+Laurie
+
+
+
+
